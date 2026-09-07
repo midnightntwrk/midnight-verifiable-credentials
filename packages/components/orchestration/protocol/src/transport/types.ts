@@ -1,5 +1,6 @@
 import type {
   HolderBindingProfile,
+  Proof,
   ProtocolMessageEnvelope,
   SchemaRef,
   VerificationMethodRef,
@@ -63,4 +64,6 @@ export type ProtocolMessage<TBody = unknown> = {
   readonly to: PartyId;
   readonly envelope: ProtocolMessageEnvelope;
   readonly body: TBody;
+  /** Authenticated transport evidence over the complete unsigned wrapper. */
+  readonly authentication?: Proof;
 };

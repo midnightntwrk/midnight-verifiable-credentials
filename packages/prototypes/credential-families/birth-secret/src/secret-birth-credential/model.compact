@@ -17,7 +17,7 @@ export struct SecretBirthCredentialPresentationRequest {
   requireSubjectIdCommitmentDisclosure: Boolean,
   requireBirthCountryDisclosure: Boolean,
   requireVerifierScopedPseudonym: Boolean,
-  verifierDomainHash: Bytes<32>,
+  verifierPseudonymScope: VerifierPseudonymScopeV1,
   requireAgeOverThreshold: Boolean,
   requestedAgeThresholdYears: Uint<8>,
   verifierChallengeHash: Bytes<32>,

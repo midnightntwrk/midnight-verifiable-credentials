@@ -5,3 +5,4 @@
 - Add the internal least-privilege status read/witness package.
 - Add profile- and root-bound SHA-256 reference membership/non-membership verification with explicit #494 authority and freshness providers.
 - Add authoritative trusted-time status freshness integration with fail-closed local-clock handling.
+- Add optional private root-bound proof verification with scoped public transcript digests and fail-closed unavailable behavior.

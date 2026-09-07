@@ -58,6 +58,15 @@ export type Proof = { signerVerificationMethodRef: VerificationMethodRef;
                       signature: Signature
                     };
 
+export type VerifierPseudonymScopeV1 = { verifierIdentityDigest: Uint8Array;
+                                         executionContextDigest: Uint8Array;
+                                         audienceDigest: Uint8Array;
+                                         originDigest: Uint8Array;
+                                         consentDigest: Uint8Array;
+                                         requestDigest: Uint8Array;
+                                         challengeDigest: Uint8Array
+                                       };
+
 export enum HolderBindingProfile { explicitDid = 0,
                                    secretHolder = 1,
                                    blindedSecretHolder = 2
@@ -394,7 +403,7 @@ export type SecretBirthCredentialPresentationRequest = { version: bigint;
                                                          requireSubjectIdCommitmentDisclosure: boolean;
                                                          requireBirthCountryDisclosure: boolean;
                                                          requireVerifierScopedPseudonym: boolean;
-                                                         verifierDomainHash: Uint8Array;
+                                                         verifierPseudonymScope: VerifierPseudonymScopeV1;
                                                          requireAgeOverThreshold: boolean;
                                                          requestedAgeThresholdYears: bigint;
                                                          verifierChallengeHash: Uint8Array
@@ -484,7 +493,7 @@ export type SecretBirthCredentialIssuanceResultBody = { credential: SecretBirthC
 export type SecretBirthCredentialVerificationRequestBody = { requireSubjectIdCommitmentDisclosure: boolean;
                                                              requireBirthCountryDisclosure: boolean;
                                                              requireVerifierScopedPseudonym: boolean;
-                                                             verifierDomainHash: Uint8Array;
+                                                             verifierPseudonymScope: VerifierPseudonymScopeV1;
                                                              requireAgeOverThreshold: boolean;
                                                              requestedAgeThresholdYears: bigint
                                                            };
@@ -494,7 +503,7 @@ export type SecretBirthCredentialVerificationSubmissionBody = { credential: Secr
                                                                 presentation: SecretBirthCredentialPresentation
                                                               };
 
-export type SecretBirthCredentialVerificationResultBody = { credentialRoot: Uint8Array;
+export type SecretBirthCredentialVerificationResultBody = { presentationBindingDigest: Uint8Array;
                                                             verifiedThresholdYears: bigint;
                                                             hasVerifierScopedPseudonym: boolean;
                                                             verifierScopedPseudonym: Uint8Array
@@ -571,24 +580,24 @@ export type ImpureCircuits<PS> = {
                          statusHandle_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
-                                            verifierDomainHash_0: Uint8Array,
+                                            verifierIdentityDigest_0: Uint8Array,
                                             verifierChallengeHash_0: Uint8Array,
                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
-                                             verifierDomainHash_0: Uint8Array,
+                                             verifierIdentityDigest_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
                                              registryState_0: RevocationRegistryState,
                                              trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
-                                          verifierDomainHash_0: Uint8Array,
+                                          verifierIdentityDigest_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
                                           registryState_0: RevocationRegistryState,
                                           trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
-                                   verifierDomainHash_0: Uint8Array,
+                                   verifierIdentityDigest_0: Uint8Array,
                                    verifierChallengeHash_0: Uint8Array,
                                    trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
@@ -624,24 +633,24 @@ export type ProvableCircuits<PS> = {
                          statusHandle_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
-                                            verifierDomainHash_0: Uint8Array,
+                                            verifierIdentityDigest_0: Uint8Array,
                                             verifierChallengeHash_0: Uint8Array,
                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
-                                             verifierDomainHash_0: Uint8Array,
+                                             verifierIdentityDigest_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
                                              registryState_0: RevocationRegistryState,
                                              trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
-                                          verifierDomainHash_0: Uint8Array,
+                                          verifierIdentityDigest_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
                                           registryState_0: RevocationRegistryState,
                                           trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
-                                   verifierDomainHash_0: Uint8Array,
+                                   verifierIdentityDigest_0: Uint8Array,
                                    verifierChallengeHash_0: Uint8Array,
                                    trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
@@ -719,6 +728,13 @@ export type PureCircuits = {
   assertVerifierScopedPseudonym(pseudonym_0: Uint8Array,
                                 holderSecret_0: Uint8Array,
                                 verifierDomainHash_0: Uint8Array): [];
+  verifierIdentityDigestV1(verificationMethodRef_0: VerificationMethodRef): Uint8Array;
+  verifierPseudonymScopeDigestV1(scope_0: VerifierPseudonymScopeV1): Uint8Array;
+  requestScopedVerifierPseudonymV1(holderSecret_0: Uint8Array,
+                                   scope_0: VerifierPseudonymScopeV1): Uint8Array;
+  assertRequestScopedVerifierPseudonymV1(pseudonym_0: Uint8Array,
+                                         holderSecret_0: Uint8Array,
+                                         scope_0: VerifierPseudonymScopeV1): [];
   blindedSecretHolderCommitment(holderSecretCommitment_0: Uint8Array,
                                 issuerNonce_0: Uint8Array,
                                 blindingFactor_0: Uint8Array): Uint8Array;
@@ -919,6 +935,9 @@ export type PureCircuits = {
   secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus_0: SecretBirthCredentialWithStatusBinding): Uint8Array;
   secretBirthCredentialPresentationBodyRoot(presentation_0: SecretBirthCredentialPresentation): Uint8Array;
   secretBirthCredentialPresentationRequestBodyRoot(request_0: SecretBirthCredentialPresentationRequest): Uint8Array;
+  secretBirthPresentationBindingDigestV1(credential_0: SecretBirthCredential,
+                                         presentation_0: SecretBirthCredentialPresentation,
+                                         request_0: SecretBirthCredentialPresentationRequest): Uint8Array;
   assertValidSecretBirthSchemaRef(schema_0: SchemaRef): [];
   assertValidSecretBirthCredentialPresentationRequest(request_0: SecretBirthCredentialPresentationRequest): [];
   secretBirthCredentialPresentationRequestFromProtocol(request_0: SecretBirthCredentialVerificationRequest): SecretBirthCredentialPresentationRequest;
@@ -938,7 +957,8 @@ export type PureCircuits = {
                                                                   holderSecretOpening_0: Uint8Array,
                                                                   holderBindingBlindingFactor_0: Uint8Array): [];
   assertValidSecretBirthCredentialVerificationResultMessage(result_0: SecretBirthCredentialVerificationResult): [];
-  assertSecretBirthCredentialVerificationResultMatchesSubmission(submission_0: SecretBirthCredentialVerificationSubmission,
+  assertSecretBirthCredentialVerificationResultMatchesSubmission(request_0: SecretBirthCredentialVerificationRequest,
+                                                                 submission_0: SecretBirthCredentialVerificationSubmission,
                                                                  result_0: SecretBirthCredentialVerificationResult): [];
   assertValidSecretBirthCredential(credential_0: SecretBirthCredential,
                                    proof_0: Proof): [];
@@ -1018,6 +1038,12 @@ export type PureCircuits = {
                                                                                                  holderSecretOpening_0: Uint8Array,
                                                                                                  holderBindingBlindingFactor_0: Uint8Array,
                                                                                                  currentTime_0: bigint): [];
+  revocationDemoVerificationMessageId(verifierChallengeHash_0: Uint8Array,
+                                      verifierIdentityDigest_0: Uint8Array): Uint8Array;
+  revocationDemoVerificationThreadId(verifierChallengeHash_0: Uint8Array,
+                                     verifierIdentityDigest_0: Uint8Array): Uint8Array;
+  revocationDemoVerifierPseudonymScopeV1(verifierIdentityDigest_0: Uint8Array,
+                                         verifierChallengeHash_0: Uint8Array): VerifierPseudonymScopeV1;
 }
 
 export type Circuits<PS> = {
@@ -1105,6 +1131,17 @@ export type Circuits<PS> = {
                                 pseudonym_0: Uint8Array,
                                 holderSecret_0: Uint8Array,
                                 verifierDomainHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verifierIdentityDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                           verificationMethodRef_0: VerificationMethodRef): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  verifierPseudonymScopeDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                                 scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  requestScopedVerifierPseudonymV1(context: __compactRuntime.CircuitContext<PS>,
+                                   holderSecret_0: Uint8Array,
+                                   scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertRequestScopedVerifierPseudonymV1(context: __compactRuntime.CircuitContext<PS>,
+                                         pseudonym_0: Uint8Array,
+                                         holderSecret_0: Uint8Array,
+                                         scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, []>;
   blindedSecretHolderCommitment(context: __compactRuntime.CircuitContext<PS>,
                                 holderSecretCommitment_0: Uint8Array,
                                 issuerNonce_0: Uint8Array,
@@ -1397,6 +1434,10 @@ export type Circuits<PS> = {
                                             presentation_0: SecretBirthCredentialPresentation): __compactRuntime.CircuitResults<PS, Uint8Array>;
   secretBirthCredentialPresentationRequestBodyRoot(context: __compactRuntime.CircuitContext<PS>,
                                                    request_0: SecretBirthCredentialPresentationRequest): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  secretBirthPresentationBindingDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                                         credential_0: SecretBirthCredential,
+                                         presentation_0: SecretBirthCredentialPresentation,
+                                         request_0: SecretBirthCredentialPresentationRequest): __compactRuntime.CircuitResults<PS, Uint8Array>;
   assertValidSecretBirthSchemaRef(context: __compactRuntime.CircuitContext<PS>,
                                   schema_0: SchemaRef): __compactRuntime.CircuitResults<PS, []>;
   assertValidSecretBirthCredentialPresentationRequest(context: __compactRuntime.CircuitContext<PS>,
@@ -1430,6 +1471,7 @@ export type Circuits<PS> = {
   assertValidSecretBirthCredentialVerificationResultMessage(context: __compactRuntime.CircuitContext<PS>,
                                                             result_0: SecretBirthCredentialVerificationResult): __compactRuntime.CircuitResults<PS, []>;
   assertSecretBirthCredentialVerificationResultMatchesSubmission(context: __compactRuntime.CircuitContext<PS>,
+                                                                 request_0: SecretBirthCredentialVerificationRequest,
                                                                  submission_0: SecretBirthCredentialVerificationSubmission,
                                                                  result_0: SecretBirthCredentialVerificationResult): __compactRuntime.CircuitResults<PS, []>;
   assertValidSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
@@ -1526,30 +1568,39 @@ export type Circuits<PS> = {
                                                                                                  holderSecretOpening_0: Uint8Array,
                                                                                                  holderBindingBlindingFactor_0: Uint8Array,
                                                                                                  currentTime_0: bigint): __compactRuntime.CircuitResults<PS, []>;
+  revocationDemoVerificationMessageId(context: __compactRuntime.CircuitContext<PS>,
+                                      verifierChallengeHash_0: Uint8Array,
+                                      verifierIdentityDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  revocationDemoVerificationThreadId(context: __compactRuntime.CircuitContext<PS>,
+                                     verifierChallengeHash_0: Uint8Array,
+                                     verifierIdentityDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  revocationDemoVerifierPseudonymScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                         verifierIdentityDigest_0: Uint8Array,
+                                         verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, VerifierPseudonymScopeV1>;
   initializeLiveStatusRegistry(context: __compactRuntime.CircuitContext<PS>,
                                registryId_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
   revokeLiveStatusHandle(context: __compactRuntime.CircuitContext<PS>,
                          statusHandle_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
-                                            verifierDomainHash_0: Uint8Array,
+                                            verifierIdentityDigest_0: Uint8Array,
                                             verifierChallengeHash_0: Uint8Array,
                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
-                                             verifierDomainHash_0: Uint8Array,
+                                             verifierIdentityDigest_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
                                              registryState_0: RevocationRegistryState,
                                              trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
-                                          verifierDomainHash_0: Uint8Array,
+                                          verifierIdentityDigest_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
                                           registryState_0: RevocationRegistryState,
                                           trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
-                                   verifierDomainHash_0: Uint8Array,
+                                   verifierIdentityDigest_0: Uint8Array,
                                    verifierChallengeHash_0: Uint8Array,
                                    trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,

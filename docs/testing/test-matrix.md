@@ -680,5 +680,21 @@ authority.
 | `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | A clean packed wallet/exchange consumer imports the artifact-authority subpath and proves classification/binding parity while preserving distinct local and ledger authority labels. |
 
 This evidence verifies supplied path observations only. It does not implement
-#499 executors, transaction submission, #500 privacy changes, artifact
-publication, deployment operation, or release authorization.
+#499 executors, transaction submission, artifact publication, deployment
+operation, or release authorization.
+
+## Hidden-holder status and pseudonym privacy
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/primitives/credentials/src/test/secret-holder-binding.test.ts` | Compact derives a pseudonym from verifier identity, deployment, audience, origin, consent, request, and challenge; mutation of every component changes the pseudonym. |
+| `packages/prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts` | The hidden birth family enforces the scoped pseudonym inside the private holder-witness check and rejects challenge/context mutations. |
+| `packages/components/orchestration/protocol/src/test/secret-holder/pseudonym.test.ts` | The holder verifies the allow-listed verifier's signature over the transport wrapper, rejects forged senders, malformed dynamic request/challenge scope, and authenticated replays before disclosure; successful public/retained result shape contains a request-scoped presentation binding and no credential root, holder secret, opening, witness, or status handle. |
+| `packages/registry/status-midnight-verifier/src/test/authenticated-status.test.ts` | Private root-bound evidence fails closed without a private proof adapter. With an injected adapter, the public transcript contains only scoped subject/proof digests and bounded status outcomes, never the leaf, raw proof digest, path, opening, or witness. |
+| `packages/core/proofs/src/test/hidden-holder-privacy.test.ts` | Snapshots cover public results, receipts, events, errors, logs, and retained artifacts; intentional credential-root/holder/status leak fixtures and stable forbidden byte values fail closed without echoing secrets in errors. |
+| `packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts` | The managed age-gate request binds its fixed deployment/audience/origin/consent context plus verifier identity, request, and challenge while preserving status-mode negatives. |
+| `tooling/fixtures/credential-proofs-consumer/browser-entry.ts` | A clean browser consumer imports the privacy scanner from its dedicated package subpath. |
+
+This slice does not implement #499 final executors, #502 aggregate authority,
+University v1 hidden transport, browser fingerprinting defenses, or production
+anonymity claims.

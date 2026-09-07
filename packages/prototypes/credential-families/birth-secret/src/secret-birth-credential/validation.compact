@@ -132,6 +132,12 @@ export pure circuit assertValidSecretBirthCredentialVerificationRequestMessage(
   assertValidSecretBirthCredentialPresentationRequest(
     secretBirthCredentialPresentationRequestFromProtocol(request)
   );
+  if (request.body.requireVerifierScopedPseudonym) {
+    assert(
+      request.body.verifierPseudonymScope.requestDigest == request.envelope.messageId,
+      "Verifier pseudonym scope request does not match the protocol envelope"
+    );
+  }
 }
 
 export pure circuit assertValidSecretBirthCredentialVerificationSubmissionMessage(
@@ -184,8 +190,8 @@ export pure circuit assertValidSecretBirthCredentialVerificationResultMessage(
   SecretBirthCredentialVerification_assertValidResultMessage(result);
   if (result.approved) {
     assert(
-      result.body.credentialRoot != noProtocolResponseReference(),
-      "Secret birth credential verification result must include a credential root when approved"
+      result.body.presentationBindingDigest != noProtocolResponseReference(),
+      "Secret birth credential verification result must include a scoped presentation binding when approved"
     );
     if (result.body.hasVerifierScopedPseudonym) {
       assert(
@@ -197,9 +203,11 @@ export pure circuit assertValidSecretBirthCredentialVerificationResultMessage(
 }
 
 export pure circuit assertSecretBirthCredentialVerificationResultMatchesSubmission(
+  request: SecretBirthCredentialVerificationRequest,
   submission: SecretBirthCredentialVerificationSubmission,
   result: SecretBirthCredentialVerificationResult
 ): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(request);
   assertValidSecretBirthCredentialVerificationSubmissionMessage(submission);
   assertValidSecretBirthCredentialVerificationResultMessage(result);
   SecretBirthCredentialVerification_assertSubmissionResultAlignment(
@@ -208,8 +216,12 @@ export pure circuit assertSecretBirthCredentialVerificationResultMatchesSubmissi
   );
   if (result.approved) {
     assert(
-      result.body.credentialRoot == secretBirthCredentialBodyRoot(submission.body.credential),
-      "Secret birth credential verification result credential root does not match the submission"
+      result.body.presentationBindingDigest == secretBirthPresentationBindingDigestV1(
+        submission.body.credential,
+        submission.body.presentation,
+        secretBirthCredentialPresentationRequestFromProtocol(request)
+      ),
+      "Secret birth credential verification result scoped presentation binding does not match the request"
     );
     if (result.body.hasVerifierScopedPseudonym) {
       assert(
@@ -343,10 +355,10 @@ export pure circuit assertSecretBirthPresentationSatisfiesRequest(
     );
   }
   if (presentation.disclosed.revealVerifierScopedPseudonym) {
-    assertVerifierScopedPseudonym(
+    assertRequestScopedVerifierPseudonymV1(
       presentation.disclosed.verifierScopedPseudonym,
       holderSecret,
-      request.verifierDomainHash
+      request.verifierPseudonymScope
     );
   }
   if (request.requireAgeOverThreshold) {

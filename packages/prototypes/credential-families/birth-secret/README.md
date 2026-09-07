@@ -117,7 +117,10 @@ What it does prove:
 - matching secret holder-binding commitment between credential and presentation
 - holder knowledge of the committed secret through a private witness
 - challenge-bound response derived from the holder secret
-- verifier-scoped pseudonym derivation from the hidden holder secret
+- request-unlinkable verifier pseudonym derivation from the hidden holder secret,
+  authenticated verifier identity, deployment, audience, origin, consent,
+  request, and challenge; the legacy domain-only primitive is not used by this
+  hidden-holder protocol
 - same-holder composition across two or three secret birth credentials when the verifier coordinates a shared challenge
 - prototype status-aware verification using:
   - same-contract live status witnesses for contracts that own the live
@@ -193,8 +196,9 @@ follows:
   body
 - age-over-threshold checks are `predicateOnly` witness paths over the committed
   birth-date value
-- verifier-scoped pseudonym and same-holder witnesses are hidden-holder
-  capability data, not public direct credential claims
+- request-scoped verifier pseudonyms and same-holder witnesses are hidden-holder
+  capability data, not public direct credential claims; hidden protocol results
+  expose only a scoped presentation binding and never a credential root
 - no field in this family is intentionally modeled as an always-public direct
   claim
 

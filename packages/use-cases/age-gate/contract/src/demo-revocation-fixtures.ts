@@ -63,7 +63,7 @@ export type DemoRevocationFixture = {
     readonly holderSecretOpening: Uint8Array;
     readonly holderBindingBlindingFactor: Uint8Array;
     readonly holderBindingIssuerNonce: Uint8Array;
-    readonly verifierDomainHash: Uint8Array;
+    readonly verifierIdentityDigest: Uint8Array;
     readonly subjectId: Uint8Array;
     readonly subjectOpening: Uint8Array;
     readonly legalNamePadded: Uint8Array;
@@ -183,7 +183,7 @@ export const createDemoRevocationFixture = (
     holderSecretOpening: sha256("opening:holder-secret"),
     holderBindingBlindingFactor: sha256("blinding:holder-secret"),
     holderBindingIssuerNonce: sha256("issuer-nonce:birth-secret"),
-    verifierDomainHash: sha256("verifier-domain:age-gateway.example"),
+    verifierIdentityDigest: sha256("verifier-identity:age-gateway.example"),
     subjectId: sha256("subject:alice"),
     subjectOpening: sha256("opening:subject"),
     legalNamePadded: padText("Alice Example"),
@@ -257,6 +257,12 @@ export const createDemoRevocationFixture = (
     nonceScalar: 11n,
   });
 
+  const verifierChallengeHash = sha256("challenge:verifier");
+  const verifierPseudonymScope =
+    pureCircuits.revocationDemoVerifierPseudonymScopeV1(
+      witness.verifierIdentityDigest,
+      verifierChallengeHash,
+    );
   const presentationRequest: SecretBirthCredentialPresentationRequest = {
     version: 1n,
     schema: credential.schema,
@@ -264,17 +270,20 @@ export const createDemoRevocationFixture = (
     requireSubjectIdCommitmentDisclosure: false,
     requireBirthCountryDisclosure: true,
     requireVerifierScopedPseudonym: true,
-    verifierDomainHash: witness.verifierDomainHash,
+    verifierPseudonymScope,
     requireAgeOverThreshold: true,
     requestedAgeThresholdYears: 18n,
-    verifierChallengeHash: sha256("challenge:verifier"),
+    verifierChallengeHash,
   };
 
   const verificationRequest: SecretBirthCredentialVerificationRequest = {
-    envelope: createProtocolEnvelope(
-      "secret-presentation-request",
-      "secret-birth-presentation",
-    ),
+    envelope: {
+      ...createProtocolEnvelope(
+        "secret-presentation-request",
+        "secret-birth-presentation",
+      ),
+      messageId: verifierPseudonymScope.requestDigest,
+    },
     schema: credential.schema,
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
     holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
@@ -292,7 +301,7 @@ export const createDemoRevocationFixture = (
         presentationRequest.requireBirthCountryDisclosure,
       requireVerifierScopedPseudonym:
         presentationRequest.requireVerifierScopedPseudonym,
-      verifierDomainHash: presentationRequest.verifierDomainHash,
+      verifierPseudonymScope: presentationRequest.verifierPseudonymScope,
       requireAgeOverThreshold: presentationRequest.requireAgeOverThreshold,
       requestedAgeThresholdYears:
         presentationRequest.requestedAgeThresholdYears,
@@ -469,9 +478,9 @@ export const createDemoRevocationFixture = (
       birthCountryCodePadded: witness.birthCountryCodePadded,
       birthCountryCodeOpening: witness.birthCountryCodeOpening,
       revealVerifierScopedPseudonym: true,
-      verifierScopedPseudonym: pureCircuits.verifierScopedPseudonym(
+      verifierScopedPseudonym: pureCircuits.requestScopedVerifierPseudonymV1(
         witness.holderSecret,
-        witness.verifierDomainHash,
+        presentationRequest.verifierPseudonymScope,
       ),
       proveAgeOverThreshold: true,
       ageThresholdYears: 18n,

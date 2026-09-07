@@ -240,6 +240,9 @@ importers:
       '@midnight-ntwrk/credential-exchange':
         specifier: workspace:*
         version: link:../exchange
+      '@midnight-ntwrk/credential-proofs':
+        specifier: '*'
+        version: link:../../../core/proofs
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials

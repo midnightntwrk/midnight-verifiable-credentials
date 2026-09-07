@@ -104,6 +104,22 @@ const canonicalValue = (value: unknown): string => {
   return `${typeof value}:${String(value)}`;
 };
 
+/**
+ * Digest signed by a protocol sender. Authentication is excluded to avoid a
+ * self-reference; every routing field, envelope field, and body field remains
+ * covered by the signature.
+ */
+export function protocolMessageAuthenticationDigest(
+  message: ProtocolMessage,
+): Uint8Array {
+  const { authentication: _authentication, ...unsignedMessage } = message;
+  return new Uint8Array(
+    createHash("sha256")
+      .update(canonicalValue(unsignedMessage), "utf8")
+      .digest(),
+  );
+}
+
 /** A bounded replay identity that does not retain the request payload. */
 export function protocolMessageDigest(message: ProtocolMessage): Uint8Array {
   return new Uint8Array(

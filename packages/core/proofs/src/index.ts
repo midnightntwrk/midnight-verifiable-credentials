@@ -51,6 +51,14 @@ export {
 } from "./authority-evidence.js";
 export { CredentialProofsError, type CredentialProofsErrorCode } from "./errors.js";
 export {
+  assertHiddenHolderPublicSurfaceV1,
+  deriveAuthenticatedVerifierIdentityDigestV1,
+  HiddenHolderPrivacyError,
+  type HiddenHolderPrivacyErrorCodeV1,
+  type HiddenHolderPublicSurfaceOptionsV1,
+  snapshotHiddenHolderPublicSurfaceV1,
+} from "./hidden-holder-privacy.js";
+export {
   assertArtifactBytes,
   base64UrlDecode,
   base64UrlEncode,

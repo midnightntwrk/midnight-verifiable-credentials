@@ -1,7 +1,9 @@
 import { Buffer } from "node:buffer";
 
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   type Proof,
+  pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
@@ -37,12 +39,17 @@ import {
   secureProtocolRandomnessSource,
 } from "../../agents/randomness.js";
 import type { DIDProfile } from "../../agents/types.js";
+import { mod } from "../../shared/crypto.js";
 import {
   createProtocolEnvelopeFactory,
   type ProtocolEnvelopeFactory,
   type ProtocolEnvelopeIdentifierSource,
 } from "../../shared/envelope.js";
-import { assertBodyHasFields, assertMessageType } from "../../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+  protocolMessageAuthenticationDigest,
+} from "../../shared/validation.js";
 import type { MessageBus } from "../../transport/message-bus.js";
 import type {
   PartyId,
@@ -123,7 +130,10 @@ export type SecretPresentationRequirements = {
   readonly requireSubjectIdCommitmentDisclosure: boolean;
   readonly requireBirthCountryDisclosure: boolean;
   readonly requireVerifierScopedPseudonym: boolean;
-  readonly verifierDomainHash?: Uint8Array;
+  readonly deploymentDigest?: Uint8Array;
+  readonly audienceDigest?: Uint8Array;
+  readonly originDigest?: Uint8Array;
+  readonly consentDigest?: Uint8Array;
   readonly requireAgeOverThreshold: boolean;
   readonly requestedAgeThresholdYears: number;
 };
@@ -180,6 +190,7 @@ export class VerifierAgent {
   private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private challengeCounter = 0;
+  private authenticationCounter = 0;
   private readonly completedSecretPresentationOutcomes: ProtocolStateCollection<
     RetainedProtocolState<ProtocolMessage>
   >;
@@ -351,25 +362,41 @@ export class VerifierAgent {
     requirements: SecretPresentationRequirements,
     options: SecretPresentationRequestOptions = {},
   ): void {
+    if (
+      requirements.requireVerifierScopedPseudonym &&
+      (
+        requirements.deploymentDigest === undefined ||
+        requirements.audienceDigest === undefined ||
+        requirements.originDigest === undefined ||
+        requirements.consentDigest === undefined
+      )
+    ) {
+      throw new PresentationProtocolError(
+        "unsatisfied_request",
+        "Hidden-holder pseudonyms require authenticated deployment, audience, origin, and consent context.",
+      );
+    }
+    const envelope = this.createEnvelope(
+      "secret-presentation-request",
+      "secret-birth-presentation",
+      true,
+      undefined,
+      undefined,
+      {
+        createdAtMs: options.currentTimeMs,
+        expiresAtMs: options.requestExpiresAtMs,
+      },
+    );
+    const verifierChallengeHash = this.generateChallengeHashFor(
+      "blinded-secret-presentation",
+    );
     const request: SecretBirthCredentialVerificationRequest = {
-      envelope: this.createEnvelope(
-        "secret-presentation-request",
-        "secret-birth-presentation",
-        true,
-        undefined,
-        undefined,
-        {
-          createdAtMs: options.currentTimeMs,
-          expiresAtMs: options.requestExpiresAtMs,
-        },
-      ),
+      envelope,
       schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
       features: SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
-      verifierChallengeHash: this.generateChallengeHashFor(
-        "blinded-secret-presentation",
-      ),
+      verifierChallengeHash,
       body: {
         requireSubjectIdCommitmentDisclosure:
           requirements.requireSubjectIdCommitmentDisclosure,
@@ -377,8 +404,22 @@ export class VerifierAgent {
           requirements.requireBirthCountryDisclosure,
         requireVerifierScopedPseudonym:
           requirements.requireVerifierScopedPseudonym,
-        verifierDomainHash:
-          requirements.verifierDomainHash ?? new Uint8Array(32),
+        verifierPseudonymScope: {
+          verifierIdentityDigest: genericPureCircuits.verifierIdentityDigestV1(
+            this.profile.signer.verificationMethodRef,
+          ),
+          executionContextDigest:
+            requirements.deploymentDigest ?? new Uint8Array(32),
+          audienceDigest: requirements.audienceDigest ?? new Uint8Array(32),
+          originDigest: requirements.originDigest ?? new Uint8Array(32),
+          consentDigest: requirements.consentDigest ?? new Uint8Array(32),
+          requestDigest: requirements.requireVerifierScopedPseudonym
+            ? envelope.messageId
+            : new Uint8Array(32),
+          challengeDigest: requirements.requireVerifierScopedPseudonym
+            ? verifierChallengeHash
+            : new Uint8Array(32),
+        },
         requireAgeOverThreshold: requirements.requireAgeOverThreshold,
         requestedAgeThresholdYears: BigInt(
           requirements.requestedAgeThresholdYears,
@@ -386,12 +427,45 @@ export class VerifierAgent {
       },
     };
 
-    this.bus.send({
+    const unsignedMessage: ProtocolMessage = {
       type: "presentation:request",
       from: this.profile.label,
       to: holderLabel,
       envelope: request.envelope,
       body: request,
+    };
+    const nonceScalar = this.randomness.nextSigningNonceScalar({
+      partyLabel: this.profile.label,
+      flow: "blinded-secret-presentation",
+      purpose: "signing-nonce",
+      sequence: this.authenticationCounter++,
+      threadId: request.envelope.threadId,
+    });
+    const authenticationDraft: Proof = {
+      signerVerificationMethodRef: this.profile.signer.verificationMethodRef,
+      createdAt: request.envelope.createdAt,
+      challengeHash: request.envelope.messageId,
+      publicKey: this.profile.signer.publicKey,
+      signature: { r: ecMulGenerator(nonceScalar), s: 0n },
+    };
+    const authenticationChallenge =
+      genericPureCircuits.presentationProofChallenge(
+        protocolMessageAuthenticationDigest(unsignedMessage),
+        authenticationDraft,
+      );
+
+    this.bus.send({
+      ...unsignedMessage,
+      authentication: {
+        ...authenticationDraft,
+        signature: {
+          r: authenticationDraft.signature.r,
+          s: mod(
+            nonceScalar +
+            authenticationChallenge * this.profile.signer.secretKey,
+          ),
+        },
+      },
     });
   }
 
@@ -461,12 +535,18 @@ export class VerifierAgent {
         false,
         submissionMessage.envelope.messageId,
         submissionMessage.envelope.threadId,
+        { createdAtMs: options.currentTimeMs },
       ),
       approved: true,
       body: {
-        credentialRoot: secretPureCircuits.secretBirthCredentialBodyRoot(
-          body.credential,
-        ),
+        presentationBindingDigest:
+          secretPureCircuits.secretBirthPresentationBindingDigestV1(
+            body.credential,
+            body.presentation,
+            secretPureCircuits.secretBirthCredentialPresentationRequestFromProtocol(
+              simulatorWitness.request,
+            ),
+          ),
         verifiedThresholdYears:
           simulatorWitness.request.body.requestedAgeThresholdYears,
         hasVerifierScopedPseudonym: pseudonym != null,
@@ -475,6 +555,7 @@ export class VerifierAgent {
     };
 
     secretPureCircuits.assertSecretBirthCredentialVerificationResultMatchesSubmission(
+      simulatorWitness.request,
       submissionMessage,
       result,
     );

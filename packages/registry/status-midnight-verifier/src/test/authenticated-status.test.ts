@@ -567,7 +567,109 @@ describe("same-contract status verification and privacy", () => {
     expect(() => verifySameContractStatusV1({ profile: "ledger-local-v1", binding, state: duplicateState, statusHandleDigest: activeLeaf, expectedAuthorityDid: "did:midnight:testnet:status", privacy: { mode: "public" }, freshnessPolicyDigest: digest("e") })).not.toThrow();
     expect(verifySameContractStatusV1({ profile: "ledger-local-v1", binding, state: duplicateState, statusHandleDigest: activeLeaf, expectedAuthorityDid: "did:midnight:testnet:status", privacy: { mode: "public" }, freshnessPolicyDigest: digest("e") })).toMatchObject({ status: "invalid", reasonCodes: ["MALFORMED_STATUS_EVIDENCE"] });
 
-    const privateEvidence = evidence({ privacy: "private" });
-    await expect(verify(privateEvidence)).resolves.toMatchObject({ status: "indeterminate", reasonCodes: ["PRIVATE_STATUS_PROOF_UNAVAILABLE"] });
+    const privateEvidence = rebind(evidence({ privacy: "private" }));
+    const unavailable = await verify(privateEvidence);
+    expect(unavailable).toMatchObject({
+      status: "indeterminate",
+      reasonCodes: ["PRIVATE_STATUS_PROOF_UNAVAILABLE"],
+      outcome: { verdict: "indeterminate", code: "statusProofUnavailable" },
+      transcript: { privacy: "private", result: "not-evaluated" },
+    });
+    expect(JSON.stringify(unavailable)).not.toContain(privateEvidence.leaf);
+    expect(JSON.stringify(unavailable)).not.toContain(privateEvidence.proofDigest);
+    expect({
+      status: unavailable.status,
+      reasons: unavailable.reasonCodes,
+      outcome: unavailable.outcome,
+      transcript: unavailable.transcript,
+    }).toMatchInlineSnapshot(`
+      {
+        "outcome": {
+          "code": "statusProofUnavailable",
+          "verdict": "indeterminate",
+        },
+        "reasons": [
+          "PRIVATE_STATUS_PROOF_UNAVAILABLE",
+        ],
+        "status": "indeterminate",
+        "transcript": {
+          "authorityPolicyDigest": "sha256:54c1a96d08b73c2691f19f3b3af04f40b550342633319dbebafaa55717e841ae",
+          "authorityTranscriptDigest": null,
+          "binding": {
+            "deployment": "contract:1",
+            "formatVersion": 1,
+            "namespace": "issuer:family:1:revoked-set",
+            "network": "midnight:testnet",
+            "registryId": "registry:1",
+          },
+          "domain": "midnight:vc:authenticated-status-verification:v1",
+          "formatVersion": 1,
+          "freshnessAnchorDigest": null,
+          "freshnessPolicyDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "mode": "external-nonmembership",
+          "privacy": "private",
+          "profile": "ledger-attested-v1",
+          "proofDigest": "sha256:84251113cd996572479cf1020905eac3c1aebccf91b4a99010106011c5ae65dd",
+          "registryVersion": 2,
+          "result": "not-evaluated",
+          "root": "sha256:30935dd771a07e15dcef3b74a1207e4a865e54afdb9f24cdfd7d9eec71a98354",
+          "subjectDigest": "sha256:d148082b224cd580e22a6f7d267b2f67dab903a8023c555ce6504bb87a1fe1c5",
+        },
+      }
+    `);
+  });
+
+  it("uses an injected private root-bound proof adapter without retaining handle or witness correlators", async () => {
+    const privateEvidence = rebind(evidence({ privacy: "private" }));
+    const verified = await verify(privateEvidence, {
+      privateProofVerifier: { verify: async () => true },
+    });
+
+    expect(verified).toMatchObject({
+      status: "valid",
+      reasonCodes: [],
+      outcome: { verdict: "valid", state: "active" },
+      transcript: { privacy: "private", result: "not-revoked" },
+    });
+    expect(verified.transcript.proofDigest).not.toBe(privateEvidence.proofDigest);
+    const retained = JSON.stringify(verified);
+    expect(retained).not.toContain(privateEvidence.leaf);
+    expect(retained).not.toContain(privateEvidence.proofDigest);
+    expect(retained).not.toMatch(/statusHandle|credentialRoot|opening|siblings|leafIndex/iu);
+    expect({
+      status: verified.status,
+      reasons: verified.reasonCodes,
+      transcriptKeys: Object.keys(verified.transcript).sort(),
+      outcome: verified.outcome,
+    }).toMatchInlineSnapshot(`
+      {
+        "outcome": {
+          "evidence": {
+            "transcriptDigest": "sha256:172f7b98564aa514cdffbff1ee04f39f8aa9a8cd1b82d8290d0849b9494bd89d",
+          },
+          "state": "active",
+          "verdict": "valid",
+        },
+        "reasons": [],
+        "status": "valid",
+        "transcriptKeys": [
+          "authorityPolicyDigest",
+          "authorityTranscriptDigest",
+          "binding",
+          "domain",
+          "formatVersion",
+          "freshnessAnchorDigest",
+          "freshnessPolicyDigest",
+          "mode",
+          "privacy",
+          "profile",
+          "proofDigest",
+          "registryVersion",
+          "result",
+          "root",
+          "subjectDigest",
+        ],
+      }
+    `);
   });
 });

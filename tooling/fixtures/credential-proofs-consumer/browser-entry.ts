@@ -3,6 +3,7 @@ import {
   computeArtifactAuthorityBindingDigestV1,
   type ArtifactAuthorityPolicyV1,
 } from "@midnight-ntwrk/credential-proofs/artifact-authority";
+import { assertHiddenHolderPublicSurfaceV1 } from "@midnight-ntwrk/credential-proofs/hidden-holder-privacy";
 
 const digest = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const job = defineProofJob({ formatVersion: 1, id: "browser-job", version: "0.1.0", familyId: "browser.family", circuitId: "browser-circuit", proofManifestDigest: digest, input: null });
@@ -38,3 +39,7 @@ const policy: ArtifactAuthorityPolicyV1 = {
 if (!(await computeArtifactAuthorityBindingDigestV1(policy)).startsWith("sha256:")) {
   throw new Error("browser artifact authority digest failed");
 }
+assertHiddenHolderPublicSurfaceV1({
+  kind: "hidden-holder-result",
+  presentationBindingDigest: new Uint8Array(32),
+});

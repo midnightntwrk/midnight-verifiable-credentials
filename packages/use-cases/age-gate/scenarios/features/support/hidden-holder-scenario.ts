@@ -108,7 +108,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -143,7 +143,7 @@ export class UseHiddenHolderScenario extends Ability {
     simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);
@@ -174,7 +174,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -223,7 +223,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -272,7 +272,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -317,7 +317,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -357,7 +357,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -397,7 +397,7 @@ export class UseHiddenHolderScenario extends Ability {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -473,7 +473,7 @@ export class UseHiddenHolderScenario extends Ability {
     simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);

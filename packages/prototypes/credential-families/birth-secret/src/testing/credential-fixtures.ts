@@ -302,7 +302,15 @@ export const createSecretBirthCredentialFixture = (
     requireSubjectIdCommitmentDisclosure: false,
     requireBirthCountryDisclosure: true,
     requireVerifierScopedPseudonym: true,
-    verifierDomainHash: witness.verifierDomainHash,
+    verifierPseudonymScope: {
+      verifierIdentityDigest: witness.verifierDomainHash,
+      executionContextDigest: sha256("deployment:age-gateway:v1"),
+      audienceDigest: sha256("audience:age-gateway.example"),
+      originDigest: sha256("origin:https://age-gateway.example"),
+      consentDigest: sha256("consent:birth-presentation"),
+      requestDigest: sha256("protocol:message:secret-presentation-request"),
+      challengeDigest: sha256("challenge:verifier"),
+    },
     requireAgeOverThreshold: true,
     requestedAgeThresholdYears: 18n,
     verifierChallengeHash: sha256("challenge:verifier"),
@@ -330,7 +338,7 @@ export const createSecretBirthCredentialFixture = (
         presentationRequest.requireBirthCountryDisclosure,
       requireVerifierScopedPseudonym:
         presentationRequest.requireVerifierScopedPseudonym,
-      verifierDomainHash: presentationRequest.verifierDomainHash,
+      verifierPseudonymScope: presentationRequest.verifierPseudonymScope,
       requireAgeOverThreshold: presentationRequest.requireAgeOverThreshold,
       requestedAgeThresholdYears:
         presentationRequest.requestedAgeThresholdYears,
@@ -510,10 +518,11 @@ export const createSecretBirthCredentialFixture = (
       birthCountryCodePadded: witness.birthCountryCodePadded,
       birthCountryCodeOpening: witness.birthCountryCodeOpening,
       revealVerifierScopedPseudonym: true,
-      verifierScopedPseudonym: genericPureCircuits.verifierScopedPseudonym(
-        witness.holderSecret,
-        witness.verifierDomainHash,
-      ),
+      verifierScopedPseudonym:
+        genericPureCircuits.requestScopedVerifierPseudonymV1(
+          witness.holderSecret,
+          presentationRequest.verifierPseudonymScope,
+        ),
       proveAgeOverThreshold: true,
       ageThresholdYears: 18n,
     },

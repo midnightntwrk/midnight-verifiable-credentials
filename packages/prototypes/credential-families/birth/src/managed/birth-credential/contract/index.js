@@ -166,6 +166,29 @@ const _descriptor_11 = new _Credential_0();
 
 const _descriptor_12 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
 
+class _BirthCredentialPresentationRequest_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment().concat(_descriptor_12.alignment().concat(_descriptor_1.alignment())))))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_0.fromValue(value_0),
+      schema: _descriptor_2.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
+      requireSubjectIdCommitmentDisclosure: _descriptor_8.fromValue(value_0),
+      requireBirthCountryDisclosure: _descriptor_8.fromValue(value_0),
+      requireAgeOverThreshold: _descriptor_8.fromValue(value_0),
+      requestedAgeThresholdYears: _descriptor_12.fromValue(value_0),
+      verifierChallengeHash: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_8.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_8.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_8.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_12.toValue(value_0.requestedAgeThresholdYears).concat(_descriptor_1.toValue(value_0.verifierChallengeHash))))))));
+  }
+}
+
+const _descriptor_13 = new _BirthCredentialPresentationRequest_0();
+
 class _BirthCredentialDisclosures_0 {
   alignment() {
     return _descriptor_8.alignment().concat(_descriptor_1.alignment().concat(_descriptor_8.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_8.alignment().concat(_descriptor_12.alignment()))))));
@@ -186,11 +209,11 @@ class _BirthCredentialDisclosures_0 {
   }
 }
 
-const _descriptor_13 = new _BirthCredentialDisclosures_0();
+const _descriptor_14 = new _BirthCredentialDisclosures_0();
 
 class _Presentation_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_4.alignment().concat(_descriptor_5.alignment().concat(_descriptor_13.alignment())))));
+    return _descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_4.alignment().concat(_descriptor_5.alignment().concat(_descriptor_14.alignment())))));
   }
   fromValue(value_0) {
     return {
@@ -199,17 +222,15 @@ class _Presentation_0 {
       credentialClaimRoot: _descriptor_1.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
       holderBinding: _descriptor_5.fromValue(value_0),
-      disclosed: _descriptor_13.fromValue(value_0)
+      disclosed: _descriptor_14.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_1.toValue(value_0.credentialClaimRoot).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_5.toValue(value_0.holderBinding).concat(_descriptor_13.toValue(value_0.disclosed))))));
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_1.toValue(value_0.credentialClaimRoot).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_5.toValue(value_0.holderBinding).concat(_descriptor_14.toValue(value_0.disclosed))))));
   }
 }
 
-const _descriptor_14 = new _Presentation_0();
-
-const _descriptor_15 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
+const _descriptor_15 = new _Presentation_0();
 
 const _descriptor_16 = __compactRuntime.CompactTypeJubjubPoint;
 
@@ -252,28 +273,7 @@ class _Proof_0 {
 
 const _descriptor_19 = new _Proof_0();
 
-class _BirthCredentialPresentationRequest_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment().concat(_descriptor_12.alignment().concat(_descriptor_1.alignment())))))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_0.fromValue(value_0),
-      schema: _descriptor_2.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      requireSubjectIdCommitmentDisclosure: _descriptor_8.fromValue(value_0),
-      requireBirthCountryDisclosure: _descriptor_8.fromValue(value_0),
-      requireAgeOverThreshold: _descriptor_8.fromValue(value_0),
-      requestedAgeThresholdYears: _descriptor_12.fromValue(value_0),
-      verifierChallengeHash: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_8.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_8.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_8.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_12.toValue(value_0.requestedAgeThresholdYears).concat(_descriptor_1.toValue(value_0.verifierChallengeHash))))))));
-  }
-}
-
-const _descriptor_20 = new _BirthCredentialPresentationRequest_0();
+const _descriptor_20 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
 
 class _ProtocolMessageEnvelope_0 {
   alignment() {
@@ -298,48 +298,6 @@ class _ProtocolMessageEnvelope_0 {
 
 const _descriptor_21 = new _ProtocolMessageEnvelope_0();
 
-const _descriptor_22 = new __compactRuntime.CompactTypeEnum(2, 1);
-
-class _BirthCredentialVerificationSubmissionBody_0 {
-  alignment() {
-    return _descriptor_11.alignment().concat(_descriptor_19.alignment().concat(_descriptor_14.alignment().concat(_descriptor_19.alignment())));
-  }
-  fromValue(value_0) {
-    return {
-      credential: _descriptor_11.fromValue(value_0),
-      credentialProof: _descriptor_19.fromValue(value_0),
-      presentation: _descriptor_14.fromValue(value_0),
-      presentationProof: _descriptor_19.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_11.toValue(value_0.credential).concat(_descriptor_19.toValue(value_0.credentialProof).concat(_descriptor_14.toValue(value_0.presentation).concat(_descriptor_19.toValue(value_0.presentationProof))));
-  }
-}
-
-const _descriptor_23 = new _BirthCredentialVerificationSubmissionBody_0();
-
-class _SubmissionMessage_0 {
-  alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_22.alignment().concat(_descriptor_1.alignment().concat(_descriptor_23.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      envelope: _descriptor_21.fromValue(value_0),
-      schema: _descriptor_2.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      holderBindingProfile: _descriptor_22.fromValue(value_0),
-      challengeHash: _descriptor_1.fromValue(value_0),
-      body: _descriptor_23.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_22.toValue(value_0.holderBindingProfile).concat(_descriptor_1.toValue(value_0.challengeHash).concat(_descriptor_23.toValue(value_0.body))))));
-  }
-}
-
-const _descriptor_24 = new _SubmissionMessage_0();
-
 class _BirthCredentialVerificationResultBody_0 {
   alignment() {
     return _descriptor_1.alignment().concat(_descriptor_12.alignment());
@@ -355,25 +313,67 @@ class _BirthCredentialVerificationResultBody_0 {
   }
 }
 
-const _descriptor_25 = new _BirthCredentialVerificationResultBody_0();
+const _descriptor_22 = new _BirthCredentialVerificationResultBody_0();
 
 class _ResultMessage_0 {
   alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_8.alignment().concat(_descriptor_25.alignment()));
+    return _descriptor_21.alignment().concat(_descriptor_8.alignment().concat(_descriptor_22.alignment()));
   }
   fromValue(value_0) {
     return {
       envelope: _descriptor_21.fromValue(value_0),
       approved: _descriptor_8.fromValue(value_0),
+      body: _descriptor_22.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_8.toValue(value_0.approved).concat(_descriptor_22.toValue(value_0.body)));
+  }
+}
+
+const _descriptor_23 = new _ResultMessage_0();
+
+const _descriptor_24 = new __compactRuntime.CompactTypeEnum(2, 1);
+
+class _BirthCredentialVerificationSubmissionBody_0 {
+  alignment() {
+    return _descriptor_11.alignment().concat(_descriptor_19.alignment().concat(_descriptor_15.alignment().concat(_descriptor_19.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      credential: _descriptor_11.fromValue(value_0),
+      credentialProof: _descriptor_19.fromValue(value_0),
+      presentation: _descriptor_15.fromValue(value_0),
+      presentationProof: _descriptor_19.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_11.toValue(value_0.credential).concat(_descriptor_19.toValue(value_0.credentialProof).concat(_descriptor_15.toValue(value_0.presentation).concat(_descriptor_19.toValue(value_0.presentationProof))));
+  }
+}
+
+const _descriptor_25 = new _BirthCredentialVerificationSubmissionBody_0();
+
+class _SubmissionMessage_0 {
+  alignment() {
+    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_24.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      envelope: _descriptor_21.fromValue(value_0),
+      schema: _descriptor_2.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
+      holderBindingProfile: _descriptor_24.fromValue(value_0),
+      challengeHash: _descriptor_1.fromValue(value_0),
       body: _descriptor_25.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_8.toValue(value_0.approved).concat(_descriptor_25.toValue(value_0.body)));
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_24.toValue(value_0.holderBindingProfile).concat(_descriptor_1.toValue(value_0.challengeHash).concat(_descriptor_25.toValue(value_0.body))))));
   }
 }
 
-const _descriptor_26 = new _ResultMessage_0();
+const _descriptor_26 = new _SubmissionMessage_0();
 
 class _CredentialProtocolFeatures_0 {
   alignment() {
@@ -415,120 +415,25 @@ const _descriptor_28 = new _BirthCredentialVerificationRequestBody_0();
 
 class _RequestMessage_0 {
   alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_22.alignment().concat(_descriptor_27.alignment().concat(_descriptor_1.alignment().concat(_descriptor_28.alignment()))))));
+    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_24.alignment().concat(_descriptor_27.alignment().concat(_descriptor_1.alignment().concat(_descriptor_28.alignment()))))));
   }
   fromValue(value_0) {
     return {
       envelope: _descriptor_21.fromValue(value_0),
       schema: _descriptor_2.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      holderBindingProfile: _descriptor_22.fromValue(value_0),
+      holderBindingProfile: _descriptor_24.fromValue(value_0),
       features: _descriptor_27.fromValue(value_0),
       verifierChallengeHash: _descriptor_1.fromValue(value_0),
       body: _descriptor_28.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_22.toValue(value_0.holderBindingProfile).concat(_descriptor_27.toValue(value_0.features).concat(_descriptor_1.toValue(value_0.verifierChallengeHash).concat(_descriptor_28.toValue(value_0.body)))))));
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_24.toValue(value_0.holderBindingProfile).concat(_descriptor_27.toValue(value_0.features).concat(_descriptor_1.toValue(value_0.verifierChallengeHash).concat(_descriptor_28.toValue(value_0.body)))))));
   }
 }
 
 const _descriptor_29 = new _RequestMessage_0();
-
-class _BirthCredentialPrivateClaims_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_15.alignment().concat(_descriptor_1.alignment())));
-  }
-  fromValue(value_0) {
-    return {
-      subjectId: _descriptor_1.fromValue(value_0),
-      legalNamePadded: _descriptor_1.fromValue(value_0),
-      birthDateDays: _descriptor_15.fromValue(value_0),
-      birthCountryCodePadded: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.subjectId).concat(_descriptor_1.toValue(value_0.legalNamePadded).concat(_descriptor_15.toValue(value_0.birthDateDays).concat(_descriptor_1.toValue(value_0.birthCountryCodePadded))));
-  }
-}
-
-const _descriptor_30 = new _BirthCredentialPrivateClaims_0();
-
-class _BirthCredentialClaimOpenings_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
-  }
-  fromValue(value_0) {
-    return {
-      subjectOpening: _descriptor_1.fromValue(value_0),
-      legalNameOpening: _descriptor_1.fromValue(value_0),
-      birthDateOpening: _descriptor_1.fromValue(value_0),
-      birthCountryCodeOpening: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.subjectOpening).concat(_descriptor_1.toValue(value_0.legalNameOpening).concat(_descriptor_1.toValue(value_0.birthDateOpening).concat(_descriptor_1.toValue(value_0.birthCountryCodeOpening))));
-  }
-}
-
-const _descriptor_31 = new _BirthCredentialClaimOpenings_0();
-
-class _BirthCredentialPrivateParts_0 {
-  alignment() {
-    return _descriptor_30.alignment().concat(_descriptor_31.alignment());
-  }
-  fromValue(value_0) {
-    return {
-      claims: _descriptor_30.fromValue(value_0),
-      openings: _descriptor_31.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_30.toValue(value_0.claims).concat(_descriptor_31.toValue(value_0.openings));
-  }
-}
-
-const _descriptor_32 = new _BirthCredentialPrivateParts_0();
-
-class _BirthCredentialIssuanceResultBody_0 {
-  alignment() {
-    return _descriptor_11.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment().concat(_descriptor_1.alignment().concat(_descriptor_32.alignment()))));
-  }
-  fromValue(value_0) {
-    return {
-      credential: _descriptor_11.fromValue(value_0),
-      credentialProof: _descriptor_19.fromValue(value_0),
-      holderPublicKey: _descriptor_16.fromValue(value_0),
-      issuanceChallengeHash: _descriptor_1.fromValue(value_0),
-      privateParts: _descriptor_32.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_11.toValue(value_0.credential).concat(_descriptor_19.toValue(value_0.credentialProof).concat(_descriptor_16.toValue(value_0.holderPublicKey).concat(_descriptor_1.toValue(value_0.issuanceChallengeHash).concat(_descriptor_32.toValue(value_0.privateParts)))));
-  }
-}
-
-const _descriptor_33 = new _BirthCredentialIssuanceResultBody_0();
-
-class _ResultMessage_1 {
-  alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_22.alignment().concat(_descriptor_33.alignment()))));
-  }
-  fromValue(value_0) {
-    return {
-      envelope: _descriptor_21.fromValue(value_0),
-      schema: _descriptor_2.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      holderBindingProfile: _descriptor_22.fromValue(value_0),
-      body: _descriptor_33.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_22.toValue(value_0.holderBindingProfile).concat(_descriptor_33.toValue(value_0.body)))));
-  }
-}
-
-const _descriptor_34 = new _ResultMessage_1();
 
 class _BirthCredentialIssuanceRequestBody_0 {
   alignment() {
@@ -548,27 +453,122 @@ class _BirthCredentialIssuanceRequestBody_0 {
   }
 }
 
-const _descriptor_35 = new _BirthCredentialIssuanceRequestBody_0();
+const _descriptor_30 = new _BirthCredentialIssuanceRequestBody_0();
 
 class _RequestMessage_1 {
   alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_22.alignment().concat(_descriptor_35.alignment()))));
+    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_24.alignment().concat(_descriptor_30.alignment()))));
   }
   fromValue(value_0) {
     return {
       envelope: _descriptor_21.fromValue(value_0),
       schema: _descriptor_2.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      holderBindingProfile: _descriptor_22.fromValue(value_0),
+      holderBindingProfile: _descriptor_24.fromValue(value_0),
+      body: _descriptor_30.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_24.toValue(value_0.holderBindingProfile).concat(_descriptor_30.toValue(value_0.body)))));
+  }
+}
+
+const _descriptor_31 = new _RequestMessage_1();
+
+class _BirthCredentialPrivateClaims_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_20.alignment().concat(_descriptor_1.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      subjectId: _descriptor_1.fromValue(value_0),
+      legalNamePadded: _descriptor_1.fromValue(value_0),
+      birthDateDays: _descriptor_20.fromValue(value_0),
+      birthCountryCodePadded: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.subjectId).concat(_descriptor_1.toValue(value_0.legalNamePadded).concat(_descriptor_20.toValue(value_0.birthDateDays).concat(_descriptor_1.toValue(value_0.birthCountryCodePadded))));
+  }
+}
+
+const _descriptor_32 = new _BirthCredentialPrivateClaims_0();
+
+class _BirthCredentialClaimOpenings_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      subjectOpening: _descriptor_1.fromValue(value_0),
+      legalNameOpening: _descriptor_1.fromValue(value_0),
+      birthDateOpening: _descriptor_1.fromValue(value_0),
+      birthCountryCodeOpening: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.subjectOpening).concat(_descriptor_1.toValue(value_0.legalNameOpening).concat(_descriptor_1.toValue(value_0.birthDateOpening).concat(_descriptor_1.toValue(value_0.birthCountryCodeOpening))));
+  }
+}
+
+const _descriptor_33 = new _BirthCredentialClaimOpenings_0();
+
+class _BirthCredentialPrivateParts_0 {
+  alignment() {
+    return _descriptor_32.alignment().concat(_descriptor_33.alignment());
+  }
+  fromValue(value_0) {
+    return {
+      claims: _descriptor_32.fromValue(value_0),
+      openings: _descriptor_33.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_32.toValue(value_0.claims).concat(_descriptor_33.toValue(value_0.openings));
+  }
+}
+
+const _descriptor_34 = new _BirthCredentialPrivateParts_0();
+
+class _BirthCredentialIssuanceResultBody_0 {
+  alignment() {
+    return _descriptor_11.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment().concat(_descriptor_1.alignment().concat(_descriptor_34.alignment()))));
+  }
+  fromValue(value_0) {
+    return {
+      credential: _descriptor_11.fromValue(value_0),
+      credentialProof: _descriptor_19.fromValue(value_0),
+      holderPublicKey: _descriptor_16.fromValue(value_0),
+      issuanceChallengeHash: _descriptor_1.fromValue(value_0),
+      privateParts: _descriptor_34.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_11.toValue(value_0.credential).concat(_descriptor_19.toValue(value_0.credentialProof).concat(_descriptor_16.toValue(value_0.holderPublicKey).concat(_descriptor_1.toValue(value_0.issuanceChallengeHash).concat(_descriptor_34.toValue(value_0.privateParts)))));
+  }
+}
+
+const _descriptor_35 = new _BirthCredentialIssuanceResultBody_0();
+
+class _ResultMessage_1 {
+  alignment() {
+    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_24.alignment().concat(_descriptor_35.alignment()))));
+  }
+  fromValue(value_0) {
+    return {
+      envelope: _descriptor_21.fromValue(value_0),
+      schema: _descriptor_2.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
+      holderBindingProfile: _descriptor_24.fromValue(value_0),
       body: _descriptor_35.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_22.toValue(value_0.holderBindingProfile).concat(_descriptor_35.toValue(value_0.body)))));
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_24.toValue(value_0.holderBindingProfile).concat(_descriptor_35.toValue(value_0.body)))));
   }
 }
 
-const _descriptor_36 = new _RequestMessage_1();
+const _descriptor_36 = new _ResultMessage_1();
 
 class _BirthCredentialIssuanceOfferBody_0 {
   alignment() {
@@ -590,20 +590,20 @@ const _descriptor_37 = new _BirthCredentialIssuanceOfferBody_0();
 
 class _OfferMessage_0 {
   alignment() {
-    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_22.alignment().concat(_descriptor_27.alignment().concat(_descriptor_37.alignment())))));
+    return _descriptor_21.alignment().concat(_descriptor_2.alignment().concat(_descriptor_4.alignment().concat(_descriptor_24.alignment().concat(_descriptor_27.alignment().concat(_descriptor_37.alignment())))));
   }
   fromValue(value_0) {
     return {
       envelope: _descriptor_21.fromValue(value_0),
       schema: _descriptor_2.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_4.fromValue(value_0),
-      holderBindingProfile: _descriptor_22.fromValue(value_0),
+      holderBindingProfile: _descriptor_24.fromValue(value_0),
       features: _descriptor_27.fromValue(value_0),
       body: _descriptor_37.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_22.toValue(value_0.holderBindingProfile).concat(_descriptor_27.toValue(value_0.features).concat(_descriptor_37.toValue(value_0.body))))));
+    return _descriptor_21.toValue(value_0.envelope).concat(_descriptor_2.toValue(value_0.schema).concat(_descriptor_4.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_24.toValue(value_0.holderBindingProfile).concat(_descriptor_27.toValue(value_0.features).concat(_descriptor_37.toValue(value_0.body))))));
   }
 }
 
@@ -665,23 +665,6 @@ class _SchemaCapabilities_0 {
 
 const _descriptor_42 = new _SchemaCapabilities_0();
 
-class _SecretHolderBinding_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment());
-  }
-  fromValue(value_0) {
-    return {
-      holderSecretCommitment: _descriptor_1.fromValue(value_0),
-      requestChallengeResponse: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.holderSecretCommitment).concat(_descriptor_1.toValue(value_0.requestChallengeResponse));
-  }
-}
-
-const _descriptor_43 = new _SecretHolderBinding_0();
-
 class _BlindedSecretHolderBinding_0 {
   alignment() {
     return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()));
@@ -698,7 +681,46 @@ class _BlindedSecretHolderBinding_0 {
   }
 }
 
-const _descriptor_44 = new _BlindedSecretHolderBinding_0();
+const _descriptor_43 = new _BlindedSecretHolderBinding_0();
+
+class _SecretHolderBinding_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_1.alignment());
+  }
+  fromValue(value_0) {
+    return {
+      holderSecretCommitment: _descriptor_1.fromValue(value_0),
+      requestChallengeResponse: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.holderSecretCommitment).concat(_descriptor_1.toValue(value_0.requestChallengeResponse));
+  }
+}
+
+const _descriptor_44 = new _SecretHolderBinding_0();
+
+class _VerifierPseudonymScopeV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      verifierIdentityDigest: _descriptor_1.fromValue(value_0),
+      executionContextDigest: _descriptor_1.fromValue(value_0),
+      audienceDigest: _descriptor_1.fromValue(value_0),
+      originDigest: _descriptor_1.fromValue(value_0),
+      consentDigest: _descriptor_1.fromValue(value_0),
+      requestDigest: _descriptor_1.fromValue(value_0),
+      challengeDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.verifierIdentityDigest).concat(_descriptor_1.toValue(value_0.executionContextDigest).concat(_descriptor_1.toValue(value_0.audienceDigest).concat(_descriptor_1.toValue(value_0.originDigest).concat(_descriptor_1.toValue(value_0.consentDigest).concat(_descriptor_1.toValue(value_0.requestDigest).concat(_descriptor_1.toValue(value_0.challengeDigest)))))));
+  }
+}
+
+const _descriptor_45 = new _VerifierPseudonymScopeV1_0();
 
 class _OffchainMidnightHolderBinding_0 {
   alignment() {
@@ -716,7 +738,7 @@ class _OffchainMidnightHolderBinding_0 {
   }
 }
 
-const _descriptor_45 = new _OffchainMidnightHolderBinding_0();
+const _descriptor_46 = new _OffchainMidnightHolderBinding_0();
 
 class _JubjubHolderBinding_0 {
   alignment() {
@@ -732,7 +754,7 @@ class _JubjubHolderBinding_0 {
   }
 }
 
-const _descriptor_46 = new _JubjubHolderBinding_0();
+const _descriptor_47 = new _JubjubHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
@@ -749,31 +771,33 @@ class _SchemaFamilyResolutionHint_0 {
   }
 }
 
-const _descriptor_47 = new _SchemaFamilyResolutionHint_0();
+const _descriptor_48 = new _SchemaFamilyResolutionHint_0();
 
 class _SchemaDescriptor_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_42.alignment().concat(_descriptor_47.alignment()));
+    return _descriptor_2.alignment().concat(_descriptor_42.alignment().concat(_descriptor_48.alignment()));
   }
   fromValue(value_0) {
     return {
       schema: _descriptor_2.fromValue(value_0),
       capabilities: _descriptor_42.fromValue(value_0),
-      familyResolutionHint: _descriptor_47.fromValue(value_0)
+      familyResolutionHint: _descriptor_48.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.schema).concat(_descriptor_42.toValue(value_0.capabilities).concat(_descriptor_47.toValue(value_0.familyResolutionHint)));
+    return _descriptor_2.toValue(value_0.schema).concat(_descriptor_42.toValue(value_0.capabilities).concat(_descriptor_48.toValue(value_0.familyResolutionHint)));
   }
 }
 
-const _descriptor_48 = new _SchemaDescriptor_0();
+const _descriptor_49 = new _SchemaDescriptor_0();
 
-const _descriptor_49 = new __compactRuntime.CompactTypeVector(5, _descriptor_1);
-
-const _descriptor_50 = new __compactRuntime.CompactTypeVector(3, _descriptor_1);
+const _descriptor_50 = new __compactRuntime.CompactTypeVector(5, _descriptor_1);
 
 const _descriptor_51 = new __compactRuntime.CompactTypeVector(4, _descriptor_1);
+
+const _descriptor_52 = new __compactRuntime.CompactTypeVector(3, _descriptor_1);
+
+const _descriptor_53 = new __compactRuntime.CompactTypeVector(2, _descriptor_1);
 
 class _Either_0 {
   alignment() {
@@ -791,9 +815,9 @@ class _Either_0 {
   }
 }
 
-const _descriptor_52 = new _Either_0();
+const _descriptor_54 = new _Either_0();
 
-const _descriptor_53 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+const _descriptor_55 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 export class Contract {
   witnesses;
@@ -893,6 +917,18 @@ export class Contract {
       },
       assertVerifierScopedPseudonym(context, ...args_1) {
         return { result: pureCircuits.assertVerifierScopedPseudonym(...args_1), context };
+      },
+      verifierIdentityDigestV1(context, ...args_1) {
+        return { result: pureCircuits.verifierIdentityDigestV1(...args_1), context };
+      },
+      verifierPseudonymScopeDigestV1(context, ...args_1) {
+        return { result: pureCircuits.verifierPseudonymScopeDigestV1(...args_1), context };
+      },
+      requestScopedVerifierPseudonymV1(context, ...args_1) {
+        return { result: pureCircuits.requestScopedVerifierPseudonymV1(...args_1), context };
+      },
+      assertRequestScopedVerifierPseudonymV1(context, ...args_1) {
+        return { result: pureCircuits.assertRequestScopedVerifierPseudonymV1(...args_1), context };
       },
       blindedSecretHolderCommitment(context, ...args_1) {
         return { result: pureCircuits.blindedSecretHolderCommitment(...args_1), context };
@@ -1080,35 +1116,43 @@ export class Contract {
     return result_0;
   }
   _persistentHash_1(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_50, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_53, value_0);
     return result_0;
   }
   _persistentHash_2(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_51, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_45, value_0);
     return result_0;
   }
   _persistentHash_3(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_41, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_52, value_0);
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_49, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_51, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_14, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_41, value_0);
     return result_0;
   }
   _persistentHash_6(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_50, value_0);
     return result_0;
   }
   _persistentHash_7(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_15, value_0);
+    return result_0;
+  }
+  _persistentHash_8(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_13, value_0);
+    return result_0;
+  }
+  _persistentHash_9(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_15,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_20,
                                                        value_0,
                                                        rand_0);
     return result_0;
@@ -1223,14 +1267,14 @@ export class Contract {
     return new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 112, 114, 101, 115, 101, 110, 116, 97, 116, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0]);
   }
   _proofPayloadRootForContext_0(bodyRoot_0, contextTag_0, proof_0) {
-    return this._persistentHash_4([bodyRoot_0,
+    return this._persistentHash_6([bodyRoot_0,
                                    contextTag_0,
                                    this._persistentHash_0(proof_0.signerVerificationMethodRef),
                                    this._upgradeFromTransient_0(this._transientHash_1(proof_0.createdAt)),
                                    proof_0.challengeHash]);
   }
   _proofChallengeForContext_0(bodyRoot_0, contextTag_0, proof_0) {
-    return this._degradeToTransient_0(this._persistentHash_1([this._proofPayloadRootForContext_0(bodyRoot_0,
+    return this._degradeToTransient_0(this._persistentHash_3([this._proofPayloadRootForContext_0(bodyRoot_0,
                                                                                                  contextTag_0,
                                                                                                  proof_0),
                                                               this._upgradeFromTransient_0(this._transientHash_0(proof_0.publicKey)),
@@ -1278,7 +1322,7 @@ export class Contract {
     return [];
   }
   _credentialBodyRoot_0(credential_0) {
-    return this._persistentHash_7(credential_0);
+    return this._persistentHash_9(credential_0);
   }
   _assertValidCredentialEnvelope_0(credential_0, expectedClaimRoot_0) {
     __compactRuntime.assert(this._equal_5(credential_0.version, 1n),
@@ -1312,7 +1356,7 @@ export class Contract {
     return [];
   }
   _presentationBodyRoot_0(presentation_0) {
-    return this._persistentHash_5(presentation_0);
+    return this._persistentHash_7(presentation_0);
   }
   _assertValidPresentationEnvelope_0(presentation_0) {
     __compactRuntime.assert(this._equal_9(presentation_0.version, 1n),
@@ -1440,12 +1484,12 @@ export class Contract {
   _secretHolderBindingChallengeResponse_0(holderSecret_0,
                                           verifierChallengeHash_0)
   {
-    return this._persistentHash_1([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_3([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
                                    holderSecret_0,
                                    verifierChallengeHash_0]);
   }
   _verifierScopedPseudonym_0(holderSecret_0, verifierDomainHash_0) {
-    return this._persistentHash_1([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
+    return this._persistentHash_3([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
                                    holderSecret_0,
                                    verifierDomainHash_0]);
   }
@@ -1459,23 +1503,49 @@ export class Contract {
                             'Verifier-scoped pseudonym does not match the holder secret and verifier domain');
     return [];
   }
+  _verifierIdentityDigestV1_0(verificationMethodRef_0) {
+    __compactRuntime.assert(!this._equal_24(verificationMethodRef_0.didContractAddress.bytes,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+                            &&
+                            !this._equal_25(verificationMethodRef_0.methodId,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Verifier identity method reference must be set');
+    return this._persistentHash_0(verificationMethodRef_0);
+  }
+  _verifierPseudonymScopeDigestV1_0(scope_0) {
+    return this._persistentHash_1([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 112, 115, 101, 117, 100, 111, 110, 121, 109, 45, 115, 99, 111, 112, 101, 58, 118, 49, 0, 0]),
+                                   this._persistentHash_2(scope_0)]);
+  }
+  _requestScopedVerifierPseudonymV1_0(holderSecret_0, scope_0) {
+    return this._persistentHash_3([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 114, 101, 113, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 58, 118, 49, 0, 0, 0, 0]),
+                                   holderSecret_0,
+                                   this._verifierPseudonymScopeDigestV1_0(scope_0)]);
+  }
+  _assertRequestScopedVerifierPseudonymV1_0(pseudonym_0, holderSecret_0, scope_0)
+  {
+    __compactRuntime.assert(this._equal_26(pseudonym_0,
+                                           this._requestScopedVerifierPseudonymV1_0(holderSecret_0,
+                                                                                    scope_0)),
+                            'Request-scoped verifier pseudonym context mismatch');
+    return [];
+  }
   _blindedSecretHolderCommitment_0(holderSecretCommitment_0,
                                    issuerNonce_0,
                                    blindingFactor_0)
   {
-    return this._persistentHash_2([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_4([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
                                    holderSecretCommitment_0,
                                    issuerNonce_0,
                                    blindingFactor_0]);
   }
   _assertValidSecretHolderCredentialBinding_0(binding_0) {
-    __compactRuntime.assert(this._equal_24(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(this._equal_27(binding_0.requestChallengeResponse,
                                            this._noSecretHolderChallengeResponse_0()),
                             'Credential secret holder binding must not embed a request challenge response');
     return [];
   }
   _assertValidSecretHolderPresentationBinding_0(binding_0) {
-    __compactRuntime.assert(!this._equal_25(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(!this._equal_28(binding_0.requestChallengeResponse,
                                             this._noSecretHolderChallengeResponse_0()),
                             'Presentation secret holder binding must include a request challenge response');
     return [];
@@ -1483,19 +1553,19 @@ export class Contract {
   _assertMatchingSecretHolderBindings_0(credentialBinding_0,
                                         presentationBinding_0)
   {
-    __compactRuntime.assert(this._equal_26(credentialBinding_0.holderSecretCommitment,
+    __compactRuntime.assert(this._equal_29(credentialBinding_0.holderSecretCommitment,
                                            presentationBinding_0.holderSecretCommitment),
                             'Presentation holder secret commitment does not match the credential holder binding');
     return [];
   }
   _assertValidBlindedSecretHolderCredentialBinding_0(binding_0) {
-    __compactRuntime.assert(this._equal_27(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(this._equal_30(binding_0.requestChallengeResponse,
                                            this._noSecretHolderChallengeResponse_0()),
                             'Credential blinded holder binding must not embed a request challenge response');
     return [];
   }
   _assertValidBlindedSecretHolderPresentationBinding_0(binding_0) {
-    __compactRuntime.assert(!this._equal_28(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(!this._equal_31(binding_0.requestChallengeResponse,
                                             this._noSecretHolderChallengeResponse_0()),
                             'Presentation blinded holder binding must include a request challenge response');
     return [];
@@ -1503,10 +1573,10 @@ export class Contract {
   _assertMatchingBlindedSecretHolderBindings_0(credentialBinding_0,
                                                presentationBinding_0)
   {
-    __compactRuntime.assert(this._equal_29(credentialBinding_0.blindedHolderSecretCommitment,
+    __compactRuntime.assert(this._equal_32(credentialBinding_0.blindedHolderSecretCommitment,
                                            presentationBinding_0.blindedHolderSecretCommitment),
                             'Presentation blinded holder commitment does not match the credential holder binding');
-    __compactRuntime.assert(this._equal_30(credentialBinding_0.issuerNonce,
+    __compactRuntime.assert(this._equal_33(credentialBinding_0.issuerNonce,
                                            presentationBinding_0.issuerNonce),
                             'Presentation issuer nonce does not match the credential holder binding');
     return [];
@@ -1516,11 +1586,11 @@ export class Contract {
                                       holderSecret_0,
                                       opening_0)
   {
-    __compactRuntime.assert(this._equal_31(this._secretHolderBindingCommitment_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_34(this._secretHolderBindingCommitment_0(holderSecret_0,
                                                                                  opening_0),
                                            binding_0.holderSecretCommitment),
                             'Holder secret witness does not match the holder-binding commitment');
-    __compactRuntime.assert(this._equal_32(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_35(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
                                                                                         verifierChallengeHash_0),
                                            binding_0.requestChallengeResponse),
                             'Holder secret challenge response does not match the verifier challenge');
@@ -1534,12 +1604,12 @@ export class Contract {
   {
     const holderCommitment_0 = this._secretHolderBindingCommitment_0(holderSecret_0,
                                                                      opening_0);
-    __compactRuntime.assert(this._equal_33(this._blindedSecretHolderCommitment_0(holderCommitment_0,
+    __compactRuntime.assert(this._equal_36(this._blindedSecretHolderCommitment_0(holderCommitment_0,
                                                                                  binding_0.issuerNonce,
                                                                                  blindingFactor_0),
                                            binding_0.blindedHolderSecretCommitment),
                             'Blinded holder commitment does not match the hidden holder secret witness');
-    __compactRuntime.assert(this._equal_34(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_37(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
                                                                                         verifierChallengeHash_0),
                                            binding_0.requestChallengeResponse),
                             'Blinded holder challenge response does not match the verifier challenge');
@@ -1561,7 +1631,7 @@ export class Contract {
     return new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 112, 114, 111, 116, 111, 99, 111, 108, 58, 110, 111, 110, 101, 0, 0, 0, 0, 0, 0, 0]);
   }
   _assertValidVerificationMethodRef_0(verificationMethodRef_0) {
-    __compactRuntime.assert(!this._equal_35(verificationMethodRef_0.methodId,
+    __compactRuntime.assert(!this._equal_38(verificationMethodRef_0.methodId,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Verification method reference must be set');
     return [];
@@ -1569,34 +1639,34 @@ export class Contract {
   _assertMatchingSchemaRefs_0(expected_0, actual_0) {
     this._assertValidSchemaRef_0(expected_0);
     this._assertValidSchemaRef_0(actual_0);
-    __compactRuntime.assert(this._equal_36(expected_0.packageId,
+    __compactRuntime.assert(this._equal_39(expected_0.packageId,
                                            actual_0.packageId)
                             &&
-                            this._equal_37(expected_0.schemaId,
+                            this._equal_40(expected_0.schemaId,
                                            actual_0.schemaId)
                             &&
-                            this._equal_38(expected_0.majorVersion,
+                            this._equal_41(expected_0.majorVersion,
                                            actual_0.majorVersion)
                             &&
-                            this._equal_39(expected_0.minorVersion,
+                            this._equal_42(expected_0.minorVersion,
                                            actual_0.minorVersion),
                             'Schema reference mismatch');
     return [];
   }
   _assertValidProtocolMessageEnvelope_0(envelope_0) {
     const noResponse_0 = this._noProtocolResponseReference_0();
-    __compactRuntime.assert(this._equal_40(envelope_0.version, 1n),
+    __compactRuntime.assert(this._equal_43(envelope_0.version, 1n),
                             'Protocol message version mismatch');
-    __compactRuntime.assert(!this._equal_41(envelope_0.messageId, noResponse_0),
+    __compactRuntime.assert(!this._equal_44(envelope_0.messageId, noResponse_0),
                             'Protocol message id must be set');
-    __compactRuntime.assert(!this._equal_42(envelope_0.threadId, noResponse_0),
+    __compactRuntime.assert(!this._equal_45(envelope_0.threadId, noResponse_0),
                             'Protocol thread id must be set');
     if (envelope_0.initialMessage) {
-      __compactRuntime.assert(this._equal_43(envelope_0.respondsToMessageId,
+      __compactRuntime.assert(this._equal_46(envelope_0.respondsToMessageId,
                                              noResponse_0),
                               'Initial protocol message must not reference a previous message');
     } else {
-      __compactRuntime.assert(!this._equal_44(envelope_0.respondsToMessageId,
+      __compactRuntime.assert(!this._equal_47(envelope_0.respondsToMessageId,
                                               noResponse_0),
                               'Protocol response message must reference a previous message');
     }
@@ -1613,10 +1683,10 @@ export class Contract {
     this._assertValidProtocolMessageEnvelope_0(responseEnvelope_0);
     __compactRuntime.assert(!responseEnvelope_0.initialMessage,
                             'Protocol response must not be initial');
-    __compactRuntime.assert(this._equal_45(responseEnvelope_0.threadId,
+    __compactRuntime.assert(this._equal_48(responseEnvelope_0.threadId,
                                            requestEnvelope_0.threadId),
                             'Protocol response thread id does not match the request thread id');
-    __compactRuntime.assert(this._equal_46(responseEnvelope_0.respondsToMessageId,
+    __compactRuntime.assert(this._equal_49(responseEnvelope_0.respondsToMessageId,
                                            requestEnvelope_0.messageId),
                             'Protocol response does not reference the request message id');
     let t_0;
@@ -1644,10 +1714,10 @@ export class Contract {
     this._assertValidRequestMessage_0(request_0);
     this._assertProtocolResponseEnvelope_0(offer_0.envelope, request_0.envelope);
     this._assertMatchingSchemaRefs_0(offer_0.schema, request_0.schema);
-    __compactRuntime.assert(this._equal_47(offer_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_50(offer_0.issuerVerificationMethodRef.didContractAddress,
                                            request_0.issuerVerificationMethodRef.didContractAddress)
                             &&
-                            this._equal_48(offer_0.issuerVerificationMethodRef.methodId,
+                            this._equal_51(offer_0.issuerVerificationMethodRef.methodId,
                                            request_0.issuerVerificationMethodRef.methodId),
                             'Issuance request issuer verification method does not match the offer');
     __compactRuntime.assert(offer_0.holderBindingProfile
@@ -1668,10 +1738,10 @@ export class Contract {
     this._assertValidResultMessage_0(result_0);
     this._assertProtocolResponseEnvelope_0(request_0.envelope, result_0.envelope);
     this._assertMatchingSchemaRefs_0(request_0.schema, result_0.schema);
-    __compactRuntime.assert(this._equal_49(request_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_52(request_0.issuerVerificationMethodRef.didContractAddress,
                                            result_0.issuerVerificationMethodRef.didContractAddress)
                             &&
-                            this._equal_50(request_0.issuerVerificationMethodRef.methodId,
+                            this._equal_53(request_0.issuerVerificationMethodRef.methodId,
                                            result_0.issuerVerificationMethodRef.methodId),
                             'Issuance result issuer verification method does not match the request');
     __compactRuntime.assert(request_0.holderBindingProfile
@@ -1700,17 +1770,17 @@ export class Contract {
     this._assertProtocolResponseEnvelope_0(request_0.envelope,
                                            submission_0.envelope);
     this._assertMatchingSchemaRefs_0(request_0.schema, submission_0.schema);
-    __compactRuntime.assert(this._equal_51(request_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_54(request_0.issuerVerificationMethodRef.didContractAddress,
                                            submission_0.issuerVerificationMethodRef.didContractAddress)
                             &&
-                            this._equal_52(request_0.issuerVerificationMethodRef.methodId,
+                            this._equal_55(request_0.issuerVerificationMethodRef.methodId,
                                            submission_0.issuerVerificationMethodRef.methodId),
                             'Presentation submission issuer verification method does not match the request');
     __compactRuntime.assert(request_0.holderBindingProfile
                             ===
                             submission_0.holderBindingProfile,
                             'Presentation submission holder binding profile does not match the request');
-    __compactRuntime.assert(this._equal_53(request_0.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_56(request_0.verifierChallengeHash,
                                            submission_0.challengeHash),
                             'Presentation submission challenge does not match the request challenge');
     return [];
@@ -1729,7 +1799,7 @@ export class Contract {
     return [];
   }
   _assertValidStatusRegistryRef_0(registryRef_0) {
-    __compactRuntime.assert(!this._equal_54(registryRef_0.registryId,
+    __compactRuntime.assert(!this._equal_57(registryRef_0.registryId,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status registry id must be set');
     this._assertValidVerificationMethodRef_0(registryRef_0.authorityVerificationMethodRef);
@@ -1740,17 +1810,17 @@ export class Contract {
     __compactRuntime.assert(binding_0.statusType === 0,
                             'Registry-bound status type must be revocationRegistry');
     this._assertValidStatusRegistryRef_0(binding_0.registryRef);
-    __compactRuntime.assert(!this._equal_55(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(!this._equal_58(binding_0.statusHandleCommitment,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status handle commitment must be set');
     return [];
   }
   _registryBoundStatusBindingRoot_0(binding_0) {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
-    return this._persistentHash_3(binding_0);
+    return this._persistentHash_5(binding_0);
   }
   _birthCredentialClaimRoot_0(commitments_0) {
-    return this._persistentHash_4([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 105, 114, 116, 104, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_6([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 105, 114, 116, 104, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                    commitments_0.subjectIdCommitment,
                                    commitments_0.legalNameCommitment,
                                    commitments_0.birthDateCommitment,
@@ -1771,19 +1841,19 @@ export class Contract {
   _assertBirthCredentialPrivatePartsMatchCommitments_0(commitments_0,
                                                        privateParts_0)
   {
-    __compactRuntime.assert(this._equal_56(this._subjectIdCommitment_0(privateParts_0.claims.subjectId,
+    __compactRuntime.assert(this._equal_59(this._subjectIdCommitment_0(privateParts_0.claims.subjectId,
                                                                        privateParts_0.openings.subjectOpening),
                                            commitments_0.subjectIdCommitment),
                             'Delivered subject ID opening does not match the credential commitment');
-    __compactRuntime.assert(this._equal_57(this._legalNameCommitment_0(privateParts_0.claims.legalNamePadded,
+    __compactRuntime.assert(this._equal_60(this._legalNameCommitment_0(privateParts_0.claims.legalNamePadded,
                                                                        privateParts_0.openings.legalNameOpening),
                                            commitments_0.legalNameCommitment),
                             'Delivered legal-name opening does not match the credential commitment');
-    __compactRuntime.assert(this._equal_58(this._birthDateCommitment_0(privateParts_0.claims.birthDateDays,
+    __compactRuntime.assert(this._equal_61(this._birthDateCommitment_0(privateParts_0.claims.birthDateDays,
                                                                        privateParts_0.openings.birthDateOpening),
                                            commitments_0.birthDateCommitment),
                             'Delivered birth-date opening does not match the credential commitment');
-    __compactRuntime.assert(this._equal_59(this._birthCountryCodeCommitment_0(privateParts_0.claims.birthCountryCodePadded,
+    __compactRuntime.assert(this._equal_62(this._birthCountryCodeCommitment_0(privateParts_0.claims.birthCountryCodePadded,
                                                                               privateParts_0.openings.birthCountryCodeOpening),
                                            commitments_0.birthCountryCodeCommitment),
                             'Delivered birth-country opening does not match the credential commitment');
@@ -1796,21 +1866,21 @@ export class Contract {
     return this._presentationBodyRoot_0(presentation_0);
   }
   _birthCredentialPresentationRequestBodyRoot_0(request_0) {
-    return this._persistentHash_6(request_0);
+    return this._persistentHash_8(request_0);
   }
   _assertValidBirthSchemaRef_0(schema_0) {
-    __compactRuntime.assert(this._equal_60(schema_0.packageId,
+    __compactRuntime.assert(this._equal_63(schema_0.packageId,
                                            new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 45, 100, 105, 100, 58, 118, 99, 58, 98, 105, 114, 116, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Unexpected schema package identifier');
-    __compactRuntime.assert(this._equal_61(schema_0.schemaId,
+    __compactRuntime.assert(this._equal_64(schema_0.schemaId,
                                            new Uint8Array([98, 105, 114, 116, 104, 45, 99, 114, 101, 100, 101, 110, 116, 105, 97, 108, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Unexpected schema identifier');
-    __compactRuntime.assert(this._equal_62(schema_0.majorVersion, 1n),
+    __compactRuntime.assert(this._equal_65(schema_0.majorVersion, 1n),
                             'Birth credential major version mismatch');
     return [];
   }
   _assertValidBirthCredentialPresentationRequest_0(request_0) {
-    __compactRuntime.assert(this._equal_63(request_0.version, 1n),
+    __compactRuntime.assert(this._equal_66(request_0.version, 1n),
                             'Presentation request version mismatch');
     this._assertValidBirthSchemaRef_0(request_0.schema);
     this._assertValidVerificationMethodRef_0(request_0.issuerVerificationMethodRef);
@@ -1820,7 +1890,7 @@ export class Contract {
                                t_0 > 0n),
                               'Requested age threshold must be positive');
     } else {
-      __compactRuntime.assert(this._equal_64(request_0.requestedAgeThresholdYears,
+      __compactRuntime.assert(this._equal_67(request_0.requestedAgeThresholdYears,
                                              0n),
                               'Requested age threshold must be zero when disabled');
     }
@@ -1850,7 +1920,7 @@ export class Contract {
                                t_0 > 0n),
                               'Birth credential issuance offer default expiration must be positive when supported');
     } else {
-      __compactRuntime.assert(this._equal_65(offer_0.body.defaultExpirationDays,
+      __compactRuntime.assert(this._equal_68(offer_0.body.defaultExpirationDays,
                                              0n),
                               'Birth credential issuance offer default expiration must be zero when expiration is disabled');
     }
@@ -1862,7 +1932,7 @@ export class Contract {
     __compactRuntime.assert(request_0.holderBindingProfile === 0,
                             'Birth credential issuance request must use explicit DID holder binding');
     this._assertValidExplicitHolderBinding_0(request_0.body.holderBinding);
-    __compactRuntime.assert(!this._equal_66(request_0.body.holderChallengeHash,
+    __compactRuntime.assert(!this._equal_69(request_0.body.holderChallengeHash,
                                             this._noProtocolResponseReference_0()),
                             'Birth credential issuance request holder challenge must be set');
     if (request_0.body.requestExpiration) {
@@ -1871,7 +1941,7 @@ export class Contract {
                                t_0 > 0n),
                               'Birth credential issuance request expiration days must be positive when requested');
     } else {
-      __compactRuntime.assert(this._equal_67(request_0.body.requestedExpirationDays,
+      __compactRuntime.assert(this._equal_70(request_0.body.requestedExpirationDays,
                                              0n),
                               'Birth credential issuance request expiration days must be zero when disabled');
     }
@@ -1896,7 +1966,7 @@ export class Contract {
                                        result_0.body.credentialProof);
     this._assertBirthCredentialPrivatePartsMatchCommitments_0(result_0.body.credential.claimCommitments,
                                                               result_0.body.privateParts);
-    __compactRuntime.assert(this._equal_68(result_0.body.credentialProof.challengeHash,
+    __compactRuntime.assert(this._equal_71(result_0.body.credentialProof.challengeHash,
                                            result_0.body.issuanceChallengeHash),
                             'Birth credential issuance result challenge must match the issuer proof challenge');
     return [];
@@ -1905,7 +1975,7 @@ export class Contract {
     this._assertValidBirthCredentialIssuanceRequest_0(request_0);
     this._assertValidBirthCredentialIssuanceResult_0(result_0);
     this._assertRequestResultAlignment_0(request_0, result_0);
-    __compactRuntime.assert(this._equal_69(request_0.body.holderChallengeHash,
+    __compactRuntime.assert(this._equal_72(request_0.body.holderChallengeHash,
                                            result_0.body.issuanceChallengeHash),
                             'Birth credential issuance result challenge must match the request challenge');
     this._assertMatchingExplicitHolderBindings_0(request_0.body.holderBinding,
@@ -1937,7 +2007,7 @@ export class Contract {
                                                    submission_0.body.credentialProof,
                                                    submission_0.body.presentation,
                                                    submission_0.body.presentationProof);
-    __compactRuntime.assert(this._equal_70(submission_0.body.presentationProof.challengeHash,
+    __compactRuntime.assert(this._equal_73(submission_0.body.presentationProof.challengeHash,
                                            submission_0.challengeHash),
                             'Birth credential verification submission challenge must match the presentation proof challenge');
     return [];
@@ -1957,7 +2027,7 @@ export class Contract {
   _assertValidBirthCredentialVerificationResultMessage_0(result_0) {
     this._assertValidResultMessage_1(result_0);
     if (result_0.approved) {
-      __compactRuntime.assert(!this._equal_71(result_0.body.credentialRoot,
+      __compactRuntime.assert(!this._equal_74(result_0.body.credentialRoot,
                                               this._noProtocolResponseReference_0()),
                               'Birth credential verification result must include a credential root when approved');
     }
@@ -1970,7 +2040,7 @@ export class Contract {
     this._assertValidBirthCredentialVerificationResultMessage_0(result_0);
     this._assertSubmissionResultAlignment_0(submission_0, result_0);
     if (result_0.approved) {
-      __compactRuntime.assert(this._equal_72(result_0.body.credentialRoot,
+      __compactRuntime.assert(this._equal_75(result_0.body.credentialRoot,
                                              this._birthCredentialBodyRoot_0(submission_0.body.credential)),
                               'Birth credential verification result credential root does not match the submission');
     }
@@ -1998,12 +2068,12 @@ export class Contract {
     this._assertMatchingExplicitHolderBindings_0(credential_0.holderBinding,
                                                  presentation_0.holderBinding);
     if (presentation_0.disclosed.revealSubjectIdCommitment) {
-      __compactRuntime.assert(this._equal_73(presentation_0.disclosed.subjectIdCommitment,
+      __compactRuntime.assert(this._equal_76(presentation_0.disclosed.subjectIdCommitment,
                                              credential_0.claimCommitments.subjectIdCommitment),
                               'Presentation subject commitment does not match the credential');
     }
     if (presentation_0.disclosed.revealBirthCountryCode) {
-      __compactRuntime.assert(this._equal_74(this._birthCountryCodeCommitment_0(presentation_0.disclosed.birthCountryCodePadded,
+      __compactRuntime.assert(this._equal_77(this._birthCountryCodeCommitment_0(presentation_0.disclosed.birthCountryCodePadded,
                                                                                 presentation_0.disclosed.birthCountryCodeOpening),
                                              credential_0.claimCommitments.birthCountryCodeCommitment),
                               'Presentation birth-country disclosure does not match the credential');
@@ -2029,13 +2099,13 @@ export class Contract {
     this._assertValidBirthSchemaRef_0(presentation_0.schema);
     this._assertMatchingSchemaRefs_0(request_0.schema, credential_0.schema);
     this._assertMatchingSchemaRefs_0(request_0.schema, presentation_0.schema);
-    __compactRuntime.assert(this._equal_75(request_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_78(request_0.issuerVerificationMethodRef.didContractAddress,
                                            credential_0.issuerVerificationMethodRef.didContractAddress),
                             'Presentation request issuer contract does not match the credential issuer');
-    __compactRuntime.assert(this._equal_76(request_0.issuerVerificationMethodRef.methodId,
+    __compactRuntime.assert(this._equal_79(request_0.issuerVerificationMethodRef.methodId,
                                            credential_0.issuerVerificationMethodRef.methodId),
                             'Presentation request issuer method reference does not match the credential issuer');
-    __compactRuntime.assert(this._equal_77(presentationProof_0.challengeHash,
+    __compactRuntime.assert(this._equal_80(presentationProof_0.challengeHash,
                                            request_0.verifierChallengeHash),
                             'Presentation proof challenge does not match the request challenge');
     if (request_0.requireSubjectIdCommitmentDisclosure) {
@@ -2049,7 +2119,7 @@ export class Contract {
     if (request_0.requireAgeOverThreshold) {
       __compactRuntime.assert(presentation_0.disclosed.proveAgeOverThreshold,
                               'Presentation request requires the age-over-threshold predicate');
-      __compactRuntime.assert(this._equal_78(presentation_0.disclosed.ageThresholdYears,
+      __compactRuntime.assert(this._equal_81(presentation_0.disclosed.ageThresholdYears,
                                              request_0.requestedAgeThresholdYears),
                               'Presentation age threshold does not match the request');
     }
@@ -2063,7 +2133,7 @@ export class Contract {
   {
     __compactRuntime.assert(presentation_0.disclosed.proveAgeOverThreshold,
                             'Presentation must request the age-over-threshold predicate');
-    __compactRuntime.assert(this._equal_79(this._birthDateCommitment_0(birthDateDays_0,
+    __compactRuntime.assert(this._equal_82(this._birthDateCommitment_0(birthDateDays_0,
                                                                        birthDateOpening_0),
                                            credential_0.claimCommitments.birthDateCommitment),
                             'Birth-date witness does not match credential commitment');
@@ -2250,27 +2320,27 @@ export class Contract {
     return true;
   }
   _equal_38(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_39(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_40(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_41(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_42(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_43(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_44(x0, y0) {
@@ -2286,11 +2356,7 @@ export class Contract {
     return true;
   }
   _equal_47(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_48(x0, y0) {
@@ -2298,18 +2364,10 @@ export class Contract {
     return true;
   }
   _equal_49(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_50(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
-    return true;
-  }
-  _equal_51(x0, y0) {
     {
       let x1 = x0.bytes;
       let y1 = y0.bytes;
@@ -2317,8 +2375,16 @@ export class Contract {
     }
     return true;
   }
-  _equal_52(x0, y0) {
+  _equal_51(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_52(x0, y0) {
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
     return true;
   }
   _equal_53(x0, y0) {
@@ -2326,7 +2392,11 @@ export class Contract {
     return true;
   }
   _equal_54(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
     return true;
   }
   _equal_55(x0, y0) {
@@ -2358,15 +2428,15 @@ export class Contract {
     return true;
   }
   _equal_62(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_63(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_64(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_65(x0, y0) {
@@ -2374,7 +2444,7 @@ export class Contract {
     return true;
   }
   _equal_66(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_67(x0, y0) {
@@ -2382,7 +2452,7 @@ export class Contract {
     return true;
   }
   _equal_68(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_69(x0, y0) {
@@ -2390,7 +2460,7 @@ export class Contract {
     return true;
   }
   _equal_70(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_71(x0, y0) {
@@ -2410,11 +2480,7 @@ export class Contract {
     return true;
   }
   _equal_75(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_76(x0, y0) {
@@ -2426,10 +2492,26 @@ export class Contract {
     return true;
   }
   _equal_78(x0, y0) {
-    if (x0 !== y0) { return false; }
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
     return true;
   }
   _equal_79(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_80(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_81(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_82(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -2949,14 +3031,14 @@ export const pureCircuits = {
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('verifierScopedPseudonym',
                                  'argument 1',
-                                 'holder-bindings.compact line 175 char 1',
+                                 'holder-bindings.compact line 177 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(verifierDomainHash_0.buffer instanceof ArrayBuffer && verifierDomainHash_0.BYTES_PER_ELEMENT === 1 && verifierDomainHash_0.length === 32)) {
       __compactRuntime.typeError('verifierScopedPseudonym',
                                  'argument 2',
-                                 'holder-bindings.compact line 175 char 1',
+                                 'holder-bindings.compact line 177 char 1',
                                  'Bytes<32>',
                                  verifierDomainHash_0)
     }
@@ -2973,27 +3055,110 @@ export const pureCircuits = {
     if (!(pseudonym_0.buffer instanceof ArrayBuffer && pseudonym_0.BYTES_PER_ELEMENT === 1 && pseudonym_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 1',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  pseudonym_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 2',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(verifierDomainHash_0.buffer instanceof ArrayBuffer && verifierDomainHash_0.BYTES_PER_ELEMENT === 1 && verifierDomainHash_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 3',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  verifierDomainHash_0)
     }
     return _dummyContract._assertVerifierScopedPseudonym_0(pseudonym_0,
                                                            holderSecret_0,
                                                            verifierDomainHash_0);
+  },
+  verifierIdentityDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`verifierIdentityDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const verificationMethodRef_0 = args_0[0];
+    if (!(typeof(verificationMethodRef_0) === 'object' && typeof(verificationMethodRef_0.didContractAddress) === 'object' && verificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && verificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && verificationMethodRef_0.didContractAddress.bytes.length === 32 && verificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && verificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && verificationMethodRef_0.methodId.length === 32)) {
+      __compactRuntime.typeError('verifierIdentityDigestV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 209 char 1',
+                                 'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
+                                 verificationMethodRef_0)
+    }
+    return _dummyContract._verifierIdentityDigestV1_0(verificationMethodRef_0);
+  },
+  verifierPseudonymScopeDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`verifierPseudonymScopeDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('verifierPseudonymScopeDigestV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 220 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._verifierPseudonymScopeDigestV1_0(scope_0);
+  },
+  requestScopedVerifierPseudonymV1: (...args_0) => {
+    if (args_0.length !== 2) {
+      throw new __compactRuntime.CompactError(`requestScopedVerifierPseudonymV1: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const holderSecret_0 = args_0[0];
+    const scope_0 = args_0[1];
+    if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
+      __compactRuntime.typeError('requestScopedVerifierPseudonymV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 229 char 1',
+                                 'Bytes<32>',
+                                 holderSecret_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('requestScopedVerifierPseudonymV1',
+                                 'argument 2',
+                                 'holder-bindings.compact line 229 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._requestScopedVerifierPseudonymV1_0(holderSecret_0,
+                                                              scope_0);
+  },
+  assertRequestScopedVerifierPseudonymV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`assertRequestScopedVerifierPseudonymV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const pseudonym_0 = args_0[0];
+    const holderSecret_0 = args_0[1];
+    const scope_0 = args_0[2];
+    if (!(pseudonym_0.buffer instanceof ArrayBuffer && pseudonym_0.BYTES_PER_ELEMENT === 1 && pseudonym_0.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'Bytes<32>',
+                                 pseudonym_0)
+    }
+    if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 2',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'Bytes<32>',
+                                 holderSecret_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 3',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._assertRequestScopedVerifierPseudonymV1_0(pseudonym_0,
+                                                                    holderSecret_0,
+                                                                    scope_0);
   },
   blindedSecretHolderCommitment: (...args_0) => {
     if (args_0.length !== 3) {
@@ -3005,21 +3170,21 @@ export const pureCircuits = {
     if (!(holderSecretCommitment_0.buffer instanceof ArrayBuffer && holderSecretCommitment_0.BYTES_PER_ELEMENT === 1 && holderSecretCommitment_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 1',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  holderSecretCommitment_0)
     }
     if (!(issuerNonce_0.buffer instanceof ArrayBuffer && issuerNonce_0.BYTES_PER_ELEMENT === 1 && issuerNonce_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 2',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  issuerNonce_0)
     }
     if (!(blindingFactor_0.buffer instanceof ArrayBuffer && blindingFactor_0.BYTES_PER_ELEMENT === 1 && blindingFactor_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 3',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  blindingFactor_0)
     }
@@ -3035,7 +3200,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidSecretHolderCredentialBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 213 char 1',
+                                 'holder-bindings.compact line 267 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -3049,7 +3214,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidSecretHolderPresentationBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 222 char 1',
+                                 'holder-bindings.compact line 276 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -3064,14 +3229,14 @@ export const pureCircuits = {
     if (!(typeof(credentialBinding_0) === 'object' && credentialBinding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && credentialBinding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && credentialBinding_0.holderSecretCommitment.length === 32 && credentialBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && credentialBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credentialBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingSecretHolderBindings',
                                  'argument 1',
-                                 'holder-bindings.compact line 231 char 1',
+                                 'holder-bindings.compact line 285 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  credentialBinding_0)
     }
     if (!(typeof(presentationBinding_0) === 'object' && presentationBinding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && presentationBinding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentationBinding_0.holderSecretCommitment.length === 32 && presentationBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && presentationBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentationBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingSecretHolderBindings',
                                  'argument 2',
-                                 'holder-bindings.compact line 231 char 1',
+                                 'holder-bindings.compact line 285 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  presentationBinding_0)
     }
@@ -3086,7 +3251,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidBlindedSecretHolderCredentialBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 241 char 1',
+                                 'holder-bindings.compact line 295 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -3100,7 +3265,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidBlindedSecretHolderPresentationBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 250 char 1',
+                                 'holder-bindings.compact line 304 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -3115,14 +3280,14 @@ export const pureCircuits = {
     if (!(typeof(credentialBinding_0) === 'object' && credentialBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credentialBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credentialBinding_0.blindedHolderSecretCommitment.length === 32 && credentialBinding_0.issuerNonce.buffer instanceof ArrayBuffer && credentialBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && credentialBinding_0.issuerNonce.length === 32 && credentialBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && credentialBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credentialBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingBlindedSecretHolderBindings',
                                  'argument 1',
-                                 'holder-bindings.compact line 259 char 1',
+                                 'holder-bindings.compact line 313 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  credentialBinding_0)
     }
     if (!(typeof(presentationBinding_0) === 'object' && presentationBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && presentationBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentationBinding_0.blindedHolderSecretCommitment.length === 32 && presentationBinding_0.issuerNonce.buffer instanceof ArrayBuffer && presentationBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && presentationBinding_0.issuerNonce.length === 32 && presentationBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && presentationBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentationBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingBlindedSecretHolderBindings',
                                  'argument 2',
-                                 'holder-bindings.compact line 259 char 1',
+                                 'holder-bindings.compact line 313 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  presentationBinding_0)
     }
@@ -3140,28 +3305,28 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 1',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 2',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 3',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 4',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
@@ -3182,35 +3347,35 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 1',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 2',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 3',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 4',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
     if (!(blindingFactor_0.buffer instanceof ArrayBuffer && blindingFactor_0.BYTES_PER_ELEMENT === 1 && blindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 5',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  blindingFactor_0)
     }

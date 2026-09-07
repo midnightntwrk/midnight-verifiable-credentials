@@ -10,6 +10,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- request-scoped hidden-holder pseudonym records and circuits binding verifier
+  identity, deployment, audience, origin, consent, request, and challenge;
 - comparison-only Compact trusted-time helpers for ledger seconds, Unix days,
   and validity intervals, consumed directly by private authoritative contracts
   and deliberately excluded from canonical reusable Compact composition;

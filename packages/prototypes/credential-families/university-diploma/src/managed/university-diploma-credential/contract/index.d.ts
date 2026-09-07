@@ -58,6 +58,15 @@ export type Proof = { signerVerificationMethodRef: VerificationMethodRef;
                       signature: Signature
                     };
 
+export type VerifierPseudonymScopeV1 = { verifierIdentityDigest: Uint8Array;
+                                         executionContextDigest: Uint8Array;
+                                         audienceDigest: Uint8Array;
+                                         originDigest: Uint8Array;
+                                         consentDigest: Uint8Array;
+                                         requestDigest: Uint8Array;
+                                         challengeDigest: Uint8Array
+                                       };
+
 export enum HolderBindingProfile { explicitDid = 0,
                                    secretHolder = 1,
                                    blindedSecretHolder = 2
@@ -522,6 +531,13 @@ export type PureCircuits = {
   assertVerifierScopedPseudonym(pseudonym_0: Uint8Array,
                                 holderSecret_0: Uint8Array,
                                 verifierDomainHash_0: Uint8Array): [];
+  verifierIdentityDigestV1(verificationMethodRef_0: VerificationMethodRef): Uint8Array;
+  verifierPseudonymScopeDigestV1(scope_0: VerifierPseudonymScopeV1): Uint8Array;
+  requestScopedVerifierPseudonymV1(holderSecret_0: Uint8Array,
+                                   scope_0: VerifierPseudonymScopeV1): Uint8Array;
+  assertRequestScopedVerifierPseudonymV1(pseudonym_0: Uint8Array,
+                                         holderSecret_0: Uint8Array,
+                                         scope_0: VerifierPseudonymScopeV1): [];
   blindedSecretHolderCommitment(holderSecretCommitment_0: Uint8Array,
                                 issuerNonce_0: Uint8Array,
                                 blindingFactor_0: Uint8Array): Uint8Array;
@@ -773,6 +789,17 @@ export type Circuits<PS> = {
                                 pseudonym_0: Uint8Array,
                                 holderSecret_0: Uint8Array,
                                 verifierDomainHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verifierIdentityDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                           verificationMethodRef_0: VerificationMethodRef): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  verifierPseudonymScopeDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                                 scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  requestScopedVerifierPseudonymV1(context: __compactRuntime.CircuitContext<PS>,
+                                   holderSecret_0: Uint8Array,
+                                   scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertRequestScopedVerifierPseudonymV1(context: __compactRuntime.CircuitContext<PS>,
+                                         pseudonym_0: Uint8Array,
+                                         holderSecret_0: Uint8Array,
+                                         scope_0: VerifierPseudonymScopeV1): __compactRuntime.CircuitResults<PS, []>;
   blindedSecretHolderCommitment(context: __compactRuntime.CircuitContext<PS>,
                                 holderSecretCommitment_0: Uint8Array,
                                 issuerNonce_0: Uint8Array,

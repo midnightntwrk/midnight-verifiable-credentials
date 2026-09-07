@@ -33,6 +33,20 @@ export pure circuit secretBirthCredentialPresentationRequestBodyRoot(
   return persistentHash<SecretBirthCredentialPresentationRequest>(request);
 }
 
+export pure circuit secretBirthPresentationBindingDigestV1(
+  credential: SecretBirthCredential,
+  presentation: SecretBirthCredentialPresentation,
+  request: SecretBirthCredentialPresentationRequest
+): Bytes<32> {
+  return persistentHash<Vector<5, Bytes<32>>>([
+    pad(32, "midnight:vc:hidden-present:v1"),
+    secretBirthCredentialBodyRoot(credential),
+    secretBirthCredentialPresentationBodyRoot(presentation),
+    verifierPseudonymScopeDigestV1(request.verifierPseudonymScope),
+    request.verifierChallengeHash
+  ]);
+}
+
 // =====================
 // Schema and verifier-request validation
 // =====================
@@ -51,6 +65,22 @@ export pure circuit assertValidSecretBirthCredentialPresentationRequest(
   assert(request.version == 1, "Presentation request version mismatch");
   assertValidSecretBirthSchemaRef(request.schema);
   assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireVerifierScopedPseudonym) {
+    assert(
+      request.verifierPseudonymScope.verifierIdentityDigest != pad(32, "")
+        && request.verifierPseudonymScope.executionContextDigest != pad(32, "")
+        && request.verifierPseudonymScope.audienceDigest != pad(32, "")
+        && request.verifierPseudonymScope.originDigest != pad(32, "")
+        && request.verifierPseudonymScope.consentDigest != pad(32, "")
+        && request.verifierPseudonymScope.requestDigest != pad(32, "")
+        && request.verifierPseudonymScope.challengeDigest != pad(32, ""),
+      "Verifier pseudonym scope must bind identity, deployment, audience, origin, consent, request, and challenge"
+    );
+    assert(
+      request.verifierPseudonymScope.challengeDigest == request.verifierChallengeHash,
+      "Verifier pseudonym scope challenge does not match the presentation request"
+    );
+  }
   if (request.requireAgeOverThreshold) {
     assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
   } else {
@@ -71,7 +101,7 @@ export pure circuit secretBirthCredentialPresentationRequestFromProtocol(
     requireSubjectIdCommitmentDisclosure: request.body.requireSubjectIdCommitmentDisclosure,
     requireBirthCountryDisclosure: request.body.requireBirthCountryDisclosure,
     requireVerifierScopedPseudonym: request.body.requireVerifierScopedPseudonym,
-    verifierDomainHash: request.body.verifierDomainHash,
+    verifierPseudonymScope: request.body.verifierPseudonymScope,
     requireAgeOverThreshold: request.body.requireAgeOverThreshold,
     requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
     verifierChallengeHash: request.verifierChallengeHash,
