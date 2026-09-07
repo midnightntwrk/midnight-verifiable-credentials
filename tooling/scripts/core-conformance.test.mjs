@@ -38,6 +38,19 @@ test("maps every retained operation to a normative section and state", () => {
       .includes(`Version: \`${manifest.specification}\``),
     "the manifest and normative specification versions must match",
   );
+  assert.ok(manifest.implementationPackages.length > 0);
+  for (const implementationPackage of manifest.implementationPackages) {
+    const packageManifest = readJson(implementationPackage.manifest);
+    assert.deepEqual(
+      {
+        name: implementationPackage.name,
+        version: implementationPackage.version,
+      },
+      { name: packageManifest.name, version: packageManifest.version },
+      `${implementationPackage.manifest} identity does not match the conformance manifest`,
+    );
+  }
+  assert.ok(Array.isArray(manifest.supportedConfigurations));
   assert.ok(manifest.operations.length > 0);
   assert.equal(
     new Set(manifest.operations.map(({ id }) => id)).size,
