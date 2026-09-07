@@ -296,7 +296,13 @@ const profileFor = (
       compactEntrypoints: [],
       circuits: [],
       artifacts: [],
-      providers: [],
+      providers: [
+        {
+          id: "fixture.proof.requirement",
+          capability: { id: "proof.fixture", version: "1.0.0" },
+          role: "proof-executor",
+        },
+      ],
     },
     compatibility: {
       deniedRules: [

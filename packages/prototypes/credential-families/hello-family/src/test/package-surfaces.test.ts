@@ -1,11 +1,21 @@
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import os from "node:os";
+import { join, resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
 import packageJson from "../../package.json" with { type: "json" };
 
 const root = resolve(import.meta.dirname, "../..");
+const compactAvailable = (() => {
+  try {
+    execFileSync("compact", ["--version"], { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
 const sourceSurface = (relativePath: string) =>
   resolve(root, "src", relativePath);
 const distSurface = (relativePath: string) =>
@@ -65,6 +75,49 @@ describe("hello-family package surfaces", () => {
       existsSync(distSurface("hello-family-credential/composable.compact")),
     ).toBe(true);
   });
+
+  it.skipIf(!compactAvailable)(
+    "compiles the standalone Compact export outside the monorepo",
+    () => {
+      if (!existsSync(distSurface("index.js"))) return;
+
+      const temporaryRoot = mkdtempSync(
+        join(os.tmpdir(), "hello-family-compact-package-"),
+      );
+      try {
+        cpSync(
+          distSurface("hello-family-credential.compact"),
+          join(temporaryRoot, "hello-family-credential.compact"),
+        );
+        cpSync(
+          distSurface("hello-family-credential"),
+          join(temporaryRoot, "hello-family-credential"),
+          { recursive: true },
+        );
+        cpSync(
+          distSurface("credential-compact"),
+          join(temporaryRoot, "credential-compact"),
+          { recursive: true },
+        );
+        execFileSync(
+          "compact",
+          [
+            "compile",
+            "+0.31.1",
+            "--skip-zk",
+            "--compact-path",
+            temporaryRoot,
+            join(temporaryRoot, "hello-family-credential.compact"),
+            join(temporaryRoot, "output"),
+          ],
+          { stdio: "pipe" },
+        );
+      } finally {
+        rmSync(temporaryRoot, { recursive: true, force: true });
+      }
+    },
+    60_000,
+  );
 
   it("keeps the generated managed contract subpaths available", () => {
     expect(

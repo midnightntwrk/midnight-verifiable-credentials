@@ -1,3 +1,4 @@
+export * from "./adapters/birth/exchange-adapter.js";
 export * from "./adapters/file-protocol-state-store.js";
 export * from "./adapters/json-protocol-state-codec.js";
 export * from "./agents/exact-byte-delivery-registry.js";

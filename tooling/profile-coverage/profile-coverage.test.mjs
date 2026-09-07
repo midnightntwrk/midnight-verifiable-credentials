@@ -47,6 +47,21 @@ test("all retained prototypes have complete validated #492 manifests", () => {
     assert.ok(manifest.prototype.exitCriterion.length > 0);
     assert.equal(resolved[index].profile.id, manifest.profile.id);
     assert.equal(resolved[index].conformance.fixtureId, manifest.profile.conformance.fixtureId);
+    const proofRequirement = manifest.profile.requirements.providers.find(
+      ({ role }) => role === "proof-executor",
+    );
+    assert.deepEqual(
+      proofRequirement?.capability,
+      manifest.profile.semantics.presentation.proofGeneration.capability,
+      `${manifest.prototype.id} must require its exact proof-generation capability`,
+    );
+    assert.ok(
+      resolved[index].providers.some(
+        ({ requirementId, role }) =>
+          requirementId === proofRequirement.id && role === "proof-executor",
+      ),
+      `${manifest.prototype.id} must resolve an exact proof-executor binding`,
+    );
     for (const reference of [
       manifest.familyDefinition,
       manifest.evidence.fixture,
@@ -188,7 +203,7 @@ test("fixed axes, mandatory higher-order rows, and forbidden negatives are expli
     for (const [enabled, domain, role, entrypointSuffix] of [
       [row.values.status !== "disabled", "status-registry", "status-registry", ".status"],
       [row.values.protocol !== "disabled", "protocol", "transport", null],
-      [row.values.composition === "same-holder" || ["secret", "blinded-secret"].includes(row.values.holderBinding), "proof", "proof-executor", null],
+      [true, "proof", "proof-executor", null],
       [row.values.mutation === "atomic-ledger", "replay", "replay", null],
     ]) {
       assert.equal(row.resolvedGraph.packages.some((entry) => entry.domain === domain), enabled);
