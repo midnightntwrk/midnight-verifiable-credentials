@@ -26,4 +26,3 @@ are forbidden.
 External credential families MAY run the same vectors through released package
 versions or immutable prerelease artifacts. They own family-specific schema,
 predicate, artifact, and application tests.
-

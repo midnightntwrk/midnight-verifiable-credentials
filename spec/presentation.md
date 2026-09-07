@@ -20,4 +20,3 @@ rejected.
 Transport response modes, redirects, QR codes, wallet sessions, and business
 authorization are outside this ceremony. The complete high-level presentation
 API remains unsupported until positive and negative round-trip vectors exist.
-

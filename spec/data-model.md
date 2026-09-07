@@ -37,4 +37,3 @@ binding, applicable status evidence, and a presentation-context proof.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.
-

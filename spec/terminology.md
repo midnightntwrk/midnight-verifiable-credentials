@@ -17,4 +17,3 @@
 
 An adapter MUST NOT reinterpret a canonical object, omit required verification,
 or turn an unsupported core capability into a successful result.
-

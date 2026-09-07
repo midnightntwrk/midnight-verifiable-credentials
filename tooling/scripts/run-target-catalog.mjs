@@ -56,6 +56,7 @@ export const targets = [
     category: "core",
     supportsLight: false,
     script: "test:core-conformance",
+    fromArtifactsScript: "test:core-conformance:from-artifacts",
   },
   {
     name: "bdd",

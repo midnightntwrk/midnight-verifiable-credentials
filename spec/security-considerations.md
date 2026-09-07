@@ -19,4 +19,3 @@ not replace canonical core checks.
 
 No current configuration has complete production conformance. The manifest's
 verified primitives MUST NOT be represented as an end-to-end security claim.
-

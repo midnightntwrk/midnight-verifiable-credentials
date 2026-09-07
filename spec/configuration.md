@@ -41,4 +41,3 @@ manifest.
 An implementation MUST return an explicit unsupported result for every
 configuration that is not listed as supported. It MUST NOT silently downgrade
 holder binding, status, or verification location.
-

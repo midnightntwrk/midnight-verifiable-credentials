@@ -42,4 +42,3 @@ their security meaning.
 A normative change MUST update the affected document, the operation mapping in
 [`../conformance/manifest.json`](../conformance/manifest.json), and applicable
 positive and negative vectors. It also requires explicit maintainer review.
-

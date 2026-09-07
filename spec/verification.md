@@ -21,4 +21,3 @@ and required status evidence that is missing, stale, unauthorized, or invalid.
 
 The complete generic verifier operation is currently unsupported. Existing
 pure Compact assertions are lower-level evidence only.
-

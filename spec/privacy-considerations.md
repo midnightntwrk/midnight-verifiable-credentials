@@ -16,4 +16,3 @@ adapters SHOULD minimize correlatable queries and document their leakage.
 Rendering, localization, telemetry, storage, backup, deletion, and user-consent
 policy are application responsibilities. An adapter MUST preserve the core's
 disclosure semantics and MUST NOT log private witnesses or claim openings.
-

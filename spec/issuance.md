@@ -21,4 +21,3 @@ their sequence or persistence model.
 The complete high-level issuance API is currently unsupported. The implemented
 context-tag and low-level validation primitives are mapped in the conformance
 manifest; they are not evidence of an end-to-end issuance claim.
-

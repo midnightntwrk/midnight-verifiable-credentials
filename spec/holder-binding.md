@@ -23,4 +23,3 @@ advertised as completing those requirements.
 
 An implementation MUST NOT downgrade hidden binding to explicit or unbound
 credentials when the requested capability is unsupported.
-
