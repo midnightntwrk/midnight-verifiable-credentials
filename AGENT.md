@@ -111,6 +111,10 @@ Reusable packages must not depend on prototypes or use cases. The
 workspace/package catalog and `check-package-boundaries` guard enforce the
 family-agnostic core during migration.
 
+Do not add new prototype or use-case workspaces. Every existing migration
+inventory entry must have an accountable owner, a destination or deletion
+decision, and an exit criterion in the ledger tracked by issue #466.
+
 ## Migration Package Map
 
 The following table describes the current tree, not the target supported
@@ -238,7 +242,7 @@ PR gates, cross-repository lanes, or unconditional validation lists.
 
 ## Dev-loop PR policy
 
-For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. If `codex review --base origin/develop` cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
+For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. Resolve the pull request's actual base ref and run `codex review --base origin/<base-ref>`. If that command cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
 
 ## Runner Targets
 
