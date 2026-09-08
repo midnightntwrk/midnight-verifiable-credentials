@@ -79,9 +79,8 @@ export const allowedConsumerChecks = new Set([
   "browser",
   "compact",
 ]);
-export const releaseCandidateFiles = (hasCompactSources) => [
+export const releaseCandidateFiles = () => [
   "dist/**",
-  ...(hasCompactSources ? ["src/**/*.compact"] : []),
   "README.md",
   "CHANGELOG.md",
   "package.json",

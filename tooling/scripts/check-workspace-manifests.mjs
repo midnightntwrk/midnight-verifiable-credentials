@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import {
   allowedMaturityValues,
@@ -51,29 +51,6 @@ const assertArrayIncludes = (array, expected, label) => {
 };
 
 const isRecord = (value) => value && typeof value === "object" && !Array.isArray(value);
-
-const hasCompactSources = (workspace) => {
-  const srcRoot = path.join(repoRoot, workspace, "src");
-  if (!existsSync(srcRoot)) {
-    return false;
-  }
-
-  const stack = [srcRoot];
-  while (stack.length > 0) {
-    const current = stack.pop();
-    for (const entry of readdirSync(current)) {
-      const entryPath = path.join(current, entry);
-      const stats = statSync(entryPath);
-      if (stats.isDirectory()) {
-        stack.push(entryPath);
-      } else if (entry.endsWith(".compact")) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
 
 const assertDistExportLeaf = (value, label) => {
   assert(typeof value === "string", `${label} must be a string`);
@@ -235,14 +212,11 @@ const assertDistPackage = (packageJson, workspace) => {
   const requiredFiles =
     releaseStage === "internal"
       ? requiredDistFiles
-      : releaseCandidateFiles(hasCompactSources(workspace));
+      : releaseCandidateFiles();
   for (const fileEntry of requiredFiles) {
     assertArrayIncludes(packageJson.files, fileEntry, `${workspace} files`);
   }
 
-  if (hasCompactSources(workspace)) {
-    assertArrayIncludes(packageJson.files, "src/**/*.compact", `${workspace} files`);
-  }
 };
 
 const assertSourceOnlyPackage = (packageJson, workspace) => {

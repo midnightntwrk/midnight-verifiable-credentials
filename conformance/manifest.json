@@ -132,7 +132,7 @@
   "vectors": [
     {
       "path": "conformance/vectors/compact-generated.json",
-      "sha256": "7dac4ba1ece08df8015b51a32f4b54c442b8fa93ae69df943a0d26ebbbabdda2"
+      "sha256": "dbee3a07d803b1d80c6c09203ae79e4277fec102502f65b3f16d19cc3c48009b"
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",

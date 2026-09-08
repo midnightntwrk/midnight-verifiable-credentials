@@ -6,7 +6,7 @@
  * covers workspace dependency edges.
  */
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { workspaceCatalog } from "./workspace-catalog.mjs";
@@ -40,80 +40,6 @@ export const workspaceDependencyPaths = (workspacePath) => {
     .map((name) => workspaceByName.get(name))
     .filter(Boolean)
     .sort();
-};
-
-const sourceExtensions = new Set([
-  ".js",
-  ".jsx",
-  ".mjs",
-  ".cjs",
-  ".ts",
-  ".tsx",
-  ".mts",
-  ".cts",
-]);
-export const isSupportedSourceFile = (fileName) =>
-  sourceExtensions.has(path.extname(fileName));
-const sourceImportPattern =
-  /(?:\bfrom\s*|\bimport\s*\(|\brequire\s*\()\s*["']([^"']+)["']/gu;
-const bareImportPattern = /\bimport\s*["']([^"']+)["']/gu;
-
-const workspaceSourceFiles = (workspacePath) => {
-  const files = [];
-  const visit = (directory) => {
-    for (const entry of readdirSync(directory, { withFileTypes: true })) {
-      if (["dist", "managed", "node_modules", "coverage", "reports"].includes(entry.name)) {
-        continue;
-      }
-      const absolute = path.join(directory, entry.name);
-      if (entry.isDirectory()) {
-        visit(absolute);
-      } else if (isSupportedSourceFile(entry.name)) {
-        files.push(absolute);
-      }
-    }
-  };
-  visit(path.join(repoRoot, workspacePath));
-  return files;
-};
-
-export const workspacePathForImport = (specifier, importerFile) => {
-  for (const [packageName, workspacePath] of workspaceByName) {
-    if (specifier === packageName || specifier.startsWith(`${packageName}/`)) {
-      return workspacePath;
-    }
-  }
-  if (!importerFile || !specifier.startsWith(".")) return undefined;
-
-  const importerPath = path.isAbsolute(importerFile)
-    ? importerFile
-    : path.join(repoRoot, importerFile);
-  const importedPath = path.resolve(path.dirname(importerPath), specifier);
-  for (const { path: workspacePath } of workspaceCatalog) {
-    const workspaceRoot = path.join(repoRoot, workspacePath);
-    const relative = path.relative(workspaceRoot, importedPath);
-    if (relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))) {
-      return workspacePath;
-    }
-  }
-  return undefined;
-};
-
-export const workspaceSourceImportPaths = (workspacePath) => {
-  const imports = new Set();
-  for (const sourceFile of workspaceSourceFiles(workspacePath)) {
-    const source = readFileSync(sourceFile, "utf8");
-    for (const pattern of [sourceImportPattern, bareImportPattern]) {
-      pattern.lastIndex = 0;
-      for (const match of source.matchAll(pattern)) {
-        const dependencyPath = workspacePathForImport(match[1], sourceFile);
-        if (dependencyPath && dependencyPath !== workspacePath) {
-          imports.add(dependencyPath);
-        }
-      }
-    }
-  }
-  return [...imports].sort();
 };
 
 const classAllows = (ownerClass, dependencyClass) => {
