@@ -7,7 +7,7 @@ Companion documents:
 - [`../spec/credential-status.md`](../spec/credential-status.md)
 - [`../spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
-- [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md)
+- [`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md)
 
 ## Purpose
 

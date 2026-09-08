@@ -13,22 +13,6 @@ packages:
   - packages/core/primitives/iso-registry
   - packages/components/adapters/offchain-did
   - packages/components/adapters/credential-did-midnight
-  - packages/protocols/openid
-  - packages/components/orchestration/exchange
-  - packages/components/orchestration/protocol
-  - packages/prototypes/credential-families/birth
-  - packages/prototypes/credential-families/birth-secret
-  - packages/prototypes/credential-families/university-diploma
-  - packages/prototypes/credential-families/digital-passport
-  - packages/use-cases/age-gate/contract
-  - packages/use-cases/university/contract
-  - packages/use-cases/age-gate/scenarios
-  - packages/use-cases/bdd-support
-  - packages/use-cases/university/scenarios
-  - packages/use-cases/university/protocol
-  - packages/use-cases/university/reporting
-  - packages/use-cases/status-openid/evidence
-  - packages/components/integration/standalone-environment
   - examples/core-composition
 
 linkWorkspacePackages: true

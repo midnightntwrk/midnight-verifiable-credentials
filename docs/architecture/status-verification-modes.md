@@ -9,7 +9,7 @@ Companion documents:
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`./live-root-binding-feasibility.md`](./live-root-binding-feasibility.md)
 - [`./status-canonical-non-membership-bundle.md`](./status-canonical-non-membership-bundle.md)
-- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)
+- [`./status-contract-closeout-boundary.md`]
 - [`./status-binding-body-root-commitment.md`](./status-binding-body-root-commitment.md)
 
 ## Purpose
@@ -80,10 +80,6 @@ So this mode is already a real Layer 3 revocation check today.
 It is still not the final generic root-bound non-membership proof because it
 depends on direct access to the local revoked-set ledger rather than proving
 against an arbitrary accepted root snapshot.
-
-Repository reference:
-
-- [`../../packages/use-cases/age-gate/contract/src/demo-revocation.compact`](../../packages/use-cases/age-gate/contract/src/demo-revocation.compact)
 
 ## Mode 2: Off-chain verifier-side live-state verification
 
@@ -186,4 +182,4 @@ Until that lands, the repository should claim:
 
 Repository closeout note:
 
-- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)
+- [`./status-contract-closeout-boundary.md`]

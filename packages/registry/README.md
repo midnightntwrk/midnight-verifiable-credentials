@@ -10,5 +10,5 @@ Target contents:
 - status / revocation registries
 - other reusable registry-style VC support packages
 
-Registry packages may depend on `packages/core/`, but must not depend on `packages/prototypes/` or
-`packages/use-cases/`.
+Registry packages may depend on `packages/core/`, but must not depend on adapters,
+examples, applications, or external credential-family implementations.

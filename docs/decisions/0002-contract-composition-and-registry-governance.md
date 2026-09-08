@@ -84,7 +84,7 @@ not accepted as unconstrained caller input.
 
 Authentication, DID relationship binding, trusted time, status-root binding,
 and product contract templates are P0 work in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md).
+[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
 
 
 ## Repository ownership reconciliation (2026-07-30)

@@ -170,7 +170,5 @@ and issue
 [#539](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/539).
 The detailed migration sequence is in
 [`../plans/vc-core-only-repository-plan-2026-09-08.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
-Credential-family and use-case outcomes, ownership gaps, and physical-migration
-issues are tracked in the versioned
-[`credential-family-migration-ledger.v1.json`](../architecture/credential-family-migration-ledger.v1.json)
-and its [review view](../architecture/credential-family-migration-ledger.md).
+Credential-family and use-case outcomes remain traceable through the milestone,
+linked issues, merged pull requests, and Git history.

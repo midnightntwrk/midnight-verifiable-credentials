@@ -482,8 +482,8 @@ imports.
 
 ### PR 3: Detach credential families and use cases
 
-- approve the #466 migration ledger and select maintained versus historical
-  scenarios;
+- select maintained versus historical scenarios through the linked removal and
+  relocation issues;
 - validate the independent digital-passport repository against the current
   public package contract before removing the local duplicate;
 - port maintained application and integration scenarios to

@@ -2,69 +2,22 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   classifyWorkspacePath,
-  familySourceImportPaths,
   findBoundaryViolations,
-  findFamilyNeutralExchangeSourceImportViolations,
-  findFamilySourceImportViolations,
-  isProhibitedFamilyDependency,
   isSupportedSourceFile,
   leastPrivilegeStatusDependencyEdges,
-  migrationExceptions,
-  prohibitedFamilyDependencyClasses,
   transitiveWorkspaceDependencyPaths,
   workspaceDependencyPaths,
-  workspacePathForImport,
 } from "./check-package-boundaries.mjs";
 
 test("workspace catalog has no forbidden ownership edges", () => {
   assert.deepEqual(findBoundaryViolations(), []);
 });
 
-test("ownership taxonomy keeps family evidence below reusable core", () => {
+test("ownership taxonomy keeps the retained workspaces bounded", () => {
   assert.equal(classifyWorkspacePath("packages/core/primitives/credentials"), "reusable-core");
-  assert.equal(classifyWorkspacePath("packages/prototypes/credential-families/birth"), "prototype");
-  assert.equal(classifyWorkspacePath("packages/use-cases/age-gate/contract"), "use-case");
+  assert.equal(classifyWorkspacePath("packages/registry/status-registry"), "registry");
+  assert.equal(classifyWorkspacePath("packages/components/adapters/offchain-did"), "component");
   assert.equal(classifyWorkspacePath("examples/core-composition"), "example");
-  assert.ok(migrationExceptions["packages/components/orchestration/protocol"]);
-});
-
-test("family packages deny protocol, orchestration, and use-case dependencies", () => {
-  assert.deepEqual(prohibitedFamilyDependencyClasses, ["protocol", "use-case"]);
-  assert.equal(isProhibitedFamilyDependency("packages/protocols/openid"), true);
-  assert.equal(
-    isProhibitedFamilyDependency("packages/components/orchestration/exchange"),
-    true,
-  );
-  assert.equal(isProhibitedFamilyDependency("packages/core/compact"), false);
-  assert.ok(
-    !workspaceDependencyPaths(
-      "packages/prototypes/credential-families/digital-passport",
-    ).includes("packages/protocols/openid"),
-  );
-  assert.ok(
-    familySourceImportPaths(
-      "packages/prototypes/credential-families/digital-passport",
-    ).includes("packages/core/compact"),
-  );
-  assert.deepEqual(findFamilySourceImportViolations(), []);
-});
-
-test("relative imports resolve to workspace paths before denied-edge classification", () => {
-  assert.equal(
-    workspacePathForImport(
-      "../../../../protocols/openid/dist/index.js",
-      "packages/prototypes/credential-families/digital-passport/src/codecs.ts",
-    ),
-    "packages/protocols/openid",
-  );
-});
-
-test("family-neutral exchange depends only on canonical reusable core", () => {
-  assert.deepEqual(
-    workspaceDependencyPaths("packages/components/orchestration/exchange"),
-    ["packages/core/model", "packages/core/proofs"],
-  );
-  assert.deepEqual(findFamilyNeutralExchangeSourceImportViolations(), []);
 });
 
 test("status verifier/proof consumers cannot import mutation or signing authority transitively", () => {

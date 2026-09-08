@@ -47,22 +47,9 @@ EOF
 
 run_common_repo_setup() {
   run_common_apply_light_mode "$@"
-  run_common_setup_cleanup_trap
   run_common_ensure_node
   run_common_ensure_runtime_helpers
   node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs
-  node ./tooling/scripts/ensure-midnight-did-api-paths.mjs
-  run_common_auto_proof_server_image "run"
-}
-
-run_common_integration_target() {
-  local label="$1"
-  shift
-
-  run_common_cleanup_test_infra
-  echo "[run] ${label}"
-  "$@"
-  run_common_cleanup_test_infra
 }
 
 run_common_root_script_exists() {
@@ -167,11 +154,6 @@ case "$target" in
     node ./tooling/scripts/report-did-integration.mjs --check
     exit 0
     ;;
-  university-report-contract)
-    run_common_ensure_node
-    pnpm --silent run report:university-contract
-    exit 0
-    ;;
 esac
 
 if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]] && ! run_common_target_supports_light "$target"; then
@@ -208,8 +190,7 @@ case "$target" in
       pnpm run typecheck:light
     else
       echo "[run] Full typecheck lane"
-      run_common_ensure_artifacts "run" managed-all
-      pnpm run ci:typecheck:from-artifacts
+      pnpm run ci:typecheck
     fi
     ;;
   build)
@@ -230,8 +211,7 @@ case "$target" in
       pnpm run test:light
     else
       echo "[run] Full package test lane"
-      run_common_ensure_artifacts "run" managed-all
-      pnpm run test:all:from-artifacts
+      pnpm run test:all
     fi
     ;;
   trusted-time-capability)
@@ -250,145 +230,6 @@ case "$target" in
   package)
     echo "[run] Package artifact lane"
     pnpm run artifacts:pack
-    ;;
-  bdd)
-    echo "[run] BDD smoke lane"
-    pnpm run test:bdd:smoke
-    ;;
-  bdd-negative)
-    echo "[run] BDD negative lane"
-    pnpm run test:bdd:negative
-    ;;
-  bdd-all)
-    echo "[run] BDD full lane"
-    pnpm run test:bdd:all
-    ;;
-  status-openid-evidence)
-    echo "[run] Status-enabled OpenID production-evidence lane"
-    pnpm run ci:status-openid-evidence
-    ;;
-  university-bdd)
-    echo "[run] University diploma BDD lane"
-    pnpm run ci:university-bdd
-    ;;
-  university-bdd-proof-server)
-    echo "[run] University diploma proof-server-contract BDD lane"
-    pnpm run ci:university-bdd:proof-server
-    ;;
-  university-bdd-standalone)
-    if docker info >/dev/null 2>&1; then
-      echo "[run] University diploma standalone-hybrid BDD lane"
-      pnpm run ci:university-bdd:standalone
-    else
-      echo "[run] Docker unavailable; cannot run university standalone-hybrid BDD lane"
-      exit 1
-    fi
-    ;;
-  university-batch-sweep)
-    echo "[run] University issuance batch-sweep lane"
-    pnpm run ci:university-batch-sweep
-    ;;
-  university-ci-matrix)
-    echo "[run] University CI matrix contract lane"
-    pnpm run ci:university-ci-matrix
-    ;;
-  university-data-profiles)
-    echo "[run] University data-profile validation lane"
-    pnpm run ci:university-data-profiles
-    ;;
-  university-policy-catalog)
-    echo "[run] University policy-catalog validation lane"
-    pnpm run ci:university-policy-catalog
-    ;;
-  university-protocol)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light university protocol lane"
-      run_common_ensure_artifacts "run" managed-university-protocol
-      pnpm run ci:university-protocol:from-artifacts
-    else
-      echo "[run] University protocol lane"
-      pnpm run ci:university-protocol
-    fi
-    ;;
-  university-protocol-export)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light university protocol export lane"
-      run_common_ensure_artifacts "run" managed-university-protocol-export
-      pnpm run ci:university-protocol:export:from-artifacts
-    else
-      echo "[run] University protocol export lane"
-      pnpm run ci:university-protocol:export
-    fi
-    ;;
-  university-protocol-cohort)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light university protocol cohort lane"
-      run_common_ensure_artifacts "run" managed-university-protocol-cohort
-      pnpm run ci:university-protocol:cohort:from-artifacts
-    else
-      echo "[run] University protocol cohort lane"
-      pnpm run ci:university-protocol:cohort
-    fi
-    ;;
-  university-protocol-stress)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light university protocol stress lane"
-      run_common_ensure_artifacts "run" managed-university-protocol-stress
-      pnpm run ci:university-protocol:stress:from-artifacts
-    else
-      echo "[run] University protocol stress lane"
-      pnpm run ci:university-protocol:stress
-    fi
-    ;;
-  university-summary)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light university summary lane"
-      run_common_ensure_artifacts "run" managed-university-summary
-      pnpm run ci:university-summary:from-artifacts
-    else
-      echo "[run] University summary lane"
-      pnpm run ci:university-summary
-    fi
-    ;;
-  revocation)
-    echo "[run] Revocation-focused lane"
-    pnpm run lint:revocation
-    run_common_ensure_artifacts "run" managed-revocation
-    pnpm run typecheck:revocation:from-artifacts
-    pnpm run test:revocation:from-artifacts
-    ;;
-  integration)
-    if docker info >/dev/null 2>&1; then
-      run_common_integration_target \
-        "Standalone demo-contract integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && pnpm run ci:integration:demo-contract:from-artifacts'
-      run_common_integration_target \
-        "Standalone protocol integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && pnpm run ci:integration:protocol:from-artifacts'
-    else
-      echo "[run] Docker unavailable; cannot run standalone integrations"
-      exit 1
-    fi
-    ;;
-  integration-demo-contract)
-    if docker info >/dev/null 2>&1; then
-      run_common_integration_target \
-        "Standalone demo-contract integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && pnpm run ci:integration:demo-contract:from-artifacts'
-    else
-      echo "[run] Docker unavailable; cannot run demo-contract integration"
-      exit 1
-    fi
-    ;;
-  integration-protocol)
-    if docker info >/dev/null 2>&1; then
-      run_common_integration_target \
-        "Standalone protocol integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && pnpm run ci:integration:protocol:from-artifacts'
-    else
-      echo "[run] Docker unavailable; cannot run protocol integration"
-      exit 1
-    fi
     ;;
   *)
     echo "[run] Unknown target: $target" >&2

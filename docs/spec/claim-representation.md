@@ -11,9 +11,9 @@ envelope.
 
 It is companion material to:
 
-- [`midnight-credentials.md`](./midnight-credentials.md)
-- [`profiles.md`](./profiles.md)
-- [`conformance.md`](./conformance.md)
+- [`midnight-credentials.md`](../../spec/README.md)
+- [`profiles.md`](../../spec/configuration.md)
+- [`conformance.md`](../../conformance/README.md)
 
 ## Standards Alignment
 
@@ -193,32 +193,12 @@ Adapter guidance:
   metadata non-selective unless a concrete interoperability profile says
   otherwise
 
-## Current Repository Evidence
+## Repository Evidence
 
-The repository carries temporary migration examples across the representation taxonomy:
-
-- direct academic prototype:
-  [`../../packages/prototypes/credential-families/university-diploma`](../../packages/prototypes/credential-families/university-diploma)
-- additive academic production-profile building blocks:
-  `UniversityDiplomaProductionPublicClaims` plus
-  `UniversityDiplomaClaimCommitments` in
-  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact)
-- additive academic production disclosures:
-  `UniversityDiplomaProductionDisclosures` and
-  `UniversityDiplomaProductionPresentation` in
-  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact)
-- additive academic production predicate witnesses:
-  `UniversityDiplomaProductionFinalGradePredicateWitness`,
-  `UniversityDiplomaProductionCreditsEarnedPredicateWitness`, and matching
-  threshold helper circuits in
-  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact)
-- committed/private birth source credential:
-  [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
-
-`selectivelyDisclosed` is intentionally represented by direct-value prototypes
-whose request gates decide whether the presentation exposes the value. Families
-that need stronger privacy should use `committedPrivate` or `predicateOnly`
-instead of carrying the raw value in the signed credential body.
+Normative vectors under `conformance/` and generic tests under
+`packages/core/` cover the representation taxonomy without embedding a concrete
+credential family. Family repositories must add their own positive and negative
+vectors for every representation category they use.
 
 The generic VC envelope already supports all of these because `claims` and
 `claimCommitments` are family-defined type parameters. The representation choice

@@ -42,27 +42,11 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
 | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | `internal` | workspace tarball only | Unassigned | Reference primitive |
 | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | `internal` | workspace tarball only | Unassigned | DID-aware adapter |
-| `@midnight-ntwrk/midnight-did-credentials-openid` | `internal` | workspace tarball only | Unassigned | Reference transport adapter |
-| `@midnight-ntwrk/credential-exchange` | `internal` | none | VC package maintainers | Family-neutral injected orchestration candidate; not a publication commitment |
 | `@midnight-ntwrk/credential-display` | `internal` | workspace tarball only | Unassigned | Incubating framework-neutral display metadata; not a support or publication commitment |
-| `@midnight-ntwrk/midnight-did-credentials-protocol` | `internal` | workspace tarball only | Unassigned | Evolving orchestration API |
-| `@midnight-ntwrk/midnight-did-credentials-birth` | `internal` | workspace tarball only | Unassigned | Reference family |
-| `@midnight-ntwrk/midnight-did-credentials-birth-secret` | `internal` | workspace tarball only | Unassigned | Reference family with status caveats |
-| `@midnight-ntwrk/midnight-did-credentials-university-diploma` | `internal` | workspace tarball only | Unassigned | Prototype family |
-| `@midnight-ntwrk/midnight-did-credentials-digital-passport` | `internal` | workspace tarball only | Unassigned | Graduation candidate after correctness work |
-| `@midnight-ntwrk/midnight-did-credentials-demo-contract` | `internal` | workspace tarball only | Unassigned | Demo contract |
-| `@midnight-ntwrk/midnight-did-university-verifier-contract` | `internal` | workspace tarball only | Unassigned | Demo verifier contract |
-| `@midnight-ntwrk/midnight-did-university-protocol` | `internal` | workspace tarball only | Unassigned | Use-case orchestration |
-| `@midnight-ntwrk/midnight-did-university-reporting` | `internal` | workspace tarball only | Unassigned | Use-case reporting |
-| `@midnight-ntwrk/status-openid-production-evidence` | `internal` | workspace tarball only | Unassigned | Private production-shaped use-case evidence; not production approval |
 
-The two BDD scenario workspaces, `bdd-support`, and
-`standalone-environment` are not release packages. They remain private
-scenario or source-only workspaces and are never copied as VC tarballs.
-
-All internal rows above are migration inventory, not a publication queue.
-Their presence in the workspace does not permit packing or publishing them for
-upstream consumption.
+Removed family, use-case, protocol, and integration packages are historical
+migration inventory, not a publication queue. They are not eligible for packing
+or publication from this repository.
 
 GitHub `CODEOWNERS` review is a repository protection mechanism. Package
 technical ownership belongs to `@midnightntwrk/ex-identus`; npmjs credentials,

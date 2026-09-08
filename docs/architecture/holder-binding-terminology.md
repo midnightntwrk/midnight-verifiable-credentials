@@ -15,13 +15,13 @@ Purpose:
 Related documents:
 
 - profile catalog:
-  - [`../spec/profiles.md`](../spec/profiles.md)
+  - [`../spec/profiles.md`](../../spec/configuration.md)
 - package boundaries:
   - [`./package-boundaries.md`](./package-boundaries.md)
 - holder-binding extension plan:
-  - [`../plans/holder-binding-extension-plan.md`](../plans/holder-binding-extension-plan.md)
+  - [`../plans/holder-binding-extension-plan.md`](../plans/vc-core-only-repository-plan-2026-09-08.md)
 - VC surface-change discipline:
-  - [`../guides/vc-surface-change-discipline.md`](../guides/vc-surface-change-discipline.md)
+  - [`../guides/vc-surface-change-discipline.md`](../guides/package-selection.md)
 
 ## Canonical Terms
 
@@ -87,15 +87,11 @@ Rejected examples:
 Any PR that changes holder-binding profile names, type parameters, exported
 helpers, generated Compact literals, or adapter aliases should update:
 
-- [`../spec/profiles.md`](../spec/profiles.md)
+- [`../spec/profiles.md`](../../spec/configuration.md)
 - package README files for affected packages
-- [`../guides/vc-surface-change-discipline.md`](../guides/vc-surface-change-discipline.md)
+- [`../guides/vc-surface-change-discipline.md`](../guides/package-selection.md)
 - `CHANGELOG.md` when the change is compatibility-significant
 - `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md` if reviewers need a
   new checklist item
 
-Run the terminology guard after changing holder-binding profile text:
-
-```bash
-pnpm run check:holder-binding-terminology
-```
+Review terminology changes with the affected core specification and package API.

@@ -248,12 +248,6 @@ test("Compact package lifecycle scripts share the artifact-first generation owne
     "packages/core/capabilities/same-holder/package.json",
     "packages/core/primitives/iso-registry/package.json",
     "packages/registry/status-registry/package.json",
-    "packages/prototypes/credential-families/birth/package.json",
-    "packages/prototypes/credential-families/birth-secret/package.json",
-    "packages/prototypes/credential-families/university-diploma/package.json",
-    "packages/prototypes/credential-families/digital-passport/package.json",
-    "packages/use-cases/age-gate/contract/package.json",
-    "packages/use-cases/university/contract/package.json",
   ];
   for (const relative of packageFiles) {
     const scripts = JSON.parse(readFileSync(path.join(root, relative), "utf8")).scripts;
@@ -266,10 +260,6 @@ test("Compact package lifecycle scripts share the artifact-first generation owne
     for (const command of artifactOwnerCommands) {
       assert.match(command, /ensure-compact-artifacts\.mjs[\s\S]*-- sh -c "/u, relative);
       assert.match(command, /(?:strip-managed-sourcemaps\.mjs|rm -rf src\/managed\/credentials\/compiler)/u, relative);
-    }
-    if (relative === "packages/use-cases/age-gate/contract/package.json") {
-      assert.match(scripts["compact:demo"], /--output src\/managed\/demo-revocation/u, relative);
-      assert.match(scripts["compact:demo-revocation"], /--output src\/managed\/demo/u, relative);
     }
   }
 });

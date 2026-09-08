@@ -251,16 +251,6 @@ assert.notEqual(
   "direct credentials runner options must be validated",
 );
 
-const standaloneWrapperOption = runWithTimeout([
-  "./run-credentials-standalone.sh",
-  "--not-a-real-option",
-]);
-assert.notEqual(
-  standaloneWrapperOption.status,
-  0,
-  "standalone runner must reject arguments",
-);
-
 const failClosedFixtureRoot = mkdtempSync(
   path.join(tmpdir(), "vc-run-target-catalog-fail-closed-"),
 );
@@ -359,7 +349,7 @@ assert.equal(
 const integrationReportJson = JSON.parse(integrationReportJsonResult.stdout);
 assert.deepEqual(
   integrationReportJson.didIntegrationModes.map((mode) => mode.name),
-  ["npm registry cohort", "resolver secret-storage tarball"],
+  ["npm registry cohort"],
   "DID integration JSON report should include supported mode names",
 );
 assert.equal(
@@ -372,43 +362,9 @@ assert.deepEqual(
   [
     "publish one coherent midnight-did package cohort to npm before changing VC consumers",
     "update every direct DID dependency and root override to the same exact registry version",
-    "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
     "re-run ./run.sh integration-report, then ./run.sh check-integration",
   ],
   "DID integration JSON report should include repair-flow guidance",
-);
-
-const universityReportContractResult = runWithTimeout(
-  ["./run.sh", "university-report-contract"],
-  30000,
-);
-assert.equal(
-  universityReportContractResult.status,
-  0,
-  "university-report-contract target should exit successfully",
-);
-const universityReportContract = JSON.parse(
-  universityReportContractResult.stdout,
-);
-assert.equal(
-  universityReportContract.schemaId,
-  "midnight-university-report-summary",
-  "university-report-contract target should expose the report schema id",
-);
-assert.equal(
-  universityReportContract.schemaVersion,
-  "midnight-university-report-summary.v5",
-  "university-report-contract target should expose the current report schema version",
-);
-assert.deepEqual(
-  universityReportContract.requiredPrivacyProfileArrays,
-  [
-    "productionPublicClaimFields",
-    "productionCommitmentCandidates",
-    "productionCommitmentFields",
-    "predicateOnlyFields",
-  ],
-  "university-report-contract target should expose privacy-profile arrays",
 );
 
 const cleanArtifactsFixtureRoot = mkdtempSync(

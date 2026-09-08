@@ -166,7 +166,7 @@ API is added to those facades.
 
 Implementation order and acceptance tests are maintained in
 [`../architecture/package-publication-catalog.md`](../architecture/package-publication-catalog.md)
-and [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md).
+and [`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
 [ADR-0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) separately
 fixes the accepted boundary between the deliberately narrow family definition,
 the semantic family profile, and deployment assembly; it does not accept this

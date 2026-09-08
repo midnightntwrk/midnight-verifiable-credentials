@@ -11,36 +11,12 @@ export const officialCompatibilityAliases = Object.freeze([
     target: "packages/core/capabilities/same-holder",
   },
   {
-    alias: "midnight-did-credentials-birth",
-    target: "packages/prototypes/credential-families/birth",
-  },
-  {
-    alias: "midnight-did-credentials-birth-secret",
-    target: "packages/prototypes/credential-families/birth-secret",
-  },
-  {
-    alias: "midnight-did-credentials-university-diploma",
-    target: "packages/prototypes/credential-families/university-diploma",
-  },
-  {
     alias: "midnight-did-credentials-iso-registry",
     target: "packages/core/primitives/iso-registry",
   },
   {
     alias: "midnight-did-credentials-status-registry",
     target: "packages/registry/status-registry",
-  },
-  {
-    alias: "midnight-did-credentials-openid",
-    target: "packages/protocols/openid",
-  },
-  {
-    alias: "midnight-did-credentials-protocol",
-    target: "packages/components/orchestration/protocol",
-  },
-  {
-    alias: "midnight-did-credentials-demo-contract",
-    target: "packages/use-cases/age-gate/contract",
   },
 ]);
 
@@ -52,6 +28,12 @@ export const retiredCompatibilityAliases = Object.freeze([
   "midnight-did-credentials-hello-family",
   "midnight-did-credentials-dummy-claims",
   "midnight-did-credentials-mixed-claims",
+  "midnight-did-credentials-birth",
+  "midnight-did-credentials-birth-secret",
+  "midnight-did-credentials-university-diploma",
+  "midnight-did-credentials-openid",
+  "midnight-did-credentials-protocol",
+  "midnight-did-credentials-demo-contract",
 ]);
 
 export const historicalPackageRootShells = Object.freeze([

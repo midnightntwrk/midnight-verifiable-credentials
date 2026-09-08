@@ -1,14 +1,10 @@
 # Components
 
-This top-level area is reserved for runtime wiring that composes core VC packages
-into usable applications.
+This area contains thin adapters between core VC packages and external runtime
+APIs.
 
-Target contents:
-- storage adapters
-- message bus implementations
-- agents
-- orchestration logic
-- standalone integration harnesses
+It must not contain applications, agents, workflow/session orchestration,
+transport protocols, storage engines, or deployment harnesses.
 
-Components may depend on `packages/core/`, `packages/registry/`, and `packages/protocols/`. Core packages
-must not depend on components.
+Adapters may depend on `packages/core/` and their explicit external SDKs. Core
+packages must not depend on adapters.
