@@ -45,18 +45,14 @@ fragment, then runs positive and negative same-holder vectors (different holder
 secret, challenge, and binding) against each generated contract. This is a pure
 binding predicate and adds no family or business semantics.
 
-## Compatibility and ownership
+## Ownership
 
 This package is the single canonical owner of reusable Compact VC/VP semantics.
-The old private `@midnight-ntwrk/midnight-did-credentials` package remains an
-internal compatibility facade for one migration cycle and receives no new API.
-Every retained source shared with that facade is byte-equivalence-tested; its
-explicit legacy `verification-v1` and status-attestation extensions are not
-promoted into this canonical package. The old same-holder package remains
-private and unchanged as a compatibility implementation. Technical ownership
-is the VC package maintainers; support and publication ownership remain
-unassigned until a separate graduation review. ADR-0014 remains **Proposed**;
-this candidate records an implementation graph, not normative ADR acceptance.
+The retired compatibility packages are not part of the workspace or release
+surface. Their `verification-v1`, status-attestation, and duplicate same-holder
+entrypoints are not supported by this package. Technical ownership is the VC
+package maintainers; release ownership is defined by the repository release
+contract.
 
 ## Usage boundary
 

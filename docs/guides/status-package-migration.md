@@ -16,7 +16,9 @@ Issue #495 introduces three internal candidate packages while lifecycle and publ
 - The bundled SHA-256 verifier is reference/off-chain semantics, not a Compact proof or an authority upgrade. Private external status stays unavailable until a ZK adapter can prove a challenge-scoped leaf without disclosure.
 - Signing/key custody remains injected; the authority package does not store keys.
 - Profiles with status disabled require none of these packages or any legacy registry/status-proof package. Generic issuer/holder signing selected independently by the profile remains present.
-- `@midnight-ntwrk/midnight-did-credentials-status-registry` remains a private compatibility surface for existing Compact/prototype consumers during migration. Its mixed and unauthenticated Compact entrypoints remain explicitly unsupported for production.
+- The legacy combined status-registry package and its mixed Compact entrypoints
+  have been removed. Consumers must select the explicit contract, verifier, and
+  authority boundaries above.
 
 ## Security boundary
 

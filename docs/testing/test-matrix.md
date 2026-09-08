@@ -9,7 +9,7 @@ tests belong in consumer repositories.
 | Workspace inventory | `check:workspace-catalog`, `check:workspace-manifests` |
 | Dependency boundaries | `check:package-boundaries`, `test:workspace-boundary-policy` |
 | Specification | `check:core-conformance`, `test:core-conformance` |
-| Compact generation | `test:compact-artifacts`, `fixtures:validate` |
+| Compact generation | `test:compact-artifacts` |
 | Core package behavior | workspace package `test` tasks |
 | Type safety | workspace package `typecheck` tasks |
 | Status authority split | status contract, verifier, and authority package tests |

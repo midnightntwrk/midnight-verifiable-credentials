@@ -18,10 +18,7 @@ from the frozen lockfile, and run:
 pnpm run test:did-key-normalization
 ```
 
-The repository no longer consumes resolver secret-storage tarballs or other
-local DID artifacts. Unpublished cross-repository dependencies must be copied
-only by the root identity workspace tarball automation.
-
-Top-level `midnight-did-credentials*` symlinks are local compatibility aliases
-for retained Compact packages. Canonical source lives under `packages/` and new
-TypeScript consumers must use package exports.
+The repository no longer consumes resolver secret-storage tarballs, local DID
+artifacts, or top-level compatibility aliases. Consumers use package exports.
+Unpublished cross-repository dependencies must be copied only by the root
+identity workspace tarball automation.

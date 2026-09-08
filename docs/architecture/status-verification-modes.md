@@ -1,6 +1,8 @@
 # Status Verification Modes
 
-Status: architecture note for the current `VC-MAT-20` status-contract rollout.
+Status: historical architecture note. The legacy Compact status-registry and
+attestation implementation described below has been removed from this core-only
+repository.
 
 Companion documents:
 
@@ -9,7 +11,6 @@ Companion documents:
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`./live-root-binding-feasibility.md`](./live-root-binding-feasibility.md)
 - [`./status-canonical-non-membership-bundle.md`](./status-canonical-non-membership-bundle.md)
-- [`./status-contract-closeout-boundary.md`]
 - [`./status-binding-body-root-commitment.md`](./status-binding-body-root-commitment.md)
 
 ## Purpose
@@ -148,7 +149,16 @@ Repository reference:
 
 - [`../../packages/registry/status-midnight-authority/README.md`](../../packages/registry/status-midnight-authority/README.md)
 
-## Decision rule
+## Current support boundary
+
+Only verifier-side live-state verification through
+`@midnight-ntwrk/credential-status-midnight-verifier` remains implemented here.
+The same-contract Compact registry and authority-attested proof builder described
+as modes 1 and 3 are no longer available. The authority package provides
+authorization and signing ports; it does not create or verify the deleted status
+attestation format.
+
+## Historical decision rule
 
 Choose the mode by trust and deployment shape, not by convenience:
 
@@ -173,13 +183,9 @@ verify status against a live accepted root without depending on:
 The main blocker today is still the missing in-circuit `MerkleTree.root()`
 access for the live registry tree.
 
-Until that lands, the repository should claim:
+The repository currently claims:
 
-- same-contract live verification: available
+- same-contract live verification: not implemented
 - off-chain verifier-side live-state verification: available
-- authority-attested external-registry verification: available
+- authority-attested external-registry verification: not implemented
 - final generic in-circuit live-root binding: not yet available
-
-Repository closeout note:
-
-- [`./status-contract-closeout-boundary.md`]
