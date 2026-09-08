@@ -181,8 +181,6 @@ The following files are the best first targets for the new source-comment conven
 
 ### Use-case and template surfaces
 
-- `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
-  - add ledger-purpose comments and witness explanations
 
 - `packages/use-cases/age-gate/contract/src/demo.compact`
 - `packages/use-cases/age-gate/contract/src/demo-revocation.compact`
@@ -283,7 +281,6 @@ Why:
 
 Targets:
 
-- `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
 - `packages/use-cases/age-gate/contract/src/demo.compact`
 
 These are valuable but should follow the packages/core/registry/family normalization work.

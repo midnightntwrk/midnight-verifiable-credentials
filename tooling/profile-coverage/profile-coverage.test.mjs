@@ -30,9 +30,6 @@ test("all retained prototypes have complete validated #492 manifests", () => {
       "birth",
       "birth-secret",
       "digital-passport",
-      "dummy-claims",
-      "hello-family",
-      "mixed-claims",
       "university-diploma",
     ],
   );
@@ -79,18 +76,6 @@ test("all retained prototypes have complete validated #492 manifests", () => {
       );
     }
   }
-
-  const hello = manifests.find((manifest) => manifest.prototype.id === "hello-family");
-  assert.ok(hello);
-  assert.equal(hello.profile.semantics.holderBinding.mode, "offchain-did");
-  assert.equal(
-    hello.profile.requirements.compactEntrypoints[0].sourcePath,
-    "packages/prototypes/credential-families/hello-family/src/hello-family-offchain-credential.compact",
-  );
-
-  const dummyClaims = manifests.find((manifest) => manifest.prototype.id === "dummy-claims");
-  assert.ok(dummyClaims);
-  assert.ok(dummyClaims.profile.semantics.claims.every((claim) => claim.disclosure === "selective"));
 
   const drifted = structuredClone(manifests);
   drifted[0].profile.semantics.claims[0].claimId = "manifest-only-drift";

@@ -64,15 +64,11 @@ Legacy and future packages in this table remain internal or migration evidence.
 | `credentials-status-registry` | Reusable core package with prototype trust model | Mixed: core-capability package, evolving trust model | Yes, with prototype status caveats | Registry contract, proof-protocol helpers, and off-chain status builders |
 | `credentials-birth` | Credential-family prototype | Migration inventory | No | Explicit-holder conformance example; reduce to a minimal fixture or graduate |
 | `credentials-birth-secret` | Credential-family prototype | Migration inventory with prototype status-aware extensions | No | Hidden-holder conformance example; reduce to a minimal fixture or graduate |
-| `credentials-hello-family` | Credential-family prototype | Starter / playground | No | Smallest compileable family evidence; target a minimal synthetic fixture |
-| `credentials-dummy-claims` | Credential-family prototype | Prototype laboratory | No | Direct Compact claim-surface and selective-disclosure evidence |
-| `credentials-mixed-claims` | Credential-family prototype | Prototype laboratory | No | Mixed public/direct and committed-private claim-representation evidence |
 | `credentials-university-diploma` | Credential-family prototype | Prototype use-case family | No | Private academic-flow evidence; not a product implementation or release package |
 | `credentials-digital-passport` | Credential-family prototype | Frozen graduation inventory | No | Remove its OpenID transport dependency, port it to `midnight-verifiable-credential-digital-passport`, then remove the duplicate core implementation |
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
-| `hello-verifier-contract` | Demo / prototype package | Starter / prototype | No | Smallest verifier-side starter and broad direct claim-surface lab consumer |
 | `university-verifier-contract` | Demo / prototype package | Use-case verifier contract | No | Employer and mall verifier-side request builders plus presentation checks over `credentials-university-diploma` |
 | `university-protocol` | Transport or orchestration package | Use-case reference orchestration | Limited | Threaded multi-party issuer/student/company/mall trace harness over `credentials-university-diploma` and `university-verifier-contract`; not a key-isolating SSI deployment reference |
 | `university-reporting` | Demo / prototype package | Use-case reporting surface | No | One-page JSON/Markdown summary over university BDD, transcript-export, stress, and batch-sweep artifacts |

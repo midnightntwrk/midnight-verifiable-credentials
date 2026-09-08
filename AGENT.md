@@ -101,6 +101,7 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | `packages/prototypes/` | Extraction inventory for independently owned credential-family repositories. |
 | `packages/use-cases/` | Relocation inventory for `midnight-identity-solution-examples`. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
+| `examples/core-composition/` | Private synthetic evidence that composes only the public core packages. |
 | `docs/guides/assets/` | Static explanatory assets used by human-facing guides. |
 
 Do not add BDD, product reporting, or application scenarios to the core
@@ -144,20 +145,17 @@ from a package's presence during migration.
 | `packages/protocols/openid` | `@midnight-ntwrk/midnight-did-credentials-openid` | OID4VCI/OID4VP-shaped Zod schemas and Compact value framing. |
 | `packages/prototypes/credential-families/birth` | `@midnight-ntwrk/midnight-did-credentials-birth` | Explicit-holder birth credential family. |
 | `packages/prototypes/credential-families/birth-secret` | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | Hidden/secret-holder birth credential family. |
-| `packages/prototypes/credential-families/hello-family` | `@midnight-ntwrk/midnight-did-credentials-hello-family` | Small DID-aware hello credential family. |
-| `packages/prototypes/credential-families/dummy-claims` | `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | Broad direct-claims verifier lab. |
-| `packages/prototypes/credential-families/mixed-claims` | `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | Reference lab for mixed public/direct and commitment-backed claims. |
 | `packages/prototypes/credential-families/university-diploma` | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | University diploma credential family. |
 | `packages/prototypes/credential-families/digital-passport` | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | Frozen migration evidence for the independent digital-passport repository. |
 | `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
 | `packages/use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
 | `packages/use-cases/bdd-support` | `@midnight-ntwrk/midnight-did-credentials-bdd-support` | Internal BDD support scheduled to move with or be removed alongside runnable use cases. |
-| `packages/use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
 | `packages/use-cases/university/contract` | `@midnight-ntwrk/midnight-did-university-verifier-contract` | University verifier contract path. |
 | `packages/use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
 | `packages/use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
 | `packages/use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
 | `packages/use-cases/status-openid/evidence` | `@midnight-ntwrk/status-openid-production-evidence` | Internal status/OpenID evidence scheduled for removal or external relocation. |
+| `examples/core-composition` | `@midnight-ntwrk/credential-core-composition-example` | Private, non-packable synthetic core composition evidence. |
 
 Only workspaces marked `candidate` or `supported` in
 `tooling/scripts/workspace-catalog.mjs` may be packed. Prototypes, use cases,
@@ -182,11 +180,10 @@ Rules:
 - Do not reintroduce a nested generic `publicClaims/privateClaims` envelope.
 - Each credential-family README should describe every field as public/direct, selectively disclosed, committed-private, or predicate-only.
 
-Reference docs and labs:
+Reference docs:
 
 - `docs/spec/claim-representation.md`
 - `docs/spec/midnight-credentials.md`
-- `packages/prototypes/credential-families/mixed-claims`
 
 ## Compact Composition Rules
 
@@ -285,8 +282,6 @@ Core lanes:
 Focused lanes:
 
 ```bash
-./run.sh hello-smoke
-./run.sh dummy-claims-lab
 ./run.sh revocation
 ./run.sh integration-demo-contract
 ./run.sh integration-protocol
@@ -322,7 +317,7 @@ University lanes:
 ./run.sh university-report-contract
 ```
 
-`--light` is honored by selected targets including the default full lane, `build`, `typecheck`, `test`, `hello-smoke`, `dummy-claims-lab`, and the protocol-oriented university summary/stress/cohort/export lanes. If unsupported, the runner warns that `--light` is ignored.
+`--light` is honored by selected targets including the default full lane, `build`, `typecheck`, `test`, and the protocol-oriented university summary/stress/cohort/export lanes. If unsupported, the runner warns that `--light` is ignored.
 
 ## NPM Scripts and Guards
 
@@ -363,8 +358,6 @@ pnpm run ci:lint
 pnpm run ci:typecheck
 pnpm run ci:package-tests
 pnpm run ci:revocation
-pnpm run ci:hello-smoke
-pnpm run ci:dummy-claims-lab
 pnpm run ci:integration
 pnpm run ci:university-protocol
 ```
@@ -485,7 +478,6 @@ Build cones:
 Heavy/focused lanes:
 
 - BDD smoke
-- hello-smoke
 - revocation
 - standalone demo-contract integration
 - standalone protocol integration

@@ -1,0 +1,35 @@
+{
+  "name": "@midnight-ntwrk/credential-core-composition-example",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build:core": "pnpm --dir ../../packages/core/model run build && pnpm --dir ../../packages/core/compact run build",
+    "pretest": "pnpm run build:core",
+    "pretest:ci": "pnpm run build:core",
+    "pretypecheck": "pnpm run build:core",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/credential-compact": "workspace:*",
+    "@midnight-ntwrk/credential-model": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.7"
+  },
+  "files": [
+    "src/**/*.ts",
+    "README.md",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "midnight": {
+    "maturity": "reference",
+    "packageClass": "source-only"
+  }
+}

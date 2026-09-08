@@ -96,9 +96,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     ## Layer 4: credential families (depend on layers 1-3)
     pnpm --dir packages/prototypes/credential-families/birth run build
     pnpm --dir packages/prototypes/credential-families/birth-secret run build
-    pnpm --dir packages/prototypes/credential-families/hello-family run build
-    pnpm --dir packages/prototypes/credential-families/dummy-claims run build
-    pnpm --dir packages/prototypes/credential-families/mixed-claims run build
     pnpm --dir packages/prototypes/credential-families/university-diploma run build
     pnpm --dir packages/prototypes/credential-families/digital-passport run build
 

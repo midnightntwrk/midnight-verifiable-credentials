@@ -194,11 +194,9 @@ artifact automatically.
 
 - creating a new family is still a manual scaffold exercise, not a generated
   workflow
-- the current starter set is now stronger as execution guidance than before:
-  the current stack adds a tiny DID bootstrap example, a near-zero-
-  interpretation DID + VC smoke path on top of the current hello-family and
-  hello-verifier starters, a root `./run.sh hello-smoke` lane, and a CI-native
-  `Hello Smoke Lane` parity check for the smallest checked-in handoff
+- the former DID-aware hello verifier and its dedicated smoke lane were removed
+  by the core-only migration; maintained integration examples belong outside
+  this repository
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -439,12 +437,9 @@ clean adoption map for integrators.
 - the remaining generic root-bound non-membership tail should stay documented
   as an upstream Compact/runtime dependency, not as ordinary repo work
 
-3. Turn the starter material into a broader integration kit.
-- the repo now has a compiling `hello-family`, a compiling `hello-verifier`, a
-  DID-aware hello smoke path, a broad `dummy-claims` family, and a dedicated
-  verifier-lab lane for that claim surface
-- the remaining gap is broader starter coverage for “new family”, “new
-  verifier flow”, and downstream integrator handoff
+3. Keep only the synthetic core composition example in this repository.
+- family, verifier, and DID-aware examples move to independently maintained
+  family or solution-example repositories
 
 4. Keep BDD focused on high-value living examples.
 - expand narrative coverage without duplicating the full test matrix
@@ -510,9 +505,7 @@ Record the current acceptance boundary explicitly:
 Add integrator-kit follow-up:
 
 - generated family scaffold or copy script
-- minimal runnable DID/VC smoke path on top of the now compiling hello-family
-  and hello-verifier starters, not just markdown templates
-  - now delivered on the current stack via the offchain-DID-backed hello path
+- maintain runnable DID/VC flows in the solution-examples repository
 - issuer-oriented starter
 - wallet-oriented starter
 - DID + VC handoff checklist for downstream repos consuming tarballs
@@ -544,9 +537,8 @@ concrete claim that is directly supported by checked-in evidence.
 - recorded artifact:
   - local-only VC review artifact path: `../../review/claude-3p-audit-1.txt`
 - triaged Claude findings that materially sharpen the current reading:
-  1. the current starter material needed tiny runnable entrypoints:
-     that gap is now materially reduced by the hello-family, hello-verifier,
-     DID-aware hello smoke path stack, and CI-native hello-smoke parity lane
+  1. the former starter stack demonstrated runnable entrypoints, but it was
+     removed from this repository when the core-only boundary was adopted
   2. `credentials-protocol` needed a production-safe default story:
      that gap is now materially reduced by the checked-in durable reference
      path, explicit randomness requirements, and production checklist

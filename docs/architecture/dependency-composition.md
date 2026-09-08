@@ -382,21 +382,9 @@ export circuit verifyBusinessEligibility(
 }
 ```
 
-For multi-credential policies, the Layer 3 contract should compose concrete
-families through composition-safe entry points.
-
-Current-workspace two-family compile evidence:
-
-```compact
-include "../../packages/core/compact/src/credentials/composable";
-include "../../packages/prototypes/credential-families/birth/src/birth-credential/composable";
-include "../../packages/prototypes/credential-families/hello-family/src/hello-family-credential/composable";
-```
-
-The checked-in fixture under
-`tooling/fixtures/compact-family-composition/` is explicitly non-authoritative:
-it proves include and symbol composition only, not aggregate issuer, trust,
-status, time, result-authority, or protected-mutation semantics.
+Concrete family composition belongs in independently versioned family or use-case
+repositories. This repository retains only schema-neutral core composition
+evidence under `examples/core-composition`.
 
 Adjacent-prototype example:
 

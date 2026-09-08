@@ -168,6 +168,22 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0
 
+  examples/core-composition:
+    dependencies:
+      '@midnight-ntwrk/credential-compact':
+        specifier: workspace:*
+        version: link:../../packages/core/compact
+      '@midnight-ntwrk/credential-model':
+        specifier: workspace:*
+        version: link:../../packages/core/model
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.7
+        version: 3.2.7(@types/node@26.2.0)(yaml@2.9.0)
+
   packages/components/adapters/credential-did-midnight:
     dependencies:
       '@midnight-ntwrk/midnight-did':
@@ -362,42 +378,6 @@ importers:
         specifier: '*'
         version: link:../../../core/primitives/credentials
 
-  packages/prototypes/credential-families/dummy-claims:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-
-  packages/prototypes/credential-families/hello-family:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/credential-compact':
-        specifier: '*'
-        version: link:../../../core/compact
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-      '@midnight-ntwrk/midnight-did-credentials-offchain-did':
-        specifier: '*'
-        version: link:../../../components/adapters/offchain-did
-      '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0
-        version: 0.5.0
-
-  packages/prototypes/credential-families/mixed-claims:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-
   packages/prototypes/credential-families/university-diploma:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
@@ -505,21 +485,6 @@ importers:
       '@serenity-js/core':
         specifier: ^3.44.3
         version: 3.44.3
-
-  packages/use-cases/hello-verifier/contract:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-      '@midnight-ntwrk/midnight-did-credentials-dummy-claims':
-        specifier: '*'
-        version: link:../../../prototypes/credential-families/dummy-claims
-      '@midnight-ntwrk/midnight-did-credentials-hello-family':
-        specifier: '*'
-        version: link:../../../prototypes/credential-families/hello-family
 
   packages/use-cases/status-openid/evidence:
     dependencies:
@@ -3469,10 +3434,6 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.4:
-    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
-    engines: {node: '>=12'}
-
   picomatch@4.0.5:
     resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
@@ -3944,10 +3905,6 @@ packages:
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
-
-  tinyglobby@0.2.16:
-    resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
-    engines: {node: '>=12.0.0'}
 
   tinyglobby@0.2.17:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
@@ -6889,10 +6846,6 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.4):
-    optionalDependencies:
-      picomatch: 4.0.4
-
   fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
       picomatch: 4.0.5
@@ -7650,8 +7603,6 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  picomatch@4.0.4: {}
-
   picomatch@4.0.5: {}
 
   pino-abstract-transport@2.0.0:
@@ -8278,11 +8229,6 @@ snapshots:
 
   tinyexec@0.3.2: {}
 
-  tinyglobby@0.2.16:
-    dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
-
   tinyglobby@0.2.17:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.5)
@@ -8486,8 +8432,8 @@ snapshots:
   vite@7.3.6(@types/node@26.2.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.28.1
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
       postcss: 8.5.23
       rollup: 4.60.4
       tinyglobby: 0.2.17
@@ -8511,11 +8457,11 @@ snapshots:
       expect-type: 1.3.0
       magic-string: 0.30.21
       pathe: 2.0.3
-      picomatch: 4.0.4
+      picomatch: 4.0.5
       std-env: 3.10.0
       tinybench: 2.9.0
       tinyexec: 0.3.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
       vite: 7.3.6(@types/node@26.2.0)(yaml@2.9.0)

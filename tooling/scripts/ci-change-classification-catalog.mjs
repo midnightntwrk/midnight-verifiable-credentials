@@ -6,7 +6,6 @@ import { stderr, stdout } from "node:process";
 const outputKeys = [
   "docs_only",
   "bdd_only",
-  "run_hello_smoke",
   "run_revocation",
   "run_integration_demo_contract",
   "run_integration_protocol",
@@ -69,15 +68,6 @@ export const ciChangeClassificationCatalog = {
       "packages/prototypes/credential-families/birth/*",
       "packages/prototypes/credential-families/birth-secret/*",
       "packages/use-cases/*/contract/*",
-    ],
-    run_hello_smoke: [
-      "packages/core/primitives/credentials/*",
-      "packages/registry/status-registry/*",
-      "packages/core/capabilities/same-holder/*",
-      "packages/core/primitives/iso-registry/*",
-      "packages/components/adapters/offchain-did/*",
-      "packages/prototypes/credential-families/hello-family/*",
-      "packages/use-cases/hello-verifier/contract/*",
     ],
     run_integration_demo_contract: [
       "packages/core/primitives/credentials/*",
@@ -144,7 +134,6 @@ export const classifyChangedFiles = (changedFiles) => {
   const classification = {
     docs_only: true,
     bdd_only: true,
-    run_hello_smoke: false,
     run_revocation: false,
     run_integration_demo_contract: false,
     run_integration_protocol: false,
@@ -175,7 +164,6 @@ export const classifyChangedFiles = (changedFiles) => {
     if (
       matchesAny(file, ciChangeClassificationCatalog.globalHeavyLanePatterns)
     ) {
-      classification.run_hello_smoke = true;
       classification.run_revocation = true;
       classification.run_integration_demo_contract = true;
       classification.run_integration_protocol = true;
@@ -287,7 +275,6 @@ const runSelfTest = () => {
     "packages/core/primitives/credentials/src/index.ts",
   ]);
   assert.equal(sharedCredentialPrimitive.run_revocation, true);
-  assert.equal(sharedCredentialPrimitive.run_hello_smoke, true);
   assert.equal(sharedCredentialPrimitive.run_integration_demo_contract, true);
   assert.equal(sharedCredentialPrimitive.run_integration_protocol, true);
   assert.equal(sharedCredentialPrimitive.run_university, false);

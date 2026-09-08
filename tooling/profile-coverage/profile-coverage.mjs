@@ -22,9 +22,6 @@ const manifestRelativePaths = [
   "birth/conformance/composition-manifest.json",
   "birth-secret/conformance/composition-manifest.json",
   "digital-passport/conformance/composition-manifest.json",
-  "dummy-claims/conformance/composition-manifest.json",
-  "hello-family/conformance/composition-manifest.json",
-  "mixed-claims/conformance/composition-manifest.json",
   "university-diploma/conformance/composition-manifest.json",
 ].map((relativePath) => `${prototypeRoot}/${relativePath}`);
 

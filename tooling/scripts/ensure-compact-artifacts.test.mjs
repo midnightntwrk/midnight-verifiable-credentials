@@ -250,13 +250,9 @@ test("Compact package lifecycle scripts share the artifact-first generation owne
     "packages/registry/status-registry/package.json",
     "packages/prototypes/credential-families/birth/package.json",
     "packages/prototypes/credential-families/birth-secret/package.json",
-    "packages/prototypes/credential-families/hello-family/package.json",
-    "packages/prototypes/credential-families/dummy-claims/package.json",
-    "packages/prototypes/credential-families/mixed-claims/package.json",
     "packages/prototypes/credential-families/university-diploma/package.json",
     "packages/prototypes/credential-families/digital-passport/package.json",
     "packages/use-cases/age-gate/contract/package.json",
-    "packages/use-cases/hello-verifier/contract/package.json",
     "packages/use-cases/university/contract/package.json",
   ];
   for (const relative of packageFiles) {

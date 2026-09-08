@@ -48,54 +48,6 @@ Choose one of:
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.
 
-### I need the smallest compileable family starter
-Start with:
-
-- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
-
-Use this when you need:
-
-- the smallest compileable family package in the repo
-- a starter DID -> VC -> verifier flow that stays intentionally narrow
-- a safe place to prototype minimal claim-shape tradeoffs before committing to
-  a real privacy model
-
-Do not use `credentials-hello-family` as a production privacy template.
-It is intentionally a direct-claim playground.
-
-### I need the broadest direct claim-type lab
-Start with:
-
-- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
-
-Use this when you need:
-
-- the widest currently supported direct Compact claim surface in one package
-- deterministic selective-disclosure fixtures over primitives, vectors, nested
-  structs, and nested vectors
-- a checked-in reference for what the current compiler accepts versus rejects
-- a package that can evolve as the Compact compiler accepts more native field
-  kinds
-
-Do not use `credentials-dummy-claims` as a production privacy template.
-It is intentionally a direct-claim laboratory package.
-
-### I need public claims and private commitments in one family
-Start with:
-
-- [`../../packages/prototypes/credential-families/mixed-claims/README.md`](../../packages/prototypes/credential-families/mixed-claims/README.md)
-
-Use this when you need:
-
-- a small reference for explicit/public claims in the signed credential body
-- private source facts represented as commitments
-- disclosure gates that open committed values only when requested
-- a predicate-only value that is checked against a commitment before threshold
-  verification
-
-Do not treat public claims as private. Any direct public claim can be observed
-by every party that receives the credential body.
-
 ### I need an academic diploma family and a larger verifier-flow blueprint
 Start with:
 
@@ -107,7 +59,7 @@ Start with:
 Use this when you need:
 
 - a non-revocable explicit-holder academic diploma family
-- a larger data-backed issuer/holder/verifier blueprint than `hello-family`
+- a data-backed issuer/holder/verifier blueprint
 - batch issuance planning across many holders
 - executable BDD scenarios for employer and student-discount verifier flows
 - a checked-in verifier-side contract path for employer and mall policies
@@ -285,8 +237,6 @@ These are valuable, but should be treated as evolving:
 - `credentials-protocol`
 - `credentials-demo-contract`
 - `credentials-status-registry`
-- `credentials-dummy-claims`
-- `credentials-mixed-claims`
 
 Historical placeholder name still referenced in some planning docs:
 

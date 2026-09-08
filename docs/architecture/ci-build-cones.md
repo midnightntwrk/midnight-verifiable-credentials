@@ -16,14 +16,10 @@ This repository uses four shared build cones for reusable CI outputs:
 2. `birth-family`
    - `credentials-birth`
    - `credentials-birth-secret`
-   - `credentials-hello-family`
-   - `credentials-dummy-claims`
-   - `credentials-mixed-claims`
    - `credentials-university-diploma`
    - `credentials-digital-passport`
 3. `age-gate`
    - `packages/use-cases/age-gate/contract`
-   - `packages/use-cases/hello-verifier/contract`
 4. `protocol`
    - `packages/components/orchestration/protocol`
    - `packages/use-cases/university/contract`
@@ -43,13 +39,8 @@ The cone model keeps the current workflow shape simple:
 - four uploaded artifacts
 - downstream jobs restore only the cones they consume
 
-The `birth-family` name is now historical shorthand.
-It currently groups the repo's credential-family workspaces, including the
-`hello-family` starter family package, the broad `dummy-claims` laboratory, and
-the university diploma family used by the larger university use case.
-`dummy-claims` used to sit outside the shared cones; it now belongs to
-`birth-family` so verifier-lab changes invalidate and restore with the other
-credential-family artifacts.
+The `birth-family` name is historical shorthand. It groups the remaining
+credential-family migration workspaces until they leave the core repository.
 
 The `protocol` name is also historical shorthand. It is the final downstream
 cone and owns every build output that is not assigned to the foundation,

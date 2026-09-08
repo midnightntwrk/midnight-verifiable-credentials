@@ -33,10 +33,10 @@ The repository is organized as a layered Compact-first stack.
 | Layer | Role | Package examples |
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` |
-| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab), `credentials-university-diploma` (academic prototype) |
+| Layer 2 | Concrete credential families | Migration inventory only; concrete families belong in independent repositories |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
-| Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `university-verifier-contract`, `credentials-demo-contract` |
+| Layer 3 | Verifier/business contract composition | `university-verifier-contract`, `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol`, `university-protocol` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
@@ -106,16 +106,10 @@ Credential-family packages define:
 - family-specific roots and validation circuits
 - family-specific proofs of predicates
 
-Examples currently in scope as strong repository surfaces are:
+Remaining migration examples are:
 
 - `credentials-birth`
 - `credentials-birth-secret`
-- `credentials-hello-family`
-  - current smallest compileable starter family,
-    not a production privacy template
-- `credentials-dummy-claims`
-  - current broad direct claim-surface and selective-disclosure laboratory,
-    not a production privacy template
 - `credentials-university-diploma`
   - current larger explicit-holder academic diploma prototype for batch issuance
     and verifier-policy flows
@@ -140,16 +134,6 @@ This package is a protocol/reference orchestration layer.
 
 It models reference issuance/presentation flows and simulation logic above the
 canonical Compact VC core.
-
-### `hello-verifier-contract`
-This starter and lab package owns:
-
-- the smallest checked-in verifier contract over `credentials-hello-family`
-- the offchain-DID-backed starter verifier path
-- the full-disclosure verifier lab for `credentials-dummy-claims`
-
-It should be treated as a starter and laboratory package, not as a canonical
-reusable protocol or privacy template.
 
 ### `university-verifier-contract`
 This package owns verifier-side employer and mall request/presentation checks

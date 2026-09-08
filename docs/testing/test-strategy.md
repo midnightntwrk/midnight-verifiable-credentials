@@ -31,12 +31,11 @@ Current-repository note:
 
 - the fully validated workspace spine in this repository is currently centered
   on `credentials`, `credentials-birth`, `credentials-birth-secret`,
-  `credentials-hello-family`, `credentials-dummy-claims`,
   `credentials-university-diploma`,
   `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-offchain-did`, `credentials-openid`,
   `credentials-status-registry`, `credentials-protocol`,
-  `hello-verifier-contract`, `university-verifier-contract`,
+  `university-verifier-contract`,
   `credentials-demo-contract`, and `standalone-environment`
 - additional families listed later in this strategy document describe the wider
   design space or adjacent prototype work, not current workspace packages on
@@ -80,15 +79,10 @@ Current workspace note for this dimension:
 
 - `credentials-birth` is the current explicit-holder family on `develop`
 - `credentials-birth-secret` is the current hidden-holder family on `develop`
-- `credentials-hello-family` is the current smallest compileable starter family
-  on the active stack
-- `credentials-dummy-claims` is the current broad direct claim-surface
-  laboratory on the active stack
 - `credentials-university-diploma` is the current larger explicit-holder
   academic diploma prototype on the active stack
-- `packages/use-cases/hello-verifier/contract` now validates both the smallest starter
-  verifier path over `credentials-hello-family` and the broad direct claim-surface
-  verifier path over `credentials-dummy-claims`
+- `examples/core-composition` is the only retained synthetic composition
+  example; it consumes public core exports and has no deployable contract
 - `packages/use-cases/university/contract` now validates employer and mall verifier-side
   request / presentation checks over `credentials-university-diploma`
 - `packages/use-cases/university/protocol` now validates the same actors as explicit
@@ -203,7 +197,6 @@ Current validated repository surfaces for this strategy:
 - Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-status-registry`
 - Layer 2: `credentials-birth`, `credentials-birth-secret`,
-  `credentials-hello-family`, `credentials-dummy-claims`,
   `credentials-university-diploma`
 - Layer 2.5: `credentials-offchain-did`
 - Layer 3: `credentials-demo-contract`

@@ -89,13 +89,6 @@ artifacts are tracked in
 
 - `packages/components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`
   - offchain DID runtime helper behavior
-- root `./run.sh hello-smoke` lane
-  - keeps the DID-aware starter handoff runnable with `hello-family` and
-    `hello-verifier`
-  - root `./run.sh hello-smoke --light` and `ci:hello-smoke:from-artifacts`
-    now keep the same path honest against restored build artifacts
-  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
-    description
 
 ## Credential family tests
 
@@ -120,74 +113,11 @@ artifacts are tracked in
 - blinded-secret issuance offer/request/result validation through
   `credentials-protocol`
 
-### `credentials-hello-family`
+### Synthetic core composition
 
-- claim-root/domain-separation source checks
-- presentation-request source-shape checks
-- package export-surface checks for standalone and family-prefixed composable roots
-- real Compact compiler probes for currently supported versus unsupported
-  primitive claim types
-- root `./run.sh hello-smoke` lane
-  - keeps the starter DID -> VC -> verifier handoff runnable from one repo
-    command
-  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
-    description
-
-### Two-family composition evidence
-
-- `pnpm run check:compact-composition-surfaces`
-  - compiles the canonical core exactly once with birth and hello-family
-    composables
-  - rejects shared-core includes and unprefixed VC/VP module aliases in family
-    composables
-  - reports zero proof circuits, `k` as not applicable, and no prover/verifier,
-    ZKIR, or BZKIR artifacts
-  - remains explicitly non-authoritative compile/composition evidence
-
-### `hello-verifier` starter package
-
-- `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
-  - explicit-holder starter verifier over `credentials-hello-family`
-  - offchain-DID starter verifier over `credentials-hello-family`
-- `packages/use-cases/hello-verifier/contract/src/test/dummy-claims-verifier.test.ts`
-  - full-disclosure verifier over `credentials-dummy-claims`
-  - negative coverage for omitted direct, nested-field, nested-vector, and
-    challenge-mismatch cases
-
-### `credentials-dummy-claims`
-
-- claim-root/domain-separation source checks
-- presentation-request source-shape checks
-- package export-surface checks
-- deterministic fixture-backed selective-disclosure verification across:
-  - supported direct primitive fields
-  - supported direct vector fields
-  - nested selective disclosures
-  - nested vector all-or-nothing disclosures
-- negative validation guards for:
-  - request challenge presence
-  - credential claim-root integrity
-  - holder-binding mismatch
-  - request/proof challenge mismatch
-- root `./run.sh dummy-claims-lab` lane
-  - keeps the family-level selective-disclosure lab and verifier-level lab contract
-    path runnable from one repo command
-  - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
-    description
-
-### `credentials-mixed-claims`
-
-- claim-root/domain-separation source checks
-- public/direct and private/committed claim-shape checks
-- presentation-request source-shape checks
-- package export-surface checks
-- source guards for:
-  - public claims mirrored in the presentation and matched against the signed
-    credential claims
-  - private subject-id and birth-date disclosures opening credential
-    commitments
-  - account-tier predicate witness opening the credential commitment before the
-    threshold check
+- `examples/core-composition/src/example.test.ts`
+  - consumes only public `credential-model` and `credential-compact` exports
+  - validates a synthetic family descriptor and Compact value round trip
 
 ### `credentials-university-diploma`
 
@@ -504,13 +434,6 @@ Current gap:
     - `credentials-demo-contract`
 - GitHub Actions job:
   - `Revocation Demo Lane`
-- root `ci:hello-smoke:from-artifacts`
-  - lint, restored-artifact typecheck, and restored-artifact tests across:
-    - `credentials-offchain-did`
-    - `credentials-hello-family`
-    - `hello-verifier`
-- GitHub Actions job:
-  - `Hello Smoke Lane`
 - docs-only PR fast path:
   - `Classify Changes` + `Docs-only Validation`
   - skips Compact setup, build, unit, and integration lanes when every changed
@@ -540,8 +463,6 @@ Current gap:
   - `./run.sh bdd`
   - `./run.sh bdd-negative`
   - `./run.sh bdd-all`
-  - `./run.sh hello-smoke`
-  - `./run.sh hello-smoke --light`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:
@@ -611,7 +532,6 @@ cataloged consumer check.
     - `./run.sh build`
     - `./run.sh typecheck`
     - `./run.sh test`
-    - `./run.sh hello-smoke`
 - `./run.sh lint`
   - package-boundary + lint lane
 - `./run.sh typecheck`
@@ -676,7 +596,7 @@ execution, or production trust-root policy.
 | `packages/core/model/src/test/composition-resolver.test.ts` structural/property-style negatives | Unknown and omitted fields, deployment-role omissions, unknown values, family/profile/assembly mismatches, provider capability gaps, package conflicts, and artifact gaps fail with stable paths. |
 | `packages/core/model/src/test/composition-resolver.test.ts` ADR-0015 deny table | All mandatory denial codes are exercised, including hidden/private public-only verification, missing status proof, caller time with ledger authority, non-atomic side effects, disabled status edges, uncommitted authority, and untested combinations. |
 | `tooling/fixtures/credential-model-consumer/node-esm.mjs` | A clean packed-package consumer validates and resolves a fixture composition using only package-root exports. |
-| `tooling/profile-coverage/profile-coverage.test.mjs` and [`prototype-profile-coverage.md`](./prototype-profile-coverage.md) | Seven retained-prototype manifests validate and resolve through the same #492 contracts. Deterministic property checks prove every declared supported value and every allowed pair across explicitly independent axes, fixed-axis rationales/interactions, all mandatory higher-order rows, every deny-rule negative, exact evidence links, and generated-output drift. |
+| `tooling/profile-coverage/profile-coverage.test.mjs` and [`prototype-profile-coverage.md`](./prototype-profile-coverage.md) | Four retained-prototype manifests validate and resolve through the same #492 contracts. Deterministic property checks prove every declared supported value and every allowed pair across explicitly independent axes, fixed-axis rationales/interactions, all mandatory higher-order rows, every deny-rule negative, exact evidence links, and generated-output drift. |
 
 This evidence does not implement concrete authority mechanisms, assert
 exhaustive Cartesian coverage, claim OpenID conformance, select production

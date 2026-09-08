@@ -9,6 +9,9 @@
 - machine-readable conformance:
   - [`../conformance/README.md`](../conformance/README.md)
   - for operation status and checked positive/negative vectors
+- minimal synthetic composition:
+  - [`../examples/core-composition/README.md`](../examples/core-composition/README.md)
+  - for the smallest non-product consumer of the two public core packages
 - superseded specification source material:
   - [`spec/midnight-credentials.md`](./spec/midnight-credentials.md)
   - retained as migration input until surviving rules move to the top-level
@@ -83,15 +86,6 @@
 - protocol reference path:
   - [`guides/credentials-protocol-reference-path.md`](./guides/credentials-protocol-reference-path.md)
   - for engineers who need the current checked-in Node/file-backed orchestration path
-- prototype execution ladder:
-  - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
-  - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes
-- DID + VC hello smoke path:
-  - [`guides/did-vc-hello-smoke-path.md`](./guides/did-vc-hello-smoke-path.md)
-  - for engineers who need the smallest checked-in DID bootstrap to VC verification handoff
-- dummy-claims verifier lab:
-  - [`guides/dummy-claims-verifier-lab.md`](./guides/dummy-claims-verifier-lab.md)
-  - for engineers exercising the broad direct Compact claim surface against a verifier contract
 - university diploma use case:
   - [`../packages/use-cases/university/README.md`](../packages/use-cases/university/README.md)
   - [`../packages/use-cases/university/operator-guide.md`](../packages/use-cases/university/operator-guide.md)
@@ -114,15 +108,6 @@
 - current status-registry package surface:
   - [`../packages/registry/status-registry/README.md`](../packages/registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
-- current smallest starter family package surface:
-  - [`../packages/prototypes/credential-families/hello-family/README.md`](../packages/prototypes/credential-families/hello-family/README.md)
-  - for engineers who need the smallest compileable starter family package
-- broad direct claim-surface laboratory:
-  - [`../packages/prototypes/credential-families/dummy-claims/README.md`](../packages/prototypes/credential-families/dummy-claims/README.md)
-  - for engineers who need the widest currently supported direct Compact claim surface in one family package
-- mixed public/private claim-representation laboratory:
-  - [`../packages/prototypes/credential-families/mixed-claims/README.md`](../packages/prototypes/credential-families/mixed-claims/README.md)
-  - for engineers who need explicit public claims plus committed private claims in one family package
 - academic diploma family prototype:
   - [`../packages/prototypes/credential-families/university-diploma/README.md`](../packages/prototypes/credential-families/university-diploma/README.md)
   - for engineers who need a larger explicit-holder family with non-revocable issuance and verifier-side grade policies
