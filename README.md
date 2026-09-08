@@ -23,7 +23,7 @@ consumer repositories.
 
 | Package | Stage | Purpose |
 | --- | --- | --- |
-| `@midnight-ntwrk/credential-model` | supported | Configuration, descriptors, codecs, and validation |
+| `@midnight-ntwrk/credential-model` | supported | Family definitions, descriptors, codecs, and validation |
 | `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
 
 The [release contract](./docs/architecture/package-release-contract.md) is the

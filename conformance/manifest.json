@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "specification": "0.2-draft",
   "normativeRoot": "spec",
   "implementationPackages": [
@@ -14,119 +14,31 @@
       "version": "0.2.0"
     }
   ],
-  "supportedConfigurations": [],
   "operations": [
     {
       "id": "validate-schema-reference",
-      "role": "core",
       "section": "spec/data-model.md",
-      "state": "implemented",
       "vectorCategory": "schema-reference"
     },
     {
       "id": "derive-proof-context-tags",
-      "role": "core",
       "section": "spec/canonical-encoding.md",
-      "state": "implemented",
       "vectorCategory": "compact-generated"
     },
     {
       "id": "encode-compact-value",
-      "role": "core",
       "section": "spec/canonical-encoding.md",
-      "state": "implemented",
       "vectorCategory": "compact-value-encoding"
     },
     {
       "id": "decode-compact-value",
-      "role": "core",
       "section": "spec/canonical-encoding.md",
-      "state": "implemented",
       "vectorCategory": "compact-value-encoding"
     },
     {
-      "id": "validate-credential-configuration",
-      "role": "core",
-      "section": "spec/configuration.md",
-      "state": "unsupported",
-      "reason": "The bounded configuration codec and complete matrix validator are not yet exposed by credential-model."
-    },
-    {
-      "id": "create-issuance-offer",
-      "role": "issuer",
-      "section": "spec/issuance.md",
-      "state": "unsupported",
-      "reason": "No canonical protocol-independent TypeScript operation and round-trip vectors exist yet."
-    },
-    {
-      "id": "create-holder-request",
-      "role": "holder",
-      "section": "spec/issuance.md",
-      "state": "unsupported",
-      "reason": "Hidden-holder issuance is not approved for production conformance."
-    },
-    {
-      "id": "issue-credential",
-      "role": "issuer",
-      "section": "spec/issuance.md",
-      "state": "unsupported",
-      "reason": "Only lower-level generic Compact primitives exist; no complete family-neutral operation is vectored."
-    },
-    {
-      "id": "process-issued-credential",
-      "role": "holder",
-      "section": "spec/issuance.md",
-      "state": "unsupported",
-      "reason": "No canonical holder processing result and negative vector set exist yet."
-    },
-    {
-      "id": "create-presentation-request",
-      "role": "verifier",
-      "section": "spec/presentation.md",
-      "state": "unsupported",
-      "reason": "No canonical request codec and freshness contract exist yet."
-    },
-    {
-      "id": "create-presentation",
-      "role": "holder",
-      "section": "spec/presentation.md",
-      "state": "unsupported",
-      "reason": "No complete family-neutral presentation operation and vector set exist yet."
-    },
-    {
-      "id": "verify-presentation",
-      "role": "verifier",
-      "section": "spec/verification.md",
-      "state": "unsupported",
-      "reason": "A bounded core verification result and complete negative vectors are not yet implemented."
-    },
-    {
       "id": "validate-explicit-holder-binding",
-      "role": "core",
       "section": "spec/holder-binding.md",
-      "state": "implemented",
       "vectorCategory": "holder-binding"
-    },
-    {
-      "id": "validate-hidden-holder-binding",
-      "role": "core",
-      "section": "spec/holder-binding.md",
-      "state": "unsupported",
-      "reason": "Existing experimental circuits lack the complete production security and unlinkability vector contract."
-    },
-    {
-      "id": "create-status-evidence",
-      "role": "issuer",
-      "section": "spec/status.md",
-      "state": "unsupported",
-      "reason": "Generic authority, freshness, and accepted-root semantics are not complete."
-    },
-    {
-      "id": "verify-status-evidence",
-      "role": "verifier",
-      "section": "spec/status.md",
-      "state": "unsupported",
-      "reason": "Binding-only checks do not prove current non-revocation."
     }
   ],
   "vectors": [

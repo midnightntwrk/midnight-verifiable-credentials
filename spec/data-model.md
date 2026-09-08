@@ -1,10 +1,12 @@
 # Data Model
 
-## Credential configuration
+## Credential family definition
 
-A configuration identifies one schema version and selects bounded semantic
-capabilities. Its normative fields are defined in
-[configuration](./configuration.md).
+A TypeScript family definition identifies a versioned schema, bounded
+capabilities, required proof artifacts, package requirements, and codecs. It
+contains no executable provider, transport, deployment, wallet, or business
+policy. Family definitions belong to independently released credential-family
+repositories.
 
 ## Schema reference
 
@@ -37,18 +39,12 @@ The claim and commitment layouts are fixed by the credential family. A core
 implementation MUST NOT accept an unbounded runtime claim map as canonical
 Compact input.
 
-## Presentation request
-
-A canonical presentation request contains an exact schema/configuration
-reference, a fresh verifier challenge, requested disclosures, requested
-predicates, and any required status freshness input. It contains no redirect,
-HTTP, OIDC, DIDComm, session-store, or application-decision fields.
-
 ## Presentation
 
-A canonical VP contains an exact request binding, the referenced credential
-identity or body binding, requested disclosures and predicate results, holder
-binding, applicable status evidence, and a presentation-context proof.
+A Compact presentation envelope contains a format version, exact schema
+reference, credential claim-root binding, issuer verification-method reference,
+holder binding, and family-defined disclosures. Family contracts define
+request, challenge, predicate, and policy semantics around that envelope.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.

@@ -1,28 +1,22 @@
 # Conformance
 
 Conformance is claimed for an exact specification version, implementation
-package set and versions, supported configuration set, operation set, and the
-SHA-256 digest of the exact manifest bytes recorded in
-[`../conformance/manifest.sha256`](../conformance/manifest.sha256). Partial
-primitive coverage is not a complete configuration claim. The manifest records
-and binds the SHA-256 digest of every conformance vector it references.
+package set and versions, operation set, and the SHA-256 digest of the exact
+manifest bytes recorded in
+[`../conformance/manifest.sha256`](../conformance/manifest.sha256). The manifest
+records and binds the SHA-256 digest of every conformance vector it references.
 
-A supported configuration MUST have:
+An implemented operation MUST have:
 
-1. schema/configuration validation vectors;
-2. issuer-to-holder-to-verifier positive round trips;
-3. canonical TypeScript/Compact encoding or hash vectors;
-4. malformed and substitution negative vectors;
-5. replay, holder-binding, disclosure, predicate, expiry, and status negatives
-   when those capabilities apply; and
-6. a clean package consumer using only public exports.
+1. positive vectors;
+2. malformed and substitution negative vectors where applicable;
+3. a normative section describing its semantics; and
+4. a clean package consumer using only public exports.
 
-The machine-readable source of current implementation status is
-[`../conformance/manifest.json`](../conformance/manifest.json). An operation
-marked `unsupported` has no conformant callable implementation in this version;
-its manifest state and reason are the explicit unsupported outcome. A future
-dispatcher that exposes such an operation MUST reject it explicitly. Absence of
-an error or silent downgrade is not conformance.
+The machine-readable source of current implementation coverage is
+[`../conformance/manifest.json`](../conformance/manifest.json). It lists only
+operations with callable implementation and vectors. Future protocol work is
+not recorded as an unsupported pseudo-surface.
 
 Normative test entrypoints MUST import only the exact retained core surfaces in
 the manifest allowlist. Protocol, credential-family, use-case, application, and

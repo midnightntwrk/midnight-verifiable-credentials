@@ -11,9 +11,8 @@ The Compact binding contains a `holderVerificationMethodRef` with a Midnight
 core implementation MUST reject a zero contract address or zero method ID
 before comparing the credential and presentation bindings.
 
-Explicit binding primitives are verified for non-status Midnight-contract
-configurations. A full ceremony claim still requires issuance, presentation,
-and negative round-trip vectors.
+The conformance vectors verify explicit-binding structure and equality only.
+Credential-family repositories own end-to-end protocol and negative vectors.
 
 ## Hidden binding
 
@@ -22,9 +21,10 @@ without exposing that secret. A conforming design requires domain-separated
 commitments, challenge binding, secure randomness, opening consistency,
 request binding, unlinkability analysis, and negative vectors.
 
-Hidden and blinded-secret holder binding are currently unsupported for a
-production conformance claim. Existing experimental circuits MUST NOT be
-advertised as completing those requirements.
+The package contains experimental secret and blinded-secret composition
+primitives, but the core conformance manifest does not claim a complete hidden
+holder-binding operation. Credential-family repositories own the threat model,
+protocol, and negative vectors required to use those primitives.
 
-An implementation MUST NOT downgrade hidden binding to explicit or unbound
-credentials when the requested capability is unsupported.
+A consumer that selects hidden holder binding MUST NOT silently substitute an
+explicit or unbound credential.

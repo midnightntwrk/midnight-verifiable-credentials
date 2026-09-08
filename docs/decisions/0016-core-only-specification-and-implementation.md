@@ -33,10 +33,11 @@ The supported public release graph contains exactly:
 - `@midnight-ntwrk/credential-model`;
 - `@midnight-ntwrk/credential-compact`.
 
-The core may define canonical inputs and results for issuer, holder, and
-verifier ceremonies. It must not send protocol messages, manage sessions,
-select infrastructure, persist product workflows, or make business decisions.
-Unsupported capability combinations fail explicitly.
+The core defines reusable data structures and cryptographic composition
+primitives. Complete issuer, holder, and verifier ceremonies belong to the
+credential-family or application repository that selects their policy and
+protocol. The core conformance manifest lists implemented, vectored operations;
+it is not a backlog of unsupported future protocols.
 
 The repository does not own:
 

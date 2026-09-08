@@ -15,11 +15,7 @@ normative requirements.
 
 - [Terminology](./terminology.md)
 - [Data model](./data-model.md)
-- [Configuration](./configuration.md)
 - [Canonical encoding](./canonical-encoding.md)
-- [Issuance](./issuance.md)
-- [Presentation](./presentation.md)
-- [Verification](./verification.md)
 - [Holder binding](./holder-binding.md)
 - [Status](./status.md)
 - [Security considerations](./security-considerations.md)
@@ -28,14 +24,14 @@ normative requirements.
 
 ## Scope
 
-The specification owns canonical credential configuration, VC/VP objects,
-issuer/holder/verifier ceremonies, holder binding, generic status semantics,
-canonical Compact-value encoding, and conformance requirements.
+The specification owns family definitions, VC/VP envelopes, holder-binding and
+status-binding primitives, canonical Compact-value encoding, and conformance
+requirements for implemented operations.
 
-It does not define transports, OIDC, DIDComm, DApp Connector APIs, wallet
-sessions, persistence, credential-family schemas, UI rendering, deployment,
-or application policy. Those layers carry canonical objects without changing
-their security meaning.
+It does not define issuance, presentation, or verification protocols;
+transports; OIDC; DIDComm; DApp Connector APIs; wallets; persistence;
+credential-family schemas; UI rendering; deployment; or application policy.
+Consumer repositories compose those concerns around the core primitives.
 
 ## Change rule
 
