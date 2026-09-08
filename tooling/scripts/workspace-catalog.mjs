@@ -32,12 +32,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => {
     consumerChecks: options.consumerChecks ?? [],
     publicationDependencies: options.publicationDependencies ?? [],
     releaseTasks:
-      options.releaseTasks ??
-      (packageClass === "dist" ? distReleaseTasks : sourceOnlyReleaseTasks),
-    pack: releaseStage !== "internal",
-    packageTest: options.packageTest ?? true,
-    testFromArtifacts:
-      options.testFromArtifacts ?? ["exec", "vitest", "run"],
+      packageClass === "dist" ? distReleaseTasks : sourceOnlyReleaseTasks,
   };
 };
 
@@ -67,11 +62,7 @@ export const workspaceCatalog = [
 
 export const allowedMaturityValues = new Set(["core", "reference"]);
 export const allowedPackageClasses = new Set(["dist", "source-only"]);
-export const allowedReleaseStages = new Set([
-  "internal",
-  "candidate",
-  "supported",
-]);
+export const allowedReleaseStages = new Set(["internal", "supported"]);
 export const allowedConsumerChecks = new Set([
   "node",
   "typescript",
@@ -79,7 +70,7 @@ export const allowedConsumerChecks = new Set([
   "browser",
   "compact",
 ]);
-export const releaseCandidateFiles = () => [
+export const releasePackageFiles = () => [
   "dist/**",
   "README.md",
   "CHANGELOG.md",
@@ -89,22 +80,10 @@ export const workspaceCatalogByPath = new Map(
   workspaceCatalog.map((entry) => [entry.path, entry]),
 );
 export const packableWorkspacePaths = workspaceCatalog
-  .filter((entry) => entry.pack)
-  .map((entry) => entry.path);
-export const packageTestWorkspacePaths = workspaceCatalog
-  .filter(
-    (entry) =>
-      entry.packageTest && entry.releaseTasks.includes("test:ci"),
-  )
-  .map((entry) => entry.path);
-export const releaseCandidateWorkspacePaths = workspaceCatalog
-  .filter((entry) => entry.releaseStage === "candidate")
+  .filter((entry) => entry.releaseStage === "supported")
   .map((entry) => entry.path);
 export const supportedWorkspacePaths = workspaceCatalog
   .filter((entry) => entry.releaseStage === "supported")
-  .map((entry) => entry.path);
-export const releaseWorkspacePaths = workspaceCatalog
-  .filter((entry) => entry.releaseStage !== "internal")
   .map((entry) => entry.path);
 
 const repoRoot = path.resolve(
@@ -190,7 +169,7 @@ const checkCatalog = () => {
     );
     assert.ok(
       entry.releaseStage === "internal" || entry.packageClass === "dist",
-      `${entry.path} release candidates and supported packages must be dist packages`,
+      `${entry.path} supported packages must be dist packages`,
     );
     assert.equal(
       entry.releaseStage !== "internal",
@@ -227,17 +206,6 @@ const checkCatalog = () => {
         `${entry.path} consumer fixture must include package.json`,
       );
     }
-    assert.equal(
-      entry.pack,
-      entry.releaseStage !== "internal",
-      `${entry.path} pack eligibility must follow its release stage`,
-    );
-    assert.equal(
-      entry.packageTest,
-      true,
-      `${entry.path} must participate in package tests`,
-    );
-
     const packageJson = workspacePackageJsonByPath.get(entry.path);
     assert.equal(packageJson.midnight?.maturity, entry.maturity);
     assert.equal(packageJson.midnight?.packageClass, entry.packageClass);
@@ -270,7 +238,7 @@ const checkCatalog = () => {
         assert.notEqual(
           dependencyEntry?.releaseStage,
           "internal",
-          `${entry.path} publication dependency ${dependencyName} must be candidate or supported`,
+          `${entry.path} publication dependency ${dependencyName} must be supported`,
         );
       }
     }
@@ -285,15 +253,7 @@ const checkCatalog = () => {
       );
     }
     if (entry.releaseTasks.includes("test:ci")) {
-      assert.ok(
-        Array.isArray(entry.testFromArtifacts) &&
-          entry.testFromArtifacts.length > 0,
-        `${entry.path} must define an artifact-backed test command`,
-      );
-      assert.ok(
-        !entry.testFromArtifacts.join(" ").includes("test:integration"),
-        `${entry.path} artifact-backed tests must exclude Docker integration`,
-      );
+      assert.ok(packageJson.scripts?.["test:ci"], `${entry.path} must define test:ci`);
     }
   }
 };
@@ -355,16 +315,12 @@ const executeTypecheckFromArtifacts = () => {
 };
 
 const executeTestsFromArtifacts = () => {
-  // Scenario workspaces are exercised by their dedicated BDD targets. Keep
-  // Java/report generation out of the package-test lane while retaining their
-  // manifest and typecheck coverage in this catalog.
-  const eligible = workspaceCatalog.filter(
-    (entry) =>
-      entry.packageTest && entry.releaseTasks.includes("test:ci"),
+  const eligible = workspaceCatalog.filter((entry) =>
+    entry.releaseTasks.includes("test:ci"),
   );
 
   for (const entry of eligible) {
-    const args = ["--dir", entry.path, ...entry.testFromArtifacts];
+    const args = ["--dir", entry.path, "exec", "vitest", "run"];
     stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
     const invocation = pnpmInvocation(args);
     const result = spawnSync(invocation.command, invocation.args, {
@@ -384,23 +340,11 @@ if (isDirectExecution) {
   const [command, value] = process.argv.slice(2);
   try {
     switch (command) {
-      case "--json":
-        stdout.write(`${JSON.stringify({ workspaces: workspaceCatalog }, null, 2)}\n`);
-        break;
-      case "--paths":
-        printLines(workspaceCatalog.map((entry) => entry.path));
-        break;
       case "--packable-paths":
         printLines(packableWorkspacePaths);
         break;
-      case "--release-paths":
-        printLines(releaseWorkspacePaths);
-        break;
       case "--publishable-paths":
         printLines(supportedWorkspacePaths);
-        break;
-      case "--package-test-paths":
-        printLines(packageTestWorkspacePaths);
         break;
       case "--exec-task":
         executeReleaseTask(value);
@@ -417,7 +361,7 @@ if (isDirectExecution) {
         break;
       default:
         stderr.write(
-          "Usage: workspace-catalog.mjs --check | --json | --paths | --packable-paths | --release-paths | --publishable-paths | --package-test-paths | --exec-task <task> | --exec-typecheck-from-artifacts | --exec-tests-from-artifacts\n",
+          "Usage: workspace-catalog.mjs --check | --packable-paths | --publishable-paths | --exec-task <task> | --exec-typecheck-from-artifacts | --exec-tests-from-artifacts\n",
         );
         process.exit(command === undefined ? 0 : 1);
     }

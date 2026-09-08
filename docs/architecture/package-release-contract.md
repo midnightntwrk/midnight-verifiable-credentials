@@ -2,28 +2,25 @@
 
 Status: canonical package release and publication policy.
 
-This repository builds tarballs only for packages approved as candidates or
-supported releases. A successful `pnpm pack` is not a support promise. Release
-state is explicit in
-`tooling/scripts/workspace-catalog.mjs` and is independent from package class,
-maturity, and pack eligibility.
+This repository builds tarballs only for supported public packages. Release
+state is explicit in `tooling/scripts/workspace-catalog.mjs`; private examples
+are tested in the workspace but are never packed or published.
 
 ## Release stages
 
 | Stage | Meaning | Registry publication |
 | --- | --- | --- |
 | `internal` | Workspace-owned package or harness with no external compatibility or support commitment | Forbidden |
-| `candidate` | Pre-1.0 tarball with checked metadata, exports, dependency ranges, changelog, and package contents | Forbidden until graduation |
 | `supported` | Approved public package with named ownership, compatibility policy, consumer evidence, provenance, and release operations | Allowed through the approved registry workflow |
 
-Packages remain `private: true` and omit `publishConfig` until they graduate
-to `supported`. A supported package must set `private: false` and select the
-approved npmjs registry with provenance.
+Internal workspaces remain `private: true` and omit `publishConfig`. A supported
+package must set `private: false` and select the approved npmjs registry with
+provenance.
 
 Concrete credential families, prototypes, product contracts, and use-case
-packages are not eligible for `candidate` or `supported` status in this
-repository. They remain private evidence workspaces until they are reduced to
-conformance fixtures, removed, or graduated to an independent repository.
+packages are not eligible for `supported` status in this repository. Thin,
+private examples may demonstrate composition; product code belongs in an
+independent repository.
 
 ## Current inventory
 
@@ -41,13 +38,13 @@ technical ownership belongs to `@midnightntwrk/ex-identus`; npmjs credentials,
 the protected release environment, and release incident operations belong to
 `@midnightntwrk/mn-sre`. Security disclosure follows `SECURITY.md`.
 
-## Candidate contract
+## Package contract
 
-Every candidate must:
+Every supported package must:
 
 - use a pre-1.0 semantic version until its API and authority guarantees are
   approved;
-- publish one truthful runtime format; current VC candidates are ESM-only and
+- publish one truthful runtime format; current VC packages are ESM-only and
   must not expose `require` conditions that resolve to ESM files;
 - declare explicit exports for JavaScript, declarations, generated artifacts,
   and audited Compact source entrypoints;
@@ -94,10 +91,10 @@ vectors through both canonical roots, explicit Compact exports, and a
 forbidden-artifact tarball scan. It does not claim status-registry authority or
 verification-v1 compatibility.
 
-## Graduation
+## Admission
 
-A candidate may become `supported` only after all of these are approved and
-implemented:
+A package may enter this repository's supported release set only after all of
+these are approved and implemented:
 
 1. clean non-workspace Node ESM, TypeScript, bundler, and Compact consumers
    install and exercise the generated tarball;
@@ -129,7 +126,7 @@ scoped npm token and proves that both the requested prerelease tag and
 
 The publish allowlist is emitted by
 `tooling/scripts/workspace-catalog.mjs --publishable-paths`. Only `supported`
-entries appear. Candidate tarballs may be tested locally but remain private.
+entries appear. Private workspaces are never packed.
 See the [npmjs publication runbook](../guides/npmjs-publication.md) for
 dispatch, authentication, rollback, and incident procedures.
 
@@ -144,7 +141,7 @@ pnpm run artifacts:pack
 pnpm run test:release-package-consumers
 ```
 
-`artifacts:pack` packs only candidate and supported workspaces. It validates
+`artifacts:pack` packs only supported workspaces. It validates
 tarball paths, required files, allowlisted contents, packed metadata, and every
 concrete or wildcard export target before the packaging target succeeds. It
 then packs each release package again and requires an identical SHA-256 digest,

@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 const root = resolve(import.meta.dirname, "../..");
 
-describe("candidate package surface", () => {
+describe("public package surface", () => {
   it("has explicit ESM exports and no verification-v1 source", () => {
     const manifest = JSON.parse(
       readFileSync(resolve(root, "package.json"), "utf8"),
