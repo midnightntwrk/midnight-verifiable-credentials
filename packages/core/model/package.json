@@ -45,7 +45,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
-    "clean": "rm -rf dist coverage .cache *.tsbuildinfo",
+    "clean": "rm -rf dist coverage .cache .turbo *.tsbuildinfo",
     "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
   },
   "files": [

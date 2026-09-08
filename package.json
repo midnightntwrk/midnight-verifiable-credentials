@@ -18,7 +18,7 @@
     "check:security-workflows": "node ./tooling/scripts/check-security-workflows.mjs",
     "check:vulnerability-exceptions": "node ./tooling/scripts/check-vulnerability-exceptions.mjs",
     "check:workspace-catalog": "node ./tooling/scripts/workspace-catalog.mjs --check",
-    "clean:artifacts": "node ./tooling/scripts/clean-artifacts.mjs",
+    "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "check:turbo-cache-policy": "node ./tooling/scripts/check-turbo-cache-policy.mjs",
