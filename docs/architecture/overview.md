@@ -16,17 +16,13 @@ normative specification + conformance vectors
                     |
            model and Compact core
                     |
-       proof and credential-status ports
-                    |
- internal Midnight status components + thin DID adapter
+            thin DID adapter
                     |
  external credential-family and application repositories
 ```
 
-- `packages/core` owns runtime-neutral models, Compact primitives, and generic
-  proof/status interfaces.
-- `packages/registry` contains internal Midnight implementations of status
-  interfaces. Read, mutation, and authorization responsibilities stay separate.
+- `packages/core` owns runtime-neutral models, bounded descriptors, and
+  generic Compact primitives.
 - `packages/components/adapters` translates external SDK types at a narrow
   boundary. It does not own VC issuance or presentation workflows.
 - `examples/core-composition` proves package composition with synthetic data.

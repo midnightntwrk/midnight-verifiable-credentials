@@ -19,25 +19,8 @@ export const classifyWorkspacePath = (workspacePath) => {
   assert.equal(root, "packages", `workspace must live under packages/ or examples/: ${workspacePath}`);
   return {
     core: "reusable-core",
-    registry: "registry",
-    protocols: "protocol",
     components: "component",
-    prototypes: "prototype",
-    "use-cases": "use-case",
   }[area] ?? "unknown";
-};
-
-export const leastPrivilegeStatusDependencyEdges = {
-  "packages/registry/status-midnight-contract": ["packages/core/status"],
-  "packages/registry/status-midnight-verifier": [
-    "packages/core/proofs",
-    "packages/core/status",
-    "packages/registry/status-midnight-contract",
-  ],
-  "packages/registry/status-midnight-authority": [
-    "packages/core/proofs",
-    "packages/registry/status-midnight-contract",
-  ],
 };
 
 const packageJson = (workspacePath) =>
@@ -58,18 +41,6 @@ export const workspaceDependencyPaths = (workspacePath) => {
     .map((name) => workspaceByName.get(name))
     .filter(Boolean)
     .sort();
-};
-
-export const transitiveWorkspaceDependencyPaths = (workspacePath) => {
-  const visited = new Set();
-  const pending = [...workspaceDependencyPaths(workspacePath)];
-  while (pending.length > 0) {
-    const dependency = pending.shift();
-    if (dependency === undefined || visited.has(dependency)) continue;
-    visited.add(dependency);
-    pending.push(...workspaceDependencyPaths(dependency));
-  }
-  return [...visited].sort();
 };
 
 const sourceExtensions = new Set([
@@ -150,16 +121,8 @@ const classAllows = (ownerClass, dependencyClass) => {
   switch (ownerClass) {
     case "reusable-core":
       return dependencyClass === "reusable-core";
-    case "registry":
-      return dependencyClass === "reusable-core";
-    case "protocol":
-      return dependencyClass === "reusable-core" || dependencyClass === "registry";
     case "component":
-      return dependencyClass === "reusable-core" || dependencyClass === "registry" || dependencyClass === "protocol";
-    case "prototype":
-      return dependencyClass === "reusable-core" || dependencyClass === "registry" || dependencyClass === "protocol" || dependencyClass === "component" || dependencyClass === "prototype";
-    case "use-case":
-      return dependencyClass !== "unknown";
+      return dependencyClass === "reusable-core";
     case "example":
       return dependencyClass === "reusable-core";
     default:
@@ -172,26 +135,15 @@ export const findBoundaryViolations = () => {
   for (const entry of workspaceCatalog) {
     const ownerClass = classifyWorkspacePath(entry.path);
     const dependencies = workspaceDependencyPaths(entry.path);
-    const statusEdges = leastPrivilegeStatusDependencyEdges[entry.path] ?? [];
     if (ownerClass === "unknown") {
       violations.push(`${entry.path}: unknown ownership area`);
       continue;
     }
-    if (statusEdges.length > 0 && JSON.stringify(dependencies) !== JSON.stringify([...statusEdges].sort())) {
-      violations.push(`${entry.path}: least-privilege status edges drifted; expected exactly [${[...statusEdges].sort().join(", ")}] but found [${dependencies.join(", ")}]`);
-    }
     for (const dependency of dependencies) {
       const dependencyClass = classifyWorkspacePath(dependency);
-      if (statusEdges.includes(dependency)) continue;
       if (!classAllows(ownerClass, dependencyClass)) {
         violations.push(`${entry.path} (${ownerClass}) must not depend on ${dependency} (${dependencyClass})`);
       }
-    }
-    // Never allow family-specific or application packages into reusable core,
-    // even if a future broad class rule is changed.
-    if (ownerClass === "reusable-core" && dependencies.some((dependency) =>
-      dependency.startsWith("packages/prototypes/") || dependency.startsWith("packages/use-cases/"))) {
-      violations.push(`${entry.path}: reusable core must remain family-agnostic and application-free`);
     }
   }
   return violations;
@@ -204,7 +156,7 @@ export const checkPackageBoundaries = () => {
     process.exitCode = 1;
     return false;
   }
-  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} core, registry, adapter, and example workspaces.`);
+  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} core, adapter, and example workspaces.`);
   return true;
 };
 

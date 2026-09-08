@@ -4,21 +4,20 @@
 
 | Class | Location | Responsibility |
 | --- | --- | --- |
-| Core | `packages/core` | Models, Compact VC/VP primitives, and generic proof/status interfaces |
-| Registry | `packages/registry` | Reusable status implementations for Midnight |
+| Core | `packages/core` | Models and Compact VC/VP primitives |
 | Adapter | `packages/components/adapters` | Thin integration with DID runtime APIs |
 | Fixture | `examples/core-composition` | Minimal non-product composition test |
 
 ## Dependency direction
 
 ```text
-fixture -> adapter/registry -> core
+fixture -> core
+adapter -> core
 ```
 
-Core code must not import adapters or registry implementations. Registry
-packages may implement core status ports. Adapters may consume core interfaces
-and explicitly declared external SDKs. The fixture may consume published package
-entrypoints from any retained layer.
+Core code must not import adapters. Adapters may consume core interfaces and
+explicitly declared external SDKs. The fixture may consume published package
+entrypoints from the retained core.
 
 ## Forbidden surfaces
 

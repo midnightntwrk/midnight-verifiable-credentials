@@ -11,8 +11,7 @@ Keep here:
 
 - protocol-independent VC/VP data models and Compact primitives
 - holder-binding and same-holder primitives
-- proof and artifact interfaces
-- reusable credential-status semantics and Midnight status components
+- bounded capability and proof-artifact descriptors
 - thin DID adapters
 - normative specifications and conformance vectors
 - minimal synthetic composition fixtures
@@ -46,14 +45,14 @@ work in them.
 Allowed dependency direction:
 
 ```text
-examples -> adapters/status components -> core
+examples -> core
+adapters -> core
 ```
 
 Rules:
 
 - `packages/core` must not depend on adapters, registries, examples, or apps.
 - adapters may depend on core packages and their explicit external SDKs.
-- registry packages may depend on core packages, never on examples or products.
 - packages must expose public entrypoints; consumers must not deep-import
   another package's `src`, `dist`, or generated implementation files.
 - keep the workspace dependency graph acyclic.

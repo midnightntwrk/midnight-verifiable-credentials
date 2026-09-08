@@ -59,7 +59,9 @@ closure.
 
 The first implementation of this decision promoted
 `@midnight-ntwrk/credential-model` to `supported` and added the manual npmjs
-workflow. RC2 extends that supported surface to the four reusable VC
-packages listed above. The workflow publishes only supported paths from the
-workspace catalog and cannot publish prototypes, use cases, or internal
-compatibility workspaces.
+workflow. RC2 extended that surface to the five packages listed above.
+[ADR-0016](./0016-core-only-specification-and-implementation.md) subsequently
+reduced the maintained release graph to `credential-model`,
+`credential-compact`, and the temporarily retained `credential-did-midnight`
+adapter. The workflow publishes only supported paths from the current workspace
+catalog.
