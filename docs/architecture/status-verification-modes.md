@@ -112,7 +112,7 @@ That last point matters:
 
 Repository reference:
 
-- [`../../packages/registry/status-registry/src/registry-state-observation.ts`](../../packages/registry/status-registry/src/registry-state-observation.ts)
+- [`../../packages/registry/status-midnight-verifier/README.md`](../../packages/registry/status-midnight-verifier/README.md)
 
 ## Mode 3: External-registry authority-attested Layer 3 verification
 
@@ -146,7 +146,7 @@ but it cannot create the authority-attested proof artifact.
 
 Repository reference:
 
-- [`../../packages/registry/status-registry/src/attestation-builder.ts`](../../packages/registry/status-registry/src/attestation-builder.ts)
+- [`../../packages/registry/status-midnight-authority/README.md`](../../packages/registry/status-midnight-authority/README.md)
 
 ## Decision rule
 

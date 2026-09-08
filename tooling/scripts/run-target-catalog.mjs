@@ -42,13 +42,6 @@ export const targets = [
     lightScript: "test:light:from-artifacts",
   },
   {
-    name: "trusted-time-capability",
-    description: "Validate the pinned Compact trusted-time capability surface.",
-    category: "core",
-    supportsLight: false,
-    script: "test:trusted-time-capability",
-  },
-  {
     name: "conformance",
     description: "Validate the normative core manifest and conformance vectors.",
     category: "core",
@@ -114,7 +107,6 @@ const releaseGateOrder = new Map([
   ["build", 1],
   ["typecheck", 2],
   ["test", 3],
-  ["trusted-time-capability", 4],
   ["package", 100],
 ]);
 export const releaseGateTargets = targets

@@ -1,30 +1,17 @@
 // Compatibility alias catalog shared by cleanup, alias materialization, and DID
 // integration reporting. Official aliases are kept as symlinks; removable
 // shells are historical generated roots that clean-artifacts may classify.
-export const officialCompatibilityAliases = Object.freeze([
-  {
-    alias: "midnight-did-credentials",
-    target: "packages/core/primitives/credentials",
-  },
-  {
-    alias: "midnight-did-credentials-same-holder",
-    target: "packages/core/capabilities/same-holder",
-  },
-  {
-    alias: "midnight-did-credentials-iso-registry",
-    target: "packages/core/primitives/iso-registry",
-  },
-  {
-    alias: "midnight-did-credentials-status-registry",
-    target: "packages/registry/status-registry",
-  },
-]);
+export const officialCompatibilityAliases = Object.freeze([]);
 
 export const officialCompatibilityAliasNames = new Set(
   officialCompatibilityAliases.map(({ alias }) => alias),
 );
 
 export const retiredCompatibilityAliases = Object.freeze([
+  "midnight-did-credentials",
+  "midnight-did-credentials-same-holder",
+  "midnight-did-credentials-iso-registry",
+  "midnight-did-credentials-status-registry",
   "midnight-did-credentials-hello-family",
   "midnight-did-credentials-dummy-claims",
   "midnight-did-credentials-mixed-claims",

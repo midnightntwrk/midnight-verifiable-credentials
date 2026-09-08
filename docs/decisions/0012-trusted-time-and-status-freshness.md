@@ -46,8 +46,7 @@ authority sequence detects rollback but cannot prove that a delayed first
 submission is current.
 
 The pinned Compact 0.30.0 stack exposes comparison-only nominal Unix-seconds
-time. As recorded in the
-[`Compact trusted-time capability report`](../testing/compact-trusted-time-capability-2026-07-17.md),
+time. A historical repository capability probe established that
 asserting both `blockTimeGte(candidate)` and `blockTimeLte(candidate)` proves a
 disclosed candidate equals nominal context time. The comparison primitives can
 constrain that nominal time against disclosed validity bounds, but they do not
@@ -141,4 +140,3 @@ defined by:
 
 - [`../spec/status-time-authority-v1.md`](../spec/status-time-authority-v1.md)
 - [`../testing/status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md)
-- [`../testing/compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md)
