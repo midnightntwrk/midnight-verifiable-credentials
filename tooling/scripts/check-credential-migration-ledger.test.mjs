@@ -68,4 +68,130 @@ test("approved ledgers cannot retain pending approvals or blockers", () => {
   assert.ok(
     errors.some((error) => error.includes("cannot be approved with blockers")),
   );
+  assert.ok(
+    errors.some((error) => error.includes("lacks an assigned accountable owner")),
+  );
+  assert.ok(
+    errors.some((error) => error.includes("lacks immutable destination evidence")),
+  );
+});
+
+test("a resolved ledger can transition to approved", () => {
+  const approved = clone();
+  approved.status = "approved";
+  for (const entry of approved.entries) {
+    entry.approval.vcMaintainers = "approved";
+    entry.blockers = [];
+    if (entry.accountableOwner.includes("unassigned")) {
+      entry.accountableOwner = "@midnightntwrk/credential-owner";
+    }
+    if (entry.outcome === "graduate") {
+      entry.approval.productOwner = "approved";
+      entry.targetRepository ??=
+        "https://github.com/midnightntwrk/midnight-credential-university";
+      entry.destinationEvidence = [
+        {
+          repository: entry.targetRepository,
+          revision: "0123456789abcdef0123456789abcdef01234567",
+          validationChecks: [
+            `${entry.targetRepository}/actions/runs/123456789`,
+          ],
+        },
+      ];
+    }
+  }
+  assert.deepEqual(validateMigrationLedger(approved), []);
+});
+
+test("approved ledgers require an actionable owner reference", () => {
+  const approved = clone();
+  approved.status = "approved";
+  for (const entry of approved.entries) {
+    entry.accountableOwner = "@midnightntwrk/credential-owner";
+    entry.approval.vcMaintainers = "approved";
+    entry.blockers = [];
+    if (entry.outcome === "graduate") {
+      entry.approval.productOwner = "approved";
+      entry.targetRepository ??=
+        "https://github.com/midnightntwrk/midnight-credential-university";
+      entry.destinationEvidence = [
+        {
+          repository: entry.targetRepository,
+          revision: "0123456789abcdef0123456789abcdef01234567",
+          validationChecks: [
+            `${entry.targetRepository}/actions/runs/123456789`,
+          ],
+        },
+      ];
+    }
+  }
+  approved.entries[0].accountableOwner = "none";
+  assert.ok(
+    validateMigrationLedger(approved).some((error) =>
+      error.includes("lacks an assigned accountable owner"),
+    ),
+  );
+});
+
+test("entries can be approved incrementally while the ledger remains proposed", () => {
+  const incremental = clone();
+  const entry = incremental.entries.find(({ id }) => id === "birth-family");
+  entry.approval.vcMaintainers = "approved";
+  entry.blockers = [];
+  assert.deepEqual(validateMigrationLedger(incremental), []);
+});
+
+test("graduation evidence is immutable and bound to the destination", () => {
+  const missing = clone();
+  const missingEntry = missing.entries.find(
+    ({ id }) => id === "digital-passport-family",
+  );
+  missingEntry.approval.vcMaintainers = "approved";
+  missingEntry.approval.productOwner = "approved";
+  missingEntry.blockers = [];
+  assert.ok(
+    validateMigrationLedger(missing).some((error) =>
+      error.includes("blockers must be a non-empty array"),
+    ),
+  );
+
+  const invalid = clone();
+  const entry = invalid.entries.find(
+    ({ id }) => id === "digital-passport-family",
+  );
+  entry.destinationEvidence = [
+    {
+      repository: "https://github.com/midnightntwrk/not-the-target",
+      revision: "0000000000000000000000000000000000000000",
+      validationChecks: ["https://github.com/"],
+    },
+  ];
+  const errors = validateMigrationLedger(invalid);
+  assert.ok(errors.some((error) => error.includes("must equal targetRepository")));
+  assert.ok(errors.some((error) => error.includes("full Git commit SHA")));
+  assert.ok(
+    errors.some((error) =>
+      error.includes("must contain destination GitHub Actions run URLs"),
+    ),
+  );
+});
+
+test("repository evidence paths cannot escape the checkout", () => {
+  const invalid = clone();
+  invalid.entries[0].evidence = ["../package.json"];
+  assert.ok(
+    validateMigrationLedger(invalid).some((error) =>
+      error.includes("must stay within the repository"),
+    ),
+  );
+
+  invalid.entries[0].evidence = [
+    "packages/prototypes/credential-families/birth/package.json",
+  ];
+  invalid.entries[0].workspaces[0].path = "../midnight-did";
+  assert.ok(
+    validateMigrationLedger(invalid).some((error) =>
+      error.includes("workspace must stay within the repository"),
+    ),
+  );
 });

@@ -19,6 +19,7 @@ const migrationPrefixes = [
 ];
 const outcomes = new Set(["graduate", "reduce-to-fixture", "remove"]);
 const approvalStates = new Set(["approved", "pending", "not-required"]);
+const assignedOwnerPattern = /^(?:@[a-z0-9][a-z0-9-]*(?:\/[a-z0-9][a-z0-9-]*)?|maintainers of [a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9-]*)$/i;
 
 export const migrationWorkspacePaths = (catalog = workspaceCatalog) =>
   catalog
@@ -33,6 +34,7 @@ export const validateMigrationLedger = (
   { root = repoRoot, catalog = workspaceCatalog } = {},
 ) => {
   const errors = [];
+  const repositoryRoot = path.resolve(root);
   const requireText = (value, label) => {
     if (typeof value !== "string" || value.trim() === "") {
       errors.push(`${label} must be non-empty`);
@@ -43,6 +45,32 @@ export const validateMigrationLedger = (
       errors.push(
         `${label} must be ${allowEmpty ? "an array" : "a non-empty array"}`,
       );
+    }
+  };
+  const isRepositoryPath = (value) => {
+    if (typeof value !== "string" || path.isAbsolute(value)) return false;
+    const relative = path.relative(repositoryRoot, path.resolve(repositoryRoot, value));
+    return relative !== "" && relative !== ".." && !relative.startsWith(`..${path.sep}`);
+  };
+  const hasAssignedOwner = (value) =>
+    typeof value === "string" && assignedOwnerPattern.test(value.trim());
+  const isDestinationValidationUrl = (value, targetRepository) => {
+    if (typeof value !== "string" || typeof targetRepository !== "string") {
+      return false;
+    }
+    try {
+      const validationUrl = new URL(value);
+      const targetUrl = new URL(targetRepository);
+      const targetPath = targetUrl.pathname.replace(/\/$/, "");
+      return (
+        validationUrl.origin === "https://github.com" &&
+        targetUrl.origin === validationUrl.origin &&
+        new RegExp(`^${targetPath}/actions/runs/\\d+(?:/job/\\d+)?/?$`).test(
+          validationUrl.pathname,
+        )
+      );
+    } catch {
+      return false;
     }
   };
 
@@ -67,6 +95,11 @@ export const validateMigrationLedger = (
     requireList(entry.supportedProfiles, `${label}.supportedProfiles`, true);
     requireList(entry.knownLimitations, `${label}.knownLimitations`);
     requireList(entry.evidence, `${label}.evidence`);
+    requireList(
+      entry.destinationEvidence,
+      `${label}.destinationEvidence`,
+      true,
+    );
     requireText(entry.exitCriterion, `${label}.exitCriterion`);
     requireText(entry.implementationIssue, `${label}.implementationIssue`);
     if (
@@ -79,6 +112,10 @@ export const validateMigrationLedger = (
     }
     if (!outcomes.has(entry.outcome)) errors.push(`${label}.outcome is invalid`);
 
+    const requiredApprovals = [entry.approval?.vcMaintainers];
+    if (entry.outcome === "graduate") {
+      requiredApprovals.push(entry.approval?.productOwner);
+    }
     for (const state of [
       entry.approval?.vcMaintainers,
       entry.approval?.productOwner,
@@ -87,7 +124,23 @@ export const validateMigrationLedger = (
         errors.push(`${label}.approval contains an invalid state`);
       }
     }
-    requireList(entry.blockers, `${label}.blockers`, ledger?.status === "approved");
+    if (entry.approval?.vcMaintainers === "not-required") {
+      errors.push(`${label}.approval.vcMaintainers cannot be not-required`);
+    }
+    if (
+      entry.outcome === "graduate" &&
+      entry.approval?.productOwner === "not-required"
+    ) {
+      errors.push(`${label}.approval.productOwner is required for graduation`);
+    }
+    if (
+      entry.outcome !== "graduate" &&
+      entry.approval?.productOwner !== "not-required"
+    ) {
+      errors.push(
+        `${label}.approval.productOwner must be not-required for ${entry.outcome}`,
+      );
+    }
 
     if (entry.outcome === "graduate" && entry.targetRepository === null) {
       if (!(entry.blockers ?? []).some((blocker) => /repository/i.test(blocker))) {
@@ -107,10 +160,51 @@ export const validateMigrationLedger = (
       errors.push(`${label}.targetRepository must be null for ${entry.outcome}`);
     }
 
+    if (
+      entry.outcome !== "graduate" &&
+      (entry.destinationEvidence ?? []).length > 0
+    ) {
+      errors.push(`${label}.destinationEvidence is only valid for graduation`);
+    }
+    for (const [evidenceIndex, evidence] of (
+      entry.destinationEvidence ?? []
+    ).entries()) {
+      const evidenceLabel = `${label}.destinationEvidence[${evidenceIndex}]`;
+      requireText(evidence.repository, `${evidenceLabel}.repository`);
+      if (evidence.repository !== entry.targetRepository) {
+        errors.push(`${evidenceLabel}.repository must equal targetRepository`);
+      }
+      if (
+        !/^[0-9a-f]{40}$/.test(evidence.revision ?? "") ||
+        /^0{40}$/.test(evidence.revision)
+      ) {
+        errors.push(`${evidenceLabel}.revision must be a full Git commit SHA`);
+      }
+      requireList(evidence.validationChecks, `${evidenceLabel}.validationChecks`);
+      for (const check of evidence.validationChecks ?? []) {
+        if (!isDestinationValidationUrl(check, entry.targetRepository)) {
+          errors.push(
+            `${evidenceLabel}.validationChecks must contain destination GitHub Actions run URLs`,
+          );
+        }
+      }
+    }
+
+    const requiresBlocker =
+      requiredApprovals.includes("pending") ||
+      (entry.outcome === "graduate" &&
+        (entry.destinationEvidence ?? []).length === 0) ||
+      !hasAssignedOwner(entry.accountableOwner);
+    requireList(entry.blockers, `${label}.blockers`, !requiresBlocker);
+
     for (const evidencePath of entry.evidence ?? []) {
       requireText(evidencePath, `${label}.evidence[]`);
-      if (typeof evidencePath === "string" && !existsSync(path.join(root, evidencePath))) {
-        errors.push(`${label}.evidence does not exist: ${evidencePath}`);
+      if (typeof evidencePath === "string") {
+        if (!isRepositoryPath(evidencePath)) {
+          errors.push(`${label}.evidence must stay within the repository: ${evidencePath}`);
+        } else if (!existsSync(path.resolve(repositoryRoot, evidencePath))) {
+          errors.push(`${label}.evidence does not exist: ${evidencePath}`);
+        }
       }
     }
 
@@ -119,7 +213,17 @@ export const validateMigrationLedger = (
       requireText(workspace.packageName, `${label}.workspaces[].packageName`);
       if (typeof workspace.path !== "string") continue;
       listed.push(workspace.path);
-      const manifestPath = path.join(root, workspace.path, "package.json");
+      if (!isRepositoryPath(workspace.path)) {
+        errors.push(
+          `${label} workspace must stay within the repository: ${workspace.path}`,
+        );
+        continue;
+      }
+      const manifestPath = path.resolve(
+        repositoryRoot,
+        workspace.path,
+        "package.json",
+      );
       if (!existsSync(manifestPath)) {
         errors.push(`${label} workspace manifest does not exist: ${workspace.path}`);
         continue;
@@ -149,6 +253,9 @@ export const validateMigrationLedger = (
 
   if (ledger?.status === "approved") {
     for (const entry of ledger.entries ?? []) {
+      if (!hasAssignedOwner(entry.accountableOwner)) {
+        errors.push(`${entry.id} lacks an assigned accountable owner`);
+      }
       if (entry.approval?.vcMaintainers !== "approved") {
         errors.push(`${entry.id} lacks VC maintainer approval`);
       }
@@ -160,6 +267,12 @@ export const validateMigrationLedger = (
       }
       if ((entry.blockers ?? []).length > 0) {
         errors.push(`${entry.id} cannot be approved with blockers`);
+      }
+      if (
+        entry.outcome === "graduate" &&
+        (entry.destinationEvidence ?? []).length === 0
+      ) {
+        errors.push(`${entry.id} lacks immutable destination evidence`);
       }
     }
   }

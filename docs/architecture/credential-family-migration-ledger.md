@@ -50,6 +50,16 @@ closes:
 4. The JSON ledger is updated to record approvals and immutable destination
    evidence.
 
+Each graduation evidence record binds the target repository to a non-zero, full
+Git commit SHA and one or more GitHub Actions run URLs from that destination.
+Individual rows may clear their blockers as their required approvals arrive
+while the overall ledger remains `proposed`; `approved` is valid only after
+every row is resolved.
+
+An approved row identifies its accountable owner as a GitHub user/team mention
+or as the maintainer group of a named destination repository. Placeholder owner
+text cannot satisfy the gate.
+
 Physical migration issues may prepare bounded work, but local deletion follows
 consumer-first validation through released packages or immutable prerelease
 artifacts.
@@ -67,4 +77,5 @@ The gate compares this ledger with every workspace under
 `packages/prototypes/credential-families/` and `packages/use-cases/` in the
 workspace catalog. It rejects missing, duplicate, or unknown workspaces,
 package-name drift, invalid outcomes, incomplete lifecycle fields, missing
-evidence files, and unrecorded destination blockers.
+evidence files, unrecorded destination blockers, unassigned owners, and missing
+immutable graduation evidence.
