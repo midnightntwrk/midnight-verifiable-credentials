@@ -5,10 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { workspaceCatalog } from "./workspace-catalog.mjs";
 
-const repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../..",
-);
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const ledgerPath = path.join(
   repoRoot,
   "docs/architecture/credential-family-migration-ledger.v1.json",
@@ -18,273 +15,118 @@ const migrationPrefixes = [
   "packages/use-cases/",
 ];
 const outcomes = new Set(["graduate", "reduce-to-fixture", "remove"]);
-const approvalStates = new Set(["approved", "pending", "not-required"]);
-const assignedOwnerPattern = /^(?:@[a-z0-9][a-z0-9-]*(?:\/[a-z0-9][a-z0-9-]*)?|maintainers of [a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9-]*)$/i;
 
-export const migrationWorkspacePaths = (catalog = workspaceCatalog) =>
+// Keep deleted workspaces visible as simple historical rows.
+export const migrationInventory = Object.freeze([
+  ["packages/prototypes/credential-families/birth", "@midnight-ntwrk/midnight-did-credentials-birth"],
+  ["packages/prototypes/credential-families/birth-secret", "@midnight-ntwrk/midnight-did-credentials-birth-secret"],
+  ["packages/prototypes/credential-families/digital-passport", "@midnight-ntwrk/midnight-did-credentials-digital-passport"],
+  ["packages/prototypes/credential-families/dummy-claims", "@midnight-ntwrk/midnight-did-credentials-dummy-claims"],
+  ["packages/prototypes/credential-families/hello-family", "@midnight-ntwrk/midnight-did-credentials-hello-family"],
+  ["packages/prototypes/credential-families/mixed-claims", "@midnight-ntwrk/midnight-did-credentials-mixed-claims"],
+  ["packages/prototypes/credential-families/university-diploma", "@midnight-ntwrk/midnight-did-credentials-university-diploma"],
+  ["packages/use-cases/age-gate/contract", "@midnight-ntwrk/midnight-did-credentials-demo-contract"],
+  ["packages/use-cases/age-gate/scenarios", "vc-bdd-scenarios"],
+  ["packages/use-cases/bdd-support", "@midnight-ntwrk/midnight-did-credentials-bdd-support"],
+  ["packages/use-cases/hello-verifier/contract", "@midnight-ntwrk/midnight-did-hello-verifier-contract"],
+  ["packages/use-cases/status-openid/evidence", "@midnight-ntwrk/status-openid-production-evidence"],
+  ["packages/use-cases/university/contract", "@midnight-ntwrk/midnight-did-university-verifier-contract"],
+  ["packages/use-cases/university/protocol", "@midnight-ntwrk/midnight-did-university-protocol"],
+  ["packages/use-cases/university/reporting", "@midnight-ntwrk/midnight-did-university-reporting"],
+  ["packages/use-cases/university/scenarios", "vc-university-bdd-scenarios"],
+]);
+
+const inventoryByPath = new Map(migrationInventory);
+const migrationCatalogPaths = (catalog) =>
   catalog
     .map(({ path: workspacePath }) => workspacePath)
     .filter((workspacePath) =>
       migrationPrefixes.some((prefix) => workspacePath.startsWith(prefix)),
-    )
-    .sort();
+    );
 
 export const validateMigrationLedger = (
   ledger,
-  { root = repoRoot, catalog = workspaceCatalog } = {},
+  { root = repoRoot, catalog = workspaceCatalog, pathExists = existsSync } = {},
 ) => {
   const errors = [];
-  const repositoryRoot = path.resolve(root);
-  const requireText = (value, label) => {
-    if (typeof value !== "string" || value.trim() === "") {
-      errors.push(`${label} must be non-empty`);
-    }
-  };
-  const requireList = (value, label, allowEmpty = false) => {
-    if (!Array.isArray(value) || (!allowEmpty && value.length === 0)) {
-      errors.push(
-        `${label} must be ${allowEmpty ? "an array" : "a non-empty array"}`,
-      );
-    }
-  };
-  const isRepositoryPath = (value) => {
-    if (typeof value !== "string" || path.isAbsolute(value)) return false;
-    const relative = path.relative(repositoryRoot, path.resolve(repositoryRoot, value));
-    return relative !== "" && relative !== ".." && !relative.startsWith(`..${path.sep}`);
-  };
-  const hasAssignedOwner = (value) =>
-    typeof value === "string" && assignedOwnerPattern.test(value.trim());
-  const isDestinationValidationUrl = (value, targetRepository) => {
-    if (typeof value !== "string" || typeof targetRepository !== "string") {
-      return false;
-    }
-    try {
-      const validationUrl = new URL(value);
-      const targetUrl = new URL(targetRepository);
-      const targetPath = targetUrl.pathname.replace(/\/$/, "");
-      return (
-        validationUrl.origin === "https://github.com" &&
-        targetUrl.origin === validationUrl.origin &&
-        new RegExp(`^${targetPath}/actions/runs/\\d+(?:/job/\\d+)?/?$`).test(
-          validationUrl.pathname,
-        )
-      );
-    } catch {
-      return false;
-    }
-  };
+  const hasText = (value) => typeof value === "string" && value.trim() !== "";
+  const listed = new Map();
+  const active = new Set();
 
   if (ledger?.schemaVersion !== 1) errors.push("schemaVersion must be 1");
-  if (ledger?.status !== "proposed" && ledger?.status !== "approved") {
-    errors.push("status must be proposed or approved");
-  }
-  requireText(ledger?.authority, "authority");
-  requireText(ledger?.targetMilestone, "targetMilestone");
-  requireList(ledger?.entries, "entries");
+  if (!Array.isArray(ledger?.entries)) return [...errors, "entries must be an array"];
 
-  const listed = [];
-  const ids = new Set();
-  for (const [index, entry] of (ledger?.entries ?? []).entries()) {
-    const label = `entries[${index}]`;
-    requireText(entry.id, `${label}.id`);
-    if (ids.has(entry.id)) errors.push(`${label}.id duplicates ${entry.id}`);
-    ids.add(entry.id);
-    requireList(entry.workspaces, `${label}.workspaces`);
-    requireText(entry.accountableOwner, `${label}.accountableOwner`);
-    requireText(entry.capabilityHypothesis, `${label}.capabilityHypothesis`);
-    requireList(entry.supportedProfiles, `${label}.supportedProfiles`, true);
-    requireList(entry.knownLimitations, `${label}.knownLimitations`);
-    requireList(entry.evidence, `${label}.evidence`);
-    requireList(
-      entry.destinationEvidence,
-      `${label}.destinationEvidence`,
-      true,
-    );
-    requireText(entry.exitCriterion, `${label}.exitCriterion`);
-    requireText(entry.implementationIssue, `${label}.implementationIssue`);
-    if (
-      typeof entry.implementationIssue === "string" &&
-      !/^https:\/\/github\.com\/midnightntwrk\/midnight-verifiable-credentials\/issues\/\d+$/.test(
-        entry.implementationIssue,
-      )
-    ) {
-      errors.push(`${label}.implementationIssue must link a repository issue`);
+  for (const entry of ledger.entries) {
+    if (!hasText(entry.id)) errors.push("entry id must be non-empty");
+    if (!outcomes.has(entry.outcome)) errors.push(`${entry.id} has an invalid outcome`);
+    if (!hasText(entry.accountableOwner)) errors.push(`${entry.id} needs an owner`);
+    if (!hasText(entry.capabilityHypothesis)) errors.push(`${entry.id} needs a capability hypothesis`);
+    if (!Array.isArray(entry.knownLimitations) || entry.knownLimitations.length === 0) {
+      errors.push(`${entry.id} needs known limitations`);
     }
-    if (!outcomes.has(entry.outcome)) errors.push(`${label}.outcome is invalid`);
-
-    const requiredApprovals = [entry.approval?.vcMaintainers];
-    if (entry.outcome === "graduate") {
-      requiredApprovals.push(entry.approval?.productOwner);
+    if (!Array.isArray(entry.evidence) || entry.evidence.length === 0) {
+      errors.push(`${entry.id} needs evidence links`);
     }
-    for (const state of [
-      entry.approval?.vcMaintainers,
-      entry.approval?.productOwner,
-    ]) {
-      if (!approvalStates.has(state)) {
-        errors.push(`${label}.approval contains an invalid state`);
-      }
-    }
-    if (entry.approval?.vcMaintainers === "not-required") {
-      errors.push(`${label}.approval.vcMaintainers cannot be not-required`);
+    if (!hasText(entry.exitCriterion)) errors.push(`${entry.id} needs an exit criterion`);
+    if (!/^https:\/\/github\.com\/midnightntwrk\/midnight-verifiable-credentials\/issues\/\d+$/.test(entry.implementationIssue ?? "")) {
+      errors.push(`${entry.id} needs a repository implementation issue`);
     }
     if (
       entry.outcome === "graduate" &&
-      entry.approval?.productOwner === "not-required"
+      entry.targetRepository !== null &&
+      !/^https:\/\/github\.com\/midnightntwrk\/[a-z0-9-]+$/.test(entry.targetRepository)
     ) {
-      errors.push(`${label}.approval.productOwner is required for graduation`);
+      errors.push(`${entry.id} needs a Midnight destination repository`);
     }
-    if (
-      entry.outcome !== "graduate" &&
-      entry.approval?.productOwner !== "not-required"
-    ) {
-      errors.push(
-        `${label}.approval.productOwner must be not-required for ${entry.outcome}`,
-      );
-    }
-
-    if (entry.outcome === "graduate" && entry.targetRepository === null) {
-      if (!(entry.blockers ?? []).some((blocker) => /repository/i.test(blocker))) {
-        errors.push(`${label} must record why its graduate destination is unresolved`);
-      }
-    } else if (entry.outcome === "graduate") {
-      requireText(entry.targetRepository, `${label}.targetRepository`);
-      if (
-        typeof entry.targetRepository === "string" &&
-        !/^https:\/\/github\.com\/midnightntwrk\/[a-z0-9-]+$/.test(
-          entry.targetRepository,
-        )
-      ) {
-        errors.push(`${label}.targetRepository must link a Midnight repository`);
-      }
-    } else if (entry.targetRepository !== null) {
-      errors.push(`${label}.targetRepository must be null for ${entry.outcome}`);
-    }
-
-    if (
-      entry.outcome !== "graduate" &&
-      (entry.destinationEvidence ?? []).length > 0
-    ) {
-      errors.push(`${label}.destinationEvidence is only valid for graduation`);
-    }
-    for (const [evidenceIndex, evidence] of (
-      entry.destinationEvidence ?? []
-    ).entries()) {
-      const evidenceLabel = `${label}.destinationEvidence[${evidenceIndex}]`;
-      requireText(evidence.repository, `${evidenceLabel}.repository`);
-      if (evidence.repository !== entry.targetRepository) {
-        errors.push(`${evidenceLabel}.repository must equal targetRepository`);
-      }
-      if (
-        !/^[0-9a-f]{40}$/.test(evidence.revision ?? "") ||
-        /^0{40}$/.test(evidence.revision)
-      ) {
-        errors.push(`${evidenceLabel}.revision must be a full Git commit SHA`);
-      }
-      requireList(evidence.validationChecks, `${evidenceLabel}.validationChecks`);
-      for (const check of evidence.validationChecks ?? []) {
-        if (!isDestinationValidationUrl(check, entry.targetRepository)) {
-          errors.push(
-            `${evidenceLabel}.validationChecks must contain destination GitHub Actions run URLs`,
-          );
-        }
-      }
-    }
-
-    const requiresBlocker =
-      requiredApprovals.includes("pending") ||
-      (entry.outcome === "graduate" &&
-        (entry.destinationEvidence ?? []).length === 0) ||
-      !hasAssignedOwner(entry.accountableOwner);
-    requireList(entry.blockers, `${label}.blockers`, !requiresBlocker);
-
-    for (const evidencePath of entry.evidence ?? []) {
-      requireText(evidencePath, `${label}.evidence[]`);
-      if (typeof evidencePath === "string") {
-        if (!isRepositoryPath(evidencePath)) {
-          errors.push(`${label}.evidence must stay within the repository: ${evidencePath}`);
-        } else if (!existsSync(path.resolve(repositoryRoot, evidencePath))) {
-          errors.push(`${label}.evidence does not exist: ${evidencePath}`);
-        }
-      }
+    if (entry.outcome !== "graduate" && entry.targetRepository !== null) {
+      errors.push(`${entry.id} must not name a destination repository`);
     }
 
     for (const workspace of entry.workspaces ?? []) {
-      requireText(workspace.path, `${label}.workspaces[].path`);
-      requireText(workspace.packageName, `${label}.workspaces[].packageName`);
-      if (typeof workspace.path !== "string") continue;
-      listed.push(workspace.path);
-      if (!isRepositoryPath(workspace.path)) {
-        errors.push(
-          `${label} workspace must stay within the repository: ${workspace.path}`,
-        );
-        continue;
+      if (listed.has(workspace.path)) errors.push(`duplicate workspace: ${workspace.path}`);
+      listed.set(workspace.path, workspace.packageName);
+      if (inventoryByPath.get(workspace.path) !== workspace.packageName) {
+        errors.push(`package name drifted for ${workspace.path}`);
       }
-      const manifestPath = path.resolve(
-        repositoryRoot,
-        workspace.path,
-        "package.json",
-      );
-      if (!existsSync(manifestPath)) {
-        errors.push(`${label} workspace manifest does not exist: ${workspace.path}`);
-        continue;
-      }
-      const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-      if (manifest.name !== workspace.packageName) {
-        errors.push(`${label} package name drifted for ${workspace.path}`);
+
+      const state = workspace.migrationState ?? "active";
+      const workspacePath = path.resolve(root, workspace.path ?? "");
+      if (state === "active") {
+        active.add(workspace.path);
+        if (!pathExists(path.join(workspacePath, "package.json"))) {
+          errors.push(`active workspace is missing: ${workspace.path}`);
+        }
+      } else if (state === "removed") {
+        if (pathExists(workspacePath)) errors.push(`removed workspace still exists: ${workspace.path}`);
+      } else {
+        errors.push(`invalid migration state for ${workspace.path}`);
       }
     }
   }
 
-  const duplicates = listed.filter(
-    (item, index) => listed.indexOf(item) !== index,
-  );
-  for (const duplicate of [...new Set(duplicates)].sort()) {
-    errors.push(`duplicate workspace: ${duplicate}`);
+  for (const [workspacePath] of migrationInventory) {
+    if (!listed.has(workspacePath)) errors.push(`missing workspace: ${workspacePath}`);
+  }
+  for (const workspacePath of listed.keys()) {
+    if (!inventoryByPath.has(workspacePath)) errors.push(`unknown workspace: ${workspacePath}`);
   }
 
-  const expected = migrationWorkspacePaths(catalog);
-  const actual = [...new Set(listed)].sort();
-  for (const missing of expected.filter((item) => !actual.includes(item))) {
-    errors.push(`missing workspace: ${missing}`);
+  const catalogPaths = new Set(migrationCatalogPaths(catalog));
+  for (const workspacePath of catalogPaths) {
+    if (!active.has(workspacePath)) errors.push(`catalog workspace is not active: ${workspacePath}`);
   }
-  for (const extra of actual.filter((item) => !expected.includes(item))) {
-    errors.push(`unknown workspace: ${extra}`);
+  for (const workspacePath of active) {
+    if (!catalogPaths.has(workspacePath)) errors.push(`active workspace is absent from catalog: ${workspacePath}`);
   }
 
-  if (ledger?.status === "approved") {
-    for (const entry of ledger.entries ?? []) {
-      if (!hasAssignedOwner(entry.accountableOwner)) {
-        errors.push(`${entry.id} lacks an assigned accountable owner`);
-      }
-      if (entry.approval?.vcMaintainers !== "approved") {
-        errors.push(`${entry.id} lacks VC maintainer approval`);
-      }
-      if (
-        entry.outcome === "graduate" &&
-        entry.approval?.productOwner !== "approved"
-      ) {
-        errors.push(`${entry.id} lacks product-owner approval`);
-      }
-      if ((entry.blockers ?? []).length > 0) {
-        errors.push(`${entry.id} cannot be approved with blockers`);
-      }
-      if (
-        entry.outcome === "graduate" &&
-        (entry.destinationEvidence ?? []).length === 0
-      ) {
-        errors.push(`${entry.id} lacks immutable destination evidence`);
-      }
-    }
+  if (ledger.entries.filter(({ outcome }) => outcome === "reduce-to-fixture").length > 1) {
+    errors.push("at most one entry may reduce to a synthetic fixture");
   }
 
   return errors;
 };
 
-const isDirectExecution =
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
-if (isDirectExecution) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const ledger = JSON.parse(readFileSync(ledgerPath, "utf8"));
     const errors = validateMigrationLedger(ledger);

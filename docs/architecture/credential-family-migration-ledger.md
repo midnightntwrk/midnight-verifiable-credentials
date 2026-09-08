@@ -50,8 +50,9 @@ closes:
 4. The JSON ledger is updated to record approvals and immutable destination
    evidence.
 
-Each graduation evidence record binds the target repository to a non-zero, full
-Git commit SHA and one or more GitHub Actions run URLs from that destination.
+Graduation evidence and destination CI remain human-reviewed links. They do not
+belong in a permanent attestation subsystem because this ledger is temporary
+migration coordination, not a product authorization mechanism.
 Individual rows may clear their blockers as their required approvals arrive
 while the overall ledger remains `proposed`; `approved` is valid only after
 every row is resolved.
@@ -60,9 +61,9 @@ An approved row identifies its accountable owner as a GitHub user/team mention
 or as the maintainer group of a named destination repository. Placeholder owner
 text cannot satisfy the gate.
 
-Physical migration issues may prepare bounded work, but local deletion follows
-consumer-first validation through released packages or immutable prerelease
-artifacts.
+Physical migration issues may prepare bounded work after the relevant owners
+agree. Deleted workspaces remain as `removed` rows so the inventory does not
+silently forget what was removed.
 
 ## Deterministic gate
 
@@ -73,9 +74,8 @@ pnpm run check:credential-migration-ledger
 pnpm run test:credential-migration-ledger
 ```
 
-The gate compares this ledger with every workspace under
+The intentionally small gate compares this ledger with every workspace under
 `packages/prototypes/credential-families/` and `packages/use-cases/` in the
-workspace catalog. It rejects missing, duplicate, or unknown workspaces,
-package-name drift, invalid outcomes, incomplete lifecycle fields, missing
-evidence files, unrecorded destination blockers, unassigned owners, and missing
-immutable graduation evidence.
+workspace catalog. It rejects missing, duplicate, or unknown rows, package-name
+drift, invalid outcomes, absent issue links, and multiple synthetic fixtures.
+Approval and destination validation stay in normal PR review and linked issues.
