@@ -11,15 +11,17 @@ credential family, proof artifact, or registry authority.
 ## Scope
 
 The package contains generic VC/VP envelopes, schema references, issuer and
-holder-binding shapes, proof/challenge primitives, issuance and presentation
-message envelopes, VC-side status-binding shapes, VC/VP linkage helpers, and
+holder-binding shapes, proof/challenge primitives, VC-side status-binding
+shapes, VC/VP linkage helpers, and
 protocol-neutral `compact-value-v1.base64url` TypeScript framing for canonical
-Compact runtime values. `StatusRegistryRef` is vocabulary only: this package does not authenticate
-registry mutation, roots, time, witnesses, or final non-membership.
+Compact runtime values. `StatusRegistryRef` is vocabulary only: this package
+does not authenticate registry mutation, roots, time, witnesses, or final
+non-membership.
 
-`verification-v1`, family claims and predicates, status-registry authority,
-proving/deployment artifacts, wallets, signing keys, witnesses, secrets, and
-use-case code are deliberately excluded.
+`verification-v1`, issuance/presentation protocol choreography, family claims
+and predicates, status-registry authority, proving/deployment artifacts,
+wallets, signing keys, witnesses, secrets, and use-case code are deliberately
+excluded.
 
 ## Toolchain and generated output
 

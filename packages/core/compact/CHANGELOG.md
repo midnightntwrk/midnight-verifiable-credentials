@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Removed unused issuance and presentation protocol choreography from the
+  family-neutral Compact source surface.
+
 ## 0.1.0 - RC2 supported prerelease
 
 - Extracted curated family-neutral Compact VC/VP semantics from the internal
