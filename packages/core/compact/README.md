@@ -25,10 +25,9 @@ excluded.
 
 ## Toolchain and generated output
 
-The package is compiled and checked with the pinned Compact `0.31.1` compiler
-and exactly `@midnight-ntwrk/compact-runtime` `0.16.0`. Builds fail before
-generated output is accepted if either resolved version drifts. `src/managed` and
-`dist` are generated during build and are not hand-edited.
+The package is compiled with the pinned Compact `0.31.1` compiler and exactly
+`@midnight-ntwrk/compact-runtime` `0.16.0`. Builds verify both versions, then
+regenerate `src/managed` and `dist`; neither directory is hand-edited.
 `dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
 and generated-artifact digest.
 
