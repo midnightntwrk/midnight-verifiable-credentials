@@ -50,24 +50,6 @@ export const profileDefinitions = {
       "packages/use-cases/age-gate/contract",
     ],
   },
-  "managed-hello-smoke": {
-    buildCommand: "pnpm run build:starter-smoke-prereqs",
-    // This smoke readiness profile is narrower than the build cones: it checks
-    // only artifacts consumed by the hello lane after the cone build runs.
-    managedPackages: [
-      "packages/core/primitives/credentials",
-      "packages/registry/status-registry",
-      "packages/core/capabilities/same-holder",
-      "packages/core/primitives/iso-registry",
-      "packages/prototypes/credential-families/hello-family",
-      "packages/use-cases/hello-verifier/contract",
-    ],
-  },
-  "managed-dummy-claims-lab": {
-    buildCommand: "pnpm run build:dummy-claims-lab-prereqs",
-    extends: ["managed-hello-smoke"],
-    managedPackages: ["packages/prototypes/credential-families/dummy-claims"],
-  },
   "managed-university-protocol": {
     buildCommand: "pnpm run build:university-protocol:prereqs",
     outputs: [
@@ -170,8 +152,7 @@ export const profileDefinitions = {
   "integration-demo-contract": {
     buildCommand: "pnpm run build:integration-prereqs:demo-contract",
     ciBuildCones: ["foundation", "birth-family", "age-gate"],
-    // This follows the age-gate cone inputs, so the readiness profile also
-    // checks hello-verifier outputs produced by the integration prereq build.
+    // This follows the age-gate cone inputs used by the integration prereq build.
     distPackages: ageGateConeInputs,
   },
   "integration-protocol": {

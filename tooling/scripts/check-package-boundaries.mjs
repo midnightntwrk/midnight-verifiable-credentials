@@ -16,7 +16,8 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 
 export const classifyWorkspacePath = (workspacePath) => {
   const [root, area] = workspacePath.split("/");
-  assert.equal(root, "packages", `workspace must live under packages/: ${workspacePath}`);
+  if (root === "examples") return "example";
+  assert.equal(root, "packages", `workspace must live under packages/ or examples/: ${workspacePath}`);
   return {
     core: "reusable-core",
     registry: "registry",
@@ -215,6 +216,8 @@ const classAllows = (ownerClass, dependencyClass) => {
       return dependencyClass === "reusable-core" || dependencyClass === "registry" || dependencyClass === "protocol" || dependencyClass === "component" || dependencyClass === "prototype";
     case "use-case":
       return dependencyClass !== "unknown";
+    case "example":
+      return dependencyClass === "reusable-core";
     default:
       return false;
   }

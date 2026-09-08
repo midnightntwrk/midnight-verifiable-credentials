@@ -350,34 +350,6 @@ case "$target" in
       pnpm run ci:university-summary
     fi
     ;;
-  hello-smoke)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light DID + VC hello smoke lane"
-      run_common_ensure_artifacts "run" managed-hello-smoke
-      pnpm run ci:hello-smoke:from-artifacts
-    else
-      # NOTE: the default lane stays package-local and build-light on purpose.
-      # `hello-family` and `hello-verifier` already compile the Compact surfaces
-      # they need inside their own typecheck/pretest commands, so the root lane
-      # does not prebuild shared artifacts unless `--light` explicitly asks for
-      # restored-artifact parity with CI.
-      echo "[run] DID + VC hello smoke lane"
-      pnpm run ci:hello-smoke
-    fi
-    ;;
-  dummy-claims-lab)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-      echo "[run] Light dummy-claims verifier lab lane"
-      run_common_ensure_artifacts "run" managed-dummy-claims-lab
-      pnpm run ci:dummy-claims-lab:from-artifacts
-    else
-      # NOTE: this lab lane intentionally stays narrower than `hello-smoke`.
-      # It validates the broad claim-surface family and the dedicated verifier
-      # lab test file without re-running the whole starter path.
-      echo "[run] Dummy-claims verifier lab lane"
-      pnpm run ci:dummy-claims-lab
-    fi
-    ;;
   revocation)
     echo "[run] Revocation-focused lane"
     pnpm run lint:revocation

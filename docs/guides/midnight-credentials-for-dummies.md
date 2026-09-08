@@ -136,7 +136,7 @@ Midnight Credentials in the current prototype are built in five layers.
 | --- | --- | --- |
 | Layer 1 | reusable generic credential capabilities | `credentials`, `credentials-same-holder` |
 | Layer 2 | concrete credential-family logic | `credentials-birth`, `credentials-birth-secret` in the current workspace; additional families are future or adjacent prototype examples |
-| Layer 3 | concrete verifier and business use-cases | `packages/use-cases/hello-verifier/contract`, `packages/use-cases/age-gate/contract` |
+| Layer 3 | concrete verifier and business use-cases | `packages/use-cases/age-gate/contract` |
 | Layer 4 | application orchestration, adapters, transports, and integration harnesses | `packages/components/orchestration/protocol`, `packages/protocols/openid`, `packages/components/adapters/offchain-did`, `packages/components/integration/standalone-environment` |
 | Layer 5 | governance and trust policy | abstract future scope for now |
 
@@ -180,7 +180,7 @@ So in the current work:
 | `credentials-birth-secret` | the same birth family, but with hidden holder binding and better privacy |
 | `credentials-iso-registry` | shared numeric ISO code types — countries, currencies, languages, regions, and genders as circuit-friendly integers |
 | `credentials-status-registry` | prototype status/revocation package with a registry contract surface and off-chain builders |
-| `packages/use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one hello-family presentation |
+| `examples/core-composition` | a private synthetic example that consumes only the two public core packages |
 | `packages/use-cases/age-gate/contract` | a richer business use-case package that issues reusable access capabilities from explicit-holder and hidden-holder flows |
 | `packages/use-cases/age-gate/scenarios` | BDD living-documentation scenarios for the concrete age-gate use case |
 | `packages/components/adapters/offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
@@ -195,7 +195,7 @@ If you want a low-confusion reading order, use this one.
 | Step | Start here | What you learn before moving on |
 | --- | --- | --- |
 | 1 | `credentials-birth` | the smallest current concrete credential family with explicit holder binding |
-| 2 | `packages/use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that starter family |
+| 2 | `examples/core-composition` | the smallest package-level composition of the public core surfaces |
 | 3 | `packages/use-cases/age-gate/contract/src/demo.compact` | how a business contract turns successful verification into a reusable capability |
 | 4 | `credentials-birth-secret` | hidden holder binding, blinded issuance anchors, pseudonyms, and same-holder composition |
 | 5 | `packages/use-cases/age-gate/contract/src/demo-revocation.compact` | how the current prototype status and revocation path changes verifier requirements |
@@ -218,7 +218,7 @@ If you are onboarding a new engineer, this is the lowest-friction current path t
 | Step | Run | What you should learn from it |
 | --- | --- | --- |
 | 1 | `pnpm --dir credentials-birth run test:ci` | the explicit-holder birth family works on its own before any business contract is added |
-| 2 | `pnpm --dir packages/use-cases/hello-verifier/contract run test:ci` | the smallest verifier contract can build one typed request and verify one presentation |
+| 2 | `pnpm --dir examples/core-composition run test:ci` | the two public core packages compose without application infrastructure |
 | 3 | `pnpm --dir packages/use-cases/age-gate/contract run test:ci` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
 | 4 | `pnpm --dir credentials-birth-secret run test:ci` | hidden-holder binding, blinded issuance anchors, pseudonyms, same-holder composition, and prototype status-aware family checks all work at the family layer |
 | 5 | `pnpm run test:bdd:smoke` | the age-gate use-cases are also captured as living-documentation scenarios rather than only as unit tests |
@@ -1664,7 +1664,7 @@ That is a better engineering habit because it tells you exactly what combination
 
 | Surface | What it demonstrates | Test or scenario |
 | --- | --- | --- |
-| `packages/use-cases/hello-verifier/contract` | smallest verifier contract that consumes the hello-family starter package | `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
+| `examples/core-composition` | smallest synthetic composition of the public core packages | `examples/core-composition/src/example.test.ts` |
 | `packages/use-cases/age-gate/contract` | explicit-holder business contract that mints and consumes an access capability | `packages/use-cases/age-gate/contract/src/test/demo.test.ts` |
 | `packages/use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business contract with verifier-supplied-root and authority-attested modes | `packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts` |
 | `packages/use-cases/age-gate/scenarios` | BDD living documentation for the explicit-holder and hidden-holder age-gate flows | `packages/use-cases/age-gate/scenarios/features/*.feature` |
@@ -1990,66 +1990,18 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 - `packages/core/primitives/iso-registry/src/iso-registry/codes.compact`
 
-## Chapter 18: Vera Starts With The Smallest Verifier
+## Chapter 18: Start With The Core Composition Example
 
-Before Vera adopts a full business contract, she often wants one smaller question answered first:
+`examples/core-composition` is the smallest retained executable evidence. It
+defines a synthetic family with `credential-model` and round-trips an opaque
+Compact value with `credential-compact`. It intentionally contains no DID,
+transport, session, deployment, or business contract behavior.
 
-- can I verify one credential family against one typed request without dragging in every other concern?
+Run it with:
 
-That is exactly what `packages/use-cases/hello-verifier/contract` exists to do.
-
-It is the smallest current verifier-side prototype in the repository.
-
-### What It Proves
-
-The hello-verifier contract uses the starter `credentials-hello-family` package and does four things:
-
-1. builds one typed verifier request for a small selective-disclosure shape
-2. accepts one hello-family presentation
-3. checks that the presentation satisfies the request
-4. records the accepted credential root, request challenge, and selected disclosed values in ledger state
-
-What it deliberately does not do:
-
-- manage issuance state
-- mint reusable business capabilities
-- handle status or revocation
-- simulate an external transport protocol
-
-That is why it is a good first stop after the birth family itself.
-
-### Sequence
-
-```mermaid
-sequenceDiagram
-    participant Vera as Vera
-    participant Alice as Alice
-    participant Contract as Hello Verifier
-
-    Vera->>Contract: derive helloVerifierRequest(...)
-    Contract-->>Vera: typed age-threshold request
-    Vera->>Alice: request + verifier challenge
-    Alice->>Alice: build hello-family presentation locally
-    Alice->>Contract: verifyHelloFamilyPresentationForHelloVerifier(...)
-    Contract->>Contract: verify issuer proof, holder proof, and request match
-    Contract-->>Vera: record successful verification state
+```bash
+pnpm --dir examples/core-composition run test:ci
 ```
-
-### In Plain Words
-
-The contract is saying:
-
-- give me a hello-family credential from the expected issuer
-- give me a presentation that matches this challenge
-- disclose the typed fields I asked for
-- if all of that checks out, I will record the successful verification
-
-This is not yet the business story.
-It is the smallest useful verifier story.
-
-### Tests For This Chapter
-
-- `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
 
 ## Chapter 19: Two Current Use Cases From The Prototypes
 
@@ -2639,10 +2591,10 @@ If you want the shortest path through the current repository, use this sequence.
    - explicit-holder birth family
 4. `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
    - explicit-holder family profiles
-5. `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
-   - smallest current verifier contract
-6. `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
-   - minimal verifier request and verification flow
+5. `examples/core-composition/src/index.ts`
+   - smallest public core package composition
+6. `examples/core-composition/src/example.test.ts`
+   - synthetic model and Compact value checks
 7. `packages/use-cases/age-gate/contract/src/demo.compact`
    - explicit-holder age-gate business composition
 8. `packages/use-cases/age-gate/contract/src/test/demo.test.ts`

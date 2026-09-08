@@ -169,7 +169,6 @@ export const workspaceCatalog = [
       "src/test/integration/**/*.test.ts",
     ],
   }),
-  workspace("packages/use-cases/hello-verifier/contract", "demo", "dist"),
   workspace("packages/use-cases/university/contract", "demo", "dist"),
   workspace("packages/use-cases/age-gate/scenarios", "demo", "scenario"),
   workspace(
@@ -189,6 +188,7 @@ export const workspaceCatalog = [
       releaseTasks: ["typecheck", "build", "test:ci"],
     },
   ),
+  workspace("examples/core-composition", "reference", "source-only"),
 ];
 
 export const allowedMaturityValues = new Set([

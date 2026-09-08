@@ -135,9 +135,7 @@ Use that profile when you need to prove:
 
 - a long-form offchain DID URL can derive a VC holder binding
 - the derived holder binding can issue and verify a starter presentation
-- the result can flow into the `hello-verifier` Layer 3 starter
-
-Start with [`../../../../docs/guides/did-vc-hello-smoke-path.md`](../../../../docs/guides/did-vc-hello-smoke-path.md).
+- the result can be consumed by an external verifier application
 
 ## Limitations
 

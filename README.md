@@ -49,6 +49,8 @@ unsupported operations are recorded explicitly in the conformance manifest.
   - [`spec/README.md`](./spec/README.md)
 - machine-readable conformance status and vectors:
   - [`conformance/README.md`](./conformance/README.md)
+- minimal synthetic composition example:
+  - [`examples/core-composition/README.md`](./examples/core-composition/README.md)
 
 The following entries describe current migration inventory, not the target
 published surface:
@@ -97,8 +99,6 @@ published surface:
     - current reference transport-adapter surface
 - prototype / experimental packages:
   - [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
-  - [`hello-verifier-contract`](./packages/use-cases/hello-verifier/contract/README.md)
-    - smallest verifier-side starter and broad direct claim-surface lab consumer
   - [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
     - verifier-side university diploma request and presentation consumer
   - [`university-protocol`](./packages/use-cases/university/protocol/README.md)
@@ -117,6 +117,8 @@ Start here:
   - [`spec/README.md`](./spec/README.md)
 - conformance manifest and vectors:
   - [`conformance/README.md`](./conformance/README.md)
+- minimal synthetic composition example:
+  - [`examples/core-composition/README.md`](./examples/core-composition/README.md)
 - docs index:
   - [`docs/README.md`](./docs/README.md)
 - superseded specification source material:
@@ -136,7 +138,6 @@ Start here:
   - [`docs/guides/status-revocation-entrypoints.md`](./docs/guides/status-revocation-entrypoints.md)
   - [`docs/guides/did-integration-modes.md`](./docs/guides/did-integration-modes.md)
   - [`docs/guides/vc-surface-change-discipline.md`](./docs/guides/vc-surface-change-discipline.md)
-  - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - university diploma use case:
   - [`packages/use-cases/university/README.md`](./packages/use-cases/university/README.md)
   - [`packages/use-cases/university/operator-guide.md`](./packages/use-cases/university/operator-guide.md)
@@ -193,8 +194,6 @@ Start here:
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
   - reference off-chain orchestration and protocol simulation
-- [`hello-verifier-contract`](./packages/use-cases/hello-verifier/contract/README.md)
-  - smallest verifier-side starter and broad direct claim-surface lab consumer
 - [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
   - verifier-side university diploma job-application and discount contract package
 - [`university-protocol`](./packages/use-cases/university/protocol/README.md)
@@ -326,18 +325,6 @@ stdout, and does not write report artifacts. Use it when dashboards, CI, or
 handoff tooling need to compare `schemaId`, `schemaVersion`, handoff artifact
 ids, source artifact ids, transcript schema, and required privacy-profile
 sections without regenerating report artifacts.
-
-Run the smallest DID-aware handoff lane directly:
-
-```bash
-./run.sh hello-smoke
-```
-
-Reuse existing build artifacts for that same lane:
-
-```bash
-./run.sh hello-smoke --light
-```
 
 Run only the negative BDD living-doc scenarios:
 

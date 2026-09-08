@@ -54,7 +54,6 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | `internal` | workspace tarball only | Unassigned | Prototype family |
 | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | `internal` | workspace tarball only | Unassigned | Graduation candidate after correctness work |
 | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | `internal` | workspace tarball only | Unassigned | Demo contract |
-| `@midnight-ntwrk/midnight-did-hello-verifier-contract` | `internal` | workspace tarball only | Unassigned | Demo verifier contract |
 | `@midnight-ntwrk/midnight-did-university-verifier-contract` | `internal` | workspace tarball only | Unassigned | Demo verifier contract |
 | `@midnight-ntwrk/midnight-did-university-protocol` | `internal` | workspace tarball only | Unassigned | Use-case orchestration |
 | `@midnight-ntwrk/midnight-did-university-reporting` | `internal` | workspace tarball only | Unassigned | Use-case reporting |

@@ -89,13 +89,6 @@ artifacts are tracked in
 
 - `packages/components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`
   - offchain DID runtime helper behavior
-- root `./run.sh hello-smoke` lane
-  - keeps the DID-aware starter handoff runnable with `hello-family` and
-    `hello-verifier`
-  - root `./run.sh hello-smoke --light` and `ci:hello-smoke:from-artifacts`
-    now keep the same path honest against restored build artifacts
-  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
-    description
 
 ## Credential family tests
 
@@ -127,11 +120,6 @@ artifacts are tracked in
 - package export-surface checks for standalone and family-prefixed composable roots
 - real Compact compiler probes for currently supported versus unsupported
   primitive claim types
-- root `./run.sh hello-smoke` lane
-  - keeps the starter DID -> VC -> verifier handoff runnable from one repo
-    command
-  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
-    description
 
 ### Two-family composition evidence
 
@@ -144,15 +132,11 @@ artifacts are tracked in
     ZKIR, or BZKIR artifacts
   - remains explicitly non-authoritative compile/composition evidence
 
-### `hello-verifier` starter package
+### Synthetic core composition
 
-- `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
-  - explicit-holder starter verifier over `credentials-hello-family`
-  - offchain-DID starter verifier over `credentials-hello-family`
-- `packages/use-cases/hello-verifier/contract/src/test/dummy-claims-verifier.test.ts`
-  - full-disclosure verifier over `credentials-dummy-claims`
-  - negative coverage for omitted direct, nested-field, nested-vector, and
-    challenge-mismatch cases
+- `examples/core-composition/src/example.test.ts`
+  - consumes only public `credential-model` and `credential-compact` exports
+  - validates a synthetic family descriptor and Compact value round trip
 
 ### `credentials-dummy-claims`
 
@@ -169,11 +153,6 @@ artifacts are tracked in
   - credential claim-root integrity
   - holder-binding mismatch
   - request/proof challenge mismatch
-- root `./run.sh dummy-claims-lab` lane
-  - keeps the family-level selective-disclosure lab and verifier-level lab contract
-    path runnable from one repo command
-  - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
-    description
 
 ### `credentials-mixed-claims`
 
@@ -504,13 +483,6 @@ Current gap:
     - `credentials-demo-contract`
 - GitHub Actions job:
   - `Revocation Demo Lane`
-- root `ci:hello-smoke:from-artifacts`
-  - lint, restored-artifact typecheck, and restored-artifact tests across:
-    - `credentials-offchain-did`
-    - `credentials-hello-family`
-    - `hello-verifier`
-- GitHub Actions job:
-  - `Hello Smoke Lane`
 - docs-only PR fast path:
   - `Classify Changes` + `Docs-only Validation`
   - skips Compact setup, build, unit, and integration lanes when every changed
@@ -540,8 +512,6 @@ Current gap:
   - `./run.sh bdd`
   - `./run.sh bdd-negative`
   - `./run.sh bdd-all`
-  - `./run.sh hello-smoke`
-  - `./run.sh hello-smoke --light`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:
@@ -611,7 +581,6 @@ cataloged consumer check.
     - `./run.sh build`
     - `./run.sh typecheck`
     - `./run.sh test`
-    - `./run.sh hello-smoke`
 - `./run.sh lint`
   - package-boundary + lint lane
 - `./run.sh typecheck`

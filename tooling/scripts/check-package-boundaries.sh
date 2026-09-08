@@ -39,7 +39,6 @@ readonly -a root_contract_surface_files=(
   packages/prototypes/credential-families/dummy-claims/src/index.ts
   packages/prototypes/credential-families/university-diploma/src/index.ts
   packages/use-cases/age-gate/contract/src/index.ts
-  packages/use-cases/hello-verifier/contract/src/index.ts
   packages/core/capabilities/same-holder/src/index.ts
 )
 

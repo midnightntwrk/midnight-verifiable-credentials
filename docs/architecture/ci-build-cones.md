@@ -23,7 +23,6 @@ This repository uses four shared build cones for reusable CI outputs:
    - `credentials-digital-passport`
 3. `age-gate`
    - `packages/use-cases/age-gate/contract`
-   - `packages/use-cases/hello-verifier/contract`
 4. `protocol`
    - `packages/components/orchestration/protocol`
    - `packages/use-cases/university/contract`

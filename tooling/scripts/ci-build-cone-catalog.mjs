@@ -143,13 +143,10 @@ export const ciBuildCones = [
       "packages/prototypes/credential-families/university-diploma",
       "packages/prototypes/credential-families/digital-passport",
       "packages/use-cases/age-gate/contract",
-      "packages/use-cases/hello-verifier/contract",
     ],
     outputPaths: [
       "packages/use-cases/age-gate/contract/src/managed",
       "packages/use-cases/age-gate/contract/dist",
-      "packages/use-cases/hello-verifier/contract/src/managed",
-      "packages/use-cases/hello-verifier/contract/dist",
     ],
     turboOptions: ["--concurrency=1", "--ui=stream"],
   },

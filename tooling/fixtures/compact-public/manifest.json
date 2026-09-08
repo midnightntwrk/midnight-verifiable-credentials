@@ -91,24 +91,19 @@
       "sourceRoot": "packages/use-cases/age-gate/contract"
     },
     {
-      "id": "hello-verifier",
-      "path": "packages/use-cases/hello-verifier/contract/src/managed",
-      "sourceRoot": "packages/use-cases/hello-verifier/contract"
-    },
-    {
       "id": "university-verifier",
       "path": "packages/use-cases/university/contract/src/managed",
       "sourceRoot": "packages/use-cases/university/contract"
     }
   ],
   "provenance": {
-    "sourceDigest": "674c1f47ad0b40067b24fc174d6d2739afea5b8ceb215b9e2d12365987860a8e",
+    "sourceDigest": "5f98cd3d574956e452384f06bba6142e4ab9cffa2f5bd1b78480b65c5ee5c0cf",
     "compilerVersion": "0.31.1",
-    "runtimeDigest": "8759d9ac8c4d105f9c188072bc900874965876627979902b2e7350d478a5ba9c",
-    "lockfileDigest": "d0c0da1ec0f5b988aff1ea6e9ede5fe196f6fa1fb9643427581ccbdf4a2673c6",
-    "generatedAt": "2026-09-07T15:37:38.722Z",
-    "artifactCount": 172,
-    "artifactBytes": 864075495,
+    "runtimeDigest": "fb30b57877bd3d3c770503927e1245ac2376122bd099a4e37e04bef72a1030ef",
+    "lockfileDigest": "bff3dee2dd1d6fcbbf3cbaa273ea418bc304114e104fb88bfc0fc24833374b7e",
+    "generatedAt": "2026-09-08T14:02:00.153Z",
+    "artifactCount": 148,
+    "artifactBytes": 690550433,
     "byFixture": {
       "credentials": {
         "files": 8,
@@ -150,10 +145,6 @@
         "files": 80,
         "bytes": 591851244
       },
-      "hello-verifier": {
-        "files": 24,
-        "bytes": 173525062
-      },
       "university-verifier": {
         "files": 12,
         "bytes": 87183632
@@ -161,36 +152,36 @@
     },
     "byType": {
       ".json": {
-        "files": 17,
-        "bytes": 6443253
+        "files": 14,
+        "bytes": 5480031
       },
       ".ts": {
-        "files": 17,
-        "bytes": 1007017
+        "files": 14,
+        "bytes": 845802
       },
       ".js": {
-        "files": 17,
-        "bytes": 9859386
+        "files": 14,
+        "bytes": 8281360
       },
       ".map": {
-        "files": 17,
-        "bytes": 472476
+        "files": 14,
+        "bytes": 391831
       },
       ".prover": {
-        "files": 26,
-        "bytes": 845433642
+        "files": 23,
+        "bytes": 674826787
       },
       ".verifier": {
-        "files": 26,
-        "bytes": 52214
+        "files": 23,
+        "bytes": 45281
       },
       ".bzkir": {
-        "files": 26,
-        "bytes": 62008
+        "files": 23,
+        "bytes": 52512
       },
       ".zkir": {
-        "files": 26,
-        "bytes": 745499
+        "files": 23,
+        "bytes": 626829
       }
     },
     "largestArtifact": {
@@ -1153,174 +1144,6 @@
       "sha256": "fe731d67bc19e0804edc1e7cd9ed9b217e03865362e26cb88fd0a09940295da0",
       "lfsPointer": false,
       "fixture": "age-gate"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/compiler/contract-info.json",
-      "bytes": 419821,
-      "sha256": "73fe0e93eaeec3c34f4874e913df4861e04c6a02a2c7268f459cef6db184b09d",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.d.ts",
-      "bytes": 65718,
-      "sha256": "8b018c22d23d8ab2f945fae4b2a609ada30946caa868a3e901a53bccefa9a636",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.js",
-      "bytes": 721120,
-      "sha256": "9f30afef18cd67cf70f10949c5bb77d9d332564b9478d73ab771c517c73e4bc8",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.js.map",
-      "bytes": 33265,
-      "sha256": "023102e837f46c658fbee18bfe48f68758089f5b2c0f1aa7d3c59ab2086a2474",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/keys/verifyDummyClaimsPresentationForDummyClaimsVerifier.prover",
-      "bytes": 84975396,
-      "sha256": "399432a11cbbe13fd6ae81f308f970d48b9d154f49cfb626c039d4c333bcebf8",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/keys/verifyDummyClaimsPresentationForDummyClaimsVerifier.verifier",
-      "bytes": 2311,
-      "sha256": "aace4fd4fa7c7b4e0db6ff66b16698696c29edfaca72a71fd5f6b4886c8b736f",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/zkir/verifyDummyClaimsPresentationForDummyClaimsVerifier.bzkir",
-      "bytes": 4509,
-      "sha256": "556cfdf94a57c448439e7e3e5e3b22178cfbde0b1227002e0b756f6b41cfb92d",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/zkir/verifyDummyClaimsPresentationForDummyClaimsVerifier.zkir",
-      "bytes": 58232,
-      "sha256": "11fdd1b14bbe470b1bf8b900465bb0d90639ecc2436e0ba4a61e9c9cfe87195c",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/compiler/contract-info.json",
-      "bytes": 340868,
-      "sha256": "88f72b65fcfd3adc5e6bd04a1e0834424eb76741a26eb41aaaf6f814bb1f2d39",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/contract/index.d.ts",
-      "bytes": 61854,
-      "sha256": "f8cf0ac1fb758a47860cfe9f60e2caf0a00a7bc9d5108dfeb727f30bd4bbb91f",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/contract/index.js",
-      "bytes": 559027,
-      "sha256": "1aaa2cc433c4af3a245deb2d1eac0af7727f1ddf2c9e1679796abbf560bfe5f0",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/contract/index.js.map",
-      "bytes": 29610,
-      "sha256": "233df5d559378ed00059ef769c40ad5c08794eb6ed21c380b86502289212c115",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/keys/verifyHelloFamilyOffchainPresentationForHelloVerifier.prover",
-      "bytes": 42821529,
-      "sha256": "a95dd35ecf81aaa0d4cce30a127f4e159bef28a4a04d04ea97a96f65549c5ede",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/keys/verifyHelloFamilyOffchainPresentationForHelloVerifier.verifier",
-      "bytes": 2311,
-      "sha256": "b7b95897c9cef27a686298770625c8c1756f3a964dca5bbcb97dce750205a84f",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/zkir/verifyHelloFamilyOffchainPresentationForHelloVerifier.bzkir",
-      "bytes": 2529,
-      "sha256": "237179f9ab1f67bf9b4c3be335f280c4e3cc2adc304c0663e601d6c616de05b1",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/zkir/verifyHelloFamilyOffchainPresentationForHelloVerifier.zkir",
-      "bytes": 30658,
-      "sha256": "3a808f32d0fdda74fade4140ae882f7ad94aa5d11657dbc1be26c580c0be48e9",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/compiler/contract-info.json",
-      "bytes": 202533,
-      "sha256": "fec42a07adf3131e086b4e38e87c6d473441b55919c0369805a2707cd2e23953",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.d.ts",
-      "bytes": 33643,
-      "sha256": "24a4e437c9a1573b604bdffe11f165ef11e2e9e1d6aece6c1e409b803df680c5",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js",
-      "bytes": 297879,
-      "sha256": "6137103635da039fb9cae2cfecd41dfd23b6e52ebe19c7ee49731a06e75d8b01",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js.map",
-      "bytes": 17770,
-      "sha256": "a19a548f34960f394db74dae47b8e76409b407e0412ab22842accca107cb1b78",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/keys/verifyHelloFamilyPresentationForHelloVerifier.prover",
-      "bytes": 42809930,
-      "sha256": "6e8b365c6a806420c8b96250768fe8566e9eb9790ebfd4eb63aad02beebe25a1",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/keys/verifyHelloFamilyPresentationForHelloVerifier.verifier",
-      "bytes": 2311,
-      "sha256": "f5bb4aa46263ed118eb3f6bb2ac23655a29df820a9223bf5571462d5198a1ee1",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/zkir/verifyHelloFamilyPresentationForHelloVerifier.bzkir",
-      "bytes": 2458,
-      "sha256": "eeffa056d0da170038c93af2ffea9cc83c5e85d4780c649fa83178d64123343d",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
-    },
-    {
-      "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/zkir/verifyHelloFamilyPresentationForHelloVerifier.zkir",
-      "bytes": 29780,
-      "sha256": "8246604d79d4246d973abc246c9d88bcea25b66a106a327b76a109db4bb7901c",
-      "lfsPointer": false,
-      "fixture": "hello-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/compiler/contract-info.json",

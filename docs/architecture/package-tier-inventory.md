@@ -72,7 +72,6 @@ Legacy and future packages in this table remain internal or migration evidence.
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
-| `hello-verifier-contract` | Demo / prototype package | Starter / prototype | No | Smallest verifier-side starter and broad direct claim-surface lab consumer |
 | `university-verifier-contract` | Demo / prototype package | Use-case verifier contract | No | Employer and mall verifier-side request builders plus presentation checks over `credentials-university-diploma` |
 | `university-protocol` | Transport or orchestration package | Use-case reference orchestration | Limited | Threaded multi-party issuer/student/company/mall trace harness over `credentials-university-diploma` and `university-verifier-contract`; not a key-isolating SSI deployment reference |
 | `university-reporting` | Demo / prototype package | Use-case reporting surface | No | One-page JSON/Markdown summary over university BDD, transcript-export, stress, and batch-sweep artifacts |

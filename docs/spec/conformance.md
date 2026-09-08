@@ -296,7 +296,6 @@ A verifier contract implementation conforms when it:
 Reference implementation:
 
 - [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
-- [`../../packages/use-cases/hello-verifier/contract/README.md`](../../packages/use-cases/hello-verifier/contract/README.md)
 
 ### 10. Versioned composition resolution
 
@@ -402,7 +401,6 @@ Use it together with:
 | `credentials-birth-secret` | `On-chain + off-chain` | reference implementation with prototype status-aware additions | current concrete hidden-holder family; status-aware pieces remain prototype-scoped |
 | `credentials-status-registry` | mixed: on-chain registry + off-chain builders | prototype | use only with explicit awareness of current revocation/root-freshness limitations |
 | `packages/use-cases/age-gate/contract` | `On-chain + off-chain` | prototype use-case | concrete business composition, not canonical generic API |
-| `packages/use-cases/hello-verifier/contract` | `On-chain + off-chain` | starter reference implementation | smallest verifier-contract entry point for integrators |
 | `packages/protocols/openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
 | `packages/components/adapters/offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
 | `packages/components/orchestration/protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |

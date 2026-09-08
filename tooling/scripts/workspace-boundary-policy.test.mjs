@@ -24,6 +24,7 @@ test("ownership taxonomy keeps family evidence below reusable core", () => {
   assert.equal(classifyWorkspacePath("packages/core/primitives/credentials"), "reusable-core");
   assert.equal(classifyWorkspacePath("packages/prototypes/credential-families/birth"), "prototype");
   assert.equal(classifyWorkspacePath("packages/use-cases/age-gate/contract"), "use-case");
+  assert.equal(classifyWorkspacePath("examples/core-composition"), "example");
   assert.ok(migrationExceptions["packages/components/orchestration/protocol"]);
 });
 
