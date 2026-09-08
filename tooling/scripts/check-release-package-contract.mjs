@@ -373,12 +373,12 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     }),
   );
   assert(packedPackageJson.name === sourcePackageJson.name, `${label} package name drifted`);
-  if (entry.path === "packages/core/compact") {
-    assert(packedPackageJson.private === false, `${label} supported package must be public`);
-    assert(packedPackageJson.midnight?.releaseStage === "supported", `${label} must be supported`);
-  }
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
   assert(packedPackageJson.private === false, `${label} must remain public`);
+  assert(
+    packedPackageJson.midnight?.releaseStage === "supported",
+    `${label} must remain supported`,
+  );
   assert(
     packedPackageJson.publishConfig?.access === "public",
     `${label} must retain public npm access`,

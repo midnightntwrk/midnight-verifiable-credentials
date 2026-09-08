@@ -39,10 +39,10 @@ package's private files. Internal workspace dependencies use `workspace:*`.
 
 ```bash
 pnpm run check:workspace-catalog
-pnpm run check:workspace-manifests
+pnpm run check:release-package-contract
 pnpm run check:package-boundaries
 ```
 
-The first check keeps workspace inventories aligned, the second validates
-package manifests and public entrypoints, and the third rejects invalid source
-and dependency edges.
+The first check keeps workspace inventories and private examples aligned, the
+second validates public manifests and entrypoints, and the third rejects
+invalid source and dependency edges.

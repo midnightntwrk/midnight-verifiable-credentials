@@ -219,6 +219,39 @@ const checkCatalog = () => {
       entry.releaseStage !== "supported",
       `${entry.path} private must match its release stage`,
     );
+    assert.equal(
+      packageJson.license,
+      "Apache-2.0",
+      `${entry.path} must declare the repository license`,
+    );
+    assert.equal(packageJson.type, "module", `${entry.path} must be ESM`);
+    if (entry.releaseStage === "internal") {
+      assert.equal(
+        entry.packageClass,
+        "source-only",
+        `${entry.path} internal workspaces must be source-only`,
+      );
+      assert.equal(packageJson.private, true, `${entry.path} must remain private`);
+      assert.equal(
+        packageJson.publishConfig,
+        undefined,
+        `${entry.path} must not define publishConfig`,
+      );
+      assert.ok(
+        packageJson.main?.startsWith("src/"),
+        `${entry.path} must use a source entrypoint`,
+      );
+      assert.equal(
+        packageJson.exports,
+        undefined,
+        `${entry.path} must not publish exports`,
+      );
+      assert.equal(
+        packageJson.scripts?.prepack,
+        undefined,
+        `${entry.path} must not prepack`,
+      );
+    }
     const workspaceDependencies = new Set([
       ...Object.keys(packageJson.dependencies ?? {}),
       ...Object.keys(packageJson.optionalDependencies ?? {}),
@@ -251,9 +284,6 @@ const checkCatalog = () => {
         !packageJson.scripts[task].includes("test:integration"),
         `${entry.path} release task '${task}' must not invoke Docker integration`,
       );
-    }
-    if (entry.releaseTasks.includes("test:ci")) {
-      assert.ok(packageJson.scripts?.["test:ci"], `${entry.path} must define test:ci`);
     }
   }
 };

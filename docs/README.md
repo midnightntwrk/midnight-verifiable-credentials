@@ -14,7 +14,6 @@ documents.
 ## Maintain the repository
 
 - [Package boundaries](./architecture/package-boundaries.md)
-- [Package manifest discipline](./architecture/workspace-package-manifest-discipline.md)
 - [Package release contract](./architecture/package-release-contract.md)
 - [npm publication](./guides/npmjs-publication.md)
 - [Vulnerability exceptions](./security/vulnerability-exceptions.md)
