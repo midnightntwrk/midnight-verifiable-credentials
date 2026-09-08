@@ -368,16 +368,9 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         "jubjub.d.ts.map",
         "jubjub.js",
         "jubjub.js.map",
-        "holder-binding/same-holder.d.ts",
-        "holder-binding/same-holder.d.ts.map",
-        "holder-binding/same-holder.js",
-        "holder-binding/same-holder.js.map",
         "managed/credentials/contract/index.d.ts",
         "managed/credentials/contract/index.js",
         "managed/credentials/contract/index.js.map",
-        "managed/same-holder/contract/index.d.ts",
-        "managed/same-holder/contract/index.js",
-        "managed/same-holder/contract/index.js.map",
       ]);
       const compactDistSources = new Set(
         [...declaredCompactSources].map((sourcePath) => sourcePath.replace(/^src\//u, "")),

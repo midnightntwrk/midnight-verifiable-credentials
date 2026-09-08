@@ -90,9 +90,9 @@ The current package set proves:
 - `credential-did-midnight`: Node ESM and strict TypeScript use.
 
 Packages that expose Compact sources must declare and pass the Compact
-clean-consumer check. The `credential-compact` package also records compiler identity,
-generated-output provenance, source/artifact digests, same-holder
-standalone/composable gate results, explicit Compact exports, and a
+clean-consumer check. The `credential-compact` package also records compiler
+identity, generated-output provenance, source/artifact digests, same-holder
+vectors through both canonical roots, explicit Compact exports, and a
 forbidden-artifact tarball scan. It does not claim status-registry authority or
 verification-v1 compatibility.
 

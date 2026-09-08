@@ -348,36 +348,26 @@ for (const releasePackage of releasePackages) {
         );
         return realpathSync(output);
       };
-      for (const [index, entrypoint] of standalone.entries()) {
-        compileExternal(`compact-standalone-${index}`, [entrypoint]);
-      }
-      for (const [index, entrypoint] of composition.entries()) {
-        const isSameHolderFragment = entrypoint.includes("same-holder");
-        const includes = isSameHolderFragment
-          ? ["./credentials/bindings.compact", entrypoint]
-          : [entrypoint];
-        const output = compileExternal(
-          `compact-composition-${index}`,
-          includes,
-        );
-        if (isSameHolderFragment) {
-          run(
-            "node",
-            [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
-            consumerRoot,
-            `${sourcePackageJson.name}: same-holder semantic vectors (${index})`,
-          );
-        }
-      }
-      for (const entrypoint of standalone) {
-        if (!entrypoint.includes("same-holder")) continue;
-        const output = compileExternal(`compact-vector-${standalone.indexOf(entrypoint)}`, [entrypoint]);
+      const sameHolderVectors = path.join(
+        fixtureRoot,
+        "same-holder-vectors.mjs",
+      );
+      const runSameHolderVectors = (label, output) => {
+        if (!existsSync(sameHolderVectors)) return;
         run(
           "node",
-          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
+          [sameHolderVectors, output],
           consumerRoot,
-          `${sourcePackageJson.name}: standalone same-holder semantic vectors`,
+          `${sourcePackageJson.name}: same-holder semantic vectors (${label})`,
         );
+      };
+      for (const [index, entrypoint] of standalone.entries()) {
+        const output = compileExternal(`compact-standalone-${index}`, [entrypoint]);
+        runSameHolderVectors("standalone", output);
+      }
+      for (const [index, entrypoint] of composition.entries()) {
+        const output = compileExternal(`compact-composition-${index}`, [entrypoint]);
+        runSameHolderVectors("composition", output);
       }
     }
 

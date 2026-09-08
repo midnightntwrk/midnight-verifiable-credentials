@@ -83,7 +83,8 @@ Package boundaries should not mirror every source directory. Modules may share
 a package when they have compatible dependencies and require one compatibility
 contract:
 
-- same-holder Compact support is a subpath of `credential-compact`;
+- same-holder Compact support is part of the canonical `credential-compact`
+  roots;
 - proof-resource manifests and proof provider/verifier ports share
   `credential-proofs`;
 - fixtures and black-box conformance suites share `credential-testkit`;

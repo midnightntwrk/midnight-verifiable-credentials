@@ -32,26 +32,24 @@ generated output is accepted if either resolved version drifts. `src/managed` an
 `dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
 and generated-artifact digest.
 
-`./credentials.compact` and `./holder-binding/same-holder.compact` are the
-standalone roots. `./credentials/composable.compact` is the canonical shared
-Layer 3 composition root: include it exactly once before dependency-free family
-composition entrypoints. `./holder-binding/same-holder/composable.compact` is a
-smaller composition fragment: include `credentials/bindings` (or the full
-credentials composition root) first, then include the fragment exactly once.
-The other credential leaf modules remain packaged for internal composition but
-are not advertised as standalone exports because they rely on declarations
-supplied by the shared root.
+`./credentials.compact` is the only standalone root.
+`./credentials/composable.compact` is the only composition-safe root: include it
+exactly once before dependency-free family composition entrypoints. Same-holder
+circuits are part of the retained holder-binding module and are therefore
+available through both canonical roots. The other credential leaf modules
+remain packaged for internal composition but are not advertised as standalone
+exports because they rely on declarations supplied by the shared root.
 
-The external consumer gate compiles both standalone roots and the composition
-fragment, then runs positive and negative same-holder vectors (different holder
-secret, challenge, and binding) against each generated contract. This is a pure
-binding predicate and adds no family or business semantics.
+The external consumer gate compiles both canonical roots, then runs positive
+and negative same-holder vectors (different holder secret, challenge, and
+binding) against each generated contract. This is a pure binding predicate and
+adds no family or business semantics.
 
 ## Ownership
 
 This package is the single canonical owner of reusable Compact VC/VP semantics.
 The retired compatibility packages are not part of the workspace or release
-surface. Their `verification-v1`, status-attestation, and duplicate same-holder
+surface. Their `verification-v1`, status-attestation, and legacy same-holder
 entrypoints are not supported by this package. Technical ownership is the VC
 package maintainers; release ownership is defined by the repository release
 contract.

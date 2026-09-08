@@ -22,9 +22,17 @@ describe("candidate package surface", () => {
     expect(manifest.exports["./credentials/composable.compact"]).toBe(
       "./dist/credentials/composable.compact",
     );
-    expect(manifest.midnight.compactEntrypoints.composition).toContain(
-      "./credentials/composable.compact",
-    );
+    expect(manifest.midnight.compactEntrypoints).toEqual({
+      standalone: ["./credentials.compact"],
+      composition: ["./credentials/composable.compact"],
+    });
+    expect(manifest.exports["./holder-binding/same-holder"]).toBeUndefined();
+    expect(
+      manifest.exports["./holder-binding/same-holder.compact"],
+    ).toBeUndefined();
+    expect(
+      manifest.exports["./holder-binding/same-holder/composable.compact"],
+    ).toBeUndefined();
     expect(
       manifest.exports["./credentials/holder-bindings.compact"],
     ).toBeUndefined();
