@@ -88,6 +88,11 @@ jobs:
           --test-name-pattern='scaffold help and documentation advertise exactly the compiled mode matrix'
           ./tooling/scripts/scaffold-vc-family.test.mjs
 
+      - name: Validate credential migration ledger
+        run: |
+          pnpm run check:credential-migration-ledger
+          pnpm run test:credential-migration-ledger
+
       - name: Record docs-only fast path
         run: |
           echo 'Docs-only change detected.'

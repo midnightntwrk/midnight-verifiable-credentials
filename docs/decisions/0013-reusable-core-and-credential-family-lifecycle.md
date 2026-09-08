@@ -5,6 +5,11 @@
 - Owners: VC maintainers and credential product owners
 - Supersedes: ADR-0001
 
+The current workspace-by-workspace disposition is maintained in the versioned
+[credential-family migration ledger](../architecture/credential-family-migration-ledger.md).
+ADR-0016 remains the authority when this historical decision conflicts with
+the ledger or current core-only plan.
+
 ## Context
 
 `midnight-verifiable-credentials` currently contains reusable VC/VP packages,

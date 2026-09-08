@@ -287,6 +287,14 @@ const assertWorkflowUsesLocalSetupActions = () => {
       "docs-only-validation must run the non-Compact scaffold advertised-mode contract",
     );
   }
+  for (const command of [
+    "pnpm run check:credential-migration-ledger",
+    "pnpm run test:credential-migration-ledger",
+  ]) {
+    if (!docsOnlyJob.includes(command)) {
+      errors.push(`docs-only-validation must run ${command}`);
+    }
+  }
 
   if (
     pnpmActionIndex !== -1 &&

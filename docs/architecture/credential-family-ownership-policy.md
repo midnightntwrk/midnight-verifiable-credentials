@@ -1,5 +1,11 @@
 # Credential-family ownership and graduation policy
 
+> **Current lifecycle authority:** [ADR-0016](../decisions/0016-core-only-specification-and-implementation.md)
+> supersedes ADR-0013 and limits this repository to core specification,
+> implementation, and conformance. The versioned
+> [migration ledger](./credential-family-migration-ledger.md) records the
+> proposed disposition and unresolved approval gates for every workspace below.
+
 - **Status:** accepted governance for issues [#374](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/374) and [#378](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/378)
 - **Scope:** repository/package policy, documentation, catalog checks, and a narrow dependency guard
 - **Non-goal:** no package move, import rewrite, production graduation, generated-key commit, or implementation of #375/#376/#377
