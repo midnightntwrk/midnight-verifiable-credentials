@@ -88,5 +88,11 @@ jobs:
       - name: Run core-only release gate
         run: ./run.sh --light
 
+      - name: Validate retained Compact fixtures
+        run: pnpm run fixtures:validate
+
+      - name: Check documentation links
+        run: pnpm run docs:links
+
       - name: Check patch whitespace
         run: git diff --check
