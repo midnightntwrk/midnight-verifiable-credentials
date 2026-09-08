@@ -58,6 +58,11 @@ remain separate follow-ups; secrets are never fixtures.
 
 ### Repository-boundary migration
 
+The current, machine-checked workspace disposition is the
+[credential-family migration ledger](../architecture/credential-family-migration-ledger.md).
+ADR-0016 supersedes earlier retention assumptions in this historical backlog;
+the ledger and the core-only execution plan govern removal and relocation.
+
 Deliver:
 
 - freeze new product feature work in core credential-family packages;
