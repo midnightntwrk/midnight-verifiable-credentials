@@ -15,6 +15,8 @@ data. It is not published.
 Run its focused checks:
 
 ```bash
-pnpm --dir examples/core-composition typecheck
-pnpm --dir examples/core-composition test:ci
+pnpm turbo run typecheck test:ci \
+  --filter=@midnight-ntwrk/credential-core-composition-example
 ```
+
+Turbo builds the two package dependencies before running the fixture checks.

@@ -59,7 +59,8 @@
     },
     "test": {
       "dependsOn": [
-        "build"
+        "build",
+        "^build"
       ],
       "env": [
         "CI",
@@ -69,7 +70,8 @@
     },
     "test:ci": {
       "dependsOn": [
-        "build"
+        "build",
+        "^build"
       ],
       "env": [
         "CI",

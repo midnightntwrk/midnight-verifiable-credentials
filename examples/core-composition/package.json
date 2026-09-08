@@ -6,10 +6,6 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build:core": "pnpm --dir ../../packages/core/model run build && pnpm --dir ../../packages/core/compact run build",
-    "pretest": "pnpm run build:core",
-    "pretest:ci": "pnpm run build:core",
-    "pretypecheck": "pnpm run build:core",
     "test": "vitest run",
     "test:ci": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",

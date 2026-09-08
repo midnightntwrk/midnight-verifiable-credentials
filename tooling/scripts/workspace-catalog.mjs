@@ -298,85 +298,12 @@ const checkCatalog = () => {
 };
 
 const printLines = (lines) => stdout.write(`${lines.join("\n")}\n`);
-const executeReleaseTask = (task) => {
-  const eligible = workspaceCatalog.filter((entry) =>
-    entry.releaseTasks.includes(task),
-  );
-  assert.ok(eligible.length > 0, `no workspaces declare release task '${task}'`);
-
-  const args = [
-    "turbo",
-    "run",
-    task,
-    ...eligible.map((entry) => `--filter=./${entry.path}`),
-    "--continue",
-  ];
-  // Several package hooks rebuild shared workspace dependencies in place.
-  // Serialize output-sensitive phases until those hooks become pure consumers.
-  if (task !== "lint") {
-    args.push("--concurrency=1", "--ui=stream");
-  }
-
-  stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-  const invocation = pnpmInvocation(args);
-  const result = spawnSync(invocation.command, invocation.args, {
-    cwd: repoRoot,
-    stdio: "inherit",
-  });
-  process.exitCode = result.status ?? (result.signal ? 128 : 1);
-};
-
-const executeTypecheckFromArtifacts = () => {
-  const eligible = workspaceCatalog.filter((entry) =>
-    entry.releaseTasks.includes("typecheck"),
-  );
-
-  for (const entry of eligible) {
-    const args = [
-      "--dir",
-      entry.path,
-      "exec",
-      "tsc",
-      "-p",
-      "tsconfig.json",
-      "--noEmit",
-    ];
-    stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-    const invocation = pnpmInvocation(args);
-    const result = spawnSync(invocation.command, invocation.args, {
-      cwd: repoRoot,
-      stdio: "inherit",
-    });
-    if (result.status !== 0) {
-      process.exit(result.status ?? (result.signal ? 128 : 1));
-    }
-  }
-};
-
-const executeTestsFromArtifacts = () => {
-  const eligible = workspaceCatalog.filter((entry) =>
-    entry.releaseTasks.includes("test:ci"),
-  );
-
-  for (const entry of eligible) {
-    const args = ["--dir", entry.path, "exec", "vitest", "run"];
-    stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-    const invocation = pnpmInvocation(args);
-    const result = spawnSync(invocation.command, invocation.args, {
-      cwd: repoRoot,
-      stdio: "inherit",
-    });
-    if (result.status !== 0) {
-      process.exit(result.status ?? (result.signal ? 128 : 1));
-    }
-  }
-};
 const isDirectExecution =
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
 if (isDirectExecution) {
-  const [command, value] = process.argv.slice(2);
+  const [command] = process.argv.slice(2);
   try {
     switch (command) {
       case "--packable-paths":
@@ -385,22 +312,13 @@ if (isDirectExecution) {
       case "--publishable-paths":
         printLines(supportedWorkspacePaths);
         break;
-      case "--exec-task":
-        executeReleaseTask(value);
-        break;
-      case "--exec-typecheck-from-artifacts":
-        executeTypecheckFromArtifacts();
-        break;
-      case "--exec-tests-from-artifacts":
-        executeTestsFromArtifacts();
-        break;
       case "--check":
         checkCatalog();
         stdout.write("[workspace-catalog] Catalog checks passed.\n");
         break;
       default:
         stderr.write(
-          "Usage: workspace-catalog.mjs --check | --packable-paths | --publishable-paths | --exec-task <task> | --exec-typecheck-from-artifacts | --exec-tests-from-artifacts\n",
+          "Usage: workspace-catalog.mjs --check | --packable-paths | --publishable-paths\n",
         );
         process.exit(command === undefined ? 0 : 1);
     }

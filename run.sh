@@ -50,9 +50,9 @@ case "$target" in
   full)
     pnpm run ci:lint
     pnpm run build:all
-    pnpm run ci:typecheck:from-artifacts
-    pnpm run test:core-conformance:from-artifacts
-    pnpm run test:all:from-artifacts
+    pnpm run ci:typecheck
+    pnpm run test:core-conformance
+    pnpm run test:all
     pnpm run artifacts:pack
     ;;
   lint)
@@ -65,10 +65,10 @@ case "$target" in
     pnpm run ci:typecheck
     ;;
   test)
-    pnpm run build:all
-    pnpm run test:all:from-artifacts
+    pnpm run test:all
     ;;
   conformance)
+    pnpm run build:all
     pnpm run test:core-conformance
     ;;
   package)
