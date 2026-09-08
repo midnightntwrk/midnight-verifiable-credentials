@@ -2,10 +2,12 @@
 
 `dev-loops` 0.9.0 runs `external-review` as a mandatory angle in both the draft
 and pre-approval gates. The angle's configured reviewer must run the local,
-read-only command `codex review --base origin/develop` against the current PR
-head and return actionable findings (or `No findings`). PR lifecycle commands
-must explicitly use `--base develop`; the installed dev-loops schema has no
-repository-base setting.
+read-only command `codex review --base origin/<base-ref>` against the current PR
+head and return actionable findings (or `No findings`). Resolve `<base-ref>`
+from the pull request before each review. PR lifecycle commands must explicitly
+use the same actual base; the installed dev-loops schema has no repository-base
+setting. The core-only campaign uses `vc-core`; ordinary work uses `develop`
+unless explicitly directed otherwise.
 
 `@input-output-hk/agent-review-pi@0.6.0` is supported by the pinned Pi 0.84.2
 host as an optional user-scoped operator package. It is not a project

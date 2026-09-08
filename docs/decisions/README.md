@@ -21,16 +21,17 @@ supersedes them.
 | [0003](./0003-zk-artifact-distribution-and-discovery.md) | Accepted | Bind ZK artifacts to deployable contracts and distribute immutable, digest-addressed bundles |
 | [0004](./0004-rendering-localization-and-transliteration.md) | Accepted | Separate canonical claims from rendering and version any policy-relevant localization or transliteration |
 | [0005](./0005-verification-execution-and-authority.md) | Superseded by [0010](./0010-verification-transcript-and-decision-nullifier.md) | Use one Compact verification model with explicit on-chain authority and restricted off-chain profiles |
-| [0006](./0006-existing-dapp-connector-credentials-extension.md) | Accepted | Add a versioned credentials extension to the existing Midnight DApp Connector API |
-| [0007](./0007-openid-credential-protocols-and-didcomm.md) | Accepted | Use OID4VCI and OID4VP as the interoperable protocols and keep DIDComm optional |
+| [0006](./0006-existing-dapp-connector-credentials-extension.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Add a versioned credentials extension to the existing Midnight DApp Connector API |
+| [0007](./0007-openid-credential-protocols-and-didcomm.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Use OID4VCI and OID4VP as the interoperable protocols and keep DIDComm optional |
 | [0008](./0008-package-release-stages-and-candidate-contract.md) | Accepted | Separate packable artifacts from release candidates and supported packages |
 | [0009](./0009-supply-chain-evidence-and-exceptions.md) | Accepted | Gate supported releases on reviewable dependencies, expiring exceptions, SBOMs, provenance, and attestations |
 | [0010](./0010-verification-transcript-and-decision-nullifier.md) | Accepted | Bind verification decisions to a canonical transcript, orthogonal result axes, and an atomic decision nullifier |
 | [0011](./0011-status-registry-namespace-and-authority.md) | Accepted | Derive registry namespaces and authenticate controller, delegate, mutation, audit, rotation, and migration transitions |
 | [0012](./0012-trusted-time-and-status-freshness.md) | Accepted | Accept status freshness and time only from explicit ledger or independently anchored authority sources |
-| [0013](./0013-reusable-core-and-credential-family-lifecycle.md) | Accepted | Publish reusable schema-neutral packages from core and move governed credential families to independent repositories |
-| [0014](./0014-orthogonal-package-architecture.md) | Proposed | Publish a consolidated, domain-named credential package graph behind family-neutral ports |
-| [0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) | Accepted | Separate semantic VC-family profiles from deployment assembly and make vocabulary, compatibility, and maturity dimensions explicit |
+| [0013](./0013-reusable-core-and-credential-family-lifecycle.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Publish reusable schema-neutral packages from core and move governed credential families to independent repositories |
+| [0014](./0014-orthogonal-package-architecture.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Publish a consolidated, domain-named credential package graph behind family-neutral ports |
+| [0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Separate semantic VC-family profiles from deployment assembly and make vocabulary, compatibility, and maturity dimensions explicit |
+| [0016](./0016-core-only-specification-and-implementation.md) | Accepted | Keep only the protocol-independent VC/VP specification, bounded model, generic Compact implementation, and conformance |
 
 [`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
 not an ADR.

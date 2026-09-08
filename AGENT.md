@@ -2,29 +2,31 @@
 
 Engineering guide for agents and engineers working in `midnight-verifiable-credentials`.
 
-This repository can be cloned independently or checked out as `midnight-identity-workspace/midnight-verifiable-credentials`. When it is used inside the workspace, also read the workspace-root `AGENT.md` for cross-repo coordination. This file is the authority for VC repository package boundaries, validation, packaging, BDD, and standalone integration behavior.
+This repository can be cloned independently or checked out as `midnight-identity-workspace/midnight-verifiable-credentials`. When it is used inside the workspace, also read the workspace-root `AGENT.md` for cross-repo coordination. This file is the authority for VC repository package boundaries, normative and conformance placement, validation, packaging, and migration behavior.
 
 ## Purpose
 
-`midnight-verifiable-credentials` owns the Midnight Verifiable Credentials stack:
+`midnight-verifiable-credentials` owns the protocol-independent Midnight VC/VP
+core defined by
+[`docs/decisions/0016-core-only-specification-and-implementation.md`](docs/decisions/0016-core-only-specification-and-implementation.md):
 
-- Compact-first VC/VP primitives
-- public/direct claims and commitment-backed claim representation
-- holder-binding and same-holder capabilities
-- status and revocation capability work
-- OpenID-shaped protocol bindings
-- protocol orchestration helpers
-- private credential-type prototypes used to prove reusable capabilities
-- runnable use cases and BDD living documentation used as contribution evidence
-- standalone integration infrastructure
+- the normative VC/VP specification and conformance vectors
+- canonical issuer, holder, and verifier data objects and ceremonies
+- the bounded TypeScript credential model
+- generic Compact VC/VP primitives and curated generated bindings
+- focused build, test, packaging, and release tooling for those surfaces
 
-DID method implementation belongs in `midnight-did`. Concrete credential families are private prototype evidence while they remain
-under `packages/prototypes/credential-families`; production-shaped compositions
-belong under `packages/use-cases/` only as explicitly governed evidence. A
-family graduates to an independent product repository only after the gates in
-[`docs/architecture/credential-family-ownership-policy.md`](docs/architecture/credential-family-ownership-policy.md). This repository publishes only
-reusable, schema-neutral packages. Existing family and use-case workspaces are
-private migration inventory and must not become product release surfaces.
+OpenID, DIDComm, DApp Connector integration, durable workflow orchestration,
+runtime family discovery, display/localization, concrete credential families,
+business contracts, and runnable product use cases are outside the target core
+release graph. Existing directories for those concerns are migration inventory:
+do not add features to them. Maintained use cases belong in
+`midnight-identity-solution-examples`; credential families belong in
+independently versioned repositories.
+
+DID method implementation belongs in `midnight-did`. This repository publishes
+only reusable, schema-neutral packages. Repository integration uses released
+packages or immutable package artifacts, never sibling source imports.
 
 ## Quick Start
 
@@ -85,7 +87,7 @@ Use it to inspect Compact entry points, TypeScript package exports, generated `s
 
 This repository distributes a lightweight Codex skill at `.codex/skills/midnight-identity/`.
 
-Use it when a task starts from an independent `midnight-verifiable-credentials` clone and needs VC-specific validation, BDD, university, status/revocation, CI-cone, packaging, or DID/VC boundary reminders. The skill intentionally points agents back to this `AGENT.md` as the detailed source of truth.
+Use it when a task starts from an independent `midnight-verifiable-credentials` clone and needs VC-specific specification, model, Compact, conformance, migration, packaging, or DID/VC boundary reminders. The skill intentionally points agents back to this `AGENT.md` as the detailed source of truth.
 
 ## Repository Layout
 
@@ -93,29 +95,40 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | --- | --- |
 | `docs/` | Normative specs, guides, architecture notes, test strategy, plans, decisions, and templates. |
 | `packages/core/` | Reusable VC primitives and capabilities. |
-| `packages/registry/` | Registry packages, currently status/revocation registry work. |
-| `packages/protocols/` | Transport/protocol bindings such as OpenID-shaped schemas and Compact framing. |
-| `packages/components/` | Runtime adapters, protocol orchestration, and standalone integration helpers. |
-| `packages/prototypes/` | Private credential-family prototypes and family-local quality evidence; concrete families remain here until reduced or graduated through explicit gates. |
-| `packages/use-cases/` | Private production-shaped composition evidence, BDD living documentation, contracts, and scenarios; placement does not assert production readiness. |
+| `packages/registry/` | Migration inventory; retain only generic status semantics approved for the core packages. |
+| `packages/protocols/` | Removal inventory; transport/protocol bindings move outside this repository. |
+| `packages/components/` | Removal or relocation inventory for adapters, orchestration, and application integration. |
+| `packages/prototypes/` | Extraction inventory for independently owned credential-family repositories. |
+| `packages/use-cases/` | Relocation inventory for `midnight-identity-solution-examples`. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
 | `docs/guides/assets/` | Static explanatory assets used by human-facing guides. |
 
-BDD belongs under `packages/use-cases/`, not under low-level package tests or prototype-only directories.
+Do not add BDD, product reporting, or application scenarios to the core
+repository. Retained canonical vectors belong under `conformance/`; runnable
+use-case evidence belongs in `midnight-identity-solution-examples`.
 
-No new supported credential family may be added under `packages/`. Prototype
-work must declare an owner, capability hypothesis, limitations, and an exit
-criterion. Reusable packages must not depend on prototypes or use cases. The
+Reusable packages must not depend on prototypes or use cases. The
 workspace/package catalog and `check-package-boundaries` guard enforce the
-family-agnostic core and private evidence boundary; see the ownership policy
-for the closed migration exception and graduation gates.
+family-agnostic core during migration.
 
-## Package Map
+Do not add new prototype or use-case workspaces. Every existing migration
+inventory entry must have an accountable owner, a destination or deletion
+decision, and an exit criterion in the ledger tracked by issue #466.
+
+## Migration Package Map
+
+The following table describes the current tree, not the target supported
+surface. ADR-0016 reduces the target public release graph to
+`credential-model` and `credential-compact`; do not infer continuing ownership
+from a package's presence during migration.
 
 | Path | Package | Responsibility |
 | --- | --- | --- |
 | `packages/core/model` | `@midnight-ntwrk/credential-model` | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors. |
 | `packages/core/compact` | `@midnight-ntwrk/credential-compact` | Canonical reusable VC/VP Compact semantics and public standalone/composition surfaces. |
+| `packages/core/proofs` | `@midnight-ntwrk/credential-proofs` | Supported proof, artifact, authority, and execution contracts to reduce or fold into the two target packages. |
+| `packages/core/status` | `@midnight-ntwrk/credential-status` | Supported generic status surface to fold unless independent lifecycle evidence justifies it. |
+| `packages/core/display` | `@midnight-ntwrk/credential-display` | Internal display/localization surface scheduled for removal from this repository. |
 | `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Private compatibility facade plus explicit legacy verification/status extensions; not a second canonical owner. |
 | `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
@@ -124,6 +137,7 @@ for the closed migration exception and graduation gates.
 | `packages/registry/status-midnight-verifier` | `@midnight-ntwrk/credential-status-midnight-verifier` | Internal least-privilege status read/authenticated-proof adapter. |
 | `packages/registry/status-midnight-authority` | `@midnight-ntwrk/credential-status-midnight-authority` | Internal controller/delegate write authorization and injected signing port. |
 | `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
+| `packages/components/adapters/credential-did-midnight` | `@midnight-ntwrk/credential-did-midnight` | Supported DID-method adapter to move to a DID-owned or dedicated integration release surface. |
 | `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
 | `packages/components/orchestration/exchange` | `@midnight-ntwrk/credential-exchange` | Private family-neutral issuance/presentation/verification ports and directly injected agents. |
 | `packages/components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Outward birth/birth-secret/age-gate reference adapters and compatibility lifecycle tests. |
@@ -137,11 +151,13 @@ for the closed migration exception and graduation gates.
 | `packages/prototypes/credential-families/digital-passport` | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | Frozen migration evidence for the independent digital-passport repository. |
 | `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
 | `packages/use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
+| `packages/use-cases/bdd-support` | `@midnight-ntwrk/midnight-did-credentials-bdd-support` | Internal BDD support scheduled to move with or be removed alongside runnable use cases. |
 | `packages/use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
 | `packages/use-cases/university/contract` | `@midnight-ntwrk/midnight-did-university-verifier-contract` | University verifier contract path. |
 | `packages/use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
 | `packages/use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
 | `packages/use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
+| `packages/use-cases/status-openid/evidence` | `@midnight-ntwrk/status-openid-production-evidence` | Internal status/OpenID evidence scheduled for removal or external relocation. |
 
 Only workspaces marked `candidate` or `supported` in
 `tooling/scripts/workspace-catalog.mjs` may be packed. Prototypes, use cases,
@@ -232,7 +248,7 @@ PR gates, cross-repository lanes, or unconditional validation lists.
 
 ## Dev-loop PR policy
 
-For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. If `codex review --base origin/develop` cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
+For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. Resolve the pull request's actual base ref and run `codex review --base origin/<base-ref>`. If that command cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
 
 ## Runner Targets
 
@@ -444,9 +460,11 @@ Rules:
 - Keep root pnpm `overrides` out unless there is a deliberate workspace-wide reason; packages that need vendored tarballs should pin them explicitly.
 - Keep package `files` lists and build/prepack hooks correct so tarballs are self-sufficient.
 
-## CI Shape
+## Migration CI Shape
 
-The main PR path is cone-based and should remain fast unless measurements regress.
+The current PR path remains cone-based until issue #537 replaces it with the
+core-only gate. Do not add new product, family, BDD, protocol, or use-case
+cones. Existing lanes remain available only to validate extraction or deletion.
 
 Current CI pattern:
 
@@ -472,13 +490,20 @@ Heavy/focused lanes:
 - standalone protocol integration
 - university validation
 
-Do not redesign CI broadly unless wall clock, cone invalidation, artifact correctness, or Compact complexity materially regresses.
+Issue #537 owns deletion of obsolete cones and the final core-only CI design.
+Other migration PRs should change only the lanes directly owned by their
+removed or retained surfaces.
 
 ## Documentation Rules
 
 Normative/spec material:
 
-- `docs/spec/`
+- target: `spec/`
+- migration source: `docs/spec/`
+
+Issue #533 creates the target directory and moves only retained normative
+rules. Until then, edit `docs/spec/` only for corrections required by the
+migration; do not add protocol, product, or deployment specifications there.
 
 Guides:
 
@@ -501,20 +526,21 @@ Package-local details belong in package `README.md` files.
 
 High-value entry points:
 
-- `docs/spec/midnight-credentials.md`
-- `docs/spec/claim-representation.md`
-- `docs/spec/profiles.md`
-- `docs/spec/conformance.md`
+- `docs/decisions/0016-core-only-specification-and-implementation.md`
+- `docs/plans/vc-core-only-repository-plan-2026-09-08.md`
+- `docs/plans/vc-core-only-issue-disposition-2026-09-08.md`
+- `docs/spec/midnight-credentials.md` (migration source)
+- `docs/spec/claim-representation.md` (migration source)
+- `docs/spec/conformance.md` (migration source)
 - `docs/architecture/package-boundaries.md`
 - `docs/architecture/package-tier-inventory.md`
-- `docs/architecture/protocol-classification.md`
 - `docs/testing/test-matrix.md`
 - `docs/guides/package-selection.md`
 - `docs/guides/midnight-credentials-for-dummies.md`
-- `docs/plans/vc-maturity-backlog.md`
-- `docs/plans/university-improvement-backlog.md`
 
-Update docs when changing public APIs, generated credential literal shapes, package boundaries, CI lanes, BDD semantics, status/revocation semantics, or protocol flows.
+Update the normative specification and conformance vectors when changing public
+APIs, generated credential literal shapes, holder binding, disclosure,
+predicate, status, or verification semantics.
 
 ## Cross-Repository Boundaries
 
@@ -527,17 +553,25 @@ Use `midnight-did` for:
 
 Use this repo for:
 
-- generic VC/VP packages
-- reference credential families
-- status/revocation capability
-- protocol/adapters/orchestration
-- university and age-gate use cases
+- normative protocol-independent VC/VP semantics
+- the bounded `credential-model` TypeScript package
+- the generic `credential-compact` implementation package
+- canonical conformance vectors and clean package consumers
+
+Use independent credential-family repositories for:
+
+- family schemas and configurations
+- family-specific Compact circuits and artifacts
+- family ownership, versioning, testing, and releases
 
 Use `midnight-identity-solution-examples` for:
 
-- Passport/product-specific flows
-- product-specific credential families
-- multi-origin browser demos
+- runnable issuer, holder, and verifier applications
+- protocol and wallet integration experiments
+- product and cross-repository end-to-end scenarios
+
+Use independently owned adapter repositories for OID4VCI/OID4VP, DIDComm,
+DApp Connector, or other wire protocols when those integrations are required.
 
 Use `midnight-trust-registry` for:
 

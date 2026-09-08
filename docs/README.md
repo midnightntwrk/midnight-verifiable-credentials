@@ -210,6 +210,23 @@
 
 ## Decisions and plans
 
+The core-only plan, issue disposition, and tracker #539 are the only active
+migration backlog. The accepted ADRs in the decision register remain the
+architectural authority unless ADR-0016 supersedes them. Earlier feature,
+protocol, prototype, and production-readiness plans are historical inputs
+unless the issue-disposition ledger explicitly absorbs their work.
+
+- develop incremental audit and razor input:
+  - [`plans/vc-develop-incremental-audit-2026-09-08.md`](./plans/vc-develop-incremental-audit-2026-09-08.md)
+  - for the post-feature-stack `develop` delta, current control gaps, and the
+    proposed simplification sequence
+- core-only repository plan:
+  - [`plans/vc-core-only-repository-plan-2026-09-08.md`](./plans/vc-core-only-repository-plan-2026-09-08.md)
+  - for the AnonCreds-inspired specification, issuer/holder/verifier core, and
+    removal of high-level protocols and product workflows
+- core-only issue disposition:
+  - [`plans/vc-core-only-issue-disposition-2026-09-08.md`](./plans/vc-core-only-issue-disposition-2026-09-08.md)
+  - for retaining, absorbing, relocating, or removing the pre-ADR-0016 backlog
 - architecture decision register:
   - [`decisions/README.md`](./decisions/README.md)
   - for accepted repository, contract, artifact, rendering, verification, and
@@ -233,20 +250,19 @@
 - revocation capability options:
   - [`plans/revocation-capability-options.md`](./plans/revocation-capability-options.md)
   - for choosing the first Midnight-native status/revocation implementation path
-- VC maturity backlog:
+- superseded VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
-  - for the canonical dependency-ordered production-readiness queue
-- VC production execution plan:
+  - historical pre-ADR-0016 production-readiness queue; do not execute directly
+- superseded VC production execution plan:
   - [`plans/vc-production-execution-plan-2026-07-16.md`](./plans/vc-production-execution-plan-2026-07-16.md)
-  - for dedicated branch, PR dependency, CI, review, and merge sequencing
+  - historical branch, CI, review, and merge record; do not execute directly
 - public repository hardening:
   - [`plans/public-repository-hardening.md`](./plans/public-repository-hardening.md)
   - for Scorecard evidence, repository-local controls, and GitHub/IaC owner
     actions
-- remaining VC production deliverables:
+- superseded VC production deliverables:
   - [`plans/vc-remaining-deliverables.md`](./plans/vc-remaining-deliverables.md)
-  - for the current completed baseline, outstanding deliverables, dependency
-    blockers, closure evidence, and recommended next PR order
+  - historical pre-ADR-0016 status and closure evidence; do not execute directly
 - repository audit backlog:
   - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
   - for historical May 2026 simplification findings and delivery traceability

@@ -1,6 +1,6 @@
 # ADR-0007: OpenID credential protocols and DIDComm
 
-- Status: Accepted
+- Status: Superseded by ADR-0016
 - Date: 2026-07-15
 - Owners: VC protocol, wallet, issuer, and verifier maintainers
 - Supersedes: none

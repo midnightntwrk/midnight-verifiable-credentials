@@ -52,13 +52,14 @@ personas:
   midnight-vc-surface:
     persona: review
     prompt: >-
-      Review reusable VC/VP model, Compact primitives, capabilities,
-      registries, protocol bindings, runtime adapters, package exports,
-      specifications, and downstream compatibility boundaries. Find drift,
-      duplicated ownership, stale public behavior, missing validation, or
-      concrete credential-family code escaping prototype/use-case boundaries.
-      Keep DID method behavior in midnight-did and releasable credential
-      families in independent repositories. Report concrete findings with file
+      Review the protocol-independent VC/VP specification, bounded model,
+      generic Compact implementation, conformance, package exports, and
+      downstream compatibility boundaries. Find drift, duplicated ownership,
+      stale public behavior, missing validation, or transport, application,
+      and concrete-family behavior entering the core release graph. Keep DID
+      method behavior in midnight-did, releasable credential families in
+      independent repositories, and runnable use cases in
+      midnight-identity-solution-examples. Report concrete findings with file
       and line references.
     defaultModel: null
 
@@ -75,8 +76,9 @@ personas:
   external-review:
     persona: review
     prompt: >-
-      Required independent local CLI review: run `codex review --base
-      origin/develop` against the current PR head before returning a verdict.
+      Required independent local CLI review: resolve the current pull request's
+      actual base ref and run `codex review --base origin/<base-ref>` against
+      the current PR head before returning a verdict.
       Do not modify files. Review for correctness, security, stale docs,
       package/API compatibility, tests, and regression risk. For Compact
       changes, check authorization binding, witness secrecy, claim-opening
