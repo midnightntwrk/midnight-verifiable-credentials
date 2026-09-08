@@ -55,12 +55,12 @@ export const syntheticFamily = defineCredentialFamily({
     packages: [
       {
         name: "@midnight-ntwrk/credential-model",
-        version: "0.1.0",
+        version: "0.2.0",
         exports: ["."],
       },
       {
         name: "@midnight-ntwrk/credential-compact",
-        version: "0.1.0",
+        version: "0.2.0",
         exports: ["."],
       },
     ],

@@ -4,9 +4,9 @@ Protocol-independent verifiable credential and presentation building blocks for
 Midnight.
 
 This repository contains the normative VC/VP core specification, conformance
-vectors, reusable TypeScript packages, generic Compact primitives, credential
-capability and artifact descriptors, and a thin `did:midnight` adapter. It
-does not contain credential families, product use cases, applications, exchange
+vectors, a reusable TypeScript model, generic Compact primitives, and bounded
+credential capability and artifact descriptors. It does not contain method
+adapters, credential families, product use cases, applications, exchange
 protocols, or deployment environments. Those belong in independently versioned
 consumer repositories.
 
@@ -25,7 +25,6 @@ consumer repositories.
 | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | supported | Configuration, descriptors, codecs, and validation |
 | `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
-| `@midnight-ntwrk/credential-did-midnight` | supported | Thin `did:midnight` holder-binding adapter |
 
 The [release contract](./docs/architecture/package-release-contract.md) is the
 authority for publication status. The
@@ -38,7 +37,6 @@ defines package metadata and export requirements.
 spec/                        Normative VC/VP core
 conformance/                 Machine-readable vectors and operation mapping
 packages/core/               Runtime-neutral packages and Compact primitives
-packages/components/adapters Thin runtime adapters
 examples/core-composition/   Minimal synthetic composition fixture
 docs/                        Architecture, glossary, decisions, and runbooks
 ```
@@ -52,8 +50,9 @@ pnpm install --frozen-lockfile
 ./run.sh --light
 ```
 
-Focused targets are `lint`, `typecheck`, `build`, `test`, `conformance`,
-`check-integration`, and `package`. Run them as `./run.sh <target>`.
+Focused targets are `lint`, `typecheck`, `build`, `test`, `conformance`, and
+`package`. Run them as `./run.sh <target>`. The default and `--light` commands
+run the same authoritative non-Docker release gate.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) and [AGENT.md](./AGENT.md) before
 changing public APIs or repository boundaries.

@@ -16,7 +16,6 @@ documents.
 - [Package boundaries](./architecture/package-boundaries.md)
 - [Package manifest discipline](./architecture/workspace-package-manifest-discipline.md)
 - [Package release contract](./architecture/package-release-contract.md)
-- [DID integration](./guides/did-integration-modes.md)
 - [npm publication](./guides/npmjs-publication.md)
 - [Vulnerability exceptions](./security/vulnerability-exceptions.md)
 - [Architecture decisions](./decisions/README.md)

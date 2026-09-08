@@ -96,20 +96,10 @@ requireEnv("build", ["COMPACT_COMPILER_VERSION"]);
 requireEnv("test", [
   "CI",
   "COMPACT_COMPILER_VERSION",
-  "PROOF_SERVER_IMAGE",
-  "RUN_ENV_TESTS",
-  "TEST_ENTRYPOINT",
-  "TEST_ENV",
-  "TEST_WALLET_SEED",
 ]);
 requireEnv("test:ci", [
   "CI",
   "COMPACT_COMPILER_VERSION",
-  "PROOF_SERVER_IMAGE",
-  "RUN_ENV_TESTS",
-  "TEST_ENTRYPOINT",
-  "TEST_ENV",
-  "TEST_WALLET_SEED",
 ]);
 
 for (const [taskName, task] of Object.entries(turbo.tasks ?? {})) {

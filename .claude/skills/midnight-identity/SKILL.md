@@ -43,10 +43,10 @@ validation list.
 
 ```bash
 pnpm run artifacts:pack
-./upgrade-libs.sh --destination /path/to/downstream-repo
 ```
 
-Use `tooling/artifacts/npm/` and `tooling/vendor/`; do not hand-copy `dist/`.
+`tooling/artifacts/npm/` is generated release evidence. Do not commit tarballs
+or hand-copy `dist/` between repositories.
 
 ## MCP
 

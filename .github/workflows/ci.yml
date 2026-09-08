@@ -20,13 +20,12 @@ env:
   PNPM_CONFIG_AUDIT: "false"
   PNPM_CONFIG_FUND: "false"
   COMPACT_COMPILER_VERSION: 0.31.1
-  VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
 
 jobs:
-  prepare-compact:
-    name: Prepare Compact Toolchain
+  core-validation:
+    name: Core Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -35,6 +34,8 @@ jobs:
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
+        with:
+          turbo-cache: "true"
 
       - name: Set up Compact toolchain
         uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
@@ -45,45 +46,6 @@ jobs:
 
       - name: Verify Compact installation
         run: compact compile --version
-
-      - name: Pack Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$RUNNER_TEMP/compact-toolchain"
-          compact_paths=(.local/bin/compact)
-          if [ -d "$HOME/.compact" ]; then compact_paths+=(.compact); fi
-          if [ -d "$HOME/.local/share/compact" ]; then compact_paths+=(.local/share/compact); fi
-          if [ -d "$HOME/.config/compact" ]; then compact_paths+=(.config/compact); fi
-          tar -C "$HOME" -czf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz" "${compact_paths[@]}"
-
-      - name: Upload Compact toolchain artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain/compact-toolchain.tar.gz
-          if-no-files-found: error
-
-  core-validation:
-    name: Core Validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    needs: prepare-compact
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          lfs: false
-
-      - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-pnpm
-        with:
-          turbo-cache: "true"
-
-      - name: Restore Compact toolchain
-        uses: ./.github/actions/restore-compact-toolchain
-        with:
-          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Run core-only release gate
         run: ./run.sh --light

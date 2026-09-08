@@ -98,7 +98,6 @@ published_version() {
 
 ensure_npm_dist_tags() {
   local package_name="$1"
-  local current_latest
 
   if [[ -z "${token}" ]]; then
     echo "::error::dist-tag updates require the scoped npm token; npm OIDC authorizes publication only." >&2
@@ -111,13 +110,9 @@ ensure_npm_dist_tags() {
     return 0
   fi
 
-  current_latest="$(read_tag "${package_name}" latest)"
   if [[ "${promote_latest}" == "true" ]]; then
     echo "[publish-npm-packages] Promoting ${package_name}@${version} to latest"
     "${npm_command}" dist-tag add "${package_name}@${version}" latest --registry "${registry}"
-  elif [[ "${current_latest}" == "${version}" ]]; then
-    echo "[publish-npm-packages] Removing unintended latest tag from ${package_name}@${version}"
-    "${npm_command}" dist-tag rm "${package_name}" latest --registry "${registry}"
   fi
 }
 
@@ -133,6 +128,10 @@ if [[ "${#workspaces[@]}" -eq 0 ]]; then
   echo "::error::workspace catalog has no supported publishable packages."
   exit 1
 fi
+
+package_names=()
+tarball_paths=()
+published_versions=()
 
 for workspace in "${workspaces[@]}"; do
   package_json="${repo_root}/${workspace}/package.json"
@@ -151,7 +150,15 @@ for workspace in "${workspaces[@]}"; do
     exit 1
   fi
 
-  existing_version="$(published_version "${package_name}")"
+  package_names+=("${package_name}")
+  tarball_paths+=("${tarball_path}")
+  published_versions+=("$(published_version "${package_name}")")
+done
+
+for index in "${!workspaces[@]}"; do
+  package_name="${package_names[$index]}"
+  tarball_path="${tarball_paths[$index]}"
+  existing_version="${published_versions[$index]}"
   if [[ "${existing_version}" == "${version}" ]]; then
     current_tag="$(read_tag "${package_name}" "${npm_tag}")"
     if [[ "${current_tag}" == "${version}" ]]; then
@@ -163,7 +170,7 @@ for workspace in "${workspaces[@]}"; do
     continue
   fi
 
-  echo "[publish-npm-packages] Publishing tested ${tarball_name} with tag ${npm_tag}."
+  echo "[publish-npm-packages] Publishing tested $(basename "${tarball_path}") with tag ${npm_tag}."
   "${npm_command}" publish "${tarball_path}" \
     --access "${publish_access}" \
     --provenance \

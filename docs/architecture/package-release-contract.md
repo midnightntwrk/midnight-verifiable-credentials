@@ -31,7 +31,6 @@ conformance fixtures, removed, or graduated to an independent repository.
 | --- | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
 | `@midnight-ntwrk/credential-compact` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Curated family-neutral Compact semantics; no deployable family, authority, or proving material |
-| `@midnight-ntwrk/credential-did-midnight` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
 
 Removed family, use-case, protocol, and integration packages are historical
 migration inventory, not a publication queue. They are not eligible for packing
@@ -62,7 +61,7 @@ Every candidate must:
 - pass the tarball allowlist and export-target checks run by
   `tooling/scripts/check-release-package-contract.mjs`.
 
-The RC2 Compact package is validated against the exact compiler/runtime tuple
+The `0.2.0-rc1` Compact package is validated against the exact compiler/runtime tuple
 `@midnight-ntwrk/compact-runtime@0.16.0` and Compact compiler `0.31.1`.
 Generated build metadata and clean-consumer checks reject runtime drift. The
 Compact `0.31.1` toolchain natively targets `compact-runtime 0.16.0`
@@ -86,8 +85,7 @@ The current package set proves:
 
 - `credential-model`: Node ESM, strict and legacy TypeScript, and browser use;
 - `credential-compact`: Node ESM, strict TypeScript, and external Compact
-  compilation; and
-- `credential-did-midnight`: Node ESM and strict TypeScript use.
+  compilation.
 
 Packages that expose Compact sources must declare and pass the Compact
 clean-consumer check. The `credential-compact` package also records compiler

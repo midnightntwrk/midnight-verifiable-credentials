@@ -25,7 +25,6 @@ const workspacesByPackageClass = (packageClass) =>
   );
 
 const sourceOnlyWorkspaces = workspacesByPackageClass("source-only");
-const scenarioWorkspaces = workspacesByPackageClass("scenario");
 
 const requiredDistFiles = [
   "dist/**",
@@ -119,15 +118,6 @@ const assertTypesVersionsDistPaths = (value, label) => {
 
   for (const [key, nestedValue] of Object.entries(value)) {
     assertTypesVersionsDistPaths(nestedValue, `${label}.${key}`);
-  }
-};
-
-const assertNoPublicEntrypoint = (packageJson, workspace) => {
-  for (const field of ["main", "module", "types", "exports", "files"]) {
-    assert(
-      packageJson[field] === undefined,
-      `${workspace} must not define ${field}; scenario packages are executable harnesses`,
-    );
   }
 };
 
@@ -288,15 +278,6 @@ const assertSourceOnlyPackage = (packageJson, workspace) => {
   );
 };
 
-const assertScenarioPackage = (packageJson, workspace) => {
-  assert(packageJson.license === "Apache-2.0", `${workspace} must declare Apache-2.0 license`);
-  assert(packageJson.private === true, `${workspace} must remain private`);
-  assert(packageJson.type === "module", `${workspace} must be an ESM package`);
-  assert(packageJson.engines?.node === ">=24", `${workspace} must declare Node 24 engine`);
-  assert(packageJson.engines?.pnpm === ">=10", `${workspace} must declare pnpm 10 engine`);
-  assertNoPublicEntrypoint(packageJson, workspace);
-};
-
 const rootPackage = readJson("package.json");
 const workspaces = rootPackage.workspaces ?? [];
 assert(Array.isArray(workspaces), "root package.json workspaces must be an array");
@@ -331,9 +312,7 @@ for (const workspace of workspaces) {
   const packageJson = readJson(packageJsonPath);
   assertMaturityMetadata(packageJson, workspace);
 
-  if (scenarioWorkspaces.has(workspace)) {
-    assertScenarioPackage(packageJson, workspace);
-  } else if (sourceOnlyWorkspaces.has(workspace)) {
+  if (sourceOnlyWorkspaces.has(workspace)) {
     assertSourceOnlyPackage(packageJson, workspace);
   } else {
     assertDistPackage(packageJson, workspace);

@@ -1,7 +1,6 @@
 packages:
   - packages/core/model
   - packages/core/compact
-  - packages/components/adapters/credential-did-midnight
   - examples/core-composition
 
 linkWorkspacePackages: true

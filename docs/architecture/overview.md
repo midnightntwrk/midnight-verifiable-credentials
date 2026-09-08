@@ -16,15 +16,11 @@ normative specification + conformance vectors
                     |
            model and Compact core
                     |
-            thin DID adapter
-                    |
  external credential-family and application repositories
 ```
 
 - `packages/core` owns runtime-neutral models, bounded descriptors, and
   generic Compact primitives.
-- `packages/components/adapters` translates external SDK types at a narrow
-  boundary. It does not own VC issuance or presentation workflows.
 - `examples/core-composition` proves package composition with synthetic data.
   It is not a product example.
 

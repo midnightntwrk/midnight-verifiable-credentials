@@ -6,12 +6,12 @@
     {
       "manifest": "packages/core/model/package.json",
       "name": "@midnight-ntwrk/credential-model",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "manifest": "packages/core/compact/package.json",
       "name": "@midnight-ntwrk/credential-compact",
-      "version": "0.1.0"
+      "version": "0.2.0"
     }
   ],
   "supportedConfigurations": [],

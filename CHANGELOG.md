@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- BREAKING: prepared the core-only `0.2.0-rc1` release line for exactly
+  `credential-model` and `credential-compact`.
+  Removed the former integration runner, runtime shims, legacy package aliases,
+  local vendor workflow, and wallet/Midnight runtime dependencies that served
+  deleted prototypes and use cases.
 - BREAKING: removed unused generic issuance and presentation protocol
   choreography from `credential-compact` and consolidated same-holder circuits
   into its holder-binding module. The package now exposes exactly one

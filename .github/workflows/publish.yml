@@ -103,28 +103,8 @@ jobs:
       - name: Verify Compact installation
         run: compact compile --version
 
-      - name: Configure private Git dependencies
-        env:
-          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
-        run: |
-          echo "::add-mask::${VC_GITHUB_DEPENDENCY_TOKEN}"
-          git config --global url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+ssh://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+https://git@github.com/"
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Remove private Git credentials
-        if: always()
-        env:
-          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
-        run: |
-          git config --global --remove-section \
-            "url.https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/" \
-            2>/dev/null || true
 
       - name: Test release tooling
         run: pnpm run test:release-tooling

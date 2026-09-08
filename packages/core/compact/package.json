@@ -1,7 +1,7 @@
 {
   "name": "@midnight-ntwrk/credential-compact",
-  "version": "0.1.0",
-  "description": "Private candidate library of family-neutral Compact VC and VP semantics",
+  "version": "0.2.0",
+  "description": "Family-neutral Compact VC and VP semantics",
   "license": "Apache-2.0",
   "private": false,
   "type": "module",

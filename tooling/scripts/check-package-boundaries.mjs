@@ -19,7 +19,6 @@ export const classifyWorkspacePath = (workspacePath) => {
   assert.equal(root, "packages", `workspace must live under packages/ or examples/: ${workspacePath}`);
   return {
     core: "reusable-core",
-    components: "component",
   }[area] ?? "unknown";
 };
 
@@ -121,8 +120,6 @@ const classAllows = (ownerClass, dependencyClass) => {
   switch (ownerClass) {
     case "reusable-core":
       return dependencyClass === "reusable-core";
-    case "component":
-      return dependencyClass === "reusable-core";
     case "example":
       return dependencyClass === "reusable-core";
     default:
@@ -156,7 +153,7 @@ export const checkPackageBoundaries = () => {
     process.exitCode = 1;
     return false;
   }
-  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} core, adapter, and example workspaces.`);
+  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} core and example workspaces.`);
   return true;
 };
 
