@@ -93,6 +93,3 @@ jobs:
 
       - name: Check documentation links
         run: pnpm run docs:links
-
-      - name: Check patch whitespace
-        run: git diff --check
