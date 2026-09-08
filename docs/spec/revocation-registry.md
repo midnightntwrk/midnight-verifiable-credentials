@@ -1,7 +1,9 @@
 # Midnight VC Revocation Registry
 
-Status: prototype normative companion draft for the first Midnight-native
-revocation target.
+Status: superseded prototype reference; not normative for core conformance.
+
+Current normative core status requirements live in
+[`../../spec/status.md`](../../spec/status.md).
 
 Companion documents:
 

@@ -1,6 +1,10 @@
 # Midnight VC Status Error Taxonomy
 
-Status: normative companion draft for fail-closed status invalidity outcomes.
+Status: superseded implementation reference; not normative for core
+conformance.
+
+Current normative core status requirements live in
+[`../../spec/status.md`](../../spec/status.md).
 
 Companion documents:
 

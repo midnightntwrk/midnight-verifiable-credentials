@@ -1,6 +1,10 @@
 # Midnight VC Conformance
 
-Status: draft conformance model for the current specification suite.
+Status: superseded migration source.
+
+Current normative conformance requirements live in
+[`../../spec/conformance.md`](../../spec/conformance.md), with machine-readable
+operation status and vectors under [`../../conformance/`](../../conformance/).
 
 This document defines what it means to claim conformance with the Midnight VC
 draft specification at the package/profile level.

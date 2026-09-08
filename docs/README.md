@@ -2,19 +2,27 @@
 
 ## Specification
 
-- normative draft:
+- normative core draft:
+  - [`../spec/README.md`](../spec/README.md)
+  - for the protocol-independent core specification and current support
+    boundary
+- machine-readable conformance:
+  - [`../conformance/README.md`](../conformance/README.md)
+  - for operation status and checked positive/negative vectors
+- superseded specification source material:
   - [`spec/midnight-credentials.md`](./spec/midnight-credentials.md)
-  - for implementers and reviewers of the core VC model
-- profiles:
+  - retained as migration input until surviving rules move to the top-level
+    specification
+- migration-era profiles:
   - [`spec/profiles.md`](./spec/profiles.md)
   - for readers who need the current holder-binding/profile taxonomy
 - claim representation:
   - [`spec/claim-representation.md`](./spec/claim-representation.md)
   - for readers deciding when a claim should be public/direct,
     selectively disclosed, committed-private, or predicate-only
-- conformance:
+- superseded conformance source material:
   - [`spec/conformance.md`](./spec/conformance.md)
-  - for readers defining implementation or review criteria
+  - retained as migration input; new conformance status lives at the top level
 - credential status:
   - [`spec/credential-status.md`](./spec/credential-status.md)
   - for readers defining revocation, freshness, and non-revocation claim boundaries
