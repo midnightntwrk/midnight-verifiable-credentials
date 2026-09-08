@@ -33,9 +33,6 @@ supersedes them.
 | [0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) | Superseded by [0016](./0016-core-only-specification-and-implementation.md) | Separate semantic VC-family profiles from deployment assembly and make vocabulary, compatibility, and maturity dimensions explicit |
 | [0016](./0016-core-only-specification-and-implementation.md) | Accepted | Keep only the protocol-independent VC/VP specification, bounded model, generic Compact implementation, and conformance |
 
-[`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
-not an ADR.
-
 New records should start from [`0000-template.md`](./0000-template.md). Amend an
 accepted ADR only for clarifications that do not change its decision. Use a new
 ADR to reverse or materially change a decision.

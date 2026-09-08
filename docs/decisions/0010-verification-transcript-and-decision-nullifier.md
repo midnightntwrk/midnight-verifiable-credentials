@@ -77,7 +77,7 @@ deployment configuration.
 
 The transcript includes all request, profile, deployment, credential binding,
 identity, trust, status, policy, artifact, time, disclosure, and replay inputs
-listed in [`verification-contract-v1.md`](../spec/verification-contract-v1.md).
+defined by the verification profile that adopted this decision.
 The exact field order is part of v1. Adding, removing, or reordering a field
 requires a new transcript version.
 
@@ -167,10 +167,7 @@ lack an authoritative evidence source remain `local-process` or
 
 ## Follow-up
 
-The normative shape is in
-[`verification-contract-v1.md`](../spec/verification-contract-v1.md), and its
-threat model and required negative tests are in
-[`verification-authority-v1-test-design.md`](../testing/verification-authority-v1-test-design.md).
-Tracks A1, A2, and A3 in the
-[`production execution plan`](../plans/vc-core-only-repository-plan-2026-09-08.md)
-must satisfy those documents before security-critical Compact semantics land.
+Retained verification requirements are in the
+[core verification specification](../../spec/verification.md) and
+[security considerations](../../spec/security-considerations.md). Historical
+contract and negative-test designs remain available in Git history.

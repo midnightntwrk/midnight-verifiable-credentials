@@ -4,7 +4,7 @@
 - Date: 2026-07-15
 - Owners: VC, DID, trust-registry, and credential product maintainers
 - Supersedes: none
-- Reconciled by: [Credential-family ownership policy](../architecture/credential-family-ownership-policy.md) (issues #374/#378)
+- Reconciled by: ADR-0016
 
 ## Context
 
@@ -82,9 +82,9 @@ not accepted as unconstrained caller input.
 
 ## Follow-up
 
-Authentication, DID relationship binding, trusted time, status-root binding,
-and product contract templates are P0 work in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+Authentication, DID relationship binding, trusted time, and status-root
+binding remain subject to the retained specification and package support
+boundaries.
 
 
 ## Repository ownership reconciliation (2026-07-30)

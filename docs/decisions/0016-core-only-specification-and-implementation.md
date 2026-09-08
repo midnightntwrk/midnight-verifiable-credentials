@@ -168,7 +168,5 @@ Execution is tracked by milestone
 [`VC Core-Only 0.2.0-rc1`](https://github.com/midnightntwrk/midnight-verifiable-credentials/milestone/2)
 and issue
 [#539](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/539).
-The detailed migration sequence is in
-[`../plans/vc-core-only-repository-plan-2026-09-08.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
 Credential-family and use-case outcomes remain traceable through the milestone,
 linked issues, merged pull requests, and Git history.

@@ -71,9 +71,8 @@ validity or wallet consent. It is not a prerequisite for the initial connector.
 
 ## Follow-up
 
-Final-spec conformance, format registration/profile documentation, status
-attachments, mobile handoff, and optional DIDComm work are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+Exchange-protocol conformance, mobile handoff, and optional DIDComm work are
+outside this core-only repository.
 
 ## References
 

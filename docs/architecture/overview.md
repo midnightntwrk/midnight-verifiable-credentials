@@ -1,57 +1,47 @@
-# Architecture Overview
+# Architecture
 
 ## Boundary
 
-This repository implements protocol-independent VC/VP building blocks. Concrete
-credential families, applications, product workflows, and transport protocols
-are consumers of this repository and are versioned elsewhere.
+This repository defines and implements reusable, protocol-independent VC/VP
+semantics. A concrete credential family combines these primitives with its own
+schema, policies, circuits, artifacts, release train, and application
+integration in a separate repository.
 
-The normative boundary is [ADR-0016](../decisions/0016-core-only-specification-and-implementation.md).
+The normative repository boundary is [ADR-0016](../decisions/0016-core-only-specification-and-implementation.md).
 
 ## Layers
 
 ```text
-specification and conformance
-             |
-       core model
-             |
-Compact primitives, proof/status ports, reusable capabilities
-             |
-Midnight status components and thin DID adapters
-             |
-external credential-family and application repositories
+normative specification + conformance vectors
+                    |
+           model and Compact core
+                    |
+       proof and credential-status ports
+                    |
+ internal Midnight status components + thin DID adapter
+                    |
+ external credential-family and application repositories
 ```
 
-### Core
-
-`packages/core` owns runtime-neutral models, Compact vocabulary and primitives,
-proof interfaces, status semantics, display metadata, and reusable capabilities.
-Core packages cannot depend on adapters, registry implementations, examples, or
-application code.
-
-### Registry components
-
-`packages/registry` owns reusable Midnight implementations of the generic status
-interfaces. Authorization, ledger mutation, and least-privilege verification are
-kept in separate packages so consumers can adopt only the authority they need.
-
-### Adapters
-
-`packages/components/adapters` connects the protocol-independent core to DID
-runtime APIs. An adapter may translate types and invoke an external SDK, but it
-must not define issuance or presentation orchestration.
-
-### Composition fixture
-
-`examples/core-composition` is a synthetic build/test fixture. It demonstrates
-package composition without defining a real credential schema or workflow.
+- `packages/core` owns runtime-neutral models, Compact primitives, and generic
+  proof/status interfaces.
+- `packages/registry` contains internal Midnight implementations of status
+  interfaces. Read, mutation, and authorization responsibilities stay separate.
+- `packages/components/adapters` translates external SDK types at a narrow
+  boundary. It does not own VC issuance or presentation workflows.
+- `examples/core-composition` proves package composition with synthetic data.
+  It is not a product example.
 
 ## Dependency rules
 
-- Dependencies point inward toward core.
-- Package entrypoints are explicit; deep imports are forbidden.
-- The workspace graph is acyclic.
-- Apps and concrete VC families are not workspace packages.
-- Cross-repository dependencies use npm packages or workspace-managed tarballs.
+- Dependencies point toward core.
+- Packages expose explicit entrypoints; consumers do not deep-import source or
+  generated internals.
+- The workspace graph remains acyclic.
+- Cross-repository dependencies use published packages or workspace-managed
+  tarballs, never sibling source.
+- Credential families, applications, OIDC, DIDComm, connector APIs, and
+  deployment harnesses remain outside this repository.
 
-See [package boundaries](./package-boundaries.md).
+See [package boundaries](./package-boundaries.md) for executable checks and
+[package selection](../guides/package-selection.md) for the public surface.

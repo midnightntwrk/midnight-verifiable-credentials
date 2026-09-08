@@ -4,7 +4,7 @@
 - Date: 2026-07-15
 - Owners: credential product, release engineering, and verifier maintainers
 - Supersedes: none
-- Reconciled by: [Credential-family ownership policy](../architecture/credential-family-ownership-policy.md) (issues #374/#378)
+- Reconciled by: ADR-0016
 
 ## Context
 
@@ -88,8 +88,7 @@ production distribution decision above.
 ## Follow-up
 
 Manifest schemas, signing policy, consumer verification, publication lanes,
-and disaster recovery are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+and disaster recovery belong to deployable consumer repositories.
 
 ## References
 

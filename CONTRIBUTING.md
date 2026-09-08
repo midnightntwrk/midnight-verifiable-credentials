@@ -1,8 +1,8 @@
 # Contributing
 
 We welcome contributions to Midnight Verifiable Credentials. This repository
-focuses on reusable VC/VP packages, protocol and runtime adapters, and
-credential-family prototypes used as architecture and conformance evidence.
+focuses on the protocol-independent VC/VP specification, conformance data, and
+reusable core packages.
 
 ## Contributor License Agreement
 
@@ -17,8 +17,8 @@ guides contributors through signing from the pull request when required.
   before adding or moving reusable code.
 - Open or confirm an issue for substantial behavior, architecture, security, or
   public API changes.
-- Keep concrete, independently released credential families in their owning
-  repositories; this repository may carry prototypes and use cases as evidence.
+- Keep credential families, product use cases, applications, exchange
+  protocols, and deployment environments in their owning repositories.
 
 ## Contribution Workflow
 
@@ -50,9 +50,8 @@ Common types are `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, and
 `chore`.
 
 Preferred architecture scopes include `root`, `docs`, `spec`, `core`,
-`registry`, `protocols`, `components`, `prototypes`, `use-cases`, `tooling`,
-and `assets`. A package-specific scope is appropriate for a narrowly owned
-change.
+`registry`, `components`, and `tooling`. A package-specific scope is
+appropriate for a narrowly owned change.
 
 Keep the summary imperative and concise. Every commit in a multi-commit pull
 request should remain meaningful on its own.
@@ -63,16 +62,12 @@ Treat these as public VC surfaces:
 
 - Compact exported structs, circuits, and generated managed artifacts
 - package exports, entrypoints, dependency boundaries, and release manifests
-- credential, presentation, protocol, connector, and status/revocation DTOs
+- credential, presentation, holder-binding, proof, and status DTOs
 - claim representation, holder binding, verification, and error semantics
 - `./run.sh`, CI workflows, package publishing, and artifact contracts
 
 For surface changes, update tests, package documentation, specifications, and
-migration notes in the same pull request. Run:
-
-```bash
-pnpm run check:vc-surface-discipline
-```
+conformance vectors in the same pull request.
 
 ## Validation
 
@@ -82,9 +77,9 @@ For most pull requests, run:
 ./run.sh --light
 ```
 
-For Compact, protocol, package, release, or integration-sensitive changes, run
-the focused target first and the broader non-light or integration lane required
-by [`AGENT.md`](./AGENT.md).
+For Compact, package, release, or integration-sensitive changes, run the
+focused target first and the broader lane required by
+[`AGENT.md`](./AGENT.md).
 
 If you cannot run a required command locally, explain why in the pull request
 body and include the closest successful focused validation.

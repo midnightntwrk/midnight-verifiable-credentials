@@ -26,7 +26,7 @@ Adopt a ports-and-adapters package graph with domain-first
 `@midnight-ntwrk/credential-*` names. Do not use the broad `ssi` label or the
 abbreviated `vc` prefix for new packages. Retain `openid4vc` as the standards
 family name. The exact publication stages and migration mapping are recorded in
-[`../architecture/package-publication-catalog.md`](../architecture/package-publication-catalog.md).
+the package catalog that existed when this decision was proposed.
 
 The approximate dependency tiers are illustrated below. The publication
 catalog's allowed-edge matrix is the canonical graph.
@@ -164,9 +164,8 @@ API is added to those facades.
 
 ## Follow-up
 
-Implementation order and acceptance tests are maintained in
-[`../architecture/package-publication-catalog.md`](../architecture/package-publication-catalog.md)
-and [`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+Implementation order and acceptance tests remain in linked issues and Git
+history.
 [ADR-0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) separately
 fixes the accepted boundary between the deliberately narrow family definition,
 the semantic family profile, and deployment assembly; it does not accept this

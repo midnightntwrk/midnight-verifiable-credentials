@@ -92,9 +92,8 @@ credential inventory.
 
 ## Follow-up
 
-An upstream connector proposal, API prototype, origin/consent threat model, and
-injected/mobile conformance harness are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+Connector API design and wallet/mobile conformance are outside this core-only
+repository.
 
 ## References
 

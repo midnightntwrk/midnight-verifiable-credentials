@@ -34,11 +34,10 @@ when the change needs a repository stability check. Documentation, Nix, and
 agent-instruction changes use their applicable static, Nix, and link checks
 rather than an unconditional application/BDD/integration matrix.
 
-For `dev-loop` pull-request lifecycle gates, follow
-[`docs/dev-loop-review-and-ci-remediation.md`](../../../docs/dev-loop-review-and-ci-remediation.md)
-and the configured `.devloops` policy, including the required local Codex
-external review and current-head CI evidence. This mirror adds no independent
-mandatory PR gate, cross-repository lane, or validation list.
+For pull-request lifecycle gates, follow the configured `.devloops` policy,
+including the required local Codex review and current-head CI evidence. This
+mirror adds no independent mandatory PR gate, cross-repository lane, or
+validation list.
 
 ## Packaging
 
