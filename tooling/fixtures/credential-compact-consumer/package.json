@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@midnight-ntwrk/credential-compact": "file:./vendor/candidate.tgz"
+    "@midnight-ntwrk/credential-compact": "file:./vendor/package.tgz"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",

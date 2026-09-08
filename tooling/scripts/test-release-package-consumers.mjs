@@ -101,7 +101,7 @@ const releasePackages = workspaceCatalog.filter(
   (entry) => entry.releaseStage !== "internal",
 );
 if (releasePackages.length === 0) {
-  fail("workspace catalog has no candidate or supported release packages");
+  fail("workspace catalog has no supported release packages");
 }
 
 for (const releasePackage of releasePackages) {
@@ -130,7 +130,7 @@ for (const releasePackage of releasePackages) {
   if (
     fixtureRuntimeDependencies.length !== 1 ||
     fixturePackageJson.dependencies?.[sourcePackageJson.name] !==
-    "file:./vendor/candidate.tgz"
+    "file:./vendor/package.tgz"
   ) {
     fail(
       `${releasePackage.consumerFixture} must install only ${sourcePackageJson.name} from the copied tarball`,
@@ -173,7 +173,7 @@ for (const releasePackage of releasePackages) {
       mkdirSync(path.join(consumerRoot, "vendor"));
       copyFileSync(
         tarballPath,
-        path.join(consumerRoot, "vendor", "candidate.tgz"),
+        path.join(consumerRoot, "vendor", "package.tgz"),
       );
     } else {
       fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
@@ -212,8 +212,8 @@ for (const releasePackage of releasePackages) {
     for (const locator of localLocators) {
       if (
         tarballPath !== undefined &&
-        (locator === "file:./vendor/candidate.tgz" ||
-          locator === "file:vendor/candidate.tgz")
+        (locator === "file:./vendor/package.tgz" ||
+          locator === "file:vendor/package.tgz")
       ) {
         continue;
       }

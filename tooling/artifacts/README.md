@@ -14,7 +14,6 @@ pnpm run artifacts:pack
 ```
 
 Notes:
-- only `candidate` and `supported` workspaces from the workspace catalog are
-  packed
+- only `supported` workspaces from the workspace catalog are packed
 - private examples are validated but not packed
 - `tooling/artifacts/npm/*.tgz` are generated outputs and are gitignored.

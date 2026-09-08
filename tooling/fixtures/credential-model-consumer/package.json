@@ -16,7 +16,7 @@
     "test:bundle": "node ./dist/browser.mjs"
   },
   "dependencies": {
-    "@midnight-ntwrk/credential-model": "file:./vendor/candidate.tgz"
+    "@midnight-ntwrk/credential-model": "file:./vendor/package.tgz"
   },
   "devDependencies": {
     "esbuild": "0.28.1",
