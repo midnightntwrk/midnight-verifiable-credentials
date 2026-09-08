@@ -27,8 +27,8 @@ helper verifies the requested manifest, descriptor identity, length, and digest
 before returning artifact bytes. It performs no proof execution, artifact
 fetching/publication, signing-key custody, or deployment.
 
-The `authority-evidence` export consumes an authority-capable
-`CredentialFamilyProfileV1` and `ResolvedCredentialCompositionV1`, requires exact
+The `authority-evidence` export consumes the package-local structural
+`AuthorityEvidenceProfileV1` and `AuthorityEvidenceCompositionV1`, requires exact
 DID/trust resolver selections, and binds issuer, holder, verifier, and status
 key fingerprints to authenticated method, relationship, network, state-version,
 lifecycle, trust-scope, and trust-epoch evidence. Injected provider failures or

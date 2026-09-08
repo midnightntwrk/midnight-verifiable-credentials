@@ -4,15 +4,12 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased
 
-- Add independently versioned `CredentialFamilyProfileV1` and
-  `CredentialDeploymentAssemblyV1` contracts.
-- Add capability-provider catalogs, strict path-specific validators, and the
-  exact fail-closed composition resolver, including exact semantic
-  proof-generation to proof-executor capability binding.
-- Preserve `CredentialFamilyDefinition` compatibility; composition adoption is
-  additive and requires explicit profile, assembly, and catalog inputs.
-- Add V1 runtime family registry, authenticated public-surface metadata, trust
-  verifier injection, and typed fail-closed resolution results for wallets.
+- Bound the public API to protocol-neutral family, schema, capability, artifact,
+  composition-manifest, and codec contracts with their validation helpers.
+- Remove semantic profile, deployment assembly, provider catalog, runtime family
+  discovery, and aggregate business-decision APIs. Applications and credential
+  family repositories own those concerns outside this core package.
+- Remove error codes used only by the retired high-level resolvers.
 
 ## 0.1.0-rc1 - 2026-07-26
 
