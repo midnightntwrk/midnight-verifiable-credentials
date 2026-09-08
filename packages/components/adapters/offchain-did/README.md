@@ -33,14 +33,14 @@ Start here:
 1. use this package only in runtime code that derives holder-binding values
    from off-chain Midnight DID material
 2. do not use this package inside Compact contracts
-3. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/package-selection.md)
+3. read the [package selection guide](../../../../docs/guides/package-selection.md)
    for the canonical split between Compact authority and runtime adapters
 
 Related docs:
 
-- spec: [`../../../../docs/spec/midnight-credentials.md`](../../../../spec/README.md)
-- profiles: [`../../../../docs/spec/profiles.md`](../../../../spec/configuration.md)
-- conformance: [`../../../../docs/spec/conformance.md`](../../../../conformance/README.md)
+- [core specification](../../../../spec/README.md)
+- [configuration](../../../../spec/configuration.md)
+- [conformance](../../../../conformance/README.md)
 - package boundaries: [`../../../../docs/architecture/package-boundaries.md`](../../../../docs/architecture/package-boundaries.md)
 - package selection: [`../../../../docs/guides/package-selection.md`](../../../../docs/guides/package-selection.md)
 

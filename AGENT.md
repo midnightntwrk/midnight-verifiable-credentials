@@ -26,9 +26,9 @@ Keep out:
 - deployment environments and product integration harnesses
 
 Credential families and substantial examples must live in independent
-repositories with their own release trains. Record removed historical surfaces
-in the credential migration ledger instead of preserving runnable compatibility
-implementations here.
+repositories with their own release trains. Use Git history and linked issues
+for removed surfaces instead of preserving runnable compatibility implementations
+or migration-only machinery here.
 
 ## Repository boundaries
 

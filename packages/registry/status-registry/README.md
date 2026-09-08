@@ -80,7 +80,7 @@ Start here:
    - [`../../../docs/spec/status-time-authority-v1.md`](../../../docs/spec/status-time-authority-v1.md)
    - [`../../../docs/architecture/status-verification-modes.md`](../../../docs/architecture/status-verification-modes.md)
    - [`../../../docs/architecture/protocol-classification.md`](../../../docs/architecture/package-boundaries.md)
-   - [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/status-revocation-entrypoints.md)
+   - [status and revocation entrypoints](../../../docs/guides/status-revocation-entrypoints.md)
 
 Current scope:
 

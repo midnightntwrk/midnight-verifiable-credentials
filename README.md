@@ -25,8 +25,8 @@ tooling/                     Build, validation, release, and fixture tooling
 
 The accepted repository boundary is recorded in
 [ADR-0016](./docs/decisions/0016-core-only-specification-and-implementation.md).
-The removal history for former families and use cases is retained in the
-[credential migration ledger](./docs/architecture/credential-family-migration-ledger.md).
+Git history and the linked core-only milestone retain the removal record for
+former families and use cases.
 
 ## Workspace packages
 

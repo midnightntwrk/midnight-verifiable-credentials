@@ -69,11 +69,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
 
-    # Run postinstall scripts that were stripped from package.json.
-    # The vendor tarballs use the original config.js layout (inline paths),
-    # so ensure-midnight-did-api-paths.mjs works directly to redirect the
-    # contract path from the monorepo layout to the installed-package layout.
-    node ./tooling/scripts/ensure-midnight-did-api-paths.mjs
+    # Run the Compact alias setup from the root postinstall contract.
     node ./tooling/scripts/ensure-compact-package-aliases.mjs
 
     pnpm run build:all

@@ -32,10 +32,9 @@ Reusable outside this repo:
 
 Related docs:
 
-- spec: [`../../../../docs/spec/midnight-credentials.md`](../../../../spec/README.md)
-- profiles: [`../../../../docs/spec/profiles.md`](../../../../spec/configuration.md)
-- conformance: [`../../../../docs/spec/conformance.md`](../../../../conformance/README.md)
-- companion guide: [`../../../../docs/guides/midnight-credentials-for-dummies.md`](../../../../spec/README.md)
+- [core specification](../../../../spec/README.md)
+- [configuration](../../../../spec/configuration.md)
+- [conformance](../../../../conformance/README.md)
 - test matrix: [`../../../../docs/testing/test-matrix.md`](../../../../docs/testing/test-matrix.md)
 
 ## Purpose

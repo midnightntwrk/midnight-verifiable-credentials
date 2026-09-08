@@ -28,7 +28,6 @@ This repository owns:
 - package contracts and status interfaces
 - normative specification and conformance vectors
 
-Former in-repository families and use cases are recorded in the
-[migration ledger](./credential-family-migration-ledger.md). Git history is the
-archive; removed implementations must not be preserved as compatibility
-workspaces.
+Git history and the core-only milestone retain the record of former
+in-repository families and use cases. Removed implementations must not be
+preserved as compatibility workspaces.

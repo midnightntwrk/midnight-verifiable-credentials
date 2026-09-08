@@ -13,7 +13,6 @@
 ## Architecture
 
 - [Credential-family ownership](./architecture/credential-family-ownership-policy.md)
-- [Credential-family migration ledger](./architecture/credential-family-migration-ledger.md)
 - [Compact artifact contract](./architecture/compact-artifact-contract.md)
 - [Package release contract](./architecture/package-release-contract.md)
 - [Package publication catalog](./architecture/package-publication-catalog.md)

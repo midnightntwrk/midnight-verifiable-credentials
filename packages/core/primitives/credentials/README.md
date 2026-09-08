@@ -88,7 +88,7 @@ Start here:
    `src/credentials.compact`; do not add new facade-owned semantics
 3. use `src/index.ts` and generated/runtime exports only in wallets,
    verifiers, tests, and adapter code
-4. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/package-selection.md)
+4. read the [package selection guide](../../../../docs/guides/package-selection.md)
    when choosing between Compact and TypeScript surfaces
 5. do not deploy this package root as a business contract; use it as a library surface
    for credential families and Layer 3 verifier/business contracts
@@ -125,12 +125,11 @@ project outside this repository.
 
 Related docs:
 
-- spec: [`../../../../docs/spec/midnight-credentials.md`](../../../../spec/README.md)
+- [core specification](../../../../spec/README.md)
 - protocol classification: [`../../../../docs/architecture/protocol-classification.md`](../../../../docs/architecture/package-boundaries.md)
-- profiles: [`../../../../docs/spec/profiles.md`](../../../../spec/configuration.md)
-- conformance: [`../../../../docs/spec/conformance.md`](../../../../conformance/README.md)
+- [configuration](../../../../spec/configuration.md)
+- [conformance](../../../../conformance/README.md)
 - credential status: [`../../../../docs/spec/credential-status.md`](../../../../docs/spec/credential-status.md)
-- companion guide: [`../../../../docs/guides/midnight-credentials-for-dummies.md`](../../../../spec/README.md)
 - test matrix: [`../../../../docs/testing/test-matrix.md`](../../../../docs/testing/test-matrix.md)
 
 ## Purpose
@@ -354,8 +353,7 @@ allowing business contracts to import same-holder composition only when needed.
 
 If you are new to the model, read in this order:
 
-1. [`../../../../docs/guides/midnight-credentials-for-dummies.md`](../../../../spec/README.md)
-2. [`../../../../docs/spec/midnight-credentials.md`](../../../../spec/README.md)
+1. [Core specification](../../../../spec/README.md)
 3. this package README
 
 ## Naming choices
