@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## Unreleased (0.2.0-rc1)
 
 - Removed unused issuance and presentation protocol choreography from the
   family-neutral Compact source surface.

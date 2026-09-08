@@ -3,6 +3,12 @@ set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 DEST_DIR="${1:-$ROOT_DIR/tooling/artifacts/npm}"
+SKIP_CONSUMER_TESTS="${2:-}"
+
+if [[ -n "$SKIP_CONSUMER_TESTS" && "$SKIP_CONSUMER_TESTS" != "--skip-consumer-tests" ]]; then
+  echo "Usage: $0 [destination] [--skip-consumer-tests]" >&2
+  exit 2
+fi
 
 workspace_output="$(node "$ROOT_DIR/tooling/scripts/workspace-catalog.mjs" --packable-paths)" || {
   echo "[pack-artifacts] Failed to load packable workspaces" >&2
@@ -37,5 +43,7 @@ if [[ "$actual_count" != "$expected_count" ]]; then
   exit 1
 fi
 node "$ROOT_DIR/tooling/scripts/check-release-package-contract.mjs" --tarballs "$DEST_DIR"
-node "$ROOT_DIR/tooling/scripts/test-release-package-consumers.mjs" --tarballs "$DEST_DIR"
+if [[ "$SKIP_CONSUMER_TESTS" != "--skip-consumer-tests" ]]; then
+  node "$ROOT_DIR/tooling/scripts/test-release-package-consumers.mjs" --tarballs "$DEST_DIR"
+fi
 echo "[pack-artifacts] Packed ${actual_count} tarballs"

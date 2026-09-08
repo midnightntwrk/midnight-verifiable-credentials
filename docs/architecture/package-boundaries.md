@@ -5,19 +5,17 @@
 | Class | Location | Responsibility |
 | --- | --- | --- |
 | Core | `packages/core` | Models and Compact VC/VP primitives |
-| Adapter | `packages/components/adapters` | Thin integration with DID runtime APIs |
 | Fixture | `examples/core-composition` | Minimal non-product composition test |
 
 ## Dependency direction
 
 ```text
 fixture -> core
-adapter -> core
 ```
 
-Core code must not import adapters. Adapters may consume core interfaces and
-explicitly declared external SDKs. The fixture may consume published package
-entrypoints from the retained core.
+The fixture may consume published package entrypoints from the retained core.
+Method, protocol, wallet, and platform adapters belong in dedicated consumer
+repositories.
 
 ## Forbidden surfaces
 

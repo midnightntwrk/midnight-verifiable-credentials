@@ -74,11 +74,10 @@ version: 0.2.0
 rc_index: 1
 ```
 
-The current release graph publishes three packages under the `rc` dist-tag:
+The current release graph publishes two packages under the `rc` dist-tag:
 
 - `@midnight-ntwrk/credential-model`
 - `@midnight-ntwrk/credential-compact`
-- `@midnight-ntwrk/credential-did-midnight`
 
 The workflow preserves an existing `latest` tag and fails if npm changes it
 during a prerelease.
@@ -95,6 +94,15 @@ Branch rules are fail closed:
 
 Automatic publication on pushes is intentionally disabled.
 
+## Migration from 0.1 prereleases
+
+`0.2.0-rc1` is the core-only reset. Consumers should replace removed family,
+protocol, proof-execution, status-registry, and use-case packages with code from
+their independently versioned product repositories. The two packages listed
+above are the complete supported release graph; no compatibility aliases or
+local vendor tarballs are retained here. Existing `0.1.x` versions remain
+immutable and may be deprecated on npm with a pointer to this release line.
+
 ## Verification
 
 The workflow waits for bounded npmjs propagation, installs each exact package
@@ -108,14 +116,13 @@ package version and the moving tags:
 VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
+  @midnight-ntwrk/credential-compact; do
   npm view "${package}@${VERSION}" version
   npm view "${package}" dist-tags --json
 done
 ```
 
-The `rc` tag must resolve to `${VERSION}` for all three packages. By default,
+The `rc` tag must resolve to `${VERSION}` for both packages. By default,
 `latest` remains unchanged. If `promote_latest: true` was explicitly selected,
 `latest` must also resolve to `${VERSION}`. Retain the workflow URL and
 release-evidence artifact with the release record.
@@ -140,8 +147,7 @@ Example operator commands:
 VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
+  @midnight-ntwrk/credential-compact; do
   npm dist-tag rm "${package}" rc
   npm deprecate "${package}@${VERSION}" "Use the replacement RC"
 done

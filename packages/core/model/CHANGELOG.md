@@ -2,7 +2,7 @@
 
 All notable changes to this package are documented in this file.
 
-## Unreleased
+## Unreleased (0.2.0-rc1)
 
 - Bound the public API to protocol-neutral family, schema, capability, artifact,
   composition-manifest, and codec contracts with their validation helpers.

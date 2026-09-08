@@ -8,7 +8,6 @@ Choose the smallest package that owns the required semantic boundary.
 | --- | --- |
 | Define and validate credential configuration | `@midnight-ntwrk/credential-model` |
 | Compose family-neutral Compact VC/VP circuits | `@midnight-ntwrk/credential-compact` |
-| Bind a credential holder through `did:midnight` | `@midnight-ntwrk/credential-did-midnight` |
 
 These packages are the reusable external building blocks. Their supported
 exports and publication policy are defined by the

@@ -10,7 +10,8 @@ const defaultRoots = [
   'spec',
   'conformance',
   'packages',
-  'tooling/vendor',
+  'examples',
+  'tooling',
 ];
 const roots = process.argv.slice(2);
 const targets = roots.length > 0 ? roots : defaultRoots;

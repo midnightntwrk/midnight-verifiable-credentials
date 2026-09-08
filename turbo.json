@@ -17,7 +17,8 @@
     "COMPACT_COMPILER_VERSION"
   ],
   "globalPassThroughEnv": [
-    "COMPACT_DIRECTORY"
+    "COMPACT_DIRECTORY",
+    "NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS"
   ],
   "tasks": {
     "clean": {
@@ -62,12 +63,7 @@
       ],
       "env": [
         "CI",
-        "COMPACT_COMPILER_VERSION",
-        "PROOF_SERVER_IMAGE",
-        "RUN_ENV_TESTS",
-        "TEST_ENTRYPOINT",
-        "TEST_ENV",
-        "TEST_WALLET_SEED"
+        "COMPACT_COMPILER_VERSION"
       ],
       "outputs": []
     },
@@ -77,12 +73,7 @@
       ],
       "env": [
         "CI",
-        "COMPACT_COMPILER_VERSION",
-        "PROOF_SERVER_IMAGE",
-        "RUN_ENV_TESTS",
-        "TEST_ENTRYPOINT",
-        "TEST_ENV",
-        "TEST_WALLET_SEED"
+        "COMPACT_COMPILER_VERSION"
       ],
       "outputs": []
     }

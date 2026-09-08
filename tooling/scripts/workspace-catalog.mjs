@@ -7,7 +7,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const distReleaseTasks = ["lint", "typecheck", "build", "test:ci", "prepack"];
-const scenarioReleaseTasks = ["typecheck", "test:ci"];
 const sourceOnlyReleaseTasks = ["typecheck", "test:ci"];
 const pnpmInvocation = (args) => {
   if (process.platform !== "win32") {
@@ -34,18 +33,11 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => {
     publicationDependencies: options.publicationDependencies ?? [],
     releaseTasks:
       options.releaseTasks ??
-      (packageClass === "dist"
-        ? distReleaseTasks
-        : packageClass === "scenario"
-          ? scenarioReleaseTasks
-          : sourceOnlyReleaseTasks),
+      (packageClass === "dist" ? distReleaseTasks : sourceOnlyReleaseTasks),
     pack: releaseStage !== "internal",
-    packageTest: options.packageTest ?? packageClass !== "scenario",
+    packageTest: options.packageTest ?? true,
     testFromArtifacts:
-      options.testFromArtifacts ??
-      (packageClass === "scenario"
-        ? ["run", "test:ci"]
-        : ["exec", "vitest", "run"]),
+      options.testFromArtifacts ?? ["exec", "vitest", "run"],
   };
 };
 
@@ -70,32 +62,11 @@ export const workspaceCatalog = [
     consumerChecks: ["node", "typescript", "compact"],
     publicationDependencies: [],
   }),
-  workspace(
-    "packages/components/adapters/credential-did-midnight",
-    "infrastructure",
-    "dist",
-    {
-      releaseStage: "supported",
-      consumerFixture: "tooling/fixtures/credential-did-midnight-consumer",
-      consumerChecks: ["node", "typescript"],
-      publicationDependencies: [],
-    },
-  ),
   workspace("examples/core-composition", "reference", "source-only"),
 ];
 
-export const allowedMaturityValues = new Set([
-  "core",
-  "reference",
-  "lab",
-  "demo",
-  "infrastructure",
-]);
-export const allowedPackageClasses = new Set([
-  "dist",
-  "scenario",
-  "source-only",
-]);
+export const allowedMaturityValues = new Set(["core", "reference"]);
+export const allowedPackageClasses = new Set(["dist", "source-only"]);
 export const allowedReleaseStages = new Set([
   "internal",
   "candidate",
@@ -264,8 +235,8 @@ const checkCatalog = () => {
     );
     assert.equal(
       entry.packageTest,
-      entry.packageClass !== "scenario",
-      `${entry.path} package-test eligibility must exclude only scenario workspaces`,
+      true,
+      `${entry.path} must participate in package tests`,
     );
 
     const packageJson = workspacePackageJsonByPath.get(entry.path);
