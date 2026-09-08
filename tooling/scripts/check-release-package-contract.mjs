@@ -198,7 +198,7 @@ const assertReleaseManifest = (entry) => {
     `${entry.path}/README.md must identify the ${entry.releaseStage} release stage`,
   );
 
-  const expectedFiles = releaseCandidateFiles(compactSources.length > 0);
+  const expectedFiles = releaseCandidateFiles();
   assert(
     JSON.stringify(packageJson.files) === JSON.stringify(expectedFiles),
     `${label} files must contain only the audited release-candidate surface`,
@@ -278,16 +278,7 @@ const wildcardMatches = (target, value) => {
 const assertReleaseTarball = (entry, tarballDirectory) => {
   const sourcePackageJson = packageJsonByWorkspace.get(entry.path);
   const compactSources = compactSourcePaths(entry);
-  const declaredCompactSources = entry.path === "packages/core/compact"
-    ? new Set(sourcePackageJson.midnight?.compactSources ?? [])
-    : null;
-  if (declaredCompactSources) {
-    assert(
-      declaredCompactSources.size === compactSources.length &&
-        compactSources.every((sourcePath) => declaredCompactSources.has(sourcePath)),
-      `${entry.path} compactSources metadata must exactly match tracked Compact sources`,
-    );
-  }
+  const declaredCompactSources = new Set(compactSources);
   const tarballPath = path.join(tarballDirectory, tarballName(sourcePackageJson));
   const label = path.relative(repoRoot, tarballPath);
   assert(existsSync(tarballPath), `${label} is missing`);
@@ -326,10 +317,7 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     );
     // pnpm pack emits files but no bare package/ directory entry.
     const isCandidateCompact = entry.path === "packages/core/compact";
-    const isPackageSource = entryPath.startsWith("package/src/") && entryPath.endsWith(".compact");
     const isDistPath = entryPath.startsWith("package/dist/");
-    const isDeclaredSource = isCandidateCompact && isPackageSource &&
-      declaredCompactSources.has(entryPath.slice("package/".length));
     const allowed =
       [
         "package/package.json",
@@ -338,16 +326,8 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         "package/CHANGELOG.md",
       ].includes(entryPath) ||
       isDistPath ||
-      isDeclaredSource ||
       (entryPath.startsWith("package/src/") && !isCandidateCompact);
     assert(allowed, `${label} contains undeclared release file ${entryPath}`);
-    if (isCandidateCompact && isPackageSource) {
-      const sourcePath = entryPath.slice("package/".length);
-      assert(
-        declaredCompactSources.has(sourcePath),
-        `${label} contains undeclared Compact source ${entryPath}`,
-      );
-    }
     if (isCandidateCompact && isDistPath) {
       const relative = entryPath.slice("package/dist/".length);
       const generatedOutputAllowlist = new Set([
@@ -356,10 +336,6 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         "compact-value-codec.d.ts.map",
         "compact-value-codec.js",
         "compact-value-codec.js.map",
-        "contract.d.ts",
-        "contract.d.ts.map",
-        "contract.js",
-        "contract.js.map",
         "index.d.ts",
         "index.d.ts.map",
         "index.js",
@@ -380,7 +356,7 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         compactDistSources.has(relative);
       assert(generatedAllowed, `${label} contains undeclared generated output ${entryPath}`);
     }
-    if (isCandidateCompact && (isPackageSource || (isDistPath && !entryPath.endsWith("/")))) {
+    if (isCandidateCompact && isDistPath && !entryPath.endsWith("/")) {
       const content = execFileSync("tar", ["-xOf", tarballPath, entryPath], { encoding: "utf8" });
       const executableContent = stripComments(content);
       for (const pattern of forbiddenGeneratedContent) {
@@ -401,7 +377,9 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     "package/README.md",
     "package/CHANGELOG.md",
     ...declaredPackageEntries,
-    ...compactSources.map((sourcePath) => `package/${sourcePath}`),
+    ...compactSources.map((sourcePath) =>
+      `package/dist/${sourcePath.replace(/^src\//u, "")}`
+    ),
   ]) {
     assert(entrySet.has(requiredEntry), `${label} must include ${requiredEntry}`);
   }

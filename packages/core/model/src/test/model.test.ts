@@ -49,8 +49,8 @@ const family = (): CredentialFamilyDefinition<
     packages: [
       {
         name: "@midnight-ntwrk/credential-compact",
-        version: "^0.1.0",
-        exports: [".", "./same-holder"],
+        version: "^0.2.0",
+        exports: ["."],
       },
     ],
   },

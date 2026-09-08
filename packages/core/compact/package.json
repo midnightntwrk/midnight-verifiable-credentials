@@ -36,22 +36,12 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./contract": {
-      "types": "./dist/contract.d.ts",
-      "import": "./dist/contract.js",
-      "default": "./dist/contract.js"
-    },
-    "./jubjub": {
-      "types": "./dist/jubjub.d.ts",
-      "import": "./dist/jubjub.js",
-      "default": "./dist/jubjub.js"
-    },
     "./credentials.compact": "./dist/credentials.compact",
     "./credentials/composable.compact": "./dist/credentials/composable.compact"
   },
   "scripts": {
     "check-toolchain": "node scripts/check-toolchain.mjs",
-    "compact": "pnpm run check-toolchain && node scripts/remove-retired-same-holder-output.mjs && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials -- sh -c \"compact compile src/credentials.compact src/managed/credentials && rm -rf src/managed/credentials/compiler\"",
+    "compact": "pnpm run check-toolchain && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials -- sh -c \"compact compile src/credentials.compact src/managed/credentials && rm -rf src/managed/credentials/compiler\"",
     "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && rm -f dist/managed/.compact-artifact.json && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
@@ -65,7 +55,6 @@
   },
   "files": [
     "dist/**",
-    "src/**/*.compact",
     "README.md",
     "CHANGELOG.md",
     "package.json"
@@ -76,17 +65,6 @@
     "releaseStage": "supported",
     "compactCompilerVersion": "0.31.1",
     "compactRuntimeVersion": "0.16.0",
-    "compactSources": [
-      "src/credentials.compact",
-      "src/credentials/composable.compact",
-      "src/credentials/holder-bindings.compact",
-      "src/credentials/proofs.compact",
-      "src/credentials/relations.compact",
-      "src/credentials/status-bindings.compact",
-      "src/credentials/types.compact",
-      "src/credentials/vc.compact",
-      "src/credentials/vp.compact"
-    ],
     "compactEntrypoints": {
       "standalone": [
         "./credentials.compact"
