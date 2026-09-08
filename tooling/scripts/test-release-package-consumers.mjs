@@ -16,7 +16,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { workspaceCatalog } from "./workspace-catalog.mjs";
+import { supportedPackages } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -97,9 +97,7 @@ const run = (command, commandArgs, cwd, label) => {
   });
 };
 
-const releasePackages = workspaceCatalog.filter(
-  (entry) => entry.releaseStage !== "internal",
-);
+const releasePackages = supportedPackages;
 if (releasePackages.length === 0) {
   fail("workspace catalog has no supported release packages");
 }

@@ -60,11 +60,10 @@ The executable boundary policy is `pnpm run check:package-boundaries`.
 
 The authoritative workspace inventory is defined together in:
 
-- `package.json#workspaces`
 - `pnpm-workspace.yaml`
 - `tooling/scripts/workspace-catalog.mjs`
 
-Update all three in one change. Internal workspace dependencies use
+Update both in one change. Internal workspace dependencies use
 `workspace:*`. Use pnpm only; do not create `package-lock.json` or yarn lockfiles.
 
 ## Compact artifacts

@@ -60,9 +60,6 @@
     "package.json"
   ],
   "midnight": {
-    "maturity": "core",
-    "packageClass": "dist",
-    "releaseStage": "supported",
     "compactCompilerVersion": "0.31.1",
     "compactRuntimeVersion": "0.16.0",
     "compactEntrypoints": {

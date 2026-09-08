@@ -15,7 +15,8 @@ import { fileURLToPath } from "node:url";
 
 import {
   releasePackageFiles,
-  workspaceCatalog,
+  supportedPackages,
+  workspacePaths,
 } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
@@ -53,19 +54,16 @@ const isRecord = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
 const packageJsonByWorkspace = new Map(
-  workspaceCatalog.map((entry) => [
-    entry.path,
-    readJson(path.join(repoRoot, entry.path, "package.json")),
+  workspacePaths.map((workspacePath) => [
+    workspacePath,
+    readJson(path.join(repoRoot, workspacePath, "package.json")),
   ]),
 );
 const workspaceByPackageName = new Map(
-  workspaceCatalog.map((entry) => [
-    packageJsonByWorkspace.get(entry.path).name,
-    entry,
+  workspacePaths.map((workspacePath) => [
+    packageJsonByWorkspace.get(workspacePath).name,
+    workspacePath,
   ]),
-);
-const supportedPackages = workspaceCatalog.filter(
-  (entry) => entry.releaseStage === "supported",
 );
 const releaseContract = readFileSync(
   path.join(repoRoot, "docs/architecture/package-release-contract.md"),
@@ -118,7 +116,6 @@ const assertReleaseManifest = (entry) => {
   const label = `${entry.path}/package.json`;
   const compactSources = compactSourcePaths(entry);
 
-  assert(entry.packageClass === "dist", `${entry.path} release package must be a dist package`);
   assert(packageJson.private === false, `${label} supported package must be public`);
   assert(
     packageJson.publishConfig?.access === "public",
@@ -153,10 +150,6 @@ const assertReleaseManifest = (entry) => {
     );
   }
   assert(packageJson.engines?.node === ">=24", `${label} must declare the supported Node engine`);
-  assert(
-    packageJson.midnight?.releaseStage === entry.releaseStage,
-    `${label} must declare ${entry.releaseStage} release metadata`,
-  );
   assert(packageJson.scripts?.prepack === "pnpm run build", `${label} must build deterministically during prepack`);
   for (const lifecycleHook of installLifecycleHooks) {
     assert(
@@ -177,8 +170,8 @@ const assertReleaseManifest = (entry) => {
     .slice(0, 10)
     .join("\n");
   assert(
-    readmePreamble.includes(`> Release stage: \`${entry.releaseStage}\``),
-    `${entry.path}/README.md must identify the ${entry.releaseStage} release stage`,
+    readmePreamble.includes("> Release stage: `supported`"),
+    `${entry.path}/README.md must identify the supported release stage`,
   );
 
   const expectedFiles = releasePackageFiles();
@@ -226,7 +219,10 @@ const assertReleaseManifest = (entry) => {
       const dependencyWorkspace = workspaceByPackageName.get(dependencyName);
       if (dependencyWorkspace !== undefined) {
         assert(
-          dependencyWorkspace.releaseStage === "supported",
+          supportedPackages.some(
+            ({ path: supportedPath }) =>
+              supportedPath === dependencyWorkspace,
+          ),
           `${label} cannot release against unpublished workspace ${dependencyName}`,
         );
       }
@@ -376,10 +372,6 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
   assert(packedPackageJson.private === false, `${label} must remain public`);
   assert(
-    packedPackageJson.midnight?.releaseStage === "supported",
-    `${label} must remain supported`,
-  );
-  assert(
     packedPackageJson.publishConfig?.access === "public",
     `${label} must retain public npm access`,
   );
@@ -453,13 +445,11 @@ assert(
   supportedPackages.length > 0,
   "registry enablement must declare at least one supported package",
 );
-for (const entry of workspaceCatalog.filter(
-  (workspace) => workspace.packageClass === "dist",
-)) {
+for (const entry of supportedPackages) {
   const packageName = packageJsonByWorkspace.get(entry.path).name;
   assert(
     releaseContract.includes(
-      `| \`${packageName}\` | \`${entry.releaseStage}\` |`,
+      `| \`${packageName}\` | \`supported\` |`,
     ),
     `${packageName} must have a synchronized release-stage inventory row`,
   );
