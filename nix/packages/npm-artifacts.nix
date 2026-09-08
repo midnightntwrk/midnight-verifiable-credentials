@@ -76,31 +76,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     node ./tooling/scripts/ensure-midnight-did-api-paths.mjs
     node ./tooling/scripts/ensure-compact-package-aliases.mjs
 
-    # Build all 14 workspaces in dependency layer order.
-    # No turbo — its caching and parallel scheduling provide zero value in a
-    # clean Nix sandbox. Explicit ordering is simpler, more auditable, and
-    # consistent with the pack-artifacts.sh pattern.
-
-    ## Layer 1: core primitives (no vc-internal deps)
-    pnpm --dir packages/core/primitives/credentials run build
-
-    ## Layer 2: depend on credentials
-    pnpm --dir packages/registry/status-registry run build
-    pnpm --dir packages/core/capabilities/same-holder run build
-    pnpm --dir packages/core/primitives/iso-registry run build
-
-    ## Layer 3: pure TypeScript (no compact compile)
-    pnpm --dir packages/components/adapters/offchain-did run build
-    pnpm --dir packages/protocols/openid run build
-
-    ## Layer 4: credential families (depend on layers 1-3)
-    pnpm --dir packages/prototypes/credential-families/birth run build
-    pnpm --dir packages/prototypes/credential-families/birth-secret run build
-    pnpm --dir packages/prototypes/credential-families/university-diploma run build
-    pnpm --dir packages/prototypes/credential-families/digital-passport run build
-
-    ## Layer 5: orchestration (depends on birth + age-gate contracts)
-    pnpm --dir packages/components/orchestration/protocol run build
+    pnpm run build:all
 
     runHook postBuild
   '';
@@ -108,7 +84,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    # Pre-populate circuit parameters again for digital-passport's prepack → compact compile
+    # Pre-populate circuit parameters again for package prepack Compact compilation.
     export HOME=$TMPDIR
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/

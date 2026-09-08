@@ -17,11 +17,9 @@ const pnpmDir = path.join(repoRoot, 'node_modules', '.pnpm');
 
 const packageNames = [
   '@midnight-ntwrk/midnight-did',
-  '@midnight-ntwrk/midnight-did-api',
   '@midnight-ntwrk/midnight-did-contract',
   '@midnight-ntwrk/midnight-did-domain',
   '@midnight-ntwrk/midnight-did-jubjub-schnorr',
-  '@midnight-ntwrk/midnight-did-secret-storage',
 ];
 
 const pnpmPackageDir = async (packageName) => {

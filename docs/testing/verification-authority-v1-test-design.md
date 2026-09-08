@@ -10,7 +10,7 @@ Companion documents:
 
 - [`../spec/verification-contract-v1.md`](../spec/verification-contract-v1.md)
 - [`../decisions/0010-verification-transcript-and-decision-nullifier.md`](../decisions/0010-verification-transcript-and-decision-nullifier.md)
-- [`../plans/vc-production-execution-plan-2026-07-16.md`](../plans/vc-production-execution-plan-2026-07-16.md)
+- [`../plans/vc-production-execution-plan-2026-07-16.md`](../plans/vc-core-only-repository-plan-2026-09-08.md)
 
 ## Security properties
 

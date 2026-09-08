@@ -23,16 +23,10 @@ const json = args.has("--json");
 const didVendorRoot = path.join(repoRoot, "tooling/vendor/midnight-did");
 const errors = [];
 const warnings = [];
-const vendorOnlyDidPackages = new Set([
-  // Secret custody moved out of midnight-did with the resolver extraction, but
-  // VC standalone fixtures still consume the last packed artifact until the
-  // resolver package becomes the distribution source.
-  "@midnight-ntwrk/midnight-did-secret-storage",
-]);
+const vendorOnlyDidPackages = new Set();
 const publishedDidVersion = "0.5.0";
 const publishedDidPackages = new Set([
   "@midnight-ntwrk/midnight-did",
-  "@midnight-ntwrk/midnight-did-api",
   "@midnight-ntwrk/midnight-did-contract",
   "@midnight-ntwrk/midnight-did-domain",
   "@midnight-ntwrk/midnight-did-jubjub-schnorr",
@@ -184,18 +178,12 @@ const didIntegrationModes = Object.freeze([
   {
     name: "npm registry cohort",
     purpose:
-      `consume the five @midnight-ntwrk/midnight-did* packages at exact ${publishedDidVersion}`,
-  },
-  {
-    name: "resolver secret-storage tarball",
-    purpose:
-      "consume the unpublished resolver-owned secret-storage package as the sole local artifact exception",
+      `consume @midnight-ntwrk/midnight-did packages from npm at exact ${publishedDidVersion}`,
   },
 ]);
 const didIntegrationRepairFlow = Object.freeze([
   "publish one coherent midnight-did package cohort to npm before changing VC consumers",
   "update every direct DID dependency and root override to the same exact registry version",
-  "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
   "re-run ./run.sh integration-report, then ./run.sh check-integration",
 ]);
 

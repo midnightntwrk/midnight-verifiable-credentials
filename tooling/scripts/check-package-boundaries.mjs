@@ -3,8 +3,7 @@
  * Enforce the repository ownership boundary without moving packages.
  *
  * The source-import checks remain in check-package-boundaries.sh. This check
- * covers workspace dependency edges and keeps the current orchestration
- * compatibility exception explicit and reviewable.
+ * covers workspace dependency edges.
  */
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -28,22 +27,6 @@ export const classifyWorkspacePath = (workspacePath) => {
   }[area] ?? "unknown";
 };
 
-// The legacy birth protocol package is an outward compatibility adapter. The
-// exact edge list is intentionally closed: family-neutral orchestration lives
-// in `components/orchestration/exchange` and cannot use this exception.
-export const migrationExceptions = {
-  "packages/components/orchestration/protocol": [
-    "packages/components/orchestration/exchange",
-    "packages/core/primitives/credentials",
-    "packages/core/proofs",
-    "packages/prototypes/credential-families/birth",
-    "packages/prototypes/credential-families/birth-secret",
-    "packages/use-cases/age-gate/contract",
-    "packages/core/capabilities/same-holder",
-    "packages/components/integration/standalone-environment",
-  ],
-};
-
 export const leastPrivilegeStatusDependencyEdges = {
   "packages/registry/status-midnight-contract": ["packages/core/status"],
   "packages/registry/status-midnight-verifier": [
@@ -63,18 +46,6 @@ const packageJson = (workspacePath) =>
 const workspaceByName = new Map(
   workspaceCatalog.map((entry) => [packageJson(entry.path).name, entry.path]),
 );
-
-export const prohibitedFamilyDependencyClasses = ["protocol", "use-case"];
-
-const isCredentialFamily = (workspacePath) =>
-  workspacePath.startsWith("packages/prototypes/credential-families/");
-
-const isOrchestrationDependency = (workspacePath) =>
-  workspacePath.startsWith("packages/components/orchestration/");
-
-export const isProhibitedFamilyDependency = (workspacePath) =>
-  prohibitedFamilyDependencyClasses.includes(classifyWorkspacePath(workspacePath)) ||
-  isOrchestrationDependency(workspacePath);
 
 export const workspaceDependencyPaths = (workspacePath) => {
   const manifest = packageJson(workspacePath);
@@ -158,7 +129,7 @@ export const workspacePathForImport = (specifier, importerFile) => {
   return undefined;
 };
 
-export const familySourceImportPaths = (workspacePath) => {
+export const workspaceSourceImportPaths = (workspacePath) => {
   const imports = new Set();
   for (const sourceFile of workspaceSourceFiles(workspacePath)) {
     const source = readFileSync(sourceFile, "utf8");
@@ -174,33 +145,6 @@ export const familySourceImportPaths = (workspacePath) => {
   }
   return [...imports].sort();
 };
-
-export const findFamilySourceImportViolations = () =>
-  workspaceCatalog.flatMap((entry) => {
-    if (!isCredentialFamily(entry.path)) return [];
-    return familySourceImportPaths(entry.path)
-      .filter(isProhibitedFamilyDependency)
-      .map(
-        (dependency) =>
-          `${entry.path}: credential family source must not import protocol, orchestration, or use-case package ${dependency}`,
-      );
-  });
-
-const familyNeutralExchangePath = "packages/components/orchestration/exchange";
-const familyNeutralExchangeAllowedImports = new Set([
-  "packages/core/model",
-  "packages/core/proofs",
-]);
-
-export const findFamilyNeutralExchangeSourceImportViolations = () =>
-  familySourceImportPaths(familyNeutralExchangePath)
-    .filter(
-      (dependency) => !familyNeutralExchangeAllowedImports.has(dependency),
-    )
-    .map(
-      (dependency) =>
-        `${familyNeutralExchangePath}: family-neutral exchange source must not import ${dependency}`,
-    );
 
 const classAllows = (ownerClass, dependencyClass) => {
   switch (ownerClass) {
@@ -224,40 +168,21 @@ const classAllows = (ownerClass, dependencyClass) => {
 };
 
 export const findBoundaryViolations = () => {
-  const violations = [
-    ...findFamilySourceImportViolations(),
-    ...findFamilyNeutralExchangeSourceImportViolations(),
-  ];
+  const violations = [];
   for (const entry of workspaceCatalog) {
     const ownerClass = classifyWorkspacePath(entry.path);
     const dependencies = workspaceDependencyPaths(entry.path);
-    const exception = migrationExceptions[entry.path] ?? [];
     const statusEdges = leastPrivilegeStatusDependencyEdges[entry.path] ?? [];
     if (ownerClass === "unknown") {
       violations.push(`${entry.path}: unknown ownership area`);
       continue;
-    }
-    if ((ownerClass === "prototype" || ownerClass === "use-case") && entry.releaseStage !== "internal") {
-      violations.push(`${entry.path}: evidence workspaces must remain internal, not ${entry.releaseStage}`);
-    }
-    if (exception.length > 0 && JSON.stringify(dependencies) !== JSON.stringify([...exception].sort())) {
-      violations.push(`${entry.path}: migration exception edge list drifted; catalog must enumerate exactly [${[...exception].sort().join(", ")}] but found [${dependencies.join(", ")}]`);
     }
     if (statusEdges.length > 0 && JSON.stringify(dependencies) !== JSON.stringify([...statusEdges].sort())) {
       violations.push(`${entry.path}: least-privilege status edges drifted; expected exactly [${[...statusEdges].sort().join(", ")}] but found [${dependencies.join(", ")}]`);
     }
     for (const dependency of dependencies) {
       const dependencyClass = classifyWorkspacePath(dependency);
-      if (
-        isCredentialFamily(entry.path) &&
-        isProhibitedFamilyDependency(dependency)
-      ) {
-        violations.push(
-          `${entry.path}: credential families must not depend on protocol, orchestration, or use-case package ${dependency}`,
-        );
-        continue;
-      }
-      if (exception.includes(dependency) || statusEdges.includes(dependency)) continue;
+      if (statusEdges.includes(dependency)) continue;
       if (!classAllows(ownerClass, dependencyClass)) {
         violations.push(`${entry.path} (${ownerClass}) must not depend on ${dependency} (${dependencyClass})`);
       }
@@ -279,7 +204,7 @@ export const checkPackageBoundaries = () => {
     process.exitCode = 1;
     return false;
   }
-  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} workspaces; reusable core is family-agnostic; prototype/use-case evidence remains private.`);
+  console.log(`[package-boundary] OK: checked ${workspaceCatalog.length} core, registry, adapter, and example workspaces.`);
   return true;
 };
 

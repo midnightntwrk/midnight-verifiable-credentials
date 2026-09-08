@@ -7,7 +7,7 @@ Companion documents:
 - [`./credential-status.md`](./credential-status.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
-- [`./midnight-credentials.md`](./midnight-credentials.md)
+- [`./midnight-credentials.md`](../../spec/README.md)
 - [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 ## Purpose
@@ -526,4 +526,4 @@ Architecture companion note:
 
 - [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
 - [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)
-- [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)
+- [status-contract-closeout-boundary.md]

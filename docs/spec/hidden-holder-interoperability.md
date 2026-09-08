@@ -7,10 +7,10 @@ hidden-holder flows, especially blinded-secret issuance and presentation.
 
 Companion documents:
 
-- [`./midnight-credentials.md`](./midnight-credentials.md)
-- [`./profiles.md`](./profiles.md)
-- [`./conformance.md`](./conformance.md)
-- [`../plans/hidden-holder-production-contract.md`](../plans/hidden-holder-production-contract.md)
+- [`./midnight-credentials.md`](../../spec/README.md)
+- [`./profiles.md`](../../spec/configuration.md)
+- [`./conformance.md`](../../conformance/README.md)
+- [`../plans/hidden-holder-production-contract.md`]
 
 The production-contract plan is the canonical #31 maturity boundary. This
 specification owns only the adapter/transport obligations that overlap with

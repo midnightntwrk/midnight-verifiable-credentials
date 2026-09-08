@@ -101,7 +101,6 @@ requireEnv("test", [
   "TEST_ENTRYPOINT",
   "TEST_ENV",
   "TEST_WALLET_SEED",
-  "UNIVERSITY_PROTOCOL_PROFILE",
 ]);
 requireEnv("test:ci", [
   "CI",
@@ -111,7 +110,6 @@ requireEnv("test:ci", [
   "TEST_ENTRYPOINT",
   "TEST_ENV",
   "TEST_WALLET_SEED",
-  "UNIVERSITY_PROTOCOL_PROFILE",
 ]);
 
 for (const [taskName, task] of Object.entries(turbo.tasks ?? {})) {

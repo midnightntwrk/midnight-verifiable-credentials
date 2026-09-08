@@ -1,376 +1,109 @@
 # Midnight Verifiable Credentials
 
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/midnightntwrk/midnight-verifiable-credentials/badge)](https://scorecard.dev/viewer/?uri=github.com/midnightntwrk/midnight-verifiable-credentials)
+Compact-first, protocol-independent building blocks for verifiable credentials
+and presentations on Midnight.
 
-Protocol-independent, Compact-first Verifiable Credentials and Verifiable
-Presentations for Midnight.
+This repository contains the reusable VC/VP specification, conformance vectors,
+Compact primitives, TypeScript models, proof interfaces, status components, and
+thin DID adapters. It intentionally does not contain concrete credential
+families, product use cases, wallet applications, relying-party applications,
+or OIDC/DIDComm orchestration. Those belong in independently versioned
+repositories that consume these packages.
 
-The target supported surface contains:
+## Repository shape
 
-- the normative Midnight VC/VP core specification;
-- the bounded `credential-model` TypeScript package;
-- the generic `credential-compact` package; and
-- positive and negative conformance data.
-
-Protocols, adapters, credential families, product use cases, and standalone
-application infrastructure still present in the tree are migration inventory.
-They are not part of the target core release graph. See
-[`ADR-0016`](./docs/decisions/0016-core-only-specification-and-implementation.md)
-and the
-[`core-only plan`](./docs/plans/vc-core-only-repository-plan-2026-09-08.md).
-
-## Quick start
-
-Use the pinned Nix development shell for the repo toolchain, Node/pnpm deps,
-Midnight Compact tools, and the optional Pi development harness:
-
-```sh
-nix develop
+```text
+conformance/                 Machine-readable vectors and support status
+docs/                        Architecture, decisions, guides, and test policy
+examples/core-composition/   Minimal synthetic package-composition fixture
+packages/core/               Protocol-neutral models and VC/VP primitives
+packages/registry/           Reusable credential-status components
+packages/components/adapters Thin DID integration adapters
+spec/                        Normative core specification
+tooling/                     Build, validation, release, and fixture tooling
 ```
 
-The shell runs `just bootstrap` automatically. After it finishes, use:
+The accepted repository boundary is recorded in
+[ADR-0016](./docs/decisions/0016-core-only-specification-and-implementation.md).
+The removal history for former families and use cases is retained in the
+[credential migration ledger](./docs/architecture/credential-family-migration-ledger.md).
 
-```sh
-pi              # start the Pi development interface
-just targets    # list repository validation targets
-just check      # run the light non-Docker gate
-```
+## Workspace packages
 
-Set `MVVC_SKIP_BOOTSTRAP=1 nix develop` if you want to enter the shell without
-installing/updating local dependencies.
+### Core
 
-## Status
+| Package | Purpose |
+| --- | --- |
+| `@midnight-ntwrk/credential-model` | Protocol-neutral credential configuration and model contracts |
+| `@midnight-ntwrk/credential-compact` | Family-neutral Compact VC/VP semantics |
+| `@midnight-ntwrk/credential-proofs` | Proof ports and immutable artifact-manifest contracts |
+| `@midnight-ntwrk/credential-status` | Generic credential-status semantics and ports |
+| `@midnight-ntwrk/credential-display` | Framework-neutral display metadata contracts |
+| `@midnight-ntwrk/midnight-did-credentials` | Compact credential and presentation primitives |
+| `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder proof composition |
+| `@midnight-ntwrk/midnight-did-credentials-iso-registry` | Compact-native ISO code types |
 
-The core-only specification is a working draft. No complete production
-configuration is currently conformant; verified low-level primitives and
-unsupported operations are recorded explicitly in the conformance manifest.
+### Status and adapters
 
-- normative core specification:
-  - [`spec/README.md`](./spec/README.md)
-- machine-readable conformance status and vectors:
-  - [`conformance/README.md`](./conformance/README.md)
-- minimal synthetic composition example:
-  - [`examples/core-composition/README.md`](./examples/core-composition/README.md)
+| Package | Purpose |
+| --- | --- |
+| `@midnight-ntwrk/midnight-did-credentials-status-registry` | Midnight status-registry contract and helpers |
+| `@midnight-ntwrk/credential-status-midnight-contract` | Atomic status state and authorization gate |
+| `@midnight-ntwrk/credential-status-midnight-verifier` | Least-privilege status read and witness adapter |
+| `@midnight-ntwrk/credential-status-midnight-authority` | Status controller/delegate authorization ports |
+| `@midnight-ntwrk/midnight-did-credentials-offchain-did` | Off-chain DID holder-binding adapter |
+| `@midnight-ntwrk/credential-did-midnight` | `did:midnight` holder-binding adapter |
 
-The following entries describe current migration inventory, not the target
-published surface:
+Package publication status and supported entrypoints are defined by
+[the release contract](./docs/architecture/package-release-contract.md), not by
+directory placement alone.
+Workspace package metadata and export rules are defined by the
+[package-manifest discipline](./docs/architecture/workspace-package-manifest-discipline.md).
 
-- canonical package/protocol tier inventory:
-  - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
-- superseded specification source material:
-  - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
-- profile catalog:
-  - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
-- superseded conformance source material:
-  - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
-- claim representation companion:
-  - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
-- reference implementation packages:
-  - [`credential-model`](./packages/core/model/README.md)
-    - protocol-neutral family-authoring package and supported RC2 npm foundation
-  - [`credential-compact`](./packages/core/compact/README.md)
-    - Compact VC/VP semantics, generated contract bindings, and holder-binding exports
-  - [`credential-proofs`](./packages/core/proofs/README.md)
-    - family-neutral proof and artifact contracts
-  - [`credential-status`](./packages/core/status/README.md)
-    - generic status bindings, policies, and replaceable ports
-  - [`credential-did-midnight`](./packages/components/adapters/credential-did-midnight/README.md)
-    - off-chain `did:midnight` resolution and holder-binding adapter
-  - [`credentials`](./packages/core/primitives/credentials/README.md)
-  - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
-    - reusable registry package with the current prototype status / revocation trust model
-  - [retained prototype composition and coverage matrix](./packages/prototypes/credential-families/README.md)
-    - generated capability, maturity, package/artifact, privacy/trust, and test evidence from validated manifests
-  - [`credentials-birth`](./packages/prototypes/credential-families/birth/README.md)
-  - [`credentials-birth-secret`](./packages/prototypes/credential-families/birth-secret/README.md)
-  - [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
-    - academic diploma prototype aligned to the university issuance and verifier-flow use case
-  - [`credentials-digital-passport`](./packages/prototypes/credential-families/digital-passport/README.md)
-    - first credential-product graduation candidate; not yet production-ready
-  - [`credentials-iso-registry`](./packages/core/primitives/iso-registry/README.md)
-  - [`credentials-offchain-did`](./packages/components/adapters/offchain-did/README.md)
-  - [`credentials-openid`](./packages/protocols/openid/README.md)
-    - current reference transport-adapter surface
-- prototype / experimental packages:
-  - [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
-  - [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
-    - verifier-side university diploma request and presentation consumer
-  - [`university-protocol`](./packages/use-cases/university/protocol/README.md)
-    - protocol-style multi-party university issuer/student/company/mall flow
-    - includes a separate 100-student stress lane for throughput-oriented protocol measurements
-    - emits paired JSON and Markdown stress artifacts for CI retention
-  - [`credentials-demo-contract`](./packages/use-cases/age-gate/contract/README.md)
-- shared integration infrastructure:
-  - [`standalone-environment`](./packages/components/integration/standalone-environment/README.md)
+## Specification and conformance
 
-## Documentation
+- [Core specification](./spec/README.md)
+- [Conformance suite](./conformance/README.md)
+- [Architecture overview](./docs/architecture/overview.md)
+- [Package selection](./docs/guides/package-selection.md)
+- [Documentation index](./docs/README.md)
 
-Start here:
+The synthetic [core composition example](./examples/core-composition/README.md)
+proves that independently consumable core packages compose. Product examples
+and credential-family prototypes belong outside this repository.
 
-- normative core specification:
-  - [`spec/README.md`](./spec/README.md)
-- conformance manifest and vectors:
-  - [`conformance/README.md`](./conformance/README.md)
-- minimal synthetic composition example:
-  - [`examples/core-composition/README.md`](./examples/core-composition/README.md)
-- docs index:
-  - [`docs/README.md`](./docs/README.md)
-- superseded specification source material:
-  - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
-- profile catalog:
-  - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
-- conformance draft:
-  - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
-- claim representation companion:
-  - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
-- companion guides:
-  - [`docs/pi-development.md`](./docs/pi-development.md)
-    - optional pinned Pi development-loop interface and VC-specific review policy
-  - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
-  - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
-  - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
-  - [`docs/guides/status-revocation-entrypoints.md`](./docs/guides/status-revocation-entrypoints.md)
-  - [`docs/guides/did-integration-modes.md`](./docs/guides/did-integration-modes.md)
-  - [`docs/guides/vc-surface-change-discipline.md`](./docs/guides/vc-surface-change-discipline.md)
-- university diploma use case:
-  - [`packages/use-cases/university/README.md`](./packages/use-cases/university/README.md)
-  - [`packages/use-cases/university/operator-guide.md`](./packages/use-cases/university/operator-guide.md)
-  - [`packages/use-cases/university/contract/README.md`](./packages/use-cases/university/contract/README.md)
-  - [`packages/use-cases/university/scenarios/README.md`](./packages/use-cases/university/scenarios/README.md)
-  - [`packages/use-cases/university/protocol/README.md`](./packages/use-cases/university/protocol/README.md)
-- architecture:
-  - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
-  - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
-  - [`docs/architecture/workspace-package-manifest-discipline.md`](./docs/architecture/workspace-package-manifest-discipline.md)
-  - [`docs/architecture/package-release-contract.md`](./docs/architecture/package-release-contract.md)
-  - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
-  - [`docs/architecture/holder-binding-terminology.md`](./docs/architecture/holder-binding-terminology.md)
-  - [`docs/architecture/protocol-classification.md`](./docs/architecture/protocol-classification.md)
-  - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
-- testing:
-  - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)
-  - [`docs/testing/test-matrix.md`](./docs/testing/test-matrix.md)
-- design/comparison notes:
-  - [`docs/decisions/README.md`](./docs/decisions/README.md)
-  - [`docs/plans/vc-maturity-backlog.md`](./docs/plans/vc-maturity-backlog.md)
-  - [`docs/decisions/anoncreds-comparison.md`](./docs/decisions/anoncreds-comparison.md)
-  - [`docs/plans/holder-binding-extension-plan.md`](./docs/plans/holder-binding-extension-plan.md)
+## Development
 
-## Workspace map
-
-- [`credential-model`](./packages/core/model/README.md)
-  - protocol-neutral family definitions, descriptors, codecs, and manifests
-- [`credentials`](./packages/core/primitives/credentials/README.md)
-  - generic VC/VP envelopes, proof model, holder-binding profiles
-- [`credentials-same-holder`](./packages/core/capabilities/same-holder/README.md)
-  - same-holder composition capability
-- [`credentials-status-registry`](./packages/registry/status-registry/README.md)
-  - status / revocation registry contract and off-chain witness helpers, still operating under the current prototype trust model
-- [`credentials-iso-registry`](./packages/core/primitives/iso-registry/README.md)
-  - shared Compact-native ISO code types
-- [`credentials-offchain-did`](./packages/components/adapters/offchain-did/README.md)
-  - DID-aware runtime adapter for offchain DID holder binding
-- [`credentials-birth`](./packages/prototypes/credential-families/birth/README.md)
-  - explicit-holder birth credential family
-- [`credentials-birth-secret`](./packages/prototypes/credential-families/birth-secret/README.md)
-  - secret-holder birth credential family
-- [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
-  - academic diploma prototype with batch-issuance and verifier-policy flows
-- [`credentials-digital-passport`](./packages/prototypes/credential-families/digital-passport/README.md)
-  - digital-passport reference family and first independent product candidate
-- [`credentials-openid`](./packages/protocols/openid/README.md)
-  - OID4VCI / OID4VP-inspired transport/domain adapters
-- [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
-  - reference off-chain orchestration and protocol simulation
-- [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
-  - verifier-side university diploma job-application and discount contract package
-- [`university-protocol`](./packages/use-cases/university/protocol/README.md)
-  - threaded multi-party reference orchestration over the university diploma family
-- [`credentials-demo-contract`](./packages/use-cases/age-gate/contract/README.md)
-  - verifier/business contract demo
-- [`standalone-environment`](./packages/components/integration/standalone-environment/README.md)
-  - shared Docker-backed integration harness
-
-Generated compatibility roots:
-
-- the top-level `midnight-did-credentials*` entries are generated compatibility
-  symlinks for local tooling and legacy includes
-- they are not canonical architecture areas; read the repository through
-  `packages/core/`, `packages/registry/`, `packages/protocols/`, `packages/components/`, `packages/prototypes/`,
-  `packages/use-cases/`, and `tooling/`
-- they are official local compatibility aliases until a dedicated deprecation
-  PR removes a specific alias, updates Compact includes, and adjusts cleanup
-  guards
-- use [`docs/guides/did-integration-modes.md`](./docs/guides/did-integration-modes.md)
-  for DID package integration modes, alias lifecycle, and repair commands
-
-Status and revocation entrypoints:
-
-- start with [`docs/guides/status-revocation-entrypoints.md`](./docs/guides/status-revocation-entrypoints.md)
-  when choosing a status/revocation path
-- read [`docs/spec/credential-status.md`](./docs/spec/credential-status.md)
-  for status levels and fail-closed semantics
-- read [`docs/spec/revocation-registry.md`](./docs/spec/revocation-registry.md)
-  for the revoked-set registry model
-- read [`docs/spec/status-verification-protocol.md`](./docs/spec/status-verification-protocol.md)
-  for verifier-supplied root and status proof-protocol boundaries
-- use [`packages/registry/status-registry`](./packages/registry/status-registry)
-  for the shipped Compact and TypeScript helper package
-
-## Validation
-
-Main repo validation:
+Prerequisites are Node.js 24, pnpm 10, and the Compact compiler version recorded
+by the repository toolchain.
 
 ```bash
-./run.sh
-```
-
-The default gate runs the same cataloged release targets and adds the standalone
-Docker lanes when Docker is available.
-
-The light gate runs every cataloged non-Docker validation target, including
-all workspace package classes and tarball packaging:
-
-```bash
+pnpm install --frozen-lockfile
 ./run.sh --light
 ```
 
-Targets without a reduced variant still run their normal non-Docker lane when
-they are part of the default light gate. Inspect the authoritative light-target,
-release-target, and workspace catalogs with:
+Useful focused targets:
 
 ```bash
-./run.sh targets
-node ./tooling/scripts/workspace-catalog.mjs --json
-```
-
-Package all `dist`-class workspaces selected by the workspace catalog:
-
-```bash
+./run.sh lint
+./run.sh typecheck
+./run.sh build
+./run.sh test
+./run.sh conformance
 ./run.sh package
+./run.sh targets
 ```
 
-Run any root `package.json` script through the same entrypoint:
+`./run.sh --light` is the repository gate. It validates package boundaries,
+builds the workspaces, runs conformance and package tests, and packs the
+supported release surface without starting Docker integration environments.
 
-```bash
-./run.sh build:core
-./run.sh ci:package-tests
-./run.sh artifacts:pack
-```
+## Repository boundaries
 
-Run the BDD smoke lane directly:
+Every `midnight-*` repository is independent. Do not import sibling source,
+generated output, or package internals. Consume published npm packages when
+available; otherwise use package tarballs distributed by the root identity
+workspace automation.
 
-```bash
-./run.sh bdd
-```
-
-Run the threaded university protocol lane directly:
-
-```bash
-./run.sh university-protocol
-```
-
-Use the university operator guide when choosing between readable BDD,
-proof-server-contract, standalone-hybrid, cohort, stress, and summary lanes:
-
-- [`packages/use-cases/university/operator-guide.md`](./packages/use-cases/university/operator-guide.md)
-
-Export the readable 10-student university protocol transcript:
-
-```bash
-./run.sh university-protocol-export
-```
-
-Run the 30-student university cohort protocol lane:
-
-```bash
-./run.sh university-protocol-cohort
-./run.sh university-protocol-cohort --light
-```
-
-Run the 100-student university protocol stress lane:
-
-```bash
-./run.sh university-protocol-stress
-./run.sh university-protocol-stress --light
-```
-
-Emit the one-page university artifact summary:
-
-```bash
-./run.sh university-summary
-./run.sh university-summary --light
-```
-
-Print the versioned university report summary contract:
-
-```bash
-./run.sh university-report-contract
-```
-
-This target builds the reporting package quietly, prints the contract JSON to
-stdout, and does not write report artifacts. Use it when dashboards, CI, or
-handoff tooling need to compare `schemaId`, `schemaVersion`, handoff artifact
-ids, source artifact ids, transcript schema, and required privacy-profile
-sections without regenerating report artifacts.
-
-Run only the negative BDD living-doc scenarios:
-
-```bash
-./run.sh bdd-negative
-```
-
-Run the full BDD scenario set:
-
-```bash
-./run.sh bdd-all
-```
-
-Direct package-wide validation entrypoints:
-
-- `pnpm run lint`
-- `pnpm run build:all`
-- `pnpm run test:all`
-- `pnpm run docs:links`
-
-Inspect DID package integration wiring:
-
-```bash
-./run.sh integration-report
-./run.sh check-integration
-pnpm run check:did-integration
-```
-
-## Artifact packaging
-
-Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
-Only candidate and supported packages are packable; only supported packages
-are publishable. A candidate artifact is not automatically a supported
-release. See the
-[package release contract](./docs/architecture/package-release-contract.md)
-for the explicit candidate/support inventory and graduation requirements.
-
-Commands:
-
-- `pnpm run artifacts:pack`
-- `pnpm run test:release-package-consumers` (focused rerun against already packed artifacts)
-- `pnpm run test:release-tooling`
-- `pnpm run upgrade:vendor`
-- `./upgrade-libs.sh --destination /path/to/downstream-repo`
-
-The current supported RC2 publication set contains:
-
-- `@midnight-ntwrk/credential-model`
-- `@midnight-ntwrk/credential-compact`
-- `@midnight-ntwrk/credential-proofs`
-- `@midnight-ntwrk/credential-status`
-- `@midnight-ntwrk/credential-did-midnight`
-
-This is the reusable VC development foundation, not a complete application
-stack: exchange/orchestration, wallet connectors, concrete credential families,
-status-registry authority, deployment artifacts, scenarios, reporting, and
-integration workspaces remain intentionally excluded.
-
-Release operators should follow the
-[npmjs publication runbook](./docs/guides/npmjs-publication.md). Public
-publication is manual and runs only through `.github/workflows/publish.yml`.
+See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md), and
+[AGENT.md](./AGENT.md) before changing the repository.

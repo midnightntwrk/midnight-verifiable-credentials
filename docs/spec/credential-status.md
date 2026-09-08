@@ -7,9 +7,9 @@ Current normative core status requirements live in
 
 Companion documents:
 
-- [`./midnight-credentials.md`](./midnight-credentials.md)
-- [`./profiles.md`](./profiles.md)
-- [`./conformance.md`](./conformance.md)
+- [`./midnight-credentials.md`](../../spec/README.md)
+- [`./profiles.md`](../../spec/configuration.md)
+- [`./conformance.md`](../../conformance/README.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
@@ -371,7 +371,7 @@ Repository closeout boundary:
 - the remaining gap is the future generic in-circuit live-root /
   non-membership path, not missing repo-local status modes or helper surfaces
 - see:
-  - [`../architecture/status-contract-closeout-boundary.md`](../architecture/status-contract-closeout-boundary.md)
+  - [`../architecture/status-contract-closeout-boundary.md`]
 
 ## Conformance linkage
 

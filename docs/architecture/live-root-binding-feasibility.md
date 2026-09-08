@@ -148,7 +148,7 @@ So the remaining feasibility answer is:
 
 Closeout note:
 
-- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)
+- [`./status-contract-closeout-boundary.md`]
 
 ## Engineering consequence
 

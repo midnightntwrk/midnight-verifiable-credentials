@@ -7,14 +7,14 @@ Current normative core status requirements live in
 
 Companion documents:
 
-- [`./midnight-credentials.md`](./midnight-credentials.md)
+- [`./midnight-credentials.md`](../../spec/README.md)
 - [`./credential-status.md`](./credential-status.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 - [`./status-time-authority-v1.md`](./status-time-authority-v1.md)
 - [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
-- [`./profiles.md`](./profiles.md)
-- [`./conformance.md`](./conformance.md)
+- [`./profiles.md`](../../spec/configuration.md)
+- [`./conformance.md`](../../conformance/README.md)
 
 ## Purpose
 
@@ -489,7 +489,7 @@ Repository closeout note:
 - the remaining gap is the generic root-bound in-circuit proof path, not the
   absence of a packages/registry/status architecture in this codebase
 - see:
-  - [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)
+  - [status-contract-closeout-boundary.md]
 
 ## Why no revocation reason/date in the core model
 

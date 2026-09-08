@@ -103,7 +103,7 @@ command still refuses oversized files when Git LFS is unavailable.
 
 Manifest schemas, signing policy, consumer verification, publication lanes,
 and disaster recovery are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md).
+[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
 
 ## References
 

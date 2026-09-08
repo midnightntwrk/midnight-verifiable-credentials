@@ -172,5 +172,5 @@ The normative shape is in
 threat model and required negative tests are in
 [`verification-authority-v1-test-design.md`](../testing/verification-authority-v1-test-design.md).
 Tracks A1, A2, and A3 in the
-[`production execution plan`](../plans/vc-production-execution-plan-2026-07-16.md)
+[`production execution plan`](../plans/vc-core-only-repository-plan-2026-09-08.md)
 must satisfy those documents before security-critical Compact semantics land.

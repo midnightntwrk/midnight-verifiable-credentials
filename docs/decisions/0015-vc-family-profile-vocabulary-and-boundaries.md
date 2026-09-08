@@ -236,7 +236,7 @@ The schema, typed validator, resolver, provider catalog, denied-edge checks,
 prototype migration, and finite coverage generation remain downstream stages
 of [#487](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/487).
 Scheduling remains with the
-[VC production maturity backlog](../plans/vc-maturity-backlog.md). Repository
+[VC production maturity backlog](../plans/vc-core-only-repository-plan-2026-09-08.md). Repository
 and concrete-family ownership remain governed by ADR-0013 and
 [the repository engineering guide](../../AGENT.md); current package publication
 stages remain governed by the

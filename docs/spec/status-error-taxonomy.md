@@ -13,7 +13,7 @@ Companion documents:
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 - [`./status-time-authority-v1.md`](./status-time-authority-v1.md)
 - [`./verification-contract-v1.md`](./verification-contract-v1.md)
-- [`./conformance.md`](./conformance.md)
+- [`./conformance.md`](../../conformance/README.md)
 
 ## Purpose
 
