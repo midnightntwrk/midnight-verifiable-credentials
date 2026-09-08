@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - BREAKING: removed unused generic issuance and presentation protocol
-  choreography from `credential-compact`; retained VC/VP envelopes, proof
-  helpers, holder bindings, same-holder circuits, status bindings, and both
-  canonical Compact roots remain available.
+  choreography from `credential-compact` and consolidated same-holder circuits
+  into its holder-binding module. The package now exposes exactly one
+  standalone Compact root and one composition-safe root while retaining VC/VP
+  envelopes, proof helpers, holder bindings, same-holder circuits, and status
+  bindings.
 - BREAKING: removed the legacy `credential-proofs`, `credential-status`, and
   three `credential-status-midnight-*` workspaces. The maintained publication
   graph now contains `credential-model`, `credential-compact`, and the thin

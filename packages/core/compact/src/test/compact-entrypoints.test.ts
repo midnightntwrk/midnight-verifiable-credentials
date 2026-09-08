@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const root = resolve(import.meta.dirname, "../..");
-const entrypoints = ["credentials.compact"];
+const entrypoints = ["credentials.compact", "credentials/composable.compact"];
 
 describe("Compact entrypoints", () => {
   it("use only package-local includes", () => {
