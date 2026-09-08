@@ -404,9 +404,8 @@ and audit reduce its blast radius.
 - no authoritative path accepts runtime/caller time or an unanchored signed
   timestamp.
 
-The current capability result is recorded in
-[`compact-trusted-time-capability-2026-07-17.md`](./compact-trusted-time-capability-2026-07-17.md).
-It proves nominal Unix-seconds comparisons but does not satisfy the mandatory
+The historical capability probe proved nominal Unix-seconds comparisons but
+does not satisfy the mandatory
 position, context-error/window, or context-digest anchor fields. B3 remains
 blocked; this test-design gate must not be interpreted as complete.
 

@@ -214,10 +214,6 @@ case "$target" in
       pnpm run test:all
     fi
     ;;
-  trusted-time-capability)
-    echo "[run] Compact trusted-time capability lane"
-    pnpm run test:trusted-time-capability
-    ;;
   conformance)
     if [[ "${MIDNIGHT_RELEASE_GATE_BUILD_READY:-0}" == "1" ]]; then
       echo "[run] Reuse release-gate build for core conformance lane"

@@ -14,9 +14,9 @@ test("workspace catalog has no forbidden ownership edges", () => {
 });
 
 test("ownership taxonomy keeps the retained workspaces bounded", () => {
-  assert.equal(classifyWorkspacePath("packages/core/primitives/credentials"), "reusable-core");
-  assert.equal(classifyWorkspacePath("packages/registry/status-registry"), "registry");
-  assert.equal(classifyWorkspacePath("packages/components/adapters/offchain-did"), "component");
+  assert.equal(classifyWorkspacePath("packages/core/compact"), "reusable-core");
+  assert.equal(classifyWorkspacePath("packages/registry/status-midnight-contract"), "registry");
+  assert.equal(classifyWorkspacePath("packages/components/adapters/credential-did-midnight"), "component");
   assert.equal(classifyWorkspacePath("examples/core-composition"), "example");
 });
 

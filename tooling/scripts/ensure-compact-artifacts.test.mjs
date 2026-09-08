@@ -244,10 +244,6 @@ test("serializes concurrent generation and rejects incomplete direct sub-target 
 test("Compact package lifecycle scripts share the artifact-first generation owner", () => {
   const packageFiles = [
     "packages/core/compact/package.json",
-    "packages/core/primitives/credentials/package.json",
-    "packages/core/capabilities/same-holder/package.json",
-    "packages/core/primitives/iso-registry/package.json",
-    "packages/registry/status-registry/package.json",
   ];
   for (const relative of packageFiles) {
     const scripts = JSON.parse(readFileSync(path.join(root, relative), "utf8")).scripts;

@@ -188,31 +188,6 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
 
-  packages/components/adapters/offchain-did:
-    dependencies:
-      '@midnight-ntwrk/midnight-did':
-        specifier: 0.5.0
-        version: 0.5.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-      '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0
-        version: 0.5.0
-    devDependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-
-  packages/core/capabilities/same-holder:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../primitives/credentials
-
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
@@ -222,21 +197,6 @@ importers:
   packages/core/display: {}
 
   packages/core/model: {}
-
-  packages/core/primitives/credentials:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/credential-model':
-        specifier: workspace:*
-        version: link:../../model
-
-  packages/core/primitives/iso-registry:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
 
   packages/core/proofs:
     dependencies:
@@ -276,15 +236,6 @@ importers:
       '@midnight-ntwrk/credential-status-midnight-contract':
         specifier: ^0.1.0
         version: link:../status-midnight-contract
-
-  packages/registry/status-registry:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../core/primitives/credentials
 
 packages:
 

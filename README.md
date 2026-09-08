@@ -39,19 +39,14 @@ former families and use cases.
 | `@midnight-ntwrk/credential-proofs` | Proof ports and immutable artifact-manifest contracts |
 | `@midnight-ntwrk/credential-status` | Generic credential-status semantics and ports |
 | `@midnight-ntwrk/credential-display` | Framework-neutral display metadata contracts |
-| `@midnight-ntwrk/midnight-did-credentials` | Compact credential and presentation primitives |
-| `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder proof composition |
-| `@midnight-ntwrk/midnight-did-credentials-iso-registry` | Compact-native ISO code types |
 
 ### Status and adapters
 
 | Package | Purpose |
 | --- | --- |
-| `@midnight-ntwrk/midnight-did-credentials-status-registry` | Midnight status-registry contract and helpers |
 | `@midnight-ntwrk/credential-status-midnight-contract` | Atomic status state and authorization gate |
 | `@midnight-ntwrk/credential-status-midnight-verifier` | Least-privilege status read and witness adapter |
 | `@midnight-ntwrk/credential-status-midnight-authority` | Status controller/delegate authorization ports |
-| `@midnight-ntwrk/midnight-did-credentials-offchain-did` | Off-chain DID holder-binding adapter |
 | `@midnight-ntwrk/credential-did-midnight` | `did:midnight` holder-binding adapter |
 
 Package publication status and supported entrypoints are defined by

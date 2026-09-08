@@ -74,16 +74,13 @@ Update all three in one change. Internal workspace dependencies use
 ## Compact artifacts
 
 Compact sources and generated artifacts are owned by their package. Do not copy
-generated outputs across package or repository boundaries. The retained public
-fixture roots are listed in
-`tooling/fixtures/compact-public/manifest.json`.
+generated outputs across package or repository boundaries.
 
 When Compact sources or runtime inputs change:
 
 ```bash
 pnpm run build:all
-node tooling/scripts/compact-fixtures.mjs --update
-pnpm run fixtures:validate
+pnpm run test:compact-artifacts
 ```
 
 Never commit wallet keys, signing keys, seeds, witnesses, credentials, or other

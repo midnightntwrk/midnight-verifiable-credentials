@@ -10,18 +10,14 @@ interface is sufficient.
 | --- | --- |
 | Credential configuration, descriptors, or codecs | `@midnight-ntwrk/credential-model` |
 | Family-neutral Compact vocabulary | `@midnight-ntwrk/credential-compact` |
-| Generic credential/presentation Compact primitives | `@midnight-ntwrk/midnight-did-credentials` |
 | Proof provider and artifact-manifest ports | `@midnight-ntwrk/credential-proofs` |
 | Generic status semantics and ports | `@midnight-ntwrk/credential-status` |
 | Framework-neutral display metadata | `@midnight-ntwrk/credential-display` |
-| Same-holder proof composition | `@midnight-ntwrk/midnight-did-credentials-same-holder` |
-| Compact-native ISO types | `@midnight-ntwrk/midnight-did-credentials-iso-registry` |
 
 ## Midnight status
 
 | Need | Package |
 | --- | --- |
-| Existing combined status-registry contract/helpers | `@midnight-ntwrk/midnight-did-credentials-status-registry` |
 | Atomic ledger state and authorization gate | `@midnight-ntwrk/credential-status-midnight-contract` |
 | Read-only status verification and witness access | `@midnight-ntwrk/credential-status-midnight-verifier` |
 | Controller/delegate authorization and signing ports | `@midnight-ntwrk/credential-status-midnight-authority` |
@@ -33,7 +29,6 @@ verifier-only applications.
 
 | Need | Package |
 | --- | --- |
-| Runtime-neutral off-chain DID holder binding | `@midnight-ntwrk/midnight-did-credentials-offchain-did` |
 | `did:midnight` holder-binding integration | `@midnight-ntwrk/credential-did-midnight` |
 
 Adapters translate core interfaces to DID APIs. They do not own credential
