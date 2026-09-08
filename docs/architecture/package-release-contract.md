@@ -37,7 +37,6 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/credential-status-midnight-contract` | `internal` | none | VC package maintainers | Reference atomic state and authorization-gate boundary; not final Compact authority |
 | `@midnight-ntwrk/credential-status-midnight-verifier` | `internal` | none | VC package maintainers | Least-privilege read/witness adapter; root-proof work remains separate |
 | `@midnight-ntwrk/credential-status-midnight-authority` | `internal` | none | VC package maintainers | #494 evidence-backed write authorization and signing port; no key custody |
-| `@midnight-ntwrk/credential-display` | `internal` | workspace tarball only | Unassigned | Incubating framework-neutral display metadata; not a support or publication commitment |
 
 Removed family, use-case, protocol, and integration packages are historical
 migration inventory, not a publication queue. They are not eligible for packing

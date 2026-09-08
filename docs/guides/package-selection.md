@@ -18,10 +18,9 @@ exports and publication policy are defined by the
 
 ## Internal packages
 
-The display package and three `credential-status-midnight-*` packages are
-incubating implementation components. They are not public compatibility
-commitments and are not published. Do not build external release plans around
-them.
+The three `credential-status-midnight-*` packages are incubating
+implementation components. They are not public compatibility commitments and
+are not published. Do not build external release plans around them.
 
 ## Build a credential family
 

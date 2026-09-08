@@ -28,7 +28,6 @@ repositories.
 | `@midnight-ntwrk/credential-proofs` | supported | Proof, authority-evidence, and artifact-manifest ports |
 | `@midnight-ntwrk/credential-status` | supported | Runtime-neutral credential-status semantics |
 | `@midnight-ntwrk/credential-did-midnight` | supported | Thin `did:midnight` holder-binding adapter |
-| `@midnight-ntwrk/credential-display` | internal | Experimental display metadata |
 | `@midnight-ntwrk/credential-status-midnight-contract` | internal | Status state and mutation boundary |
 | `@midnight-ntwrk/credential-status-midnight-verifier` | internal | Status reads and proof verification |
 | `@midnight-ntwrk/credential-status-midnight-authority` | internal | Status authorization and signing ports |

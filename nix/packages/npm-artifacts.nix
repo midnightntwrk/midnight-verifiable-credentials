@@ -69,9 +69,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
 
-    # Run the Compact alias setup from the root postinstall contract.
-    node ./tooling/scripts/ensure-compact-package-aliases.mjs
-
     pnpm run build:all
 
     runHook postBuild

@@ -64,7 +64,6 @@ export const workspaceCatalog = [
     ],
     publicationDependencies: [],
   }),
-  workspace("packages/core/display", "core", "dist"),
   workspace("packages/core/compact", "core", "dist", {
     releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-compact-consumer",

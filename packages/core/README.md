@@ -1,15 +1,11 @@
 # Core
 
-This top-level area is reserved for canonical reusable VC semantics and Compact-first
-capabilities.
+This area owns the protocol-independent VC/VP implementation:
 
-Migration status:
-- package moves into `packages/core/` are pending follow-up restructuring phases
-- current core packages still live in their legacy workspace directories
+- `model`: configuration, descriptors, codecs, and validation
+- `compact`: family-neutral Compact primitives
+- `proofs`: proof, authority-evidence, and artifact-manifest ports
+- `status`: runtime-neutral credential-status semantics
 
-Target contents:
-- reusable VC primitives
-- reusable capabilities
-- reusable near-core proof packages
-
-Do not place transport, orchestration, demo, or business-flow code here.
+Core packages do not depend on registry implementations, runtime adapters,
+applications, exchange protocols, or concrete credential families.

@@ -10,7 +10,6 @@
   },
   "workspaces": [
     "packages/core/model",
-    "packages/core/display",
     "packages/core/compact",
     "packages/core/proofs",
     "packages/core/status",
@@ -46,7 +45,7 @@
     "upgrade:vendor": "./upgrade-libs.sh --destination ./tooling/vendor",
     "pack:libs": "pnpm run pack:vendor",
     "upgrade:libs": "pnpm run upgrade:vendor",
-    "postinstall": "node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs && node ./tooling/scripts/ensure-compact-package-aliases.mjs",
+    "postinstall": "node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs && node ./tooling/scripts/remove-retired-compatibility-aliases.mjs",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
     "test:release-package-consumers": "node ./tooling/scripts/check-release-package-contract.mjs --tarballs ./tooling/artifacts/npm && node ./tooling/scripts/test-release-package-consumers.mjs --tarballs ./tooling/artifacts/npm",
     "clean": "turbo run clean --continue",

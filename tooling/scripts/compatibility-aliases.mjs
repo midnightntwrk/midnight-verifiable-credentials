@@ -1,12 +1,3 @@
-// Compatibility alias catalog shared by cleanup, alias materialization, and DID
-// integration reporting. Official aliases are kept as symlinks; removable
-// shells are historical generated roots that clean-artifacts may classify.
-export const officialCompatibilityAliases = Object.freeze([]);
-
-export const officialCompatibilityAliasNames = new Set(
-  officialCompatibilityAliases.map(({ alias }) => alias),
-);
-
 export const retiredCompatibilityAliases = Object.freeze([
   "midnight-did-credentials",
   "midnight-did-credentials-same-holder",
