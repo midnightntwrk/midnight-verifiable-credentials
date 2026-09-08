@@ -177,7 +177,7 @@ satisfy live freshness indefinitely.
 
 ## Follow-up
 
-The normative records, threat model, and B1 merge gates are defined by:
-
-- [`../spec/status-time-authority-v1.md`](../spec/status-time-authority-v1.md)
-- [`../testing/status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md)
+Retained status requirements are defined by the
+[core status specification](../../spec/status.md) and
+[security considerations](../../spec/security-considerations.md). The detailed
+prototype threat model remains in Git history.

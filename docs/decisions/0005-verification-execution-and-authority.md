@@ -94,5 +94,4 @@ cryptographically valid presentation but may not make an invalid one valid.
 ## Follow-up
 
 ADR-0010 supersedes this record with the canonical transcript, result,
-authority, and atomic nullifier contract. The production work remains P0 in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+authority, and atomic nullifier contract.

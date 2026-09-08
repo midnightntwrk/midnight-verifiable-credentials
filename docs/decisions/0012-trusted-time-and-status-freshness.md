@@ -135,8 +135,7 @@ eligible for a hidden-holder final profile.
 
 ## Follow-up
 
-The normative records, acceptance matrix, threat model, and B2/B3 gates are
-defined by:
-
-- [`../spec/status-time-authority-v1.md`](../spec/status-time-authority-v1.md)
-- [`../testing/status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md)
+Retained time and freshness requirements are defined by the
+[core status specification](../../spec/status.md) and
+[security considerations](../../spec/security-considerations.md). The detailed
+prototype acceptance matrix remains in Git history.

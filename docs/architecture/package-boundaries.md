@@ -4,10 +4,7 @@
 
 | Class | Location | Responsibility |
 | --- | --- | --- |
-| Core model | `packages/core/model` | Configuration, descriptors, codecs, and manifests |
-| Core primitives | `packages/core/primitives` | Family-neutral Compact VC/VP primitives |
-| Core capabilities | `packages/core/capabilities` | Reusable proof composition such as same-holder |
-| Core libraries | `packages/core/{compact,proofs,status,display}` | Stable TypeScript interfaces and helpers |
+| Core | `packages/core` | Models, Compact VC/VP primitives, and generic proof/status interfaces |
 | Registry | `packages/registry` | Reusable status implementations for Midnight |
 | Adapter | `packages/components/adapters` | Thin integration with DID runtime APIs |
 | Fixture | `examples/core-composition` | Minimal non-product composition test |
@@ -15,7 +12,7 @@
 ## Dependency direction
 
 ```text
-fixture -> adapter/registry -> capability -> primitive/library/model
+fixture -> adapter/registry -> core
 ```
 
 Core code must not import adapters or registry implementations. Registry

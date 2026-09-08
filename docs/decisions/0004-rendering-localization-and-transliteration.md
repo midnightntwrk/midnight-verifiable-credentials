@@ -60,9 +60,8 @@ at least two independent credential products should move into this repository.
 
 ## Follow-up
 
-The neutral display model, locale metadata, passport transliteration profile,
-and first adapters are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+The neutral display model remains internal. Product localization,
+transliteration profiles, and UI adapters belong to consumer repositories.
 
 ## References
 

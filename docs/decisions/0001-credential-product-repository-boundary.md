@@ -90,5 +90,5 @@ source paths or imports across repository boundaries.
 
 ## Follow-up
 
-The extraction criteria, composition manifest, and digital-passport pilot are
-tracked in [`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md).
+The extraction criteria and completed migration remain traceable through the
+core-only milestone, linked issues, and Git history.

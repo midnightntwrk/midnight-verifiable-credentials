@@ -137,8 +137,5 @@ define a second supported product implementation.
 
 ## Follow-up
 
-The package decomposition, publication catalog, prototype migration, and
-digital-passport handoff are tracked in
-[`../plans/vc-maturity-backlog.md`](../plans/vc-core-only-repository-plan-2026-09-08.md). The
-publication catalog's concrete package names and split boundaries are
-provisional until ADR-0014 is accepted.
+The completed package decomposition and product extraction remain traceable
+through the core-only milestone, linked issues, and Git history.

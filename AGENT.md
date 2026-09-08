@@ -10,7 +10,7 @@ This is a core-only VC/VP specification and implementation repository. Follow
 Keep here:
 
 - protocol-independent VC/VP data models and Compact primitives
-- holder-binding and same-holder capabilities
+- holder-binding and same-holder primitives
 - proof and artifact interfaces
 - reusable credential-status semantics and Midnight status components
 - thin DID adapters
@@ -46,7 +46,7 @@ work in them.
 Allowed dependency direction:
 
 ```text
-examples -> adapters/status components -> core capabilities -> core primitives/model
+examples -> adapters/status components -> core
 ```
 
 Rules:
@@ -117,8 +117,8 @@ product/use-case integration environments.
 
 ## Pull requests
 
-- Base core-only work on `vc-core` unless the active stack requires a documented
-  predecessor branch.
+- Base core-only work on the repository's current integration branch unless an
+  active stack requires a documented predecessor branch.
 - Use `codex/*` branch names.
 - Keep no more than two active stack levels.
 - Commit with DCO and GPG:
@@ -134,6 +134,5 @@ product/use-case integration environments.
 - [Specification](./spec/README.md)
 - [Conformance](./conformance/README.md)
 - [Documentation index](./docs/README.md)
-- [Core-only plan](./docs/plans/vc-core-only-repository-plan-2026-09-08.md)
-- [Issue disposition](./docs/plans/vc-core-only-issue-disposition-2026-09-08.md)
-- [External review and CI remediation](./docs/dev-loop-review-and-ci-remediation.md)
+- [Glossary](./docs/glossary.md)
+- [Architecture decisions](./docs/decisions/README.md)
