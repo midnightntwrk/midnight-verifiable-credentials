@@ -257,6 +257,15 @@ const checkCatalog = () => {
       ...Object.keys(packageJson.optionalDependencies ?? {}),
       ...Object.keys(packageJson.peerDependencies ?? {}),
     ]);
+    for (const dependencyName of workspaceDependencies) {
+      const dependencyEntry = workspaceCatalogByName.get(dependencyName);
+      if (dependencyEntry !== undefined) {
+        assert.ok(
+          dependencyEntry.path.startsWith("packages/core/"),
+          `${entry.path} must not depend on non-core workspace ${dependencyEntry.path}`,
+        );
+      }
+    }
     const publicationWorkspaceDependencies = [...workspaceDependencies]
       .filter((dependencyName) => workspaceCatalogByName.has(dependencyName))
       .sort();
