@@ -30,8 +30,8 @@ const extractImportSpecifiers = (source) => [
   ...source.matchAll(/\bimport\s*\(\s*["']([^"']+)["']\s*\)/gu),
 ].map((match) => match[1]);
 
-test("maps every retained operation to a normative section and state", () => {
-  assert.equal(manifest.formatVersion, 1);
+test("maps every retained operation to a normative section and vector", () => {
+  assert.equal(manifest.formatVersion, 2);
   assert.ok(
     readFileSync(resolve(root, "spec/README.md"), "utf8")
       .split("\n")
@@ -50,7 +50,6 @@ test("maps every retained operation to a normative section and state", () => {
       `${implementationPackage.manifest} identity does not match the conformance manifest`,
     );
   }
-  assert.ok(Array.isArray(manifest.supportedConfigurations));
   assert.ok(manifest.operations.length > 0);
   assert.equal(
     new Set(manifest.operations.map(({ id }) => id)).size,
@@ -62,23 +61,19 @@ test("maps every retained operation to a normative section and state", () => {
   );
   const referencedVectorCategories = new Set();
   for (const operation of manifest.operations) {
-    assert.match(operation.id, /^[a-z][a-z0-9-]+$/u);
-    assert.ok(
-      ["core", "holder", "issuer", "verifier"].includes(operation.role),
-      `${operation.id} has an unknown role`,
+    assert.deepEqual(
+      Object.keys(operation).sort(),
+      ["id", "section", "vectorCategory"],
+      `${operation.id} must use the implemented-operation schema`,
     );
+    assert.match(operation.id, /^[a-z][a-z0-9-]+$/u);
     assert.match(operation.section, /^spec\/[a-z0-9-]+\.md$/u);
     readFileSync(resolve(root, operation.section), "utf8");
-    assert.ok(["implemented", "unsupported"].includes(operation.state));
-    if (operation.state === "implemented") {
-      referencedVectorCategories.add(operation.vectorCategory);
-      assert.ok(
-        vectorCategories.has(operation.vectorCategory),
-        `${operation.id} has no declared vector category`,
-      );
-    } else {
-      assert.ok(operation.reason?.length >= 20);
-    }
+    referencedVectorCategories.add(operation.vectorCategory);
+    assert.ok(
+      vectorCategories.has(operation.vectorCategory),
+      `${operation.id} has no declared vector category`,
+    );
   }
   assert.deepEqual(
     [...referencedVectorCategories].sort(),

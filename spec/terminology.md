@@ -2,10 +2,10 @@
 
 | Term | Meaning |
 | --- | --- |
-| Credential configuration | Versioned, bounded selection of claim, holder-binding, status, and verification semantics. |
+| Credential family definition | Versioned schema, capability, artifact, package, and codec descriptor. |
 | Credential family | Independently released schema and family-specific circuits built on the core. |
 | VC | Canonical issuer-signed credential envelope. |
-| VP | Canonical holder-created presentation bound to an exact verifier request. |
+| VP | Canonical holder-created presentation envelope. |
 | Direct claim | Typed claim carried directly in the signed credential body. |
 | Claim commitment | Digest carried in the credential body while the opening remains private. |
 | Disclosure | Claim value intentionally exposed in a presentation. |
@@ -15,5 +15,5 @@
 | Canonical object | Protocol-independent object whose meaning is defined by this specification. |
 | Adapter | Transport, wallet, DID-method, or application integration outside the core. |
 
-An adapter MUST NOT reinterpret a canonical object, omit required verification,
-or turn an unsupported core capability into a successful result.
+An adapter MUST NOT reinterpret a canonical object or omit verification required
+by its owning credential family.

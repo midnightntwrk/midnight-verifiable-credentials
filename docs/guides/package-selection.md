@@ -6,7 +6,7 @@ Choose the smallest package that owns the required semantic boundary.
 
 | Need | Package |
 | --- | --- |
-| Define and validate credential configuration | `@midnight-ntwrk/credential-model` |
+| Define and validate a credential family | `@midnight-ntwrk/credential-model` |
 | Compose family-neutral Compact VC/VP circuits | `@midnight-ntwrk/credential-compact` |
 
 These packages are the reusable external building blocks. Their supported
@@ -20,8 +20,8 @@ does not execute proofs or implement credential-status storage. Generic
 family-neutral proof and status-binding primitives remain in
 `credential-compact`. Concrete proof execution, status registries, authority,
 deployment, and verification policy belong to the credential-family or
-application repository that owns them. Production status verification is not
-yet supported by the [core status specification](../../spec/status.md).
+application repository that owns them. The [core status specification](../../spec/status.md)
+defines only the credential-side binding.
 
 ## Build a credential family
 

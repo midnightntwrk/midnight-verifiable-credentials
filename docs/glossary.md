@@ -15,7 +15,7 @@ normative requirements.
 | Claim commitment | Digest in a credential that binds a private claim without revealing its opening. |
 | Compact | Midnight's smart-contract language and zero-knowledge circuit toolchain. |
 | Conformance vector | Deterministic positive or negative input used to test a normative requirement. |
-| Credential configuration | Versioned selection of claim, holder-binding, status, and verification semantics. |
+| Credential family definition | Versioned schema, capability, artifact, package, and codec descriptor. |
 | Credential family | Independently released schema, policy, circuits, artifacts, and integration built on this core. |
 | Credential status | State used to determine whether a credential is active, revoked, suspended, or otherwise unusable. |
 | Credential subject | Entity described by the claims in a credential. |
@@ -36,7 +36,7 @@ normative requirements.
 | VC | Verifiable Credential: an issuer-signed credential envelope. |
 | Verifier | Entity that evaluates a credential or presentation under an explicit policy. |
 | Verifier key | Circuit-specific artifact used to verify a zero-knowledge proof. |
-| VP | Verifiable Presentation: holder-created evidence bound to a verifier request. |
+| VP | Verifiable Presentation: a holder-created presentation envelope. |
 | Witness | Private or public input supplied to a circuit to produce or verify a proof. |
 | ZKIR | Intermediate representation from which Midnight proving artifacts are produced. |
 

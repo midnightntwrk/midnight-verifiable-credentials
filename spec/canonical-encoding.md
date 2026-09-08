@@ -18,6 +18,6 @@ use different tags. The checked vectors in
 [`../conformance/vectors/compact-generated.json`](../conformance/vectors/compact-generated.json)
 are produced by generated Compact circuits and verified by TypeScript.
 
-This draft does not freeze a portable external encoding for arbitrary generic
-VC/VP types. Such an encoding remains unsupported until generated descriptors
-and cross-runtime vectors cover the complete canonical object.
+This draft does not define a portable external encoding for arbitrary generic
+VC/VP types. Credential families own any encoding beyond the Compact value
+framing defined here.
