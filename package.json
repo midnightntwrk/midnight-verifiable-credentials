@@ -14,7 +14,7 @@
     "examples/core-composition"
   ],
   "scripts": {
-    "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/check-package-boundaries.mjs",
+    "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
     "check:security-workflows": "node ./tooling/scripts/check-security-workflows.mjs",
     "check:vulnerability-exceptions": "node ./tooling/scripts/check-vulnerability-exceptions.mjs",
     "check:workspace-catalog": "node ./tooling/scripts/workspace-catalog.mjs --check",
@@ -36,8 +36,8 @@
     "test:all": "pnpm run build:all && pnpm run test:all:from-artifacts",
     "typecheck:all:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-typecheck-from-artifacts",
     "typecheck:all": "pnpm run build:all && pnpm run typecheck:all:from-artifacts",
-    "test:workspace-boundary-policy": "node --test ./tooling/scripts/workspace-boundary-policy.test.mjs ./tooling/scripts/credential-compact-browser-surface.test.mjs",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run check:workspace-catalog && pnpm run test:release-tooling && pnpm run test:workspace-boundary-policy && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
+    "test:browser-surface": "node --test ./tooling/scripts/credential-compact-browser-surface.test.mjs",
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run test:release-tooling && pnpm run test:browser-surface && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
     "ci:typecheck": "pnpm run typecheck:all",
     "ci:typecheck:from-artifacts": "pnpm run typecheck:all:from-artifacts"
   },
