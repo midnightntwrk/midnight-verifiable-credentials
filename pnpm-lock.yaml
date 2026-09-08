@@ -194,8 +194,6 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
 
-  packages/core/display: {}
-
   packages/core/model: {}
 
   packages/core/proofs:
