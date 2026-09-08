@@ -1,10 +1,8 @@
-import type {
-  CredentialFamilyProfileV1,
-  ResolvedCredentialCompositionV1,
-} from "@midnight-ntwrk/credential-model";
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  type AuthorityEvidenceCompositionV1,
+  type AuthorityEvidenceProfileV1,
   createAuthorityEvidencePolicyV1,
   type DidMethodEvidenceProviderV1,
   type ProofJob,
@@ -27,46 +25,50 @@ const actors = (["issuer", "holder", "verifier", "status"] as const).map(
   }),
 );
 
-const policy = createAuthorityEvidencePolicyV1({
-  profile: {
-    id: "fixture.profile",
-    version: "1",
-    semantics: {
-      did: {
-        method: "did:midnight",
-        relationship: "authentication",
-        network: "midnight:testnet",
-        versionEvidence: "ledger-version-v1",
-      },
-      trust: { scope: "fixture", epochEvidence: "epoch-v1" },
+const profile: AuthorityEvidenceProfileV1 = {
+  id: "fixture.profile",
+  version: "1",
+  semantics: {
+    did: {
+      method: "did:midnight",
+      relationship: "authentication",
+      network: "midnight:testnet",
+      versionEvidence: "ledger-version-v1",
     },
-    requirements: {
-      providers: [
-        { id: "did", role: "did-resolver" },
-        { id: "trust", role: "trust-resolver" },
-      ],
-    },
-  } as unknown as CredentialFamilyProfileV1,
-  composition: {
-    formatVersion: 1,
-    profile: { id: "fixture.profile", version: "1" },
+    trust: { scope: "fixture", epochEvidence: "epoch-v1" },
+  },
+  requirements: {
     providers: [
-      {
-        requirementId: "did",
-        role: "did-resolver",
-        providerId: "did-provider",
-        providerVersion: "1",
-        instanceId: "did-1",
-      },
-      {
-        requirementId: "trust",
-        role: "trust-resolver",
-        providerId: "trust-provider",
-        providerVersion: "1",
-        instanceId: "trust-1",
-      },
+      { id: "did", role: "did-resolver" },
+      { id: "trust", role: "trust-resolver" },
     ],
-  } as unknown as ResolvedCredentialCompositionV1,
+  },
+};
+
+const composition: AuthorityEvidenceCompositionV1 = {
+  formatVersion: 1,
+  profile: { id: "fixture.profile", version: "1" },
+  providers: [
+    {
+      requirementId: "did",
+      role: "did-resolver",
+      providerId: "did-provider",
+      providerVersion: "1",
+      instanceId: "did-1",
+    },
+    {
+      requirementId: "trust",
+      role: "trust-resolver",
+      providerId: "trust-provider",
+      providerVersion: "1",
+      instanceId: "trust-1",
+    },
+  ],
+};
+
+const policy = createAuthorityEvidencePolicyV1({
+  profile,
+  composition,
   actors,
 });
 

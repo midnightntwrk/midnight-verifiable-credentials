@@ -1,11 +1,9 @@
-import type {
-  CredentialFamilyProfileV1,
-  ResolvedCredentialCompositionV1,
-} from "@midnight-ntwrk/credential-model";
 import { describe, expect, it } from "vitest";
 
 import {
   AUTHORITY_ACTOR_ROLES_V1,
+  type AuthorityEvidenceCompositionV1,
+  type AuthorityEvidenceProfileV1,
   createAuthorityEvidencePolicyV1,
   type DidMethodEvidenceProviderV1,
   type DidMethodEvidenceV1,
@@ -15,8 +13,7 @@ import {
   verifyAuthorityEvidenceV1,
 } from "../index.js";
 
-const profile = {
-  formatVersion: 1,
+const profile: AuthorityEvidenceProfileV1 = {
   id: "fixture.profile",
   version: "1.0.0",
   semantics: {
@@ -37,9 +34,9 @@ const profile = {
       { id: "trust", role: "trust-resolver" },
     ],
   },
-} as unknown as CredentialFamilyProfileV1;
+};
 
-const composition = {
+const composition: AuthorityEvidenceCompositionV1 = {
   formatVersion: 1,
   profile: { id: profile.id, version: profile.version },
   providers: [
@@ -58,7 +55,7 @@ const composition = {
       instanceId: "did:testnet",
     },
   ],
-} as unknown as ResolvedCredentialCompositionV1;
+};
 
 const relationships = {
   issuer: "assertionMethod",
@@ -460,7 +457,7 @@ describe("authority evidence binding v1", () => {
       providers: composition.providers.filter(
         (provider) => provider.role !== "trust-resolver",
       ),
-    } as ResolvedCredentialCompositionV1;
+    } satisfies AuthorityEvidenceCompositionV1;
     expect(() =>
       createAuthorityEvidencePolicyV1({
         profile,

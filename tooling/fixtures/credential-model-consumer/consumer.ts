@@ -1,8 +1,5 @@
 import type {
-  CredentialDeploymentAssemblyV1,
   CredentialFamilyDefinition,
-  CredentialFamilyProfileV1,
-  ResolvedCredentialCompositionV1,
 } from "@midnight-ntwrk/credential-model";
 
 import {
@@ -17,9 +14,3 @@ export const typedFamily: CredentialFamilyDefinition<
   string,
   string
 > = accessFamily;
-
-export type PublicCompositionContracts = {
-  profile: CredentialFamilyProfileV1;
-  assembly: CredentialDeploymentAssemblyV1;
-  resolved: ResolvedCredentialCompositionV1;
-};

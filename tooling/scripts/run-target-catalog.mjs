@@ -68,7 +68,7 @@ export const targets = [
   {
     name: "integration-report",
     description:
-      "Print DID npm cohort, direct dependency, and compatibility-alias status.",
+      "Print DID npm cohort and direct dependency status.",
     category: "maintenance",
     supportsLight: false,
     releaseGate: false,
@@ -77,7 +77,7 @@ export const targets = [
   {
     name: "check-integration",
     description:
-      "Fail if DID npm dependencies or compatibility aliases are stale.",
+      "Fail if DID npm dependencies are stale.",
     category: "maintenance",
     supportsLight: false,
     script: "check:did-integration",
