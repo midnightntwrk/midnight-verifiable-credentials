@@ -63,29 +63,27 @@ The workflow reruns `./run.sh --light`, deterministic pack checks, local
 clean-consumer tests, SBOM generation, and provenance publication. It uploads
 the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
 
-## RC2 publication
+## Prerelease publication
 
-Dispatch `Publish npmjs Packages` from the protected `develop` branch with:
+Dispatch `Publish npmjs Packages` from the protected `develop` branch with
+the version approved by the release PR. For example:
 
 ```text
 channel: rc
-version: 0.1.0
-rc_index: 2
+version: 0.2.0
+rc_index: 1
 ```
 
-The expected result is the five-package VC development foundation at
-`0.1.0-rc2` under the `rc` dist-tag:
+The current release graph publishes three packages under the `rc` dist-tag:
 
 - `@midnight-ntwrk/credential-model`
 - `@midnight-ntwrk/credential-compact`
-- `@midnight-ntwrk/credential-proofs`
-- `@midnight-ntwrk/credential-status`
 - `@midnight-ntwrk/credential-did-midnight`
 
 The workflow preserves an existing `latest` tag and fails if npm changes it
 during a prerelease.
 
-Source manifests retain the base `0.1.0` version. The workflow applies the
+Source manifests retain the approved base version. The workflow applies the
 channel suffix only to its ephemeral release checkout, so the reviewed source
 stays ready for the next channel dispatch.
 
@@ -103,23 +101,23 @@ The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-For RC2, verify every package version and the moving tags:
+Set `VERSION` to the exact version reported by the workflow, then verify every
+package version and the moving tags:
 
 ```bash
+VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
   @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-proofs \
-  @midnight-ntwrk/credential-status \
   @midnight-ntwrk/credential-did-midnight; do
-  npm view "${package}@0.1.0-rc2" version
+  npm view "${package}@${VERSION}" version
   npm view "${package}" dist-tags --json
 done
 ```
 
-The `rc` tag must resolve to `0.1.0-rc2` for all five packages. By default,
+The `rc` tag must resolve to `${VERSION}` for all three packages. By default,
 `latest` remains unchanged. If `promote_latest: true` was explicitly selected,
-`latest` must also resolve to `0.1.0-rc2`. Retain the workflow URL and
+`latest` must also resolve to `${VERSION}`. Retain the workflow URL and
 release-evidence artifact with the release record.
 
 ## Retry and rollback
@@ -139,14 +137,13 @@ For a bad RC:
 Example operator commands:
 
 ```bash
+VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
   @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-proofs \
-  @midnight-ntwrk/credential-status \
   @midnight-ntwrk/credential-did-midnight; do
   npm dist-tag rm "${package}" rc
-  npm deprecate "${package}@0.1.0-rc2" "Use the replacement RC"
+  npm deprecate "${package}@${VERSION}" "Use the replacement RC"
 done
 ```
 

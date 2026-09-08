@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- BREAKING: removed the legacy `credential-proofs`, `credential-status`, and
+  three `credential-status-midnight-*` workspaces. The maintained publication
+  graph now contains `credential-model`, `credential-compact`, and the thin
+  `credential-did-midnight` adapter; proof execution and status-registry
+  policy belong to credential-family or application repositories.
 - upgraded the Compact toolchain from compiler `0.30.0` to `0.31.1` to match
   midnight-did (midnightntwrk/midnight-did#409), and bumped
   `@midnight-ntwrk/compact-runtime` from `0.15.0` to `0.16.0`; the `0.31.1`

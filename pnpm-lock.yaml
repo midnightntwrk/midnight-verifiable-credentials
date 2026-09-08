@@ -196,45 +196,6 @@ importers:
 
   packages/core/model: {}
 
-  packages/core/proofs:
-    dependencies:
-      '@midnight-ntwrk/credential-model':
-        specifier: ^0.1.0-rc1
-        version: link:../model
-
-  packages/core/status:
-    dependencies:
-      '@midnight-ntwrk/credential-model':
-        specifier: ^0.1.0-rc1
-        version: link:../model
-
-  packages/registry/status-midnight-authority:
-    dependencies:
-      '@midnight-ntwrk/credential-proofs':
-        specifier: ^0.1.0-rc1
-        version: link:../../core/proofs
-      '@midnight-ntwrk/credential-status-midnight-contract':
-        specifier: ^0.1.0
-        version: link:../status-midnight-contract
-
-  packages/registry/status-midnight-contract:
-    dependencies:
-      '@midnight-ntwrk/credential-status':
-        specifier: ^0.1.0-rc1
-        version: link:../../core/status
-
-  packages/registry/status-midnight-verifier:
-    dependencies:
-      '@midnight-ntwrk/credential-proofs':
-        specifier: ^0.1.0
-        version: link:../../core/proofs
-      '@midnight-ntwrk/credential-status':
-        specifier: ^0.1.0-rc1
-        version: link:../../core/status
-      '@midnight-ntwrk/credential-status-midnight-contract':
-        specifier: ^0.1.0
-        version: link:../status-midnight-contract
-
 packages:
 
   '@ampproject/remapping@2.3.0':

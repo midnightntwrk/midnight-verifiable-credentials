@@ -8,19 +8,21 @@ Choose the smallest package that owns the required semantic boundary.
 | --- | --- |
 | Define and validate credential configuration | `@midnight-ntwrk/credential-model` |
 | Compose family-neutral Compact VC/VP circuits | `@midnight-ntwrk/credential-compact` |
-| Integrate proof verification or artifact manifests | `@midnight-ntwrk/credential-proofs` |
-| Model credential status without selecting a registry | `@midnight-ntwrk/credential-status` |
 | Bind a credential holder through `did:midnight` | `@midnight-ntwrk/credential-did-midnight` |
 
 These packages are the reusable external building blocks. Their supported
 exports and publication policy are defined by the
 [release contract](../architecture/package-release-contract.md).
 
-## Internal packages
+## Proof and status
 
-The three `credential-status-midnight-*` packages are incubating
-implementation components. They are not public compatibility commitments and
-are not published. Do not build external release plans around them.
+`credential-model` describes required capabilities and proof artifacts; it
+does not execute proofs or implement credential-status storage. Generic
+family-neutral proof and status-binding primitives remain in
+`credential-compact`. Concrete proof execution, status registries, authority,
+deployment, and verification policy belong to the credential-family or
+application repository that owns them. Production status verification is not
+yet supported by the [core status specification](../../spec/status.md).
 
 ## Build a credential family
 

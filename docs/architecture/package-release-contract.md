@@ -31,12 +31,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | --- | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
 | `@midnight-ntwrk/credential-compact` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Curated family-neutral Compact semantics; no deployable family, authority, or proving material |
-| `@midnight-ntwrk/credential-proofs` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Family-neutral proof ports and immutable manifest contracts; generated artifacts and authority remain outside the package |
-| `@midnight-ntwrk/credential-status` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
 | `@midnight-ntwrk/credential-did-midnight` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
-| `@midnight-ntwrk/credential-status-midnight-contract` | `internal` | none | VC package maintainers | Reference atomic state and authorization-gate boundary; not final Compact authority |
-| `@midnight-ntwrk/credential-status-midnight-verifier` | `internal` | none | VC package maintainers | Least-privilege read/witness adapter; root-proof work remains separate |
-| `@midnight-ntwrk/credential-status-midnight-authority` | `internal` | none | VC package maintainers | #494 evidence-backed write authorization and signing port; no key custody |
 
 Removed family, use-case, protocol, and integration packages are historical
 migration inventory, not a publication queue. They are not eligible for packing
@@ -87,16 +82,15 @@ install. The lane also rejects lifecycle hooks in both source and packed
 manifests, repository paths, or package resolution outside that temporary
 project.
 
-The RC2 package set currently proves:
+The current package set proves:
 
-- Node ESM imports and runtime descriptor validation;
-- strict `NodeNext` declaration consumption with `skipLibCheck: false`;
-- legacy TypeScript `node` resolution for the root declaration surface; and
-- a browser-targeted ESM bundle that defines and exercises a synthetic family.
+- `credential-model`: Node ESM, strict and legacy TypeScript, and browser use;
+- `credential-compact`: Node ESM, strict TypeScript, and external Compact
+  compilation; and
+- `credential-did-midnight`: Node ESM and strict TypeScript use.
 
-Compact compilation is not applicable to this zero-runtime-dependency
-TypeScript package. Packages that expose Compact sources must declare and pass
-the Compact clean-consumer check. The `credential-compact` package also records compiler identity,
+Packages that expose Compact sources must declare and pass the Compact
+clean-consumer check. The `credential-compact` package also records compiler identity,
 generated-output provenance, source/artifact digests, same-holder
 standalone/composable gate results, explicit Compact exports, and a
 forbidden-artifact tarball scan. It does not claim status-registry authority or

@@ -1,11 +1,6 @@
 packages:
   - packages/core/model
   - packages/core/compact
-  - packages/core/proofs
-  - packages/core/status
-  - packages/registry/status-midnight-contract
-  - packages/registry/status-midnight-verifier
-  - packages/registry/status-midnight-authority
   - packages/components/adapters/credential-did-midnight
   - examples/core-composition
 

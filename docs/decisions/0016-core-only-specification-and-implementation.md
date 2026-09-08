@@ -74,16 +74,16 @@ of issuance, presentation, holder binding, status, or verification.
 The target supported release surface contains two packages:
 
 1. `@midnight-ntwrk/credential-model` owns canonical TypeScript types,
-   codecs, validation, operation interfaces, results, errors, and the minimal
-   generic status vocabulary.
+   codecs, validation, errors, and bounded capability and artifact descriptors.
 2. `@midnight-ntwrk/credential-compact` owns generic Compact sources, curated
    generated bindings, the minimal runtime bridge, and metadata for its own
    generic artifacts.
 
-A separate status package may be proposed later only after independent
+A separate proof or status package may be proposed later only after independent
 consumers, release cadence, and security ownership demonstrate a separate
-lifecycle. Minimal generic proof/result types move into `credential-model`;
-generic Compact execution support moves into `credential-compact`.
+lifecycle. Proof execution and status-registry policy remain outside this
+repository; generic Compact proof and status-binding primitives remain in
+`credential-compact`.
 
 `credential-did-midnight` is a method adapter and must move to a DID-owned or
 dedicated integration release surface. Core packages do not depend on DID

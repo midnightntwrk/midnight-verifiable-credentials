@@ -4,7 +4,14 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const repoRoot = process.cwd();
-const defaultRoots = ['README.md', 'docs', 'core', 'prototypes', 'use-cases', 'registry', 'tooling/vendor'];
+const defaultRoots = [
+  'README.md',
+  'docs',
+  'spec',
+  'conformance',
+  'packages',
+  'tooling/vendor',
+];
 const roots = process.argv.slice(2);
 const targets = roots.length > 0 ? roots : defaultRoots;
 const markdownFiles = [];

@@ -11,11 +11,6 @@
   "workspaces": [
     "packages/core/model",
     "packages/core/compact",
-    "packages/core/proofs",
-    "packages/core/status",
-    "packages/registry/status-midnight-contract",
-    "packages/registry/status-midnight-verifier",
-    "packages/registry/status-midnight-authority",
     "packages/components/adapters/credential-did-midnight",
     "examples/core-composition"
   ],
@@ -39,7 +34,6 @@
     "check:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs",
     "test:core-conformance": "pnpm --dir ./packages/core/compact run compact && node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
     "test:core-conformance:from-artifacts": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
-    "test:status-authority-split": "pnpm --dir ./packages/registry/status-midnight-contract run all && pnpm --dir ./packages/registry/status-midnight-verifier run all && pnpm --dir ./packages/registry/status-midnight-authority run all && node ./tooling/scripts/test-status-midnight-package-consumer.mjs",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md docs spec conformance packages tooling/vendor",
     "pack:vendor": "./tooling/scripts/pack-midnight-vc-libs.sh ./tooling/vendor",
     "upgrade:vendor": "./upgrade-libs.sh --destination ./tooling/vendor",
