@@ -76,7 +76,6 @@ When Compact sources or runtime inputs change:
 
 ```bash
 pnpm run build:all
-pnpm run test:compact-artifacts
 ```
 
 Never commit wallet keys, signing keys, seeds, witnesses, credentials, or other
