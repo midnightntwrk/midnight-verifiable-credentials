@@ -75,8 +75,7 @@ Families that only need one side of the boundary use the marker structs from
 the credentials core:
 
 - `NoPublicClaims` for commitment-only credentials such as the birth family
-- `NoClaimCommitments` for direct-claim laboratories such as dummy-claims and
-  university-diploma
+- `NoClaimCommitments` for direct-claim families
 
 The generic envelope does not decide which fields are safe to publish. That is
 still a family/schema responsibility, but the type shape prevents commitment
@@ -196,10 +195,8 @@ Adapter guidance:
 
 ## Current Repository Evidence
 
-The repository carries working examples across the representation taxonomy:
+The repository carries temporary migration examples across the representation taxonomy:
 
-- direct selectively disclosed laboratory:
-  [`../../packages/prototypes/credential-families/dummy-claims`](../../packages/prototypes/credential-families/dummy-claims)
 - direct academic prototype:
   [`../../packages/prototypes/credential-families/university-diploma`](../../packages/prototypes/credential-families/university-diploma)
 - additive academic production-profile building blocks:
@@ -217,8 +214,6 @@ The repository carries working examples across the representation taxonomy:
   [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact)
 - committed/private birth source credential:
   [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
-- mixed public-plus-private laboratory:
-  [`../../packages/prototypes/credential-families/mixed-claims`](../../packages/prototypes/credential-families/mixed-claims)
 
 `selectivelyDisclosed` is intentionally represented by direct-value prototypes
 whose request gates decide whether the presentation exposes the value. Families

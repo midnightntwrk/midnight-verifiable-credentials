@@ -100,14 +100,10 @@ Design guidance:
 - update the changelog, family README, and migration notes when a generated
   Compact/runtime surface changes
 
-Best current references for claim-shape work:
+Current references for claim-shape work:
 
-- smallest starter family:
-  - `packages/prototypes/credential-families/hello-family`
-- broad direct claim-surface laboratory:
-  - `packages/prototypes/credential-families/dummy-claims`
-- mixed public-plus-private claim representation laboratory:
-  - `packages/prototypes/credential-families/mixed-claims`
+- normative claim representation:
+  - `docs/spec/claim-representation.md`
 - surface-change release discipline:
   - `docs/guides/vc-surface-change-discipline.md`
 

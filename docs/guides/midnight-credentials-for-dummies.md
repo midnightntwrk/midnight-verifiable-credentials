@@ -276,9 +276,8 @@ from commitment digests. A family can use:
 - predicate-only commitments when a verifier needs a yes/no or threshold result
   rather than the raw value
 
-The mixed reference package is
-`packages/prototypes/credential-families/mixed-claims`: it puts low-sensitivity metadata
-in `claims` and keeps identity/date/tier values in `claimCommitments`.
+The schema-neutral pattern puts intentionally public metadata in `claims` and
+keeps sensitive source values in `claimCommitments`.
 
 ### Conceptual Diagram
 

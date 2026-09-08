@@ -19,14 +19,6 @@ export const officialCompatibilityAliases = Object.freeze([
     target: "packages/prototypes/credential-families/birth-secret",
   },
   {
-    alias: "midnight-did-credentials-hello-family",
-    target: "packages/prototypes/credential-families/hello-family",
-  },
-  {
-    alias: "midnight-did-credentials-dummy-claims",
-    target: "packages/prototypes/credential-families/dummy-claims",
-  },
-  {
     alias: "midnight-did-credentials-university-diploma",
     target: "packages/prototypes/credential-families/university-diploma",
   },
@@ -55,6 +47,12 @@ export const officialCompatibilityAliases = Object.freeze([
 export const officialCompatibilityAliasNames = new Set(
   officialCompatibilityAliases.map(({ alias }) => alias),
 );
+
+export const retiredCompatibilityAliases = Object.freeze([
+  "midnight-did-credentials-hello-family",
+  "midnight-did-credentials-dummy-claims",
+  "midnight-did-credentials-mixed-claims",
+]);
 
 export const historicalPackageRootShells = Object.freeze([
   "credentials",

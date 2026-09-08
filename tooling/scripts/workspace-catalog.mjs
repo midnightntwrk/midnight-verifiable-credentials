@@ -136,21 +136,6 @@ export const workspaceCatalog = [
     "dist",
   ),
   workspace(
-    "packages/prototypes/credential-families/hello-family",
-    "reference",
-    "dist",
-  ),
-  workspace(
-    "packages/prototypes/credential-families/dummy-claims",
-    "lab",
-    "dist",
-  ),
-  workspace(
-    "packages/prototypes/credential-families/mixed-claims",
-    "lab",
-    "dist",
-  ),
-  workspace(
     "packages/prototypes/credential-families/university-diploma",
     "reference",
     "dist",

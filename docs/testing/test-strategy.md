@@ -31,7 +31,6 @@ Current-repository note:
 
 - the fully validated workspace spine in this repository is currently centered
   on `credentials`, `credentials-birth`, `credentials-birth-secret`,
-  `credentials-hello-family`, `credentials-dummy-claims`,
   `credentials-university-diploma`,
   `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-offchain-did`, `credentials-openid`,
@@ -80,10 +79,6 @@ Current workspace note for this dimension:
 
 - `credentials-birth` is the current explicit-holder family on `develop`
 - `credentials-birth-secret` is the current hidden-holder family on `develop`
-- `credentials-hello-family` is the current smallest compileable starter family
-  on the active stack
-- `credentials-dummy-claims` is the current broad direct claim-surface
-  laboratory on the active stack
 - `credentials-university-diploma` is the current larger explicit-holder
   academic diploma prototype on the active stack
 - `examples/core-composition` is the only retained synthetic composition
@@ -202,7 +197,6 @@ Current validated repository surfaces for this strategy:
 - Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-status-registry`
 - Layer 2: `credentials-birth`, `credentials-birth-secret`,
-  `credentials-hello-family`, `credentials-dummy-claims`,
   `credentials-university-diploma`
 - Layer 2.5: `credentials-offchain-did`
 - Layer 3: `credentials-demo-contract`

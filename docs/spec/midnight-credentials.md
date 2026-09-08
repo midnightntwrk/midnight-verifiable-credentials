@@ -306,8 +306,6 @@ Implementation rules:
 
 Current repository evidence for that claim surface lives in:
 
-- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
-- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
 - [`../../packages/prototypes/credential-families/university-diploma/README.md`](../../packages/prototypes/credential-families/university-diploma/README.md)
 
 The repository currently treats source-fact credentials such as birth or

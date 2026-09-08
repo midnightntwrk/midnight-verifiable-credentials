@@ -328,14 +328,12 @@ Current Compact claim-shape guardrails:
 - keep \`claims\` for intentionally public/direct values only
 - keep \`claimCommitments\` for private disclosure or predicate-only digests only
 
-Reference packages:
+Reference material:
 
-- smallest starter family:
-  - \`packages/prototypes/credential-families/hello-family\`
-- broad direct claim-surface laboratory:
-  - \`packages/prototypes/credential-families/dummy-claims\`
-- mixed public/private claim-representation laboratory:
-  - \`packages/prototypes/credential-families/mixed-claims\`
+- claim representation:
+  - \`docs/spec/claim-representation.md\`
+- schema-neutral package composition:
+  - \`examples/core-composition\`
 `,
     ],
     [

@@ -64,9 +64,6 @@ Legacy and future packages in this table remain internal or migration evidence.
 | `credentials-status-registry` | Reusable core package with prototype trust model | Mixed: core-capability package, evolving trust model | Yes, with prototype status caveats | Registry contract, proof-protocol helpers, and off-chain status builders |
 | `credentials-birth` | Credential-family prototype | Migration inventory | No | Explicit-holder conformance example; reduce to a minimal fixture or graduate |
 | `credentials-birth-secret` | Credential-family prototype | Migration inventory with prototype status-aware extensions | No | Hidden-holder conformance example; reduce to a minimal fixture or graduate |
-| `credentials-hello-family` | Credential-family prototype | Starter / playground | No | Smallest compileable family evidence; target a minimal synthetic fixture |
-| `credentials-dummy-claims` | Credential-family prototype | Prototype laboratory | No | Direct Compact claim-surface and selective-disclosure evidence |
-| `credentials-mixed-claims` | Credential-family prototype | Prototype laboratory | No | Mixed public/direct and committed-private claim-representation evidence |
 | `credentials-university-diploma` | Credential-family prototype | Prototype use-case family | No | Private academic-flow evidence; not a product implementation or release package |
 | `credentials-digital-passport` | Credential-family prototype | Frozen graduation inventory | No | Remove its OpenID transport dependency, port it to `midnight-verifiable-credential-digital-passport`, then remove the duplicate core implementation |
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |

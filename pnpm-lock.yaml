@@ -378,42 +378,6 @@ importers:
         specifier: '*'
         version: link:../../../core/primitives/credentials
 
-  packages/prototypes/credential-families/dummy-claims:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-
-  packages/prototypes/credential-families/hello-family:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/credential-compact':
-        specifier: '*'
-        version: link:../../../core/compact
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-      '@midnight-ntwrk/midnight-did-credentials-offchain-did':
-        specifier: '*'
-        version: link:../../../components/adapters/offchain-did
-      '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0
-        version: 0.5.0
-
-  packages/prototypes/credential-families/mixed-claims:
-    dependencies:
-      '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.16.0
-        version: 0.16.0
-      '@midnight-ntwrk/midnight-did-credentials':
-        specifier: '*'
-        version: link:../../../core/primitives/credentials
-
   packages/prototypes/credential-families/university-diploma:
     dependencies:
       '@midnight-ntwrk/compact-runtime':

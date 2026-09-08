@@ -57,9 +57,6 @@ family remains private (`releaseStage: internal`) and has family-local tests.
 | --- | --- | --- | --- | --- |
 | Birth | `packages/prototypes/credential-families/birth` | package `test:ci` / `src/test` | protocol orchestration; age-gate contract; age-gate scenarios | retain as prototype evidence; reduce or graduate only after gates |
 | Birth-secret | `packages/prototypes/credential-families/birth-secret` | package `test:ci` / `src/test` | protocol orchestration; age-gate contract | retain as hidden-holder prototype evidence |
-| Hello family | `packages/prototypes/credential-families/hello-family` | package `test:ci` / `src/test` | none | remove under #547 |
-| Dummy claims | `packages/prototypes/credential-families/dummy-claims` | package `test:ci` / `src/test` | none | remove under #547 |
-| Mixed claims | `packages/prototypes/credential-families/mixed-claims` | package `test:ci` / `src/test` | none currently | retain as claim-representation laboratory |
 | University diploma | `packages/prototypes/credential-families/university-diploma` | package `test:ci` / `src/test` | university contract; university protocol; university scenarios | retain as use-case evidence; no product approval |
 | Digital passport | `packages/prototypes/credential-families/digital-passport` | package `test:ci` / `src/test` | none currently; OpenID is a prototype integration dependency | frozen migration evidence for the independent digital-passport repository |
 

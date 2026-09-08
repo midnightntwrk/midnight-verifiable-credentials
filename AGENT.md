@@ -145,9 +145,6 @@ from a package's presence during migration.
 | `packages/protocols/openid` | `@midnight-ntwrk/midnight-did-credentials-openid` | OID4VCI/OID4VP-shaped Zod schemas and Compact value framing. |
 | `packages/prototypes/credential-families/birth` | `@midnight-ntwrk/midnight-did-credentials-birth` | Explicit-holder birth credential family. |
 | `packages/prototypes/credential-families/birth-secret` | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | Hidden/secret-holder birth credential family. |
-| `packages/prototypes/credential-families/hello-family` | `@midnight-ntwrk/midnight-did-credentials-hello-family` | Small DID-aware hello credential family. |
-| `packages/prototypes/credential-families/dummy-claims` | `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | Broad direct-claims verifier lab. |
-| `packages/prototypes/credential-families/mixed-claims` | `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | Reference lab for mixed public/direct and commitment-backed claims. |
 | `packages/prototypes/credential-families/university-diploma` | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | University diploma credential family. |
 | `packages/prototypes/credential-families/digital-passport` | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | Frozen migration evidence for the independent digital-passport repository. |
 | `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
@@ -183,11 +180,10 @@ Rules:
 - Do not reintroduce a nested generic `publicClaims/privateClaims` envelope.
 - Each credential-family README should describe every field as public/direct, selectively disclosed, committed-private, or predicate-only.
 
-Reference docs and labs:
+Reference docs:
 
 - `docs/spec/claim-representation.md`
 - `docs/spec/midnight-credentials.md`
-- `packages/prototypes/credential-families/mixed-claims`
 
 ## Compact Composition Rules
 

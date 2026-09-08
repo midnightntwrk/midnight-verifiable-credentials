@@ -62,9 +62,6 @@ Reference implementations:
 
 - [`../../packages/prototypes/credential-families/birth/README.md`](../../packages/prototypes/credential-families/birth/README.md)
 - [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
-- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
-- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
-- [`../../packages/prototypes/credential-families/mixed-claims/README.md`](../../packages/prototypes/credential-families/mixed-claims/README.md)
 - [`../../packages/prototypes/credential-families/university-diploma/README.md`](../../packages/prototypes/credential-families/university-diploma/README.md)
 
 Current direct Compact claim-surface rule:

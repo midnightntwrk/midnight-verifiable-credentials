@@ -48,9 +48,6 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-credentials-protocol` | `internal` | workspace tarball only | Unassigned | Evolving orchestration API |
 | `@midnight-ntwrk/midnight-did-credentials-birth` | `internal` | workspace tarball only | Unassigned | Reference family |
 | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | `internal` | workspace tarball only | Unassigned | Reference family with status caveats |
-| `@midnight-ntwrk/midnight-did-credentials-hello-family` | `internal` | workspace tarball only | Unassigned | Starter reference |
-| `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | `internal` | workspace tarball only | Unassigned | Laboratory package |
-| `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | `internal` | workspace tarball only | Unassigned | Laboratory package |
 | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | `internal` | workspace tarball only | Unassigned | Prototype family |
 | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | `internal` | workspace tarball only | Unassigned | Graduation candidate after correctness work |
 | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | `internal` | workspace tarball only | Unassigned | Demo contract |

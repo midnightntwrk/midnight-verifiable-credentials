@@ -66,21 +66,6 @@
       "sourceRoot": "packages/prototypes/credential-families/birth"
     },
     {
-      "id": "hello-family",
-      "path": "packages/prototypes/credential-families/hello-family/src/managed",
-      "sourceRoot": "packages/prototypes/credential-families/hello-family"
-    },
-    {
-      "id": "dummy-claims",
-      "path": "packages/prototypes/credential-families/dummy-claims/src/managed",
-      "sourceRoot": "packages/prototypes/credential-families/dummy-claims"
-    },
-    {
-      "id": "mixed-claims",
-      "path": "packages/prototypes/credential-families/mixed-claims/src/managed",
-      "sourceRoot": "packages/prototypes/credential-families/mixed-claims"
-    },
-    {
       "id": "university-diploma",
       "path": "packages/prototypes/credential-families/university-diploma/src/managed",
       "sourceRoot": "packages/prototypes/credential-families/university-diploma"
@@ -97,13 +82,13 @@
     }
   ],
   "provenance": {
-    "sourceDigest": "5f98cd3d574956e452384f06bba6142e4ab9cffa2f5bd1b78480b65c5ee5c0cf",
+    "sourceDigest": "a3e757d8484f313eaaca2f9c4197c3771a6a1c18029774d18af62bdd8af28875",
     "compilerVersion": "0.31.1",
-    "runtimeDigest": "fb30b57877bd3d3c770503927e1245ac2376122bd099a4e37e04bef72a1030ef",
-    "lockfileDigest": "bff3dee2dd1d6fcbbf3cbaa273ea418bc304114e104fb88bfc0fc24833374b7e",
-    "generatedAt": "2026-09-08T14:02:00.153Z",
-    "artifactCount": 148,
-    "artifactBytes": 690550433,
+    "runtimeDigest": "705c075e1680540a5ce8e068d2d9b44334fe355487206e0fadf000f47bda7c55",
+    "lockfileDigest": "ae0a0ad35e1e4ad30fcfecabe27266202841f48f1baace3d745229e955191b67",
+    "generatedAt": "2026-09-08T15:18:58.222Z",
+    "artifactCount": 132,
+    "artifactBytes": 687189516,
     "byFixture": {
       "credentials": {
         "files": 8,
@@ -125,18 +110,6 @@
         "files": 4,
         "bytes": 881036
       },
-      "hello-family": {
-        "files": 8,
-        "bytes": 1369233
-      },
-      "dummy-claims": {
-        "files": 4,
-        "bytes": 1023580
-      },
-      "mixed-claims": {
-        "files": 4,
-        "bytes": 968104
-      },
       "university-diploma": {
         "files": 4,
         "bytes": 1303021
@@ -152,20 +125,20 @@
     },
     "byType": {
       ".json": {
-        "files": 14,
-        "bytes": 5480031
+        "files": 10,
+        "bytes": 4291544
       },
       ".ts": {
-        "files": 14,
-        "bytes": 845802
+        "files": 10,
+        "bytes": 629661
       },
       ".js": {
-        "files": 14,
-        "bytes": 8281360
+        "files": 10,
+        "bytes": 6425601
       },
       ".map": {
-        "files": 14,
-        "bytes": 391831
+        "files": 10,
+        "bytes": 291301
       },
       ".prover": {
         "files": 23,
@@ -332,118 +305,6 @@
       "sha256": "9c65ecefcb6831fb140e692b17622156fd1a37ae23c3dfa19f72ba45002e3251",
       "lfsPointer": false,
       "fixture": "birth"
-    },
-    {
-      "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/compiler/contract-info.json",
-      "bytes": 370222,
-      "sha256": "c8e06d7af46b84bed57c02eaf007a58188942a126240b03f27031ae28da58c4c",
-      "lfsPointer": false,
-      "fixture": "dummy-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.d.ts",
-      "bytes": 62493,
-      "sha256": "d3182278d163f482a43241adea6ffeff4f02a0ed25fcac8f3be4ef1ab4103fb1",
-      "lfsPointer": false,
-      "fixture": "dummy-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.js",
-      "bytes": 562518,
-      "sha256": "d2f3f8fb1c8fe2ca52306da794003096665f93be193687ae1390a744cd3a8ffd",
-      "lfsPointer": false,
-      "fixture": "dummy-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.js.map",
-      "bytes": 28347,
-      "sha256": "13044abe9c8f0db21f5df69ac3f172a635511530098cdfad5c254c4ec683cac7",
-      "lfsPointer": false,
-      "fixture": "dummy-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/compiler/contract-info.json",
-      "bytes": 173565,
-      "sha256": "81f5ebabee91b425070269cbc8cc85a6b5cb82206fb1f7b069b74181aad4209c",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.d.ts",
-      "bytes": 31088,
-      "sha256": "3e6c1952bb197aff38fb6ddb5ed85496d97cf045d1d25a664df9848d6c4a616e",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js",
-      "bytes": 244368,
-      "sha256": "f0ee3b85e6d85210624ecd0dd6d0382dad22a1d7e473817180a0d946b3ac463f",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js.map",
-      "bytes": 15391,
-      "sha256": "2cbd2e8fc7c2c1e5a5a4ec74aea8b58c9f7e76e0f0876afd2e72198de3bbc569",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/compiler/contract-info.json",
-      "bytes": 312680,
-      "sha256": "8617f50aaad2f33351967e019e008744d003e22ba2c0cb9c134a7f3d786c6b31",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/contract/index.d.ts",
-      "bytes": 59107,
-      "sha256": "baf32c679d70fc4eb567796288f4fc9715ec2f425d478476ae45e3fc4826ba12",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/contract/index.js",
-      "bytes": 505872,
-      "sha256": "75db44d916774636f07e2951103a9b1488a64a25914b1165763705b0f15d450c",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/contract/index.js.map",
-      "bytes": 27162,
-      "sha256": "28d4be928780070c8234faa17f4085c04393dc8f9b1c44d25ea6312466adf6f0",
-      "lfsPointer": false,
-      "fixture": "hello-family"
-    },
-    {
-      "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/compiler/contract-info.json",
-      "bytes": 332020,
-      "sha256": "bd2453dcbda404f9eef446e16dace91f248212e59935ad58192173d8f503071b",
-      "lfsPointer": false,
-      "fixture": "mixed-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/contract/index.d.ts",
-      "bytes": 63453,
-      "sha256": "51816abac1bd6b004d367378c78cec04a8c6a0191387ed3290bf055ace04f590",
-      "lfsPointer": false,
-      "fixture": "mixed-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/contract/index.js",
-      "bytes": 543001,
-      "sha256": "010c5657b87f2ad5ba42114f32bafd13046eb391f42e93b5b502326201247d09",
-      "lfsPointer": false,
-      "fixture": "mixed-claims"
-    },
-    {
-      "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/contract/index.js.map",
-      "bytes": 29630,
-      "sha256": "a249ae1b1baf29f797bb78f7b60a9dcf7ddace8bf142795f14f42771f856bd61",
-      "lfsPointer": false,
-      "fixture": "mixed-claims"
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/compiler/contract-info.json",
