@@ -51,7 +51,7 @@
   },
   "scripts": {
     "check-toolchain": "node scripts/check-toolchain.mjs",
-    "compact": "pnpm run check-toolchain && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials -- sh -c \"compact compile src/credentials.compact src/managed/credentials && rm -rf src/managed/credentials/compiler\"",
+    "compact": "pnpm run check-toolchain && node scripts/remove-retired-same-holder-output.mjs && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials -- sh -c \"compact compile src/credentials.compact src/managed/credentials && rm -rf src/managed/credentials/compiler\"",
     "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && rm -f dist/managed/.compact-artifact.json && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
