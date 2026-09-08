@@ -27,9 +27,7 @@ consumer repositories.
 | `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
 
 The [release contract](./docs/architecture/package-release-contract.md) is the
-authority for publication status. The
-[manifest discipline](./docs/architecture/workspace-package-manifest-discipline.md)
-defines package metadata and export requirements.
+authority for publication status, package metadata, and export requirements.
 
 ## Repository layout
 

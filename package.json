@@ -19,7 +19,6 @@
     "check:vulnerability-exceptions": "node ./tooling/scripts/check-vulnerability-exceptions.mjs",
     "check:workspace-catalog": "node ./tooling/scripts/workspace-catalog.mjs --check",
     "clean:artifacts": "node ./tooling/scripts/clean-artifacts.mjs",
-    "check:workspace-manifests": "node ./tooling/scripts/check-workspace-manifests.mjs",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "check:turbo-cache-policy": "node ./tooling/scripts/check-turbo-cache-policy.mjs",
@@ -39,7 +38,7 @@
     "typecheck:all": "pnpm run build:all && pnpm run typecheck:all:from-artifacts",
     "test:compact-artifacts": "node --test ./tooling/scripts/ensure-compact-artifacts.test.mjs",
     "test:workspace-boundary-policy": "node --test ./tooling/scripts/workspace-boundary-policy.test.mjs ./tooling/scripts/credential-compact-browser-surface.test.mjs",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run check:workspace-catalog && pnpm run test:release-tooling && pnpm run test:compact-artifacts && pnpm run test:workspace-boundary-policy && pnpm run check:workspace-manifests && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run check:workspace-catalog && pnpm run test:release-tooling && pnpm run test:compact-artifacts && pnpm run test:workspace-boundary-policy && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
     "ci:typecheck": "pnpm run typecheck:all",
     "ci:typecheck:from-artifacts": "pnpm run typecheck:all:from-artifacts"
   },
