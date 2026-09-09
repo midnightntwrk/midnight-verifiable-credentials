@@ -33,10 +33,6 @@ runs:
         cache: ${{ inputs.pnpm-cache == 'true' && 'pnpm' || '' }}
         cache-dependency-path: pnpm-lock.yaml
 
-    - name: Enable Corepack
-      shell: bash
-      run: corepack enable
-
     - name: Install dependencies
       if: inputs.install == 'true'
       shell: bash
