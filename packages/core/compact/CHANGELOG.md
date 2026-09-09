@@ -6,6 +6,9 @@
   exact method/key/scope binding circuits, monotonic lifecycle validation, and
   domain-separated Jubjub authority and verifier-request proof contexts without
   introducing Trust Registry or datetime dependencies.
+- Bound authority decisions to an explicit consumer/network domain, made
+  revocation terminal per authorization ID, validated Jubjub subgroup
+  membership, and added a credential-derived issuer authorization helper.
 - BREAKING: renamed `VerificationMethodRef.didContractAddress` to
   `controllerAddress` so the core can reference DID, registry, or other
   verification-method controllers without choosing a DID method.

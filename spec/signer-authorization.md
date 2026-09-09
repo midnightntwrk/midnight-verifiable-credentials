@@ -43,8 +43,8 @@ An authorized signer descriptor contains:
 - a non-zero `scopeCommitment`; and
 - a non-zero, opaque `policyCommitment`.
 
-The public keys in both signer descriptors and authority anchors MUST NOT be
-the Jubjub identity point.
+The public keys in both signer descriptors and authority anchors MUST be valid
+Jubjub prime-subgroup points and MUST NOT be the identity point.
 
 ### Midnight DID method references
 
@@ -97,11 +97,12 @@ An issuer authorization check MUST require all of the following:
    reference; and
 6. its Jubjub public key equals `Proof.publicKey`.
 
-`assertAuthorizedIssuerProof` verifies the normal issuance-context signature
-over the caller-supplied credential body root as well as the authorization
-binding. It also binds the caller-supplied credential issuer reference to the
-proof signer. The caller MUST derive the body root and issuer reference from the
-exact credential being accepted.
+`VC<>::assertAuthorizedIssuerProof` accepts the complete credential and derives
+its schema, issuer reference, and body root internally before verifying both the
+normal issuance-context signature and the authorization binding. Consumers MUST
+use this composed helper when making an authorization-aware credential decision.
+`assertAuthorizedIssuerDescriptor` is a lower-level signer-and-scope primitive;
+it does not verify that a credential carries those fields.
 
 A verifier authorization check verifies a proof over the request scope with
 the `midnight:vc:verifier-req:v1` context and applies the same exact method/key
@@ -111,13 +112,16 @@ the verifier signed the presentation.
 ## Authority proof
 
 An authority-signed descriptor uses the existing `Proof` structure with the
-`midnight:vc:signer-auth:v1` context tag. The proof signs the complete canonical
-descriptor root.
+`midnight:vc:signer-auth:v1` context tag. The proof signs a decision root that
+contains the complete canonical descriptor root and the configured authority
+`domainCommitment`.
 
-The proof signer reference and public key MUST equal a locally configured
-authority. `Proof.createdAt` MUST equal `decisionSequence` under this context.
-This equality defines sequence semantics only; it does not establish wall-clock
-time.
+The proof signer reference, public key, and non-zero domain commitment MUST equal
+a locally configured authority anchor. The domain commitment MUST uniquely bind
+the intended network and consuming contract or registry profile; consumers MUST
+NOT reuse a generic value across those domains. `Proof.createdAt` MUST equal
+`decisionSequence` under this context. This equality defines sequence semantics
+only; it does not establish wall-clock time.
 
 ## Time and freshness
 
@@ -149,10 +153,15 @@ the replacement method/key before consumers accept it. A consumer that has
 processed a newer suspended, revoked, or replacement decision MUST reject
 replay of an older active descriptor.
 
+Revocation is terminal for an `authorizationId`. Re-authorizing a previously
+revoked signer requires a new authorization ID. Suspension MAY return to active
+through a newer authority decision.
+
 ## Trust Registry profile
 
 A Trust Registry integration SHOULD sign an envelope containing its registry
 identifier, contract address, and the complete descriptor. The consuming
-contract MUST bind those registry values to its configured authority anchor.
+contract MUST commit those registry values together with the network and
+consumer identity into its configured authority `domainCommitment`.
 Trust Registry policy evaluation, governance, DID resolution, evidence
 distribution, and key rotation remain outside the VC core.

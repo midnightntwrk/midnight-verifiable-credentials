@@ -23,12 +23,14 @@ as an end-to-end issuance, presentation, or verification security claim.
 
 Signer authorization MUST fail on substituted roles, scopes, verification
 methods, public keys, policy commitments, decision sequences, or authority
-keys. A caller-provided `isTrusted` boolean, descriptor, or timestamp is not an
-authority unless it is bound to authenticated consumer state or a verified
-authority proof.
+keys or domains. Signer and authority keys MUST be valid Jubjub prime-subgroup
+points. A caller-provided `isTrusted` boolean, descriptor, or timestamp is not
+an authority unless it is bound to authenticated consumer state or a verified
+authority proof for the intended network and consumer domain.
 
 An authorization-aware issuer or verifier-request check MUST verify both the
 proof signature and the accepted descriptor binding. Consumers replacing a
 stored descriptor MUST enforce increasing decision sequence and non-decreasing
 DID state version; accepting an older signed active descriptor after a newer
 suspension or revocation re-enables the signer.
+Revocation of an authorization ID is terminal; re-authorization uses a new ID.

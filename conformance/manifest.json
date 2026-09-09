@@ -90,7 +90,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "e5600e28ed6fd9a6b133dc981ba80e7f22965c2f15b4bc55e66c3ea7947b15bd"
+      "sha256": "399d973b90c937f5ddfd3f9f4c352db99fe0efd8aba93be99ef537aa693962ee"
     }
   ],
   "allowedCoreImports": [

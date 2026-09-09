@@ -22,8 +22,10 @@ non-membership.
 Signer authorization supports two composition modes. Applications may install
 an accepted descriptor through local governance, or verify a domain-separated
 authority proof before materializing the same descriptor. The authorization
-helpers verify the issuer or verifier-request signature as well as the exact
-role, method, key, and scope binding. This package does not resolve
+proof is bound to a caller-configured network/consumer domain. The composed
+`VC<>::assertAuthorizedIssuerProof` and verifier-request helper verify the
+signature as well as the exact role, method, key, and scope binding. This
+package does not resolve
 `midnight-did`, evaluate Trust Registry policy, synchronize registry state, or
 provide trusted wall-clock time.
 

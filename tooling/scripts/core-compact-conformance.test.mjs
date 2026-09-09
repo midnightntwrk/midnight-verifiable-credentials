@@ -122,6 +122,7 @@ test("validates and binds positive and negative signer authorizations", () => {
   };
   const authoritySecretKey = BigInt(fixture.authority.secretKey);
   const authority = {
+    domainCommitment: fromHex(fixture.authority.domainCommitmentHex),
     verificationMethodRef: {
       controllerAddress: {
         bytes: fromHex(fixture.authority.controllerAddressHex),
@@ -141,6 +142,11 @@ test("validates and binds positive and negative signer authorizations", () => {
     y: 4618804908354153307723645468004365607556001212646932439019416955377127509460n,
   };
   const identityPoint = { x: 0n, y: 1n };
+  const offCurvePoint = { x: 1n, y: 1n };
+  const orderTwoPoint = {
+    x: 0n,
+    y: 52435875175126190479447740508185965837690552500527637822603658699938581184512n,
+  };
   const proofNonceScalar = BigInt(fixture.proofNonceScalar);
   const proofNoncePoint = point(fixture.proofNoncePoint);
   const credentialBodyRoot = fromHex(
@@ -215,7 +221,10 @@ test("validates and binds positive and negative signer authorizations", () => {
       signature: { r: proofNoncePoint, s: 0n },
     };
     const challenge = pureCircuits.signerAuthorizationProofChallenge(
-      pureCircuits.authorizedSignerDescriptorRoot(descriptor),
+      pureCircuits.signerAuthorizationDecisionRoot(
+        descriptor,
+        authority.domainCommitment,
+      ),
       unsigned,
     );
     return {
@@ -226,6 +235,53 @@ test("validates and binds positive and negative signer authorizations", () => {
       },
     };
   };
+
+  const knownAnswers = fixture.knownAnswers;
+  const activeIssuerDescriptor = makeDescriptor("issuer", "assertionMethod");
+  const issuerProof = makeSignerProof("issuer");
+  const verifierProof = makeSignerProof("verifier");
+  const authorityProof = signAuthorization(activeIssuerDescriptor);
+  assert.equal(toHex(issuerScope), knownAnswers.issuerScopeHex);
+  assert.equal(
+    toHex(pureCircuits.authorizedSignerDescriptorRoot(activeIssuerDescriptor)),
+    knownAnswers.activeIssuerDescriptorRootHex,
+  );
+  assert.equal(
+    toHex(
+      pureCircuits.signerAuthorizationDecisionRoot(
+        activeIssuerDescriptor,
+        authority.domainCommitment,
+      ),
+    ),
+    knownAnswers.activeIssuerDecisionRootHex,
+  );
+  assert.equal(
+    pureCircuits.issuanceProofChallenge(credentialBodyRoot, issuerProof),
+    BigInt(knownAnswers.issuerChallenge),
+  );
+  assert.equal(issuerProof.signature.s, BigInt(knownAnswers.issuerSignatureS));
+  assert.equal(
+    pureCircuits.verifierRequestProofChallenge(verifierScope, verifierProof),
+    BigInt(knownAnswers.verifierChallenge),
+  );
+  assert.equal(
+    verifierProof.signature.s,
+    BigInt(knownAnswers.verifierSignatureS),
+  );
+  assert.equal(
+    pureCircuits.signerAuthorizationProofChallenge(
+      pureCircuits.signerAuthorizationDecisionRoot(
+        activeIssuerDescriptor,
+        authority.domainCommitment,
+      ),
+      authorityProof,
+    ),
+    BigInt(knownAnswers.authorityChallenge),
+  );
+  assert.equal(
+    authorityProof.signature.s,
+    BigInt(knownAnswers.authoritySignatureS),
+  );
 
   for (const vector of vectors.positive) {
     const descriptor = makeDescriptor(
@@ -241,15 +297,18 @@ test("validates and binds positive and negative signer authorizations", () => {
     );
     if (vector.operation === "issuer") {
       assert.deepEqual(
-        pureCircuits.assertAuthorizedIssuerProof(
-          credentialBodyRoot,
+        pureCircuits.assertAuthorizedIssuerDescriptor(
           schema,
-          issuer.verificationMethodRef,
           proof,
           descriptor,
         ),
         [],
         vector.id,
+      );
+      assert.deepEqual(
+        pureCircuits.assertValidIssuanceContextProof(credentialBodyRoot, proof),
+        [],
+        `${vector.id}-proof`,
       );
     } else if (vector.operation === "verifier") {
       assert.deepEqual(
@@ -296,7 +355,6 @@ test("validates and binds positive and negative signer authorizations", () => {
     let descriptor = makeDescriptor("issuer", "assertionMethod");
     let proof = makeSignerProof("issuer");
     let requestScope = verifierScope;
-    let credentialIssuerVerificationMethodRef = issuer.verificationMethodRef;
     let previousDescriptor = {
       ...descriptor,
       decisionSequence: descriptor.decisionSequence - 1n,
@@ -337,6 +395,12 @@ test("validates and binds positive and negative signer authorizations", () => {
       case "identity-signer-key":
         descriptor = { ...descriptor, signerPublicKey: identityPoint };
         break;
+      case "off-curve-signer-key":
+        descriptor = { ...descriptor, signerPublicKey: offCurvePoint };
+        break;
+      case "torsion-signer-key":
+        descriptor = { ...descriptor, signerPublicKey: orderTwoPoint };
+        break;
       case "empty-scope":
         descriptor = { ...descriptor, scopeCommitment: zeroBytes32() };
         break;
@@ -355,7 +419,6 @@ test("validates and binds positive and negative signer authorizations", () => {
       case "verifier-role-for-issuer":
         descriptor = makeDescriptor("verifier", "authentication");
         proof = makeSignerProof("verifier");
-        credentialIssuerVerificationMethodRef = verifier.verificationMethodRef;
         break;
       case "empty-verifier-request-scope":
         descriptor = makeDescriptor("verifier", "authentication");
@@ -376,7 +439,6 @@ test("validates and binds positive and negative signer authorizations", () => {
             controllerAddress: alternateController,
           },
         };
-        credentialIssuerVerificationMethodRef = proof.signerVerificationMethodRef;
         break;
       case "proof-method":
         proof = {
@@ -386,16 +448,9 @@ test("validates and binds positive and negative signer authorizations", () => {
             methodId: alternateMethod,
           },
         };
-        credentialIssuerVerificationMethodRef = proof.signerVerificationMethodRef;
         break;
       case "proof-key":
         proof = { ...proof, publicKey: alternateKey };
-        break;
-      case "credential-issuer":
-        credentialIssuerVerificationMethodRef = {
-          ...credentialIssuerVerificationMethodRef,
-          methodId: alternateMethod,
-        };
         break;
       case "issuer-signature":
         proof = {
@@ -438,11 +493,23 @@ test("validates and binds positive and negative signer authorizations", () => {
         previousDescriptor = { ...previousDescriptor, didStateVersion: 10n };
         nextDescriptor = { ...nextDescriptor, didStateVersion: 9n };
         break;
+      case "update-revoked-to-active":
+        previousDescriptor = {
+          ...previousDescriptor,
+          state: AuthorizationState.revoked,
+        };
+        nextDescriptor = {
+          ...nextDescriptor,
+          state: AuthorizationState.active,
+        };
+        break;
       case "proof-sequence":
       case "authority-controller":
       case "authority-method":
       case "authority-key":
       case "identity-authority-key":
+      case "empty-authority-domain":
+      case "authority-domain":
       case "authority-challenge":
       case "signed-policy":
         break;
@@ -455,12 +522,14 @@ test("validates and binds positive and negative signer authorizations", () => {
         return pureCircuits.assertValidAuthorizedSignerDescriptor(descriptor);
       }
       if (vector.operation === "issuer") {
-        return pureCircuits.assertAuthorizedIssuerProof(
-          credentialBodyRoot,
+        pureCircuits.assertAuthorizedIssuerDescriptor(
           schema,
-          credentialIssuerVerificationMethodRef,
           proof,
           descriptor,
+        );
+        return pureCircuits.assertValidIssuanceContextProof(
+          credentialBodyRoot,
+          proof,
         );
       }
       if (vector.operation === "verifier") {
@@ -506,6 +575,18 @@ test("validates and binds positive and negative signer authorizations", () => {
           descriptor,
           authorizationProof,
           { ...authority, publicKey: identityPoint },
+        );
+      } else if (vector.mutation === "empty-authority-domain") {
+        return pureCircuits.assertValidSignerAuthorizationProof(
+          descriptor,
+          authorizationProof,
+          { ...authority, domainCommitment: zeroBytes32() },
+        );
+      } else if (vector.mutation === "authority-domain") {
+        return pureCircuits.assertValidSignerAuthorizationProof(
+          descriptor,
+          authorizationProof,
+          { ...authority, domainCommitment: alternateMethod },
         );
       } else if (vector.mutation === "authority-challenge") {
         authorizationProof = {
