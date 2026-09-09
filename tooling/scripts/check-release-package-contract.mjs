@@ -188,10 +188,43 @@ const assertReleaseManifest = (entry) => {
         typeof target === "string" &&
         target.endsWith(".compact"),
     );
+    const compactEntrypoints = packageJson.midnight?.compactEntrypoints;
     assert(
-      compactExports.length > 0,
-      `${label} must expose at least one explicit Compact export`,
+      isRecord(compactEntrypoints),
+      `${label} must declare Compact entrypoints`,
     );
+    if (isRecord(compactEntrypoints)) {
+      assert(
+        JSON.stringify(Object.keys(compactEntrypoints).sort()) ===
+          JSON.stringify(["composition", "standalone"]),
+        `${label} Compact entrypoints must declare standalone and composition roots`,
+      );
+      const declaredEntrypoints = Object.entries(compactEntrypoints).flatMap(
+        ([group, entrypoints]) => {
+          assert(
+            Array.isArray(entrypoints) && entrypoints.length > 0,
+            `${label} Compact entrypoint group ${group} must not be empty`,
+          );
+          return Array.isArray(entrypoints) ? entrypoints : [];
+        },
+      );
+      assert(
+        declaredEntrypoints.every(
+          (entrypoint) =>
+            typeof entrypoint === "string" && entrypoint.endsWith(".compact"),
+        ),
+        `${label} Compact entrypoints must be explicit .compact subpaths`,
+      );
+      assert(
+        new Set(declaredEntrypoints).size === declaredEntrypoints.length,
+        `${label} Compact entrypoints must be unique`,
+      );
+      assert(
+        JSON.stringify(compactExports.map(([subpath]) => subpath).sort()) ===
+          JSON.stringify([...declaredEntrypoints].sort()),
+        `${label} Compact exports must exactly match the declared entrypoints`,
+      );
+    }
   }
 
   for (const dependencyType of [
