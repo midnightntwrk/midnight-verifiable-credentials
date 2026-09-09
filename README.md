@@ -13,6 +13,7 @@ versioned consumer repositories.
 ## Start here
 
 - [Core specification](./spec/README.md)
+- [Proof semantics](./spec/proof-semantics.md)
 - [Glossary](./spec/terminology.md)
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)

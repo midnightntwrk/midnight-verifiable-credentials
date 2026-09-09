@@ -8,7 +8,7 @@ These definitions are normative where the specification uses the term.
 | Credential family | Independently released schema and family-specific circuits built on the core. |
 | Claim | Typed statement made by an issuer about a credential subject. |
 | Canonical encoding | Deterministic byte representation used for hashing, signing, and conformance. |
-| Challenge | Verifier-provided value that binds a presentation or proof to one interaction. |
+| Challenge | Application-defined value committed through `Proof.challengeHash`; only a presentation profile necessarily sources it from a verifier. |
 | Credential subject | Entity described by the claims in a credential. |
 | Credential status | Evidence used to determine whether a credential remains usable. |
 | VC | Canonical issuer-signed credential envelope. |
@@ -27,6 +27,14 @@ These definitions are normative where the specification uses the term.
 | Verifier | Entity that evaluates a credential or presentation under an explicit policy. |
 | DID | Decentralized Identifier resolved to a DID document. DID methods are outside the core. |
 | Proof | Cryptographic evidence evaluated under an explicit verifier policy and context. |
+| Proof context | Domain-separated interpretation selected by the proof verification circuit. |
+| Verification method reference | Non-zero controller contract address and fixed-width method identifier asserted by a proof or binding. |
+| Signer authorization | Scoped decision accepting one exact verification method and key for an issuer or verifier role. |
+| Authorized signer descriptor | Canonical role, method, key, scope, policy, and decision-sequence binding consumed by signer-authorization checks. |
+| Decision sequence | Authenticated logical ordering value for authorization updates; it is not a wall-clock timestamp. |
+| Authorization source | Local application governance or external authority that evaluates policy and produces a signer authorization. |
+| Authority domain commitment | Application-defined commitment binding an authorization authority to the intended network and consumer, and optionally a registry profile. |
+| Verifier authorization request | Request signed by a verifier for a protocol-neutral scope; it is distinct from a holder-signed VP. |
 | Witness | Private or public input supplied to a circuit. |
 | Trusted time | Time evidence accepted from an explicitly configured authority or ledger source. |
 | Prover key | Circuit-specific artifact used to create a zero-knowledge proof. |

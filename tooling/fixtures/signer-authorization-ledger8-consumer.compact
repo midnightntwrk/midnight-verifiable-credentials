@@ -1,0 +1,87 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "credentials/composable";
+
+import VC<
+  NoPublicClaims,
+  NoClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix ConsumerVC_;
+
+// Thin Ledger 8 composition fixture. The deployment transaction is the trust
+// boundary for the local descriptor; later external decisions require the
+// configured authority's domain-separated proof.
+export ledger signerAuthorizationAuthority: SignerAuthorizationAuthority;
+export ledger signerAuthorizations: Map<Bytes<32>, AuthorizedSignerDescriptor>;
+
+constructor(
+  localDescriptor: AuthorizedSignerDescriptor,
+  authority: SignerAuthorizationAuthority
+) {
+  assertValidAuthorizedSignerDescriptor(localDescriptor);
+  assertValidSignerAuthorizationAuthority(authority);
+
+  const disclosedDescriptor = disclose(localDescriptor);
+  signerAuthorizationAuthority = disclose(authority);
+  signerAuthorizations.insert(
+    disclosedDescriptor.authorizationId,
+    disclosedDescriptor
+  );
+}
+
+export circuit syncSignerAuthorization(
+  descriptor: AuthorizedSignerDescriptor,
+  authorityProof: Proof
+): [] {
+  assertValidSignerAuthorizationProof(
+    descriptor,
+    authorityProof,
+    signerAuthorizationAuthority
+  );
+
+  const disclosedDescriptor = disclose(descriptor);
+  const authorizationId = disclosedDescriptor.authorizationId;
+  if (signerAuthorizations.member(authorizationId)) {
+    const previous = signerAuthorizations.lookup(authorizationId);
+    assertValidSignerAuthorizationUpdate(previous, disclosedDescriptor);
+    signerAuthorizations.remove(authorizationId);
+  }
+  signerAuthorizations.insert(authorizationId, disclosedDescriptor);
+}
+
+export circuit assertAuthorizedIssuer(
+  authorizationId: Bytes<32>,
+  credential: ConsumerVC_Credential,
+  proof: Proof
+): [] {
+  const disclosedAuthorizationId = disclose(authorizationId);
+  assert(
+    signerAuthorizations.member(disclosedAuthorizationId),
+    "Signer authorization does not exist"
+  );
+  ConsumerVC_assertAuthorizedIssuerProof(
+    credential,
+    proof,
+    signerAuthorizations.lookup(disclosedAuthorizationId)
+  );
+}
+
+export circuit assertAuthorizedVerifierRequest(
+  authorizationId: Bytes<32>,
+  requestScopeCommitment: Bytes<32>,
+  proof: Proof
+): [] {
+  const disclosedAuthorizationId = disclose(authorizationId);
+  assert(
+    signerAuthorizations.member(disclosedAuthorizationId),
+    "Signer authorization does not exist"
+  );
+  assertAuthorizedVerifierProof(
+    requestScopeCommitment,
+    proof,
+    signerAuthorizations.lookup(disclosedAuthorizationId)
+  );
+}

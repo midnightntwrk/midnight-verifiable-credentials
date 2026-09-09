@@ -26,6 +26,11 @@
       "vectorCategory": "compact-generated"
     },
     {
+      "id": "verify-context-proof",
+      "section": "spec/proof-semantics.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
       "id": "encode-compact-value",
       "section": "spec/canonical-encoding.md",
       "vectorCategory": "compact-value-encoding"
@@ -39,12 +44,42 @@
       "id": "validate-explicit-holder-binding",
       "section": "spec/holder-binding.md",
       "vectorCategory": "holder-binding"
+    },
+    {
+      "id": "validate-authorized-signer-descriptor",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "bind-authorized-issuer-proof",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "bind-authorized-verifier-proof",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "verify-signer-authorization-proof",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "verify-verifier-request-proof",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "validate-signer-authorization-update",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
     }
   ],
   "vectors": [
     {
       "path": "conformance/vectors/compact-generated.json",
-      "sha256": "2132cb6f9e05dbb56b67b3ba54937d3fc7777f144a6398c2220a38a73a3ac5e8"
+      "sha256": "2d6e616c8f4117cf2d9aa0d32185d68b7ba236335a40cf2ad355fdacf1b66922"
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",
@@ -57,6 +92,10 @@
     {
       "path": "conformance/vectors/schema-reference.json",
       "sha256": "ea26d3c2fa0ca5dee676bd945daa599a11b4b473dc0f5ad86383554f6841b3ce"
+    },
+    {
+      "path": "conformance/vectors/signer-authorization.json",
+      "sha256": "4b9904ee1c5edbe738e8ae4a8b384111bd8b76f5b231d3b3382f2b9df5503492"
     }
   ],
   "allowedCoreImports": [

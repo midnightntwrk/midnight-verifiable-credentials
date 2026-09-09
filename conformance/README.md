@@ -6,6 +6,15 @@ normative section and vector category. Files under
 [`manifest.sha256`](./manifest.sha256) identifies the exact manifest bytes used
 for a conformance claim.
 
+Signer-authorization vectors include fixed known-answer roots, challenges, and
+signature scalars so challenge derivation and signature verification cannot
+drift together without detection.
+
+The conformance lane compiles a concrete generic `VC<>` instantiation and tests
+credential-derived issuer authorization. The release-package lane compiles the
+same fixture outside the repository against only the installed tarball's public
+Compact path.
+
 Run:
 
 ```bash
