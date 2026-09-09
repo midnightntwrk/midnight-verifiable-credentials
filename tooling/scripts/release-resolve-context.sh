@@ -11,13 +11,7 @@ if [[ "${event_name}" != "workflow_dispatch" ]]; then
 fi
 
 channel="${DISPATCH_CHANNEL:-}"
-version="${DISPATCH_VERSION:-}"
 rc_index="${DISPATCH_RC_INDEX:-}"
-
-if [[ -n "${version}" && ! "${version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-  echo "::error::version must be a stable semantic version such as 0.1.0."
-  exit 1
-fi
 
 case "${channel}" in
   rc)
@@ -48,6 +42,5 @@ esac
 
 {
   echo "channel=${channel}"
-  echo "version=${version}"
   echo "rc_index=${rc_index}"
 } >> "${output_file}"

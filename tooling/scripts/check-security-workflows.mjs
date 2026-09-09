@@ -224,7 +224,7 @@ for (const forbiddenEvent of ["push", "pull_request", "schedule"]) {
     );
   }
 }
-for (const input of ["channel", "version", "rc_index"]) {
+for (const input of ["channel", "rc_index"]) {
   if (publishEvents.workflow_dispatch?.inputs?.[input] === undefined) {
     errors.push(`${publishPath} must declare workflow_dispatch input ${input}`);
   }

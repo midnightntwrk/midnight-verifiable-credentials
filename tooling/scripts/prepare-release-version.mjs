@@ -60,9 +60,6 @@ const parseArgs = (args) => {
       case "--channel":
         options.channel = args[++index];
         break;
-      case "--version":
-        options.version = args[++index];
-        break;
       case "--rc-index":
         options.rcIndex = args[++index];
         break;
@@ -111,7 +108,7 @@ export const prepareReleaseVersion = (options) => {
 
   const rootPackage = readJson("package.json");
   const baseVersion = requireStableVersion(
-    options.version ?? rootPackage.version,
+    rootPackage.version,
     "version",
   );
   const release = computeReleaseVersion({

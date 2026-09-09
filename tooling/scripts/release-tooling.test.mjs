@@ -86,7 +86,6 @@ test("allows rc publication from develop and rejects stable publication", () => 
           ...process.env,
           DISPATCH_CHANNEL: "rc",
           DISPATCH_RC_INDEX: "1",
-          DISPATCH_VERSION: "0.2.0",
           GITHUB_EVENT_NAME: "workflow_dispatch",
           GITHUB_OUTPUT: outputPath,
           GITHUB_REF_NAME: "develop",
@@ -114,25 +113,6 @@ test("allows rc publication from develop and rejects stable publication", () => 
     assert.notEqual(stableResult.status, 0);
     assert.match(stableResult.stdout, /only allowed from main/u);
 
-    const injectedVersionResult = spawnSync(
-      "bash",
-      ["tooling/scripts/release-resolve-context.sh"],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        env: {
-          ...process.env,
-          DISPATCH_CHANNEL: "rc",
-          DISPATCH_RC_INDEX: "1",
-          DISPATCH_VERSION: "0.2.0\nnpm_tag=latest",
-          GITHUB_EVENT_NAME: "workflow_dispatch",
-          GITHUB_OUTPUT: outputPath,
-          GITHUB_REF_NAME: "develop",
-        },
-      },
-    );
-    assert.notEqual(injectedVersionResult.status, 0);
-    assert.match(injectedVersionResult.stdout, /stable semantic version/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
