@@ -21,7 +21,6 @@
     },
     "typecheck": {
       "dependsOn": [
-        "build",
         "^build"
       ],
       "env": [
@@ -41,7 +40,6 @@
     },
     "test": {
       "dependsOn": [
-        "build",
         "^build"
       ],
       "env": [
