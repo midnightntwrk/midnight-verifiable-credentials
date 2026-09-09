@@ -344,27 +344,32 @@ test("validates and binds positive and negative signer authorizations", async ()
       ),
       [],
     );
-    assert.deepEqual(
-      conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-        credential,
-        proof,
-        bodyRoot,
-      ),
-      [],
+    const credentialProofVectors = readJson(
+      "conformance/vectors/credential-proof.json",
     );
-    assert.throws(
-      () =>
+    for (const vector of credentialProofVectors.positive) {
+      assert.deepEqual(
         conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
           credential,
           proof,
-          alternateMethod,
+          bodyRoot,
         ),
-      (error) =>
-        String(error).includes(
-          "Credential body root does not match credential",
-        ),
-      "caller-supplied credential body root substitution",
-    );
+        [],
+        vector.id,
+      );
+    }
+    for (const vector of credentialProofVectors.negative) {
+      assert.throws(
+        () =>
+          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+            credential,
+            proof,
+            vector.mutation === "body-root" ? alternateMethod : bodyRoot,
+          ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      );
+    }
     assert.throws(
       () =>
         conformance.pureCircuits.assertAuthorizedIssuerProof(
