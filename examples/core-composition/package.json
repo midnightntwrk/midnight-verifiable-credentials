@@ -4,7 +4,6 @@
   "license": "Apache-2.0",
   "private": true,
   "type": "module",
-  "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -17,11 +16,5 @@
   "devDependencies": {
     "typescript": "^5.8.3",
     "vitest": "^3.2.7"
-  },
-  "files": [
-    "src/**/*.ts",
-    "README.md",
-    "package.json",
-    "tsconfig.json"
-  ]
+  }
 }
