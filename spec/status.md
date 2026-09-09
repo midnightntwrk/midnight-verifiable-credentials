@@ -1,8 +1,14 @@
 # Status
 
-A status-free credential uses the canonical no-status binding. A status-bound
-credential binds an issuer-authorized registry reference and opaque status
-handle commitment into the issuer-signed credential body.
+A status-free credential uses the empty `NoStatusBinding`. A status-bound
+credential uses `RegistryBoundStatusBinding`, containing a non-zero registry
+identifier, a structurally valid authority verification-method reference, and a
+non-zero opaque status-handle commitment. The complete binding is part of the
+issuer-signed credential body.
+
+The core validator checks only those structural invariants. It does not prove
+that the issuer or status authority approved the registry, that the handle has
+a valid opening, or that the credential currently has an accepted status.
 
 Status verification requires:
 

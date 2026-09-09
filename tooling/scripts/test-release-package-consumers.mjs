@@ -420,15 +420,10 @@ for (const releasePackage of releasePackages) {
           fail(`${sourcePackageJson.name} metadata advertises unexported Compact entrypoint ${entrypoint}`);
         }
       }
-      const compileExternal = (name, includes) => {
+      const compileExternalSource = (name, source) => {
         const wrapper = path.join(consumerRoot, `${name}.compact`);
         const output = path.join(installedPackageRoot, ".compact-consumer", `${name}-output`);
-        writeFileSync(
-          wrapper,
-          `pragma language_version >= 0.20;\nimport CompactStandardLibrary;\n${includes
-            .map((include) => `include "${include.replace("./", "").replace(".compact", "")}";`)
-            .join("\n")}\n`,
-        );
+        writeFileSync(wrapper, source);
         run(
           "compact",
           ["compile", `+${installedPackageJson.midnight.compactCompilerVersion}`, "--skip-zk", "--compact-path", path.join(installedPackageRoot, "dist"), wrapper, output],
@@ -437,11 +432,40 @@ for (const releasePackage of releasePackages) {
         );
         return realpathSync(output);
       };
+      const compileExternal = (name, includes) =>
+        compileExternalSource(
+          name,
+          `pragma language_version >= 0.20;\nimport CompactStandardLibrary;\n${includes
+            .map((include) => `include "${include.replace("./", "").replace(".compact", "")}";`)
+            .join("\n")}\n`,
+        );
       for (const [index, entrypoint] of standalone.entries()) {
         compileExternal(`compact-standalone-${index}`, [entrypoint]);
       }
       for (const [index, entrypoint] of composition.entries()) {
         compileExternal(`compact-composition-${index}`, [entrypoint]);
+      }
+      if (sourcePackageJson.name === "@midnight-ntwrk/credential-compact") {
+        compileExternalSource(
+          "signer-authorization-conformance",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/signer-authorization-conformance.compact",
+            ),
+            "utf8",
+          ),
+        );
+        compileExternalSource(
+          "signer-authorization-ledger8-consumer",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/signer-authorization-ledger8-consumer.compact",
+            ),
+            "utf8",
+          ),
+        );
       }
     }
 

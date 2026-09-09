@@ -1,0 +1,173 @@
+{
+  "formatVersion": 1,
+  "category": "signer-authorization",
+  "fixture": {
+    "schema": {
+      "packageIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "schemaIdHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "majorVersion": "1",
+      "minorVersion": "0"
+    },
+    "issuer": {
+      "didMethodId": "#issuer-key-1",
+      "controllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "methodIdHex": "d9693a7799b4dc4c435fe91d13810fb1082365cc6bce7e6498f4a59446c2fe4a",
+      "secretKey": "3",
+      "publicKey": {
+        "x": "8976934280167817951893283006885971257354735267084857365287645009060806900685",
+        "y": "32390198301931076333580527807646215534390721674374179703346145430428257692101"
+      }
+    },
+    "verifier": {
+      "didMethodId": "#verifier-key-1",
+      "controllerAddressHex": "5555555555555555555555555555555555555555555555555555555555555555",
+      "methodIdHex": "8aef18ed330492d7511b4c5924e6a0a7e32e5ec277220860c88b6f75fbb8ef96",
+      "secretKey": "5",
+      "publicKey": {
+        "x": "46037580203438066765405229507649644425780970512522822336637661968249826130047",
+        "y": "26189429486186784039799689203850934078756791903368248146476421754146336352630"
+      },
+      "scopeCommitmentHex": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    "authority": {
+      "didMethodId": "#authority-key-1",
+      "domainCommitmentHex": "9999999999999999999999999999999999999999999999999999999999999999",
+      "controllerAddressHex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "methodIdHex": "7a60b00939a8bbc5f8773401e5e9859fbe5e51f7c1f6897569826f7c589b565e",
+      "secretKey": "7",
+      "publicKey": {
+        "x": "47805549206756120863994733988949966563868680443409072344285414365387721651928",
+        "y": "10883866336127360287053583923937114185802477515052223349661086820822299756070"
+      }
+    },
+    "proofNonceScalar": "11",
+    "proofNoncePoint": {
+      "x": "16827724475775646817464036582159000260353701469526893325788649359360731655092",
+      "y": "44031289517654383275236023968950953006749154478578562892906183459209162884018"
+    },
+    "authorizationIdHex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "policyCommitmentHex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "challengeHashHex": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "decisionSequence": "42",
+    "didStateVersion": "9",
+    "knownAnswers": {
+      "issuerScopeHex": "58dd0348bdbd210896b4e47a1d3238c4a9e74434cb221798b8e484e63dde5bb5",
+      "activeIssuerDescriptorRootHex": "35365f6d54a4544b2cd3b6582ad867ca06d390e07ac1d128046081c951e77566",
+      "activeIssuerDecisionRootHex": "b3c0480d4f6747b982038ccf1ebfc67d6fcd73e8243335123047dfe1de8b1d40",
+      "issuerChallenge": "172881641703622552959885888639539525923014766528676118260920933356202244309",
+      "issuerSignatureS": "518644925110867658879657665918618577769044299586028354782762800068606732938",
+      "verifierChallenge": "416754526084305508178368767630781736932852869538929533035668927228659243290",
+      "verifierSignatureS": "2083772630421527540891843838153908684664264347694647665178344636143296216461",
+      "authorityChallenge": "263580335991693717721536048795039141213999714415137574514564725920938810652",
+      "authoritySignatureS": "1845062351941856024050752341565273988497998000905963021601953081446571674575"
+    }
+  },
+  "positive": [
+    {
+      "id": "active-issuer-assertion-method",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "operation": "issuer"
+    },
+    {
+      "id": "active-verifier-authentication",
+      "role": "verifier",
+      "relationship": "authentication",
+      "operation": "verifier"
+    },
+    {
+      "id": "active-verifier-capability-invocation",
+      "role": "verifier",
+      "relationship": "capabilityInvocation",
+      "operation": "verifier"
+    },
+    {
+      "id": "authority-signed-active-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "operation": "authority-proof"
+    },
+    {
+      "id": "authority-signed-suspended-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "state": "suspended",
+      "operation": "authority-proof"
+    },
+    {
+      "id": "authority-signed-revoked-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "state": "revoked",
+      "operation": "authority-proof"
+    }
+  ],
+  "updates": [
+    {
+      "id": "accept-active-to-suspended-update",
+      "previousState": "active",
+      "nextState": "suspended",
+      "previousSequence": "41",
+      "nextSequence": "42",
+      "previousDidStateVersion": "8",
+      "nextDidStateVersion": "9"
+    },
+    {
+      "id": "accept-suspended-to-revoked-update",
+      "previousState": "suspended",
+      "nextState": "revoked",
+      "previousSequence": "42",
+      "nextSequence": "43",
+      "previousDidStateVersion": "9",
+      "nextDidStateVersion": "9"
+    }
+  ],
+  "negative": [
+    { "id": "reject-unsupported-version", "operation": "validate", "mutation": "unsupported-version", "errorIncludes": "Signer authorization version mismatch" },
+    { "id": "reject-empty-authorization-id", "operation": "validate", "mutation": "empty-authorization-id", "errorIncludes": "Signer authorization id must be set" },
+    { "id": "reject-zero-decision-sequence", "operation": "validate", "mutation": "zero-decision-sequence", "errorIncludes": "decision sequence must be positive" },
+    { "id": "reject-zero-did-state-version", "operation": "validate", "mutation": "zero-did-state-version", "errorIncludes": "DID state version must be positive" },
+    { "id": "reject-empty-controller-address", "operation": "validate", "mutation": "empty-controller-address", "errorIncludes": "controller address must be set" },
+    { "id": "reject-empty-method-id", "operation": "validate", "mutation": "empty-method-id", "errorIncludes": "method reference must be set" },
+    { "id": "reject-identity-signer-key", "operation": "validate", "mutation": "identity-signer-key", "errorIncludes": "point must not be the identity point" },
+    { "id": "reject-off-curve-signer-key", "operation": "validate", "mutation": "off-curve-signer-key", "errorIncludes": "unreachable" },
+    { "id": "reject-torsion-signer-key", "operation": "validate", "mutation": "torsion-signer-key", "errorIncludes": "unreachable" },
+    { "id": "reject-empty-scope", "operation": "validate", "mutation": "empty-scope", "errorIncludes": "scope commitment must be set" },
+    { "id": "reject-empty-policy", "operation": "validate", "mutation": "empty-policy", "errorIncludes": "policy commitment must be set" },
+    { "id": "reject-issuer-authentication-relationship", "operation": "validate", "mutation": "issuer-authentication-relationship", "errorIncludes": "Issuer authorization requires assertionMethod" },
+    { "id": "reject-verifier-assertion-relationship", "operation": "validate", "mutation": "verifier-assertion-relationship", "errorIncludes": "Verifier authorization requires authentication or capabilityInvocation" },
+    { "id": "reject-verifier-role-for-issuer-proof", "operation": "issuer", "mutation": "verifier-role-for-issuer", "errorIncludes": "Signer authorization role must be issuer" },
+    { "id": "reject-empty-verifier-request-scope", "operation": "verifier", "mutation": "empty-verifier-request-scope", "errorIncludes": "Verifier request scope commitment must be set" },
+    { "id": "reject-suspended-issuer", "operation": "issuer", "mutation": "suspended", "errorIncludes": "Signer authorization must be active" },
+    { "id": "reject-revoked-issuer", "operation": "issuer", "mutation": "revoked", "errorIncludes": "Signer authorization must be active" },
+    { "id": "reject-substituted-proof-controller", "operation": "issuer", "mutation": "proof-controller", "errorIncludes": "Proof signer controller does not match authorization" },
+    { "id": "reject-substituted-proof-method", "operation": "issuer", "mutation": "proof-method", "errorIncludes": "Proof signer method does not match authorization" },
+    { "id": "reject-substituted-proof-key", "operation": "issuer", "mutation": "proof-key", "errorIncludes": "Jubjub points do not match" },
+    { "id": "reject-invalid-issuer-signature", "operation": "issuer", "mutation": "issuer-signature", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-empty-proof-controller", "operation": "issuance-proof", "mutation": "empty-proof-controller", "errorIncludes": "controller address must be set" },
+    { "id": "reject-empty-proof-method", "operation": "issuance-proof", "mutation": "empty-proof-method", "errorIncludes": "method reference must be set" },
+    { "id": "reject-identity-proof-key", "operation": "issuance-proof", "mutation": "identity-proof-key", "errorIncludes": "point must not be the identity point" },
+    { "id": "reject-off-curve-proof-key", "operation": "issuance-proof", "mutation": "off-curve-proof-key", "errorIncludes": "unreachable" },
+    { "id": "reject-torsion-proof-key", "operation": "issuance-proof", "mutation": "torsion-proof-key", "errorIncludes": "unreachable" },
+    { "id": "reject-identity-proof-nonce", "operation": "issuance-proof", "mutation": "identity-proof-nonce", "errorIncludes": "point must not be the identity point" },
+    { "id": "reject-off-curve-proof-nonce", "operation": "issuance-proof", "mutation": "off-curve-proof-nonce", "errorIncludes": "unreachable" },
+    { "id": "reject-torsion-proof-nonce", "operation": "issuance-proof", "mutation": "torsion-proof-nonce", "errorIncludes": "unreachable" },
+    { "id": "reject-issuer-scope-substitution", "operation": "issuer", "mutation": "issuer-scope", "errorIncludes": "Issuer authorization scope does not match schema" },
+    { "id": "reject-verifier-role-substitution", "operation": "verifier", "mutation": "issuer-role", "errorIncludes": "Signer authorization role must be verifier" },
+    { "id": "reject-verifier-scope-substitution", "operation": "verifier", "mutation": "verifier-scope", "errorIncludes": "Verifier authorization scope does not match request" },
+    { "id": "reject-invalid-verifier-request-signature", "operation": "verifier", "mutation": "verifier-signature", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-authorization-proof-sequence-substitution", "operation": "authority-proof", "mutation": "proof-sequence", "errorIncludes": "Authorization proof sequence does not match descriptor" },
+    { "id": "reject-authorization-proof-authority-controller-substitution", "operation": "authority-proof", "mutation": "authority-controller", "errorIncludes": "Authorization proof controller does not match authority" },
+    { "id": "reject-authorization-proof-authority-method-substitution", "operation": "authority-proof", "mutation": "authority-method", "errorIncludes": "Authorization proof method does not match authority" },
+    { "id": "reject-authorization-proof-authority-key-substitution", "operation": "authority-proof", "mutation": "authority-key", "errorIncludes": "Jubjub points do not match" },
+    { "id": "reject-identity-authority-key", "operation": "authority-proof", "mutation": "identity-authority-key", "errorIncludes": "point must not be the identity point" },
+    { "id": "reject-empty-authorization-authority-domain", "operation": "authority-proof", "mutation": "empty-authority-domain", "errorIncludes": "authority domain must be set" },
+    { "id": "reject-authorization-authority-domain-substitution", "operation": "authority-proof", "mutation": "authority-domain", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-authorization-proof-challenge-substitution", "operation": "authority-proof", "mutation": "authority-challenge", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-signed-descriptor-policy-substitution", "operation": "authority-proof", "mutation": "signed-policy", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-update-id-substitution", "operation": "update", "mutation": "update-id", "errorIncludes": "update id mismatch" },
+    { "id": "reject-update-sequence-replay", "operation": "update", "mutation": "update-sequence", "errorIncludes": "update sequence must increase" },
+    { "id": "reject-update-did-version-downgrade", "operation": "update", "mutation": "update-did-version", "errorIncludes": "DID state version must not decrease" },
+    { "id": "reject-revoked-to-active-update", "operation": "update", "mutation": "update-revoked-to-active", "errorIncludes": "Revoked signer authorization must remain revoked" }
+  ]
+}

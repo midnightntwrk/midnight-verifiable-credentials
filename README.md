@@ -12,7 +12,9 @@ versioned consumer repositories.
 
 ## Start here
 
+- [Published documentation](https://midnightntwrk.github.io/midnight-verifiable-credentials/)
 - [Core specification](./spec/README.md)
+- [Proof semantics](./spec/proof-semantics.md)
 - [Glossary](./spec/terminology.md)
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
@@ -20,10 +22,10 @@ versioned consumer repositories.
 
 ## Packages
 
-| Package | Stage | Purpose |
-| --- | --- | --- |
-| `@midnight-ntwrk/credential-model` | supported | Family and claim-schema metadata with validation |
-| `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
+| Package                              | Stage     | Purpose                                          |
+| ------------------------------------ | --------- | ------------------------------------------------ |
+| `@midnight-ntwrk/credential-model`   | supported | Family and claim-schema metadata with validation |
+| `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives          |
 
 `supported` means the package is in the executable publication allowlist and
 its packed artifact passes build and clean-consumer checks.
@@ -58,8 +60,9 @@ pnpm install --frozen-lockfile
 ```
 
 Focused targets are `lint`, `typecheck`, `build`, `test`, `conformance`, and
-`package`. Run them as `./run.sh <target>`. The default and `--light` commands
-run the same authoritative non-Docker release gate.
+`package`. Build the documentation with `./run.sh docs` or run it locally with
+`pnpm run docs:dev`. Run focused targets as `./run.sh <target>`. The default and
+`--light` commands run the same authoritative non-Docker release gate.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) and [AGENT.md](./AGENT.md) before
 changing public APIs or repository boundaries.

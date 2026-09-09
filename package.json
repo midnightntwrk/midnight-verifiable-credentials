@@ -14,6 +14,11 @@
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages tooling",
+    "docs:prepare": "pnpm --filter docs-site docs:prepare",
+    "docs:validate": "pnpm run docs:links && pnpm --filter docs-site docs:validate",
+    "docs:dev": "pnpm --filter docs-site docs:dev",
+    "docs:build": "pnpm --filter docs-site docs:build",
+    "docs:preview": "pnpm --filter docs-site docs:preview",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
     "clean": "turbo run clean --continue",
     "lint": "turbo run lint --continue",
@@ -21,7 +26,7 @@
     "build": "turbo run build --continue",
     "test": "turbo run test --continue",
     "typecheck": "turbo run typecheck --continue",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run lint"
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run docs:validate && pnpm run lint"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -33,10 +38,11 @@
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.7"
+    "vitest": "^4.1.11"
   },
   "pnpm": {
     "overrides": {
+      "algoliasearch": "5.52.1",
       "brace-expansion@1": "5.0.9",
       "brace-expansion@2": "5.0.9",
       "brace-expansion@5": "5.0.9",

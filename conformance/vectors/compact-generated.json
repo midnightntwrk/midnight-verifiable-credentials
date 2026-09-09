@@ -11,6 +11,16 @@
       "id": "presentation-context-tag-v1",
       "circuit": "presentationContextTag",
       "expectedHex": "6d69646e696768743a76633a70726573656e746174696f6e0000000000000000"
+    },
+    {
+      "id": "signer-authorization-context-tag-v1",
+      "circuit": "signerAuthorizationContextTag",
+      "expectedHex": "6d69646e696768743a76633a7369676e65722d617574683a7631000000000000"
+    },
+    {
+      "id": "verifier-request-context-tag-v1",
+      "circuit": "verifierRequestContextTag",
+      "expectedHex": "6d69646e696768743a76633a76657269666965722d7265713a76310000000000"
     }
   ]
 }
