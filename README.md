@@ -33,7 +33,7 @@ Use the smallest package that owns the required boundary. A credential-family
 repository normally depends on both: `credential-model` describes its metadata,
 while `credential-compact` provides the generic circuit primitives. The
 executable package catalog in `tooling/scripts/workspace-catalog.mjs` is the
-publication allowlist; private examples are never packed.
+publication allowlist.
 
 Concrete families own their schema, policy, family-specific circuits, proving
 artifacts, integration, release train, and deployment. They consume released
@@ -45,7 +45,6 @@ packages and must not import this repository's source or generated internals.
 spec/                        Normative VC/VP core
 conformance/                 Machine-readable vectors and operation mapping
 packages/core/               Runtime-neutral packages and Compact primitives
-examples/core-composition/   Minimal synthetic composition fixture
 docs/                        Core-only decision and release runbook
 ```
 

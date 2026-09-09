@@ -13,7 +13,7 @@
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
-    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages examples tooling",
+    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages tooling",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
     "clean": "turbo run clean --continue",
     "lint": "turbo run lint --continue",
