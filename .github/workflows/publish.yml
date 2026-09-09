@@ -90,9 +90,6 @@ jobs:
             console.log(`npm ${process.argv[1]} supports trusted publishing`);
           ' "$npm_version"
 
-      - name: Enable Corepack
-        run: corepack enable
-
       - name: Set up Compact toolchain
         uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
         env:
