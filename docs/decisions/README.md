@@ -10,6 +10,5 @@ issues; they are not active documentation.
 | [0009](./0009-supply-chain-evidence-and-exceptions.md) | Require verifiable release evidence and explicit vulnerability exceptions. |
 | [0016](./0016-core-only-specification-and-implementation.md) | Keep this repository limited to the protocol-independent VC/VP specification and implementation. |
 
-Use [the template](./0000-template.md) for a new decision. Create an ADR only
-for a durable architectural constraint that is not already expressed by the
-normative specification or package release contract.
+Create an ADR only for a durable architectural constraint that is not already
+expressed by the normative specification or package release contract.

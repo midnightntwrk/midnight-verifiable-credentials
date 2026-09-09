@@ -27,13 +27,33 @@ normative specification + conformance vectors
 ## Dependency rules
 
 - Dependencies point toward core.
-- Packages expose explicit entrypoints; consumers do not deep-import source or
-  generated internals.
 - The workspace graph remains acyclic.
 - Cross-repository dependencies use published packages or workspace-managed
   tarballs, never sibling source.
-- Credential families, applications, OIDC, DIDComm, connector APIs, and
-  deployment harnesses remain outside this repository.
 
-See [package boundaries](./package-boundaries.md) for executable checks and
-[package selection](../guides/package-selection.md) for the public surface.
+The only workspace classes are reusable core packages in `packages/core` and
+the private synthetic fixture in `examples/core-composition`. The fixture may
+depend on core; core must not depend on the fixture.
+
+## Excluded surfaces
+
+The workspace does not contain concrete credential families, role-specific
+applications, product data, BDD scenarios, deployment environments, exchange
+protocols, connector APIs, or business-process orchestration. Those concerns
+belong in independently owned consumer repositories.
+
+Reusable packages expose explicit entrypoints. Consumers do not import `src/`,
+`dist/`, `managed/`, generated internals, or sibling-repository files. Internal
+workspace dependencies use `workspace:*`.
+
+## Enforcement
+
+```bash
+pnpm run check:workspace-catalog
+pnpm run check:release-package-contract
+pnpm run check:package-boundaries
+```
+
+These checks validate the workspace inventory, public manifests and exports,
+and source/dependency direction. See [package selection](../guides/package-selection.md)
+for the public surface.

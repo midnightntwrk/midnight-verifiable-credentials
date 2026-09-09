@@ -1,5 +1,4 @@
 *
 !.gitignore
-!README.md
 !npm/
 npm/*.tgz
