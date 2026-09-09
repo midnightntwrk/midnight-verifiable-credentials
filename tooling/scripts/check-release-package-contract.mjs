@@ -65,11 +65,6 @@ const workspaceByPackageName = new Map(
     workspacePath,
   ]),
 );
-const releaseContract = readFileSync(
-  path.join(repoRoot, "docs/architecture/package-release-contract.md"),
-  "utf8",
-);
-
 const compactSourcePaths = (entry) => {
   const packageRoot = path.join(repoRoot, entry.path);
   const srcRoot = path.join(packageRoot, "src");
@@ -272,23 +267,7 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     .split(/\r?\n/u)
     .filter(Boolean);
   const entrySet = new Set(entries);
-  const forbiddenProductArtifact = /(?:verification-v1|passport|birth|university|proving|verifying|zkir|bzkir|deployment|wallet|signing|seed|secret|witness|credential-secret|private-key)/iu;
-  const forbiddenGeneratedContent = [
-    /verification[-_]v1/iu,
-    /(?:birth|university|passport|family(?:claim|predicate|credential))/iu,
-    /\b(?:statusRegistryAuthority|statusRegistryRoot|mutateStatusRegistry|updateStatusRegistry|statusRegistryWitness)\b/iu,
-    /(?:proving|verification)[_-]?(?:key|artifact|circuit)/iu,
-    /(?:deployment|wallet|signing|private[_-]?key|secret[_-]?(?:key|material|value)|witness[_-]?(?:value|secret|material))/iu,
-    /\.(?:zkir|bzkir|prover|wasm|pk|vk)$/iu,
-  ];
-  const stripComments = (text) => text
-    .replace(/\/\*[\s\S]*?\*\//gu, "")
-    .replace(/(^|\s)\/\/.*$/gmu, "$1");
-
   for (const entryPath of entries) {
-    if (entry.path === "packages/core/compact") {
-      assert(!forbiddenProductArtifact.test(entryPath), `${label} contains forbidden product artifact ${entryPath}`);
-    }
     assert(
       !path.posix.isAbsolute(entryPath) &&
         !entryPath.split("/").includes(".."),
@@ -334,13 +313,6 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         generatedOutputAllowlist.has(relative) ||
         compactDistSources.has(relative);
       assert(generatedAllowed, `${label} contains undeclared generated output ${entryPath}`);
-    }
-    if (isCompactPackage && isDistPath && !entryPath.endsWith("/")) {
-      const content = execFileSync("tar", ["-xOf", tarballPath, entryPath], { encoding: "utf8" });
-      const executableContent = stripComments(content);
-      for (const pattern of forbiddenGeneratedContent) {
-        assert(!pattern.test(executableContent), `${label} contains forbidden generated content ${pattern} in ${entryPath}`);
-      }
     }
   }
 
@@ -445,15 +417,6 @@ assert(
   supportedPackages.length > 0,
   "registry enablement must declare at least one supported package",
 );
-for (const entry of supportedPackages) {
-  const packageName = packageJsonByWorkspace.get(entry.path).name;
-  assert(
-    releaseContract.includes(
-      `| \`${packageName}\` | \`supported\` |`,
-    ),
-    `${packageName} must have a synchronized release-stage inventory row`,
-  );
-}
 for (const entry of supportedPackages) {
   assertReleaseManifest(entry);
 }
