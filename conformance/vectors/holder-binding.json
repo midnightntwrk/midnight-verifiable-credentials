@@ -13,6 +13,10 @@
   "negative": [
     { "id": "reject-empty-holder-controller", "operation": "validate", "mutation": "empty-controller", "errorIncludes": "controller address" },
     { "id": "reject-empty-holder-method", "operation": "validate", "mutation": "empty-method", "errorIncludes": "method reference" },
+    { "id": "reject-matching-empty-holder-controller", "operation": "match-bindings", "mutation": "empty-controller", "errorIncludes": "controller address" },
+    { "id": "reject-matching-empty-holder-method", "operation": "match-bindings", "mutation": "empty-method", "errorIncludes": "method reference" },
+    { "id": "reject-proof-binding-empty-holder-controller", "operation": "match-proof", "mutation": "empty-controller", "errorIncludes": "controller address" },
+    { "id": "reject-proof-binding-empty-holder-method", "operation": "match-proof", "mutation": "empty-method", "errorIncludes": "method reference" },
     { "id": "reject-presentation-holder-controller-substitution", "operation": "match-bindings", "mutation": "presentation-controller", "errorIncludes": "holder controller" },
     { "id": "reject-presentation-holder-method-substitution", "operation": "match-bindings", "mutation": "presentation-method", "errorIncludes": "holder method" },
     { "id": "reject-proof-holder-controller-substitution", "operation": "match-proof", "mutation": "proof-controller", "errorIncludes": "proof signer must match holder binding" },

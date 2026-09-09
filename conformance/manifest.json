@@ -130,7 +130,7 @@
     },
     {
       "path": "conformance/vectors/holder-binding.json",
-      "sha256": "b12654a225d2a412b74974830f3cb7a497dc0ec60465c0b0db1aeed30cd07add"
+      "sha256": "ec9e0836098820f6b8f99bc0f612763929d805ce2d9b112bb3d90b1764375fb5"
     },
     {
       "path": "conformance/vectors/schema-reference.json",

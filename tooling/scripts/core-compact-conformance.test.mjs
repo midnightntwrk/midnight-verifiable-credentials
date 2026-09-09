@@ -143,8 +143,18 @@ test("validates positive and negative explicit holder bindings in Compact", () =
     let proof = makeProof(baseBinding.holderVerificationMethodRef);
     if (vector.mutation === "empty-controller") {
       credentialBinding = makeBinding({ ...base, controllerAddressHex: "00".repeat(32) });
+      if (vector.operation === "match-bindings") {
+        presentationBinding = credentialBinding;
+      } else if (vector.operation === "match-proof") {
+        proof = makeProof(credentialBinding.holderVerificationMethodRef);
+      }
     } else if (vector.mutation === "empty-method") {
       credentialBinding = makeBinding({ ...base, methodIdHex: "00".repeat(32) });
+      if (vector.operation === "match-bindings") {
+        presentationBinding = credentialBinding;
+      } else if (vector.operation === "match-proof") {
+        proof = makeProof(credentialBinding.holderVerificationMethodRef);
+      }
     } else if (vector.mutation === "presentation-controller") {
       presentationBinding = {
         holderVerificationMethodRef: {
