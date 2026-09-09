@@ -2,13 +2,14 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Removed experimental secret-holder, blinded-holder, pseudonym, and
+  same-holder circuits. The package now supports explicit holder binding only.
 - Removed unused issuance and presentation protocol choreography from the
   family-neutral Compact source surface.
-- Consolidated same-holder circuits into the canonical holder-binding module.
-  The package now exposes exactly one standalone Compact root and one
-  composition-safe Compact root.
+- Reduced the package to one standalone Compact root and one composition-safe
+  Compact root.
 - Removed unused schema-discovery descriptors, method-specific legacy holder
-  bindings, compatibility pseudonyms, and three-credential business helpers.
+  bindings, and three-credential business helpers.
 - Removed duplicate `src` copies and redundant TypeScript subpath exports from
   the package tarball; Compact sources remain available through `dist` exports.
 

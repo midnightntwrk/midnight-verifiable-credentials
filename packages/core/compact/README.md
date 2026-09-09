@@ -33,22 +33,20 @@ and generated-artifact digest.
 
 `./credentials.compact` is the only standalone root.
 `./credentials/composable.compact` is the only composition-safe root: include it
-exactly once before dependency-free family composition entrypoints. Same-holder
-circuits are part of the retained holder-binding module and are therefore
-available through both canonical roots. The other credential leaf modules
-remain packaged for internal composition but are not advertised as standalone
-exports because they rely on declarations supplied by the shared root.
+exactly once before dependency-free family composition entrypoints. The other
+credential leaf modules remain packaged for internal composition but are not
+advertised as standalone exports because they rely on declarations supplied by
+the shared root.
 
-The external consumer gate compiles both canonical roots, then runs positive
-and negative same-holder vectors (different holder secret, challenge, and
-binding) against each generated contract. This is a pure binding predicate and
-adds no family or business semantics.
+The external consumer gate compiles both canonical roots from the packed
+tarball. Hidden-holder, pseudonym, and same-holder semantics require a dedicated
+threat model and belong in independently versioned credential-family packages.
 
 ## Ownership
 
 This package is the single canonical owner of reusable Compact VC/VP semantics.
 The retired compatibility packages are not part of the workspace or release
-surface. Their `verification-v1`, status-attestation, and legacy same-holder
+surface. Their `verification-v1`, status-attestation, and hidden-holder
 entrypoints are not supported by this package. Technical ownership is the VC
 package maintainers; release ownership is defined by the repository release
 contract.
