@@ -21,17 +21,16 @@ risk acceptance rather than permanent inline ignores.
    npm provenance, an SBOM, immutable versions, and verified dist-tags.
 4. The release gate packs the declared package allowlist and validates those
    exact tarballs in clean consumers outside the workspace.
-5. Vulnerability exceptions require a linked record containing the advisory,
+5. The repository carries no vulnerability suppressions. A future exception
+   requires a scanner configuration and linked record containing the advisory,
    affected versions, rationale, compensating controls, owner, and an expiry no
    later than 30 days. Critical exceptions require security-owner approval.
 6. A suspected compromise freezes affected publication. Maintainers preserve
    evidence, rotate exposed credentials, deprecate affected versions, publish
    a corrected immutable version, and notify known consumers.
 
-The executable policy lives in the security workflows, release scripts,
-`osv-scanner.toml`, and
-[`docs/security/vulnerability-exceptions.md`](../security/vulnerability-exceptions.md).
-The complete package lifecycle is defined by the
+The executable policy lives in the security workflows and release scripts. The
+complete package lifecycle is defined by the
 [package release contract](../architecture/package-release-contract.md).
 
 ## Consequences
@@ -41,3 +40,7 @@ The complete package lifecycle is defined by the
 - Published versions are never overwritten or silently repaired in place.
 - Repository or organization settings that enforce branch reviews remain
   external configuration and must match the documented workflow names.
+
+Root pnpm overrides temporarily pin `brace-expansion`, `js-yaml`, `postcss`,
+and `vite` to patched versions. `@midnightntwrk/mn-security` owns their review
+and removal by 2026-11-15; these pins are not vulnerability suppressions.

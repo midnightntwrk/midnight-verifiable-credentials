@@ -11,7 +11,6 @@
   "scripts": {
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
     "check:security-workflows": "node ./tooling/scripts/check-security-workflows.mjs",
-    "check:vulnerability-exceptions": "node ./tooling/scripts/check-vulnerability-exceptions.mjs",
     "check:workspace-catalog": "node ./tooling/scripts/workspace-catalog.mjs --check",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
@@ -28,7 +27,7 @@
     "build:all": "turbo run build --continue",
     "test:all": "turbo run test:ci --continue",
     "typecheck:all": "turbo run typecheck --continue",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
     "ci:typecheck": "pnpm run typecheck:all"
   },
   "devDependencies": {
