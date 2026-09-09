@@ -447,6 +447,16 @@ for (const releasePackage of releasePackages) {
       }
       if (sourcePackageJson.name === "@midnight-ntwrk/credential-compact") {
         compileExternalSource(
+          "core-bindings-conformance",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/core-bindings-conformance.compact",
+            ),
+            "utf8",
+          ),
+        );
+        compileExternalSource(
           "signer-authorization-conformance",
           readFileSync(
             path.join(

@@ -1,0 +1,22 @@
+{
+  "formatVersion": 1,
+  "category": "status-binding",
+  "fixture": {
+    "registryIdHex": "8888888888888888888888888888888888888888888888888888888888888888",
+    "authorityControllerAddressHex": "9999999999999999999999999999999999999999999999999999999999999999",
+    "authorityMethodIdHex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "statusHandleCommitmentHex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "expectedRootHex": "a16f17f4397a49d6a8b9ef2b7a38e2b6a92594df582c9ff1a384a772df4b3971"
+  },
+  "positive": [
+    { "id": "validate-status-registry-reference", "operation": "validate-registry" },
+    { "id": "validate-registry-bound-status", "operation": "validate-binding" },
+    { "id": "derive-registry-bound-status-root", "operation": "derive-root" }
+  ],
+  "negative": [
+    { "id": "reject-empty-status-registry-id", "mutation": "empty-registry", "errorIncludes": "registry id" },
+    { "id": "reject-empty-status-authority-controller", "mutation": "empty-authority-controller", "errorIncludes": "controller address" },
+    { "id": "reject-empty-status-authority-method", "mutation": "empty-authority-method", "errorIncludes": "method reference" },
+    { "id": "reject-empty-status-handle-commitment", "mutation": "empty-status-handle", "errorIncludes": "Status handle commitment" }
+  ]
+}

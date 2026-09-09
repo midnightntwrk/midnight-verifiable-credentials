@@ -16,13 +16,11 @@ import {
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
   JSON.parse(readFileSync(resolve(root, path), "utf8"));
-const loadSignerAuthorizationConformance = async () => {
+const loadCompactConformance = async (fixtureName) => {
   const cacheRoot = resolve(root, "packages/core/compact/.cache");
   const packageJson = readJson("packages/core/compact/package.json");
   mkdirSync(cacheRoot, { recursive: true });
-  const output = mkdtempSync(
-    resolve(cacheRoot, "signer-authorization-conformance-"),
-  );
+  const output = mkdtempSync(resolve(cacheRoot, `${fixtureName}-`));
   execFileSync(
     "compact",
     [
@@ -31,7 +29,7 @@ const loadSignerAuthorizationConformance = async () => {
       "--skip-zk",
       "--compact-path",
       resolve(root, "packages/core/compact/src"),
-      resolve(root, "tooling/fixtures/signer-authorization-conformance.compact"),
+      resolve(root, `tooling/fixtures/${fixtureName}.compact`),
       output,
     ],
     { stdio: "pipe" },
@@ -41,6 +39,10 @@ const loadSignerAuthorizationConformance = async () => {
   );
   return { output, pureCircuits: compiled.pureCircuits };
 };
+const loadSignerAuthorizationConformance = () =>
+  loadCompactConformance("signer-authorization-conformance");
+const loadCoreBindingsConformance = () =>
+  loadCompactConformance("core-bindings-conformance");
 const fromHex = (value) => Uint8Array.from(Buffer.from(value, "hex"));
 const toHex = (value) => Buffer.from(value).toString("hex");
 const zeroBytes32 = () => new Uint8Array(32);
@@ -86,37 +88,259 @@ test("validates positive and negative schema references in Compact", () => {
 
 test("validates positive and negative explicit holder bindings in Compact", () => {
   const fixture = readJson("conformance/vectors/holder-binding.json");
-  const base = fixture.positive[0];
+  const base = fixture.fixture;
+  const alternate = fromHex(
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  );
   const makeBinding = (value) => ({
     holderVerificationMethodRef: {
       controllerAddress: { bytes: fromHex(value.controllerAddressHex) },
       methodId: fromHex(value.methodIdHex),
     },
   });
+  const baseBinding = makeBinding(base);
+  const makeProof = (signerVerificationMethodRef) => ({
+    signerVerificationMethodRef,
+    createdAt: 0n,
+    challengeHash: zeroBytes32(),
+    publicKey: { x: 0n, y: 1n },
+    signature: { r: { x: 0n, y: 1n }, s: 0n },
+  });
+  const invoke = (operation, credentialBinding, presentationBinding, proof) => {
+    if (operation === "validate") {
+      return pureCircuits.assertValidExplicitHolderBinding(credentialBinding);
+    }
+    if (operation === "match-bindings") {
+      return pureCircuits.assertMatchingExplicitHolderBindings(
+        credentialBinding,
+        presentationBinding,
+      );
+    }
+    if (operation === "match-proof") {
+      return pureCircuits.assertProofMatchesExplicitHolderBinding(
+        credentialBinding,
+        proof,
+      );
+    }
+    assert.fail(`unknown holder-binding operation ${operation}`);
+  };
 
   for (const vector of fixture.positive) {
     assert.deepEqual(
-      pureCircuits.assertValidExplicitHolderBinding(makeBinding(vector)),
+      invoke(
+        vector.operation,
+        baseBinding,
+        baseBinding,
+        makeProof(baseBinding.holderVerificationMethodRef),
+      ),
       [],
+      vector.id,
     );
   }
   for (const vector of fixture.negative) {
-    const candidate = { ...base, [vector.replace]: vector.value };
-    const invalidBinding = makeBinding(candidate);
+    let credentialBinding = baseBinding;
+    let presentationBinding = baseBinding;
+    let proof = makeProof(baseBinding.holderVerificationMethodRef);
+    if (vector.mutation === "empty-controller") {
+      credentialBinding = makeBinding({ ...base, controllerAddressHex: "00".repeat(32) });
+    } else if (vector.mutation === "empty-method") {
+      credentialBinding = makeBinding({ ...base, methodIdHex: "00".repeat(32) });
+    } else if (vector.mutation === "presentation-controller") {
+      presentationBinding = {
+        holderVerificationMethodRef: {
+          ...baseBinding.holderVerificationMethodRef,
+          controllerAddress: { bytes: alternate },
+        },
+      };
+    } else if (vector.mutation === "presentation-method") {
+      presentationBinding = {
+        holderVerificationMethodRef: {
+          ...baseBinding.holderVerificationMethodRef,
+          methodId: alternate,
+        },
+      };
+    } else if (vector.mutation === "proof-controller") {
+      proof = makeProof({
+        ...baseBinding.holderVerificationMethodRef,
+        controllerAddress: { bytes: alternate },
+      });
+    } else if (vector.mutation === "proof-method") {
+      proof = makeProof({
+        ...baseBinding.holderVerificationMethodRef,
+        methodId: alternate,
+      });
+    } else {
+      assert.fail(`unknown holder-binding mutation ${vector.mutation}`);
+    }
     assert.throws(
-      () => pureCircuits.assertValidExplicitHolderBinding(invalidBinding),
+      () =>
+        invoke(
+          vector.operation,
+          credentialBinding,
+          presentationBinding,
+          proof,
+        ),
       (error) => String(error).includes(vector.errorIncludes),
       vector.id,
     );
+  }
+});
+
+test("validates positive and negative status bindings in Compact", () => {
+  const vectors = readJson("conformance/vectors/status-binding.json");
+  const fixture = vectors.fixture;
+  const makeBinding = () => ({
+    registryRef: {
+      registryId: fromHex(fixture.registryIdHex),
+      authorityVerificationMethodRef: {
+        controllerAddress: {
+          bytes: fromHex(fixture.authorityControllerAddressHex),
+        },
+        methodId: fromHex(fixture.authorityMethodIdHex),
+      },
+    },
+    statusHandleCommitment: fromHex(fixture.statusHandleCommitmentHex),
+  });
+  const invoke = (operation, binding) => {
+    if (operation === "validate-registry") {
+      return pureCircuits.assertValidStatusRegistryRef(binding.registryRef);
+    }
+    if (operation === "validate-binding") {
+      return pureCircuits.assertValidRegistryBoundStatusBinding(binding);
+    }
+    if (operation === "derive-root") {
+      return pureCircuits.registryBoundStatusBindingRoot(binding);
+    }
+    assert.fail(`unknown status-binding operation ${operation}`);
+  };
+
+  for (const vector of vectors.positive) {
+    const result = invoke(vector.operation, makeBinding());
+    if (vector.operation === "derive-root") {
+      assert.equal(toHex(result), fixture.expectedRootHex, vector.id);
+    } else {
+      assert.deepEqual(result, []);
+    }
+  }
+  for (const vector of vectors.negative) {
+    const binding = makeBinding();
+    if (vector.mutation === "empty-registry") {
+      binding.registryRef.registryId = zeroBytes32();
+    } else if (vector.mutation === "empty-authority-controller") {
+      binding.registryRef.authorityVerificationMethodRef.controllerAddress = {
+        bytes: zeroBytes32(),
+      };
+    } else if (vector.mutation === "empty-authority-method") {
+      binding.registryRef.authorityVerificationMethodRef.methodId = zeroBytes32();
+    } else if (vector.mutation === "empty-status-handle") {
+      binding.statusHandleCommitment = zeroBytes32();
+    } else {
+      assert.fail(`unknown status-binding mutation ${vector.mutation}`);
+    }
     assert.throws(
-      () =>
-        pureCircuits.assertMatchingExplicitHolderBindings(
-          invalidBinding,
-          invalidBinding,
-        ),
+      () => pureCircuits.assertValidRegistryBoundStatusBinding(binding),
       (error) => String(error).includes(vector.errorIncludes),
-      `${vector.id}-matching`,
+      vector.id,
     );
+  }
+});
+
+test("rejects credential-to-presentation substitutions in Compact", async () => {
+  const vectors = readJson("conformance/vectors/credential-presentation.json");
+  const fixture = vectors.fixture;
+  const alternate = fromHex(
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  );
+  const schema = {
+    packageId: fromHex(fixture.packageIdHex),
+    schemaId: fromHex(fixture.schemaIdHex),
+    majorVersion: BigInt(fixture.majorVersion),
+    minorVersion: BigInt(fixture.minorVersion),
+  };
+  const issuerVerificationMethodRef = {
+    controllerAddress: {
+      bytes: fromHex(fixture.issuerControllerAddressHex),
+    },
+    methodId: fromHex(fixture.issuerMethodIdHex),
+  };
+  const holderBinding = {
+    holderVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(fixture.holderControllerAddressHex),
+      },
+      methodId: fromHex(fixture.holderMethodIdHex),
+    },
+  };
+  const claimRoot = fromHex(fixture.claimRootHex);
+  const credential = {
+    version: 1n,
+    schema,
+    issuerVerificationMethodRef,
+    holderBinding,
+    statusBinding: {},
+    issuedAt: 1n,
+    hasExpiration: false,
+    expiresAt: 0n,
+    claims: {},
+    claimCommitments: {},
+    claimRoot,
+  };
+  const makePresentation = () => ({
+    version: 1n,
+    schema: { ...schema },
+    credentialClaimRoot: claimRoot,
+    issuerVerificationMethodRef: {
+      ...issuerVerificationMethodRef,
+      controllerAddress: { ...issuerVerificationMethodRef.controllerAddress },
+    },
+    holderBinding,
+    disclosed: {},
+  });
+  const conformance = await loadCoreBindingsConformance();
+  try {
+    for (const vector of vectors.positive) {
+      assert.deepEqual(
+        conformance.pureCircuits.assertMatchingCredentialPresentation(
+          credential,
+          makePresentation(),
+        ),
+        [],
+        vector.id,
+      );
+    }
+    for (const vector of vectors.negative) {
+      const presentation = makePresentation();
+      if (vector.mutation === "schema-package") {
+        presentation.schema.packageId = alternate;
+      } else if (vector.mutation === "schema-id") {
+        presentation.schema.schemaId = alternate;
+      } else if (vector.mutation === "schema-major") {
+        presentation.schema.majorVersion += 1n;
+      } else if (vector.mutation === "schema-minor") {
+        presentation.schema.minorVersion += 1n;
+      } else if (vector.mutation === "claim-root") {
+        presentation.credentialClaimRoot = alternate;
+      } else if (vector.mutation === "issuer-controller") {
+        presentation.issuerVerificationMethodRef.controllerAddress = {
+          bytes: alternate,
+        };
+      } else if (vector.mutation === "issuer-method") {
+        presentation.issuerVerificationMethodRef.methodId = alternate;
+      } else {
+        assert.fail(`unknown credential-presentation mutation ${vector.mutation}`);
+      }
+      assert.throws(
+        () =>
+          conformance.pureCircuits.assertMatchingCredentialPresentation(
+            credential,
+            presentation,
+          ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      );
+    }
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
   }
 });
 

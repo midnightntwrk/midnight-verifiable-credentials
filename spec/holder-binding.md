@@ -20,9 +20,10 @@ or authorization source owns that decision. Matching only the method reference
 MUST NOT be represented as proof that a DID document currently contains the
 proof key.
 
-The conformance vectors verify explicit-binding structure and equality only.
-Credential-family repositories own end-to-end holder-proof and protocol
-negative vectors.
+The conformance vectors verify explicit-binding structure, equality between
+credential and presentation bindings, and equality between the presentation
+proof signer reference and the binding. Credential-family repositories own
+end-to-end holder-proof and protocol negative vectors.
 
 Hidden-holder, pseudonym, and same-holder designs are not provided by this core.
 Credential-family repositories that implement them own their threat model,

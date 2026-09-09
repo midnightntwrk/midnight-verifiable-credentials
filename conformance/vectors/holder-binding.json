@@ -1,25 +1,21 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "category": "holder-binding",
+  "fixture": {
+    "controllerAddressHex": "0303030303030303030303030303030303030303030303030303030303030303",
+    "methodIdHex": "0404040404040404040404040404040404040404040404040404040404040404"
+  },
   "positive": [
-    {
-      "id": "explicit-holder-binding-v1",
-      "controllerAddressHex": "0303030303030303030303030303030303030303030303030303030303030303",
-      "methodIdHex": "0404040404040404040404040404040404040404040404040404040404040404"
-    }
+    { "id": "validate-explicit-holder-binding", "operation": "validate" },
+    { "id": "match-credential-presentation-holder-bindings", "operation": "match-bindings" },
+    { "id": "bind-presentation-proof-signer", "operation": "match-proof" }
   ],
   "negative": [
-    {
-      "id": "reject-empty-holder-controller",
-      "replace": "controllerAddressHex",
-      "value": "0000000000000000000000000000000000000000000000000000000000000000",
-      "errorIncludes": "controller address"
-    },
-    {
-      "id": "reject-empty-holder-method",
-      "replace": "methodIdHex",
-      "value": "0000000000000000000000000000000000000000000000000000000000000000",
-      "errorIncludes": "method reference"
-    }
+    { "id": "reject-empty-holder-controller", "operation": "validate", "mutation": "empty-controller", "errorIncludes": "controller address" },
+    { "id": "reject-empty-holder-method", "operation": "validate", "mutation": "empty-method", "errorIncludes": "method reference" },
+    { "id": "reject-presentation-holder-controller-substitution", "operation": "match-bindings", "mutation": "presentation-controller", "errorIncludes": "holder controller" },
+    { "id": "reject-presentation-holder-method-substitution", "operation": "match-bindings", "mutation": "presentation-method", "errorIncludes": "holder method" },
+    { "id": "reject-proof-holder-controller-substitution", "operation": "match-proof", "mutation": "proof-controller", "errorIncludes": "proof signer must match holder binding" },
+    { "id": "reject-proof-holder-method-substitution", "operation": "match-proof", "mutation": "proof-method", "errorIncludes": "proof signer method reference" }
   ]
 }
