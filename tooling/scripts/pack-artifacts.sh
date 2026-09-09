@@ -46,8 +46,9 @@ if [[ "$actual_count" != "$expected_count" ]]; then
   echo "[pack-artifacts] Expected ${expected_count} tarballs, found ${actual_count}" >&2
   exit 1
 fi
-node "$ROOT_DIR/tooling/scripts/check-release-package-contract.mjs" --tarballs "$DEST_DIR"
-if [[ "$SKIP_CONSUMER_TESTS" != "--skip-consumer-tests" ]]; then
+if [[ "$SKIP_CONSUMER_TESTS" == "--skip-consumer-tests" ]]; then
+  node "$ROOT_DIR/tooling/scripts/test-release-package-consumers.mjs" --validate-tarballs "$DEST_DIR"
+else
   node "$ROOT_DIR/tooling/scripts/test-release-package-consumers.mjs" --tarballs "$DEST_DIR"
 fi
 echo "[pack-artifacts] Packed ${actual_count} tarballs"
