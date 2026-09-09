@@ -40,13 +40,12 @@
   "scripts": {
     "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
     "prepack": "pnpm run build",
-    "test": "vitest run --config vitest.config.ts",
-    "test:ci": "vitest run --config vitest.config.ts",
+    "test": "vitest run",
+    "test:ci": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
-    "clean": "rm -rf dist coverage .cache .turbo *.tsbuildinfo",
-    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
+    "clean": "rm -rf dist coverage .cache .turbo *.tsbuildinfo"
   },
   "files": [
     "dist/**",
