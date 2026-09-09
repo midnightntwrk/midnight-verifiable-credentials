@@ -292,29 +292,20 @@ for (const releasePackage of releasePackages) {
         `${sourcePackageJson.name}: ${label}`,
       );
     }
-    if (releasePackage.consumerChecks.includes("compact")) {
-      const expectedCompactCompiler = installedPackageJson.midnight?.compactCompilerVersion;
-      if (typeof expectedCompactCompiler !== "string") {
-        fail(`${sourcePackageJson.name} does not declare an exact Compact compiler version`);
-      }
-      run(
-        "compact",
-        [
-          "compile",
-          `+${expectedCompactCompiler}`,
-          "--skip-zk",
-          "--compact-path",
-          path.join(installedPackageRoot, "dist"),
-          path.join(consumerRoot, "consumer.compact"),
-          path.join(consumerRoot, "compact-output"),
-        ],
-        consumerRoot,
-        `${sourcePackageJson.name}: Compact package resolution`,
-      );
-    }
-
+    const expectedCompactEntrypoints =
+      sourcePackageJson.midnight?.compactEntrypoints;
     const compactEntrypoints = installedPackageJson.midnight?.compactEntrypoints;
+    if (
+      expectedCompactEntrypoints !== undefined &&
+      JSON.stringify(compactEntrypoints) !==
+        JSON.stringify(expectedCompactEntrypoints)
+    ) {
+      fail(`${sourcePackageJson.name} has unexpected Compact entrypoint metadata`);
+    }
     if (compactEntrypoints !== undefined) {
+      if (typeof installedPackageJson.midnight?.compactCompilerVersion !== "string") {
+        fail(`${sourcePackageJson.name} has no Compact compiler version`);
+      }
       const standalone = compactEntrypoints.standalone;
       const composition = compactEntrypoints.composition;
       if (!Array.isArray(standalone) || !Array.isArray(composition)) {
