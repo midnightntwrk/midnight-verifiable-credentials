@@ -456,6 +456,16 @@ for (const releasePackage of releasePackages) {
             "utf8",
           ),
         );
+        compileExternalSource(
+          "signer-authorization-ledger8-consumer",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/signer-authorization-ledger8-consumer.compact",
+            ),
+            "utf8",
+          ),
+        );
       }
     }
 
