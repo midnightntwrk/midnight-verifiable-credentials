@@ -56,12 +56,11 @@ the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
 
 ## Prerelease publication
 
-Dispatch `Publish npmjs Packages` from the protected `develop` branch with
-the version approved by the release PR. For example:
+Set the root and supported package manifests to the version approved by the
+release PR, then dispatch `Publish npmjs Packages` from `develop`. For example:
 
 ```text
 channel: rc
-version: 0.2.0
 rc_index: 1
 ```
 

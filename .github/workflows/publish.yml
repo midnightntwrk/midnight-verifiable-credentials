@@ -11,10 +11,6 @@ on:
         options:
           - rc
           - release
-      version:
-        description: Base semantic version, for example 0.1.0
-        required: false
-        type: string
       rc_index:
         description: Positive RC number; 1 creates x.y.z-rc1
         required: false
@@ -50,7 +46,6 @@ jobs:
         id: context
         env:
           DISPATCH_CHANNEL: ${{ inputs.channel }}
-          DISPATCH_VERSION: ${{ inputs.version }}
           DISPATCH_RC_INDEX: ${{ inputs.rc_index }}
         run: ./tooling/scripts/release-resolve-context.sh
 
@@ -99,13 +94,9 @@ jobs:
         id: version
         env:
           CHANNEL: ${{ steps.context.outputs.channel }}
-          VERSION: ${{ steps.context.outputs.version }}
           RC_INDEX: ${{ steps.context.outputs.rc_index }}
         run: |
           args=(--channel "$CHANNEL" --github-output "$GITHUB_OUTPUT")
-          if [[ -n "$VERSION" ]]; then
-            args+=(--version "$VERSION")
-          fi
           if [[ -n "$RC_INDEX" ]]; then
             args+=(--rc-index "$RC_INDEX")
           fi
