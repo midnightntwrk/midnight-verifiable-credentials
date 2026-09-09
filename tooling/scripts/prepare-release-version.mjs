@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
 import {
   appendFileSync,
   readFileSync,
@@ -24,40 +23,14 @@ export const requireStableVersion = (value, label = "version") => {
   return value;
 };
 
-const gitShortSha = () => {
-  const value =
-    process.env.GITHUB_SHA ??
-    execFileSync("git", ["rev-parse", "--short=12", "HEAD"], {
-      cwd: repoRoot,
-      encoding: "utf8",
-    }).trim();
-  return value
-    .slice(0, 12)
-    .replace(/[^0-9a-z]/giu, "")
-    .toLowerCase();
-};
-
 export const computeReleaseVersion = ({
   baseVersion,
   channel,
   rcIndex,
-  runNumber = process.env.GITHUB_RUN_NUMBER,
-  shortSha = gitShortSha(),
 }) => {
   requireStableVersion(baseVersion, "base version");
 
   switch (channel) {
-    case "snapshot": {
-      const snapshotRun = runNumber ?? Date.now().toString();
-      if (!/^[0-9A-Za-z._-]+$/u.test(snapshotRun)) {
-        throw new Error("snapshot run number contains unsupported characters");
-      }
-      return {
-        channel,
-        version: `${baseVersion}-snapshot.${snapshotRun}.${shortSha}`,
-        npmTag: "snapshot",
-      };
-    }
     case "rc":
       if (!/^[1-9]\d*$/u.test(rcIndex ?? "")) {
         throw new Error("rc index must be a positive integer");
@@ -68,6 +41,9 @@ export const computeReleaseVersion = ({
         npmTag: "rc",
       };
     case "release":
+      if (rcIndex !== undefined && rcIndex !== "") {
+        throw new Error("rc index is only valid for rc publication");
+      }
       return {
         channel,
         version: baseVersion,
@@ -75,7 +51,7 @@ export const computeReleaseVersion = ({
       };
     default:
       throw new Error(
-        `channel must be snapshot, rc, or release; received ${channel}`,
+        `channel must be rc or release; received ${channel}`,
       );
   }
 };
@@ -86,9 +62,6 @@ const parseArgs = (args) => {
     switch (args[index]) {
       case "--channel":
         options.channel = args[++index];
-        break;
-      case "--version":
-        options.version = args[++index];
         break;
       case "--rc-index":
         options.rcIndex = args[++index];
@@ -138,7 +111,7 @@ export const prepareReleaseVersion = (options) => {
 
   const rootPackage = readJson("package.json");
   const baseVersion = requireStableVersion(
-    options.version ?? rootPackage.version,
+    rootPackage.version,
     "version",
   );
   const release = computeReleaseVersion({

@@ -2,14 +2,10 @@ import assert from "node:assert/strict";
 
 import {
   CredentialModelError,
+  assertCredentialFamilyDefinition,
   defineCredentialFamily,
 } from "@midnight-ntwrk/credential-model";
 
-const jsonCodec = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: JSON.parse,
-};
 const accessFamily = defineCredentialFamily({
   id: "fixture.access",
   version: "0.1.0",
@@ -21,28 +17,16 @@ const accessFamily = defineCredentialFamily({
       {
         id: "accessLevel",
         path: ["accessLevel"],
-        disclosure: "predicate-only",
+        disclosure: "selective",
         required: true,
       },
     ],
   },
-  capabilities: [],
-  artifacts: [],
-  composition: {
-    formatVersion: 1,
-    packages: [],
-  },
-  credentialCodec: jsonCodec,
-  presentationCodec: jsonCodec,
 });
 
+assertCredentialFamilyDefinition(accessFamily);
 assert.equal(accessFamily.id, "fixture.access");
-assert.equal(
-  accessFamily.credentialCodec.decode(
-    accessFamily.credentialCodec.encode({ accessLevel: 4 }),
-  ).accessLevel,
-  4,
-);
+assert.equal(accessFamily.schema.claims[0].id, "accessLevel");
 assert.throws(
   () =>
     defineCredentialFamily({
@@ -54,4 +38,4 @@ assert.throws(
     error.code === "INVALID_VERSION",
 );
 
-console.log("Node ESM consumed the credential model tarball.");
+console.log("Node ESM consumed the credential metadata model tarball.");

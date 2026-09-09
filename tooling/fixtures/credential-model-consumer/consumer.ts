@@ -1,14 +1,7 @@
-import { type CredentialFamilyDefinition } from "@midnight-ntwrk/credential-model";
+import type {
+  CredentialFamilyDefinition,
+} from "@midnight-ntwrk/credential-model";
 
-import {
-  accessFamily,
-  type AccessCredential,
-  type AccessPresentation,
-} from "./family.js";
+import { accessFamily } from "./family.js";
 
-export const typedFamily: CredentialFamilyDefinition<
-  AccessCredential,
-  AccessPresentation,
-  string,
-  string
-> = accessFamily;
+export const typedFamily: CredentialFamilyDefinition = accessFamily;

@@ -1,0 +1,66 @@
+{
+  "formatVersion": 2,
+  "specification": "0.2-draft",
+  "normativeRoot": "spec",
+  "implementationPackages": [
+    {
+      "manifest": "packages/core/model/package.json",
+      "name": "@midnight-ntwrk/credential-model",
+      "version": "0.2.0"
+    },
+    {
+      "manifest": "packages/core/compact/package.json",
+      "name": "@midnight-ntwrk/credential-compact",
+      "version": "0.2.0"
+    }
+  ],
+  "operations": [
+    {
+      "id": "validate-schema-reference",
+      "section": "spec/data-model.md",
+      "vectorCategory": "schema-reference"
+    },
+    {
+      "id": "derive-proof-context-tags",
+      "section": "spec/canonical-encoding.md",
+      "vectorCategory": "compact-generated"
+    },
+    {
+      "id": "encode-compact-value",
+      "section": "spec/canonical-encoding.md",
+      "vectorCategory": "compact-value-encoding"
+    },
+    {
+      "id": "decode-compact-value",
+      "section": "spec/canonical-encoding.md",
+      "vectorCategory": "compact-value-encoding"
+    },
+    {
+      "id": "validate-explicit-holder-binding",
+      "section": "spec/holder-binding.md",
+      "vectorCategory": "holder-binding"
+    }
+  ],
+  "vectors": [
+    {
+      "path": "conformance/vectors/compact-generated.json",
+      "sha256": "2132cb6f9e05dbb56b67b3ba54937d3fc7777f144a6398c2220a38a73a3ac5e8"
+    },
+    {
+      "path": "conformance/vectors/compact-value-encoding.json",
+      "sha256": "744f1e8671a36d3feb988f7fc538535f862b53ea37458eb501b4f01fabf88366"
+    },
+    {
+      "path": "conformance/vectors/holder-binding.json",
+      "sha256": "23b94967a8a1f98f4e499f5899c32f6cb18ddac6eca78fa3dfad7008e2b90789"
+    },
+    {
+      "path": "conformance/vectors/schema-reference.json",
+      "sha256": "ea26d3c2fa0ca5dee676bd945daa599a11b4b473dc0f5ad86383554f6841b3ce"
+    }
+  ],
+  "allowedCoreImports": [
+    "../../packages/core/compact/src/compact-value-codec.ts",
+    "../../packages/core/compact/src/managed/credentials/contract/index.js"
+  ]
+}

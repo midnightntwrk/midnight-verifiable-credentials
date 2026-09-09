@@ -16,7 +16,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { workspaceCatalog } from "./workspace-catalog.mjs";
+import { supportedPackages } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -39,19 +39,105 @@ const isWithin = (parent, child) => {
 const tarballName = (packageJson) =>
   `${packageJson.name.slice(1).replace("/", "-")}-${packageJson.version}.tgz`;
 
+const collectExportTargets = (value, targets = []) => {
+  if (typeof value === "string") {
+    targets.push(value);
+  } else if (value && typeof value === "object" && !Array.isArray(value)) {
+    for (const nested of Object.values(value)) {
+      collectExportTargets(nested, targets);
+    }
+  } else {
+    fail("package exports must contain only strings or condition objects");
+  }
+  return targets;
+};
+
+const readTarballManifest = (tarballPath, sourcePackageJson) => {
+  const entries = execFileSync("tar", ["-tzf", tarballPath], {
+    encoding: "utf8",
+  })
+    .trim()
+    .split(/\r?\n/u)
+    .filter(Boolean);
+  const requiredEntries = [
+    "package/package.json",
+    "package/LICENSE",
+    "package/README.md",
+    "package/CHANGELOG.md",
+  ];
+
+  for (const entry of entries) {
+    const allowed =
+      requiredEntries.includes(entry) || entry.startsWith("package/dist/");
+    if (!allowed || entry.split("/").includes("..")) {
+      fail(`${path.basename(tarballPath)} contains unexpected path ${entry}`);
+    }
+  }
+  for (const entry of requiredEntries) {
+    if (!entries.includes(entry)) {
+      fail(`${path.basename(tarballPath)} is missing ${entry}`);
+    }
+  }
+
+  const manifest = JSON.parse(
+    execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
+      encoding: "utf8",
+    }),
+  );
+  if (
+    manifest.name !== sourcePackageJson.name ||
+    manifest.version !== sourcePackageJson.version ||
+    manifest.private !== false ||
+    manifest.license !== "Apache-2.0"
+  ) {
+    fail(
+      `${path.basename(tarballPath)} has unexpected package metadata`,
+    );
+  }
+  for (const target of collectExportTargets(manifest.exports)) {
+    if (!target.startsWith("./dist/") || target.includes("*")) {
+      fail(`${manifest.name} has unsupported export target ${target}`);
+    }
+    const entry = `package/${target.slice(2)}`;
+    if (!entries.includes(entry)) {
+      fail(`${manifest.name} export target ${target} is missing`);
+    }
+  }
+
+  const compactExports = Object.keys(manifest.exports ?? {})
+    .filter((subpath) => subpath.endsWith(".compact"))
+    .sort();
+  const compactEntrypoints = Object.values(
+    manifest.midnight?.compactEntrypoints ?? {},
+  )
+    .flat()
+    .sort();
+  if (
+    compactExports.length > 0 ||
+    compactEntrypoints.length > 0
+  ) {
+    if (JSON.stringify(compactExports) !== JSON.stringify(compactEntrypoints)) {
+      fail(`${manifest.name} Compact exports and entrypoints differ`);
+    }
+  }
+  return manifest;
+};
+
 const args = process.argv.slice(2);
 const tarballMode = args.length === 2 && args[0] === "--tarballs";
+const validationMode =
+  args.length === 2 && args[0] === "--validate-tarballs";
 const registryMode =
   args.length === 4 &&
   args[0] === "--registry" &&
   args[2] === "--version";
-if (!tarballMode && !registryMode) {
+if (!tarballMode && !validationMode && !registryMode) {
   fail(
-    "Usage: test-release-package-consumers.mjs --tarballs <directory> | --registry <url> --version <version>",
+    "Usage: test-release-package-consumers.mjs --tarballs <directory> | --validate-tarballs <directory> | --registry <url> --version <version>",
   );
 }
 
-const tarballDirectory = tarballMode
+const tarballDirectory = tarballMode || validationMode
   ? path.resolve(repoRoot, args[1])
   : undefined;
 const registry = registryMode ? args[1] : undefined;
@@ -83,10 +169,10 @@ const installLifecycleHooks = [
 const scriptChecks = [
   ["node", "test:node", "Node ESM"],
   ["typescript", "typecheck", "strict TypeScript"],
-  ["legacy-typescript", "typecheck:legacy", "legacy TypeScript resolution"],
   ["browser", "bundle", "browser bundle"],
   ["browser", "test:bundle", "bundled execution"],
 ];
+const knownChecks = new Set(scriptChecks.map(([check]) => check));
 
 const run = (command, commandArgs, cwd, label) => {
   console.log(`[test-release-package-consumers] ${label}`);
@@ -97,14 +183,19 @@ const run = (command, commandArgs, cwd, label) => {
   });
 };
 
-const releasePackages = workspaceCatalog.filter(
-  (entry) => entry.releaseStage !== "internal",
-);
+const releasePackages = supportedPackages;
 if (releasePackages.length === 0) {
-  fail("workspace catalog has no candidate or supported release packages");
+  fail("workspace catalog has no supported release packages");
 }
 
 for (const releasePackage of releasePackages) {
+  if (
+    !Array.isArray(releasePackage.consumerChecks) ||
+    releasePackage.consumerChecks.length === 0 ||
+    releasePackage.consumerChecks.some((check) => !knownChecks.has(check))
+  ) {
+    fail(`${releasePackage.path} has invalid consumer checks`);
+  }
   if (typeof releasePackage.consumerFixture !== "string") {
     fail(`${releasePackage.path} has no clean-consumer fixture`);
   }
@@ -115,6 +206,11 @@ for (const releasePackage of releasePackages) {
       "utf8",
     ),
   );
+  for (const task of ["lint", "typecheck", "build", "test", "prepack"]) {
+    if (typeof sourcePackageJson.scripts?.[task] !== "string") {
+      fail(`${releasePackage.path} is missing the ${task} task`);
+    }
+  }
   const fixtureRoot = path.resolve(repoRoot, releasePackage.consumerFixture);
   if (!isWithin(repoRoot, fixtureRoot)) {
     fail(
@@ -130,7 +226,7 @@ for (const releasePackage of releasePackages) {
   if (
     fixtureRuntimeDependencies.length !== 1 ||
     fixturePackageJson.dependencies?.[sourcePackageJson.name] !==
-    "file:./vendor/candidate.tgz"
+    "file:./vendor/package.tgz"
   ) {
     fail(
       `${releasePackage.consumerFixture} must install only ${sourcePackageJson.name} from the copied tarball`,
@@ -145,10 +241,9 @@ for (const releasePackage of releasePackages) {
     if (!existsSync(tarballPath)) {
       fail(`${path.relative(repoRoot, tarballPath)} is missing`);
     }
-    const packedPackageJson = JSON.parse(
-      execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
-        encoding: "utf8",
-      }),
+    const packedPackageJson = readTarballManifest(
+      tarballPath,
+      sourcePackageJson,
     );
     for (const lifecycleHook of installLifecycleHooks) {
       if (packedPackageJson.scripts?.[lifecycleHook] !== undefined) {
@@ -157,6 +252,9 @@ for (const releasePackage of releasePackages) {
         );
       }
     }
+  }
+  if (validationMode) {
+    continue;
   }
 
   const temporaryRoot = mkdtempSync(
@@ -173,7 +271,7 @@ for (const releasePackage of releasePackages) {
       mkdirSync(path.join(consumerRoot, "vendor"));
       copyFileSync(
         tarballPath,
-        path.join(consumerRoot, "vendor", "candidate.tgz"),
+        path.join(consumerRoot, "vendor", "package.tgz"),
       );
     } else {
       fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
@@ -212,8 +310,8 @@ for (const releasePackage of releasePackages) {
     for (const locator of localLocators) {
       if (
         tarballPath !== undefined &&
-        (locator === "file:./vendor/candidate.tgz" ||
-          locator === "file:vendor/candidate.tgz")
+        (locator === "file:./vendor/package.tgz" ||
+          locator === "file:vendor/package.tgz")
       ) {
         continue;
       }
@@ -295,29 +393,20 @@ for (const releasePackage of releasePackages) {
         `${sourcePackageJson.name}: ${label}`,
       );
     }
-    if (releasePackage.consumerChecks.includes("compact")) {
-      const expectedCompactCompiler = installedPackageJson.midnight?.compactCompilerVersion;
-      if (typeof expectedCompactCompiler !== "string") {
-        fail(`${sourcePackageJson.name} does not declare an exact Compact compiler version`);
-      }
-      run(
-        "compact",
-        [
-          "compile",
-          `+${expectedCompactCompiler}`,
-          "--skip-zk",
-          "--compact-path",
-          path.join(installedPackageRoot, "dist"),
-          path.join(consumerRoot, "consumer.compact"),
-          path.join(consumerRoot, "compact-output"),
-        ],
-        consumerRoot,
-        `${sourcePackageJson.name}: Compact package resolution`,
-      );
-    }
-
+    const expectedCompactEntrypoints =
+      sourcePackageJson.midnight?.compactEntrypoints;
     const compactEntrypoints = installedPackageJson.midnight?.compactEntrypoints;
+    if (
+      expectedCompactEntrypoints !== undefined &&
+      JSON.stringify(compactEntrypoints) !==
+        JSON.stringify(expectedCompactEntrypoints)
+    ) {
+      fail(`${sourcePackageJson.name} has unexpected Compact entrypoint metadata`);
+    }
     if (compactEntrypoints !== undefined) {
+      if (typeof installedPackageJson.midnight?.compactCompilerVersion !== "string") {
+        fail(`${sourcePackageJson.name} has no Compact compiler version`);
+      }
       const standalone = compactEntrypoints.standalone;
       const composition = compactEntrypoints.composition;
       if (!Array.isArray(standalone) || !Array.isArray(composition)) {
@@ -352,23 +441,7 @@ for (const releasePackage of releasePackages) {
         compileExternal(`compact-standalone-${index}`, [entrypoint]);
       }
       for (const [index, entrypoint] of composition.entries()) {
-        const output = compileExternal(`compact-composition-${index}`, ["./credentials/bindings.compact", entrypoint]);
-        run(
-          "node",
-          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
-          consumerRoot,
-          `${sourcePackageJson.name}: same-holder semantic vectors (${index})`,
-        );
-      }
-      for (const entrypoint of standalone) {
-        if (!entrypoint.includes("same-holder")) continue;
-        const output = compileExternal(`compact-vector-${standalone.indexOf(entrypoint)}`, [entrypoint]);
-        run(
-          "node",
-          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
-          consumerRoot,
-          `${sourcePackageJson.name}: standalone same-holder semantic vectors`,
-        );
+        compileExternal(`compact-composition-${index}`, [entrypoint]);
       }
     }
 

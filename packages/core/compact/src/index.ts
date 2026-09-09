@@ -1,2 +1,2 @@
-export * from "./jubjub.js";
+export * from "./compact-value-codec.js";
 export * from "./managed/credentials/contract/index.js";

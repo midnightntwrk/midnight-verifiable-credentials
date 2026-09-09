@@ -11,46 +11,45 @@ credential family, proof artifact, or registry authority.
 ## Scope
 
 The package contains generic VC/VP envelopes, schema references, issuer and
-holder-binding shapes, proof/challenge primitives, issuance and presentation
-message envelopes, VC-side status-binding shapes, and VC/VP linkage helpers.
-`StatusRegistryRef` is vocabulary only: this package does not authenticate
-registry mutation, roots, time, witnesses, or final non-membership.
+holder-binding shapes, proof/challenge primitives, VC-side status-binding
+shapes, VC/VP linkage helpers, and
+protocol-neutral `compact-value-v1.base64url` TypeScript framing for canonical
+Compact runtime values. `StatusRegistryRef` is vocabulary only: this package
+does not authenticate registry mutation, roots, time, witnesses, or final
+non-membership.
 
-`verification-v1`, family claims and predicates, status-registry authority,
-proving/deployment artifacts, wallets, signing keys, witnesses, secrets, and
-use-case code are deliberately excluded.
+`verification-v1`, issuance/presentation protocol choreography, family claims
+and predicates, status-registry authority, proving/deployment artifacts,
+wallets, signing keys, witnesses, secrets, and use-case code are deliberately
+excluded.
 
 ## Toolchain and generated output
 
-The candidate is compiled and checked with the pinned Compact `0.31.1` compiler
-and exactly `@midnight-ntwrk/compact-runtime` `0.16.0`. Builds fail before
-generated output is accepted if either resolved version drifts. `src/managed` and
-`dist` are generated during build and are not hand-edited.
+The package is compiled with the pinned Compact `0.31.1` compiler and exactly
+`@midnight-ntwrk/compact-runtime` `0.16.0`. Builds verify both versions, then
+regenerate `src/managed` and `dist`; neither directory is hand-edited.
 `dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
 and generated-artifact digest.
 
-Only `./credentials.compact` and `./holder-binding/same-holder.compact` are
-standalone roots. `./holder-binding/same-holder/composable.compact` is an
-explicit composition fragment: include `credentials/bindings` (or the full
-`credentials` root) first, then include the fragment exactly once. The other
+`./credentials.compact` is the only standalone root.
+`./credentials/composable.compact` is the only composition-safe root: include it
+exactly once before dependency-free family composition entrypoints. The other
 credential leaf modules remain packaged for internal composition but are not
 advertised as standalone exports because they rely on declarations supplied by
 the shared root.
 
-The external consumer gate compiles both standalone roots and the composition
-fragment, then runs positive and negative same-holder vectors (different holder
-secret, challenge, and binding) against each generated contract. This is a pure
-binding predicate and adds no family or business semantics.
+The external consumer gate compiles both canonical roots from the packed
+tarball. Hidden-holder, pseudonym, and same-holder semantics require a dedicated
+threat model and belong in independently versioned credential-family packages.
 
-## Compatibility and ownership
+## Ownership
 
-The old private `@midnight-ntwrk/midnight-did-credentials` package remains an
-internal compatibility facade for one migration cycle and receives no new API.
-The old same-holder package remains private and unchanged as a compatibility
-implementation. Technical ownership is the VC package maintainers; support and
-publication ownership remain unassigned until a separate graduation review.
-ADR-0014 remains **Proposed**; this candidate records an implementation graph,
-not normative ADR acceptance.
+This package is the single canonical owner of reusable Compact VC/VP semantics.
+The retired compatibility packages are not part of the workspace or release
+surface. Their `verification-v1`, status-attestation, and hidden-holder
+entrypoints are not supported by this package. Technical ownership is the VC
+package maintainers; release operation and incident ownership are defined by
+the repository's npm publication runbook.
 
 ## Usage boundary
 

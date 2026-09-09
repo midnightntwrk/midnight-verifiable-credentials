@@ -9,22 +9,12 @@ on:
         type: choice
         default: rc
         options:
-          - snapshot
           - rc
           - release
-      version:
-        description: Base semantic version, for example 0.1.0
-        required: false
-        type: string
       rc_index:
         description: Positive RC number; 1 creates x.y.z-rc1
         required: false
         type: string
-      promote_latest:
-        description: Also move npm latest to the published version (requires dist-tag permissions)
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -36,12 +26,13 @@ concurrency:
 env:
   COMPACT_COMPILER_VERSION: 0.31.1
   NPM_REGISTRY: https://registry.npmjs.org/
-  PNPM_CONFIG_AUDIT: "false"
-  PNPM_CONFIG_FUND: "false"
 
 jobs:
   publish:
     name: Publish supported packages
+    if: >-
+      (inputs.channel == 'rc' && (github.ref_name == 'develop' || github.ref_name == 'main')) ||
+      (inputs.channel == 'release' && github.ref_name == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
@@ -53,14 +44,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Resolve publication context
-        id: context
-        env:
-          DISPATCH_CHANNEL: ${{ inputs.channel }}
-          DISPATCH_VERSION: ${{ inputs.version }}
-          DISPATCH_RC_INDEX: ${{ inputs.rc_index }}
-        run: ./tooling/scripts/release-resolve-context.sh
 
       - name: Set up pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -90,9 +73,6 @@ jobs:
             console.log(`npm ${process.argv[1]} supports trusted publishing`);
           ' "$npm_version"
 
-      - name: Enable Corepack
-        run: corepack enable
-
       - name: Set up Compact toolchain
         uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
         env:
@@ -100,34 +80,8 @@ jobs:
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
-      - name: Verify Compact installation
-        run: compact compile --version
-
-      - name: Configure private Git dependencies
-        env:
-          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
-        run: |
-          echo "::add-mask::${VC_GITHUB_DEPENDENCY_TOKEN}"
-          git config --global url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+ssh://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://git@github.com/"
-          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+https://git@github.com/"
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Remove private Git credentials
-        if: always()
-        env:
-          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
-        run: |
-          git config --global --remove-section \
-            "url.https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/" \
-            2>/dev/null || true
-
-      - name: Test release tooling
-        run: pnpm run test:release-tooling
 
       - name: Run repository light gate
         run: ./run.sh --light
@@ -135,14 +89,10 @@ jobs:
       - name: Prepare release version
         id: version
         env:
-          CHANNEL: ${{ steps.context.outputs.channel }}
-          VERSION: ${{ steps.context.outputs.version }}
-          RC_INDEX: ${{ steps.context.outputs.rc_index }}
+          CHANNEL: ${{ inputs.channel }}
+          RC_INDEX: ${{ inputs.rc_index }}
         run: |
           args=(--channel "$CHANNEL" --github-output "$GITHUB_OUTPUT")
-          if [[ -n "$VERSION" ]]; then
-            args+=(--version "$VERSION")
-          fi
           if [[ -n "$RC_INDEX" ]]; then
             args+=(--rc-index "$RC_INDEX")
           fi
@@ -182,7 +132,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.MIDNIGHTCI_NPMJS_TOKEN }}
           NPM_ACCESS: public
           NPM_TAG: ${{ steps.version.outputs.npm_tag }}
-          PROMOTE_LATEST: ${{ inputs.promote_latest }}
           VERSION: ${{ steps.version.outputs.version }}
         run: ./tooling/scripts/publish-npm-packages.sh
 
@@ -200,7 +149,6 @@ jobs:
       - name: Verify npm dist-tags
         env:
           NPM_TAG: ${{ steps.version.outputs.npm_tag }}
-          PROMOTE_LATEST: ${{ inputs.promote_latest }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           args=(
@@ -210,9 +158,6 @@ jobs:
             --tag "$NPM_TAG"
             --version "$VERSION"
           )
-          if [[ "$PROMOTE_LATEST" == "true" ]]; then
-            args+=(--promote-latest)
-          fi
           node ./tooling/scripts/npm-release-state.mjs "${args[@]}"
 
       - name: Test clean npmjs consumers

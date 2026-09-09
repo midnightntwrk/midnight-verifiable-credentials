@@ -11,19 +11,12 @@ of this release train.
 - npm credentials and incident owner: `@midnightntwrk/mn-sre`
 - Security disclosure and escalation: [`SECURITY.md`](../../SECURITY.md)
 
-The initial release path follows `midnight-did`: it uses the organization
-`MIDNIGHTCI_NPMJS_TOKEN` secret directly from the reviewed workflow. A
-protected GitHub environment may be added when repository administration and
-release policy support it, but it is not required to bootstrap publication.
-The workflow needs `contents: read` and `id-token: write`; it does not need
-repository write access.
-
 ## Authentication
 
-The first publication uses the existing `MIDNIGHTCI_NPMJS_TOKEN`, matching the
-working `midnight-did` npmjs release path. That token must be a granular
-read/write token with bypass 2FA enabled and only the `@midnight-ntwrk` package
-permissions needed for this release.
+The workflow requests npm provenance identity and supplies the
+`MIDNIGHTCI_NPMJS_TOKEN` secret to the release script. The token is required
+for access and dist-tag operations, must be granular and read/write, and must
+be scoped to the required `@midnight-ntwrk` packages.
 
 `@midnightntwrk/mn-sre` owns token creation, rotation, and revocation. Never
 place a token in repository files, workflow inputs, command arguments,
@@ -39,12 +32,10 @@ older npm CLI before any release work begins.
 npm OIDC authorizes publication but not separate `dist-tag` or `access`
 commands. The normal path therefore uses the scoped
 `MIDNIGHTCI_NPMJS_TOKEN` for access and tag operations. By default, `--tag rc`
-applies `rc` and preserves `latest`. For an explicitly approved prerelease
-default promotion, dispatch with `promote_latest: true`; the workflow then
-moves both `rc` and `latest` to the requested version. The workflow snapshots
-and verifies the selected tag policy independently and fails closed when
-registry metadata cannot be read. An idempotent rerun is a no-op when the
-requested tags are already correct. See the
+applies `rc` and preserves `latest`. Only a stable release may move `latest`.
+The workflow snapshots and verifies the selected tag policy independently and
+fails closed when registry metadata cannot be read. An idempotent rerun is a
+no-op when the requested tags are already correct. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -59,39 +50,34 @@ Before dispatch:
    the required npm scope permissions.
 5. Confirm the requested version does not already contain different bytes.
 
-The workflow reruns `./run.sh --light`, deterministic pack checks, local
-clean-consumer tests, SBOM generation, and provenance publication. It uploads
+The workflow reruns `./run.sh --light`, validates the packed release contents,
+runs local clean-consumer tests, generates SBOMs, and publishes with provenance. It uploads
 the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
 
-## RC2 publication
+## Prerelease publication
 
-Dispatch `Publish npmjs Packages` from the protected `develop` branch with:
+Set the root and supported package manifests to the version approved by the
+release PR, then dispatch `Publish npmjs Packages` from `develop`. For example:
 
 ```text
 channel: rc
-version: 0.1.0
-rc_index: 2
+rc_index: 1
 ```
 
-The expected result is the five-package VC development foundation at
-`0.1.0-rc2` under the `rc` dist-tag:
+The current release graph publishes two packages under the `rc` dist-tag:
 
 - `@midnight-ntwrk/credential-model`
 - `@midnight-ntwrk/credential-compact`
-- `@midnight-ntwrk/credential-proofs`
-- `@midnight-ntwrk/credential-status`
-- `@midnight-ntwrk/credential-did-midnight`
 
 The workflow preserves an existing `latest` tag and fails if npm changes it
 during a prerelease.
 
-Source manifests retain the base `0.1.0` version. The workflow applies the
+Source manifests retain the approved base version. The workflow applies the
 channel suffix only to its ephemeral release checkout, so the reviewed source
 stays ready for the next channel dispatch.
 
 Branch rules are fail closed:
 
-- `snapshot`: `develop` only
 - `rc`: `develop` or `main`
 - `release`: `main` only
 
@@ -103,24 +89,22 @@ The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-For RC2, verify every package version and the moving tags:
+Set `VERSION` to the exact version reported by the workflow, then verify every
+package version and the moving tags:
 
 ```bash
+VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-proofs \
-  @midnight-ntwrk/credential-status \
-  @midnight-ntwrk/credential-did-midnight; do
-  npm view "${package}@0.1.0-rc2" version
+  @midnight-ntwrk/credential-compact; do
+  npm view "${package}@${VERSION}" version
   npm view "${package}" dist-tags --json
 done
 ```
 
-The `rc` tag must resolve to `0.1.0-rc2` for all five packages. By default,
-`latest` remains unchanged. If `promote_latest: true` was explicitly selected,
-`latest` must also resolve to `0.1.0-rc2`. Retain the workflow URL and
-release-evidence artifact with the release record.
+The `rc` tag must resolve to `${VERSION}` for both packages and `latest` must
+remain unchanged. Retain the workflow URL and release-evidence artifact with
+the release record.
 
 ## Retry and rollback
 
@@ -139,14 +123,12 @@ For a bad RC:
 Example operator commands:
 
 ```bash
+VERSION=0.2.0-rc1
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-proofs \
-  @midnight-ntwrk/credential-status \
-  @midnight-ntwrk/credential-did-midnight; do
+  @midnight-ntwrk/credential-compact; do
   npm dist-tag rm "${package}" rc
-  npm deprecate "${package}@0.1.0-rc2" "Use the replacement RC"
+  npm deprecate "${package}@${VERSION}" "Use the replacement RC"
 done
 ```
 
@@ -156,7 +138,7 @@ Do not move `latest` during RC rollback.
 
 For suspected token, workflow, provenance, or tarball compromise:
 
-1. Stop or reject pending jobs in the `npmjs` environment.
+1. Stop or reject pending publish jobs.
 2. Revoke the npm token or trusted-publisher binding.
 3. Remove affected moving tags without deleting evidence.
 4. Preserve workflow logs, uploaded tarballs, SBOMs, provenance, and npm

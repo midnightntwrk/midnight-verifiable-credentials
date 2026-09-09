@@ -4,18 +4,9 @@
 > Package class: `dist`
 > Release stage: `supported`
 
-Protocol-neutral TypeScript contracts for defining a credential family without
-depending on Compact, a ledger, a wallet, a transport, or generated family
-types.
-
-The package provides:
-
-- schema and claim descriptors;
-- holder-binding, status, proof, and presentation capability descriptors;
-- credential and presentation codec ports;
-- proof-artifact requirements;
-- bounded package composition manifests;
-- validation helpers and family-neutral errors.
+Protocol-neutral TypeScript metadata for describing and validating a credential
+family and its claim schema. The package does not describe runtime composition,
+deployment, proof artifacts, or encoding.
 
 ## Install
 
@@ -26,41 +17,31 @@ pnpm add @midnight-ntwrk/credential-model@rc
 The first public release line is pre-1.0. Pin an exact version when a
 credential-family repository requires reproducible builds.
 
+## Public API
+
+The package exports:
+
+- credential-family, schema, and claim descriptors;
+- `defineCredentialFamily(...)`;
+- `assertCredentialFamilyDefinition(...)`;
+- `CredentialModelError` and the bounded validation error-code union.
+
+It has zero runtime dependencies.
+
 ## Define a family
 
 ```ts
-import {
-  defineCredentialFamily,
-  type CredentialCodec,
-  type PresentationCodec,
-} from "@midnight-ntwrk/credential-model";
-
-interface EmployeeCredential {
-  employeeId: string;
-}
-
-interface EmployeePresentation {
-  employeeId: string;
-}
-
-const credentialCodec: CredentialCodec<EmployeeCredential, string> = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: (value) => JSON.parse(value) as EmployeeCredential,
-};
-
-const presentationCodec: PresentationCodec<EmployeePresentation, string> = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: (value) => JSON.parse(value) as EmployeePresentation,
-};
+import { defineCredentialFamily } from "@midnight-ntwrk/credential-model";
 
 export const employeeFamily = defineCredentialFamily({
   id: "example.employee",
   version: "0.1.0",
+  name: "Employee credential",
+  description: "Identifies an employee within an organization.",
   schema: {
     id: "urn:example:employee",
     version: "1.0.0",
+    name: "Employee credential schema",
     credentialTypes: ["VerifiableCredential", "EmployeeCredential"],
     claims: [
       {
@@ -71,27 +52,24 @@ export const employeeFamily = defineCredentialFamily({
       },
     ],
   },
-  capabilities: [],
-  artifacts: [],
-  composition: {
-    formatVersion: 1,
-    packages: [],
-  },
-  credentialCodec,
-  presentationCodec,
 });
 ```
 
-`defineCredentialFamily` validates descriptor identifiers, semantic versions,
-claim paths, unique IDs, package requirements, and codec functions. Codecs are
-responsible for validating their encoded data when decoding.
+`defineCredentialFamily(...)` validates descriptor identifiers, semantic
+versions, optional display metadata, credential types, claim paths, disclosure
+modes, required flags, and unique claim IDs.
 
 ## Boundaries
 
-This package has zero runtime dependencies. It does not define proof
-execution, status storage, DID resolution, exchange protocols, sessions,
-display rendering, or deployment behavior. Those capabilities belong in
-separate packages that depend on this model.
+This package does not define codecs, credential or presentation payloads,
+capabilities, proof artifacts, package composition, providers, deployments,
+proof execution, status storage, DID resolution, exchange protocols, sessions,
+display rendering, or business decisions. Credential-family repositories and
+applications own those concerns.
+
+Removed runtime and composition APIs have no compatibility shim. Consumers
+should keep concrete configuration and behavior in their owning repository and
+use this package only for generic family and claim-schema metadata.
 
 ## Compatibility and support
 
@@ -101,8 +79,8 @@ separate packages that depend on this model.
   releases remain backward compatible within their minor line.
 - Release candidates are supported only until a newer release candidate or
   stable version in the same minor line is published.
-- Deprecations, migrations, and known limitations are recorded in this
-  changelog and README before a replacement release is promoted.
+- Deprecations, migrations, and known limitations are recorded in this README
+  and [`CHANGELOG.md`](./CHANGELOG.md).
 
 Technical ownership belongs to `@midnightntwrk/ex-identus`. Release operations
 belong to `@midnightntwrk/mn-sre`. Security reports follow the repository
