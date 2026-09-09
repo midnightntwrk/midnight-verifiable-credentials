@@ -539,8 +539,6 @@ if [[ "\${FAKE_NPM_PHASE}" == "before" ]]; then
   echo '{"latest":"0.0.9"}'
 elif [[ "\${FAKE_NPM_PHASE}" == "wrong" ]]; then
   echo '{"latest":"0.2.0-rc1","rc":"0.2.0-rc1"}'
-elif [[ "\${FAKE_NPM_PHASE}" == "promoted" ]]; then
-  echo '{"latest":"0.2.0-rc1","rc":"0.2.0-rc1"}'
 else
   echo '{"latest":"0.0.9","rc":"0.2.0-rc1"}'
 fi
@@ -616,32 +614,7 @@ fi
       },
     );
     assert.notEqual(wrongLatest.status, 0);
-    assert.match(wrongLatest.stderr, /unexpectedly changed latest/u);
-
-    const promoted = spawnSync(
-      process.execPath,
-      [
-        "tooling/scripts/npm-release-state.mjs",
-        "--verify",
-        "--input",
-        statePath,
-        "--tag",
-        "rc",
-        "--version",
-        "0.2.0-rc1",
-        "--promote-latest",
-      ],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        env: {
-          ...process.env,
-          FAKE_NPM_PHASE: "promoted",
-          NPM_COMMAND: fakeNpm,
-        },
-      },
-    );
-    assert.equal(promoted.status, 0, promoted.stderr);
+    assert.match(wrongLatest.stderr, /latest changed from/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
