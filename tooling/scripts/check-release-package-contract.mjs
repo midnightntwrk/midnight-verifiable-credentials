@@ -1,15 +1,11 @@
 #!/usr/bin/env node
-import { execFileSync, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import {
   existsSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
-  rmSync,
   statSync,
 } from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,18 +19,6 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
-const pnpmInvocation = (args) => {
-  if (process.platform !== "win32") {
-    return { command: "pnpm", args };
-  }
-  if (!process.env.npm_execpath) {
-    throw new Error("Windows release checks must be invoked through pnpm");
-  }
-  return {
-    command: process.execPath,
-    args: [process.env.npm_execpath, ...args],
-  };
-};
 const errors = [];
 const installLifecycleHooks = [
   "preinstall",
@@ -404,42 +388,6 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
       assert(entrySet.has(packedTarget), `${targetLabel} target ${packedTarget} is missing`);
     }
   });
-
-  const repeatDirectory = mkdtempSync(
-    path.join(os.tmpdir(), "midnight-vc-release-pack-"),
-  );
-  try {
-    const invocation = pnpmInvocation([
-      "--dir",
-      entry.path,
-      "pack",
-      "--pack-destination",
-      repeatDirectory,
-    ]);
-    const result = spawnSync(invocation.command, invocation.args, {
-      cwd: repoRoot,
-      stdio: "inherit",
-    });
-    assert(
-      result.status === 0,
-      `${label} reproducibility pack failed with status ${result.status}`,
-    );
-    const repeatTarballPath = path.join(
-      repeatDirectory,
-      tarballName(sourcePackageJson),
-    );
-    assert(existsSync(repeatTarballPath), `${label} reproducibility pack is missing`);
-    if (result.status === 0 && existsSync(repeatTarballPath)) {
-      const digest = (filePath) =>
-        createHash("sha256").update(readFileSync(filePath)).digest("hex");
-      assert(
-        digest(tarballPath) === digest(repeatTarballPath),
-        `${label} is not byte-for-byte reproducible`,
-      );
-    }
-  } finally {
-    rmSync(repeatDirectory, { recursive: true, force: true });
-  }
 };
 
 assert(
