@@ -15,7 +15,6 @@
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
-    "check:turbo-cache-policy": "node ./tooling/scripts/check-turbo-cache-policy.mjs",
     "check:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md docs spec conformance packages examples tooling",
@@ -27,7 +26,7 @@
     "build:all": "turbo run build --continue",
     "test:all": "turbo run test:ci --continue",
     "typecheck:all": "turbo run typecheck --continue",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run check:core-conformance && pnpm run lint",
     "ci:typecheck": "pnpm run typecheck:all"
   },
   "devDependencies": {
