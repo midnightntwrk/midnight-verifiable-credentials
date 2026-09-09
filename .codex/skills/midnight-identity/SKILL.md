@@ -1,104 +1,55 @@
 ---
 name: midnight-identity
-description: "Use this skill for midnight-verifiable-credentials core work: normative VC/VP semantics, bounded TypeScript models, generic Compact implementation, conformance, CI, and package distribution."
+description: "Use for the Midnight VC core specification, TypeScript model, Compact primitives, conformance vectors, packaging, and repository validation."
 ---
 
-# Midnight Identity VC Skill
+# Midnight VC Core
 
-Use this skill from the `midnight-verifiable-credentials` repository, whether cloned independently or as a submodule.
+Use this skill in `midnight-verifiable-credentials`, whether it is cloned
+independently or checked out inside `midnight-identity-workspace`.
 
-## Required Context
+## Start Here
 
-1. Read repository-root `AGENT.md` first.
-2. If this checkout is inside `midnight-identity-workspace`, read the workspace-root `AGENT.md` for submodule and artifact fanout rules.
-3. Keep DID method implementation in `midnight-did`, credential families in
-   independent repositories, and runnable use cases in
-   `midnight-identity-solution-examples`.
+1. Read [`AGENT.md`](../../../AGENT.md).
+2. Read the workspace-root `AGENT.md` when working inside the identity workspace.
+3. Confirm the requested PR base. Normal work targets `develop`; the core-only
+   migration targets `vc-core` while that integration branch exists.
 
-## Defaults
+## Boundary
 
-- Target branch is `develop` unless instructed otherwise. Core-only migration
-  PRs target the explicit `vc-core` integration branch.
-- Use DCO/GPG for repository-facing commits: `git commit -S --signoff -m "<type>: <subject>"`.
-- Preserve the generic envelope `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
-- Do not add transports, application workflows, credential families, BDD, or
-  product reporting to the core repository.
+This repository owns the protocol-independent specification, conformance
+vectors, `@midnight-ntwrk/credential-model`, and
+`@midnight-ntwrk/credential-compact`.
 
+Keep DID methods, credential families, applications, transports, wallets,
+registries, deployment environments, UI, and substantial use cases in their
+own repositories. Do not add compatibility implementations for removed code.
+Cross-repository dependencies use published packages or workspace-root-managed
+tarballs, never sibling source or generated output.
 
-## Validation selection and PR gates
+## Development
 
-[`AGENT.md`](../../../AGENT.md) is the sole authority for repository-local
-validation selection. Choose the narrowest relevant `./run.sh` lane from its
-Development Cycle and Runner Targets; use `./run.sh --light` as the baseline
-when the change needs a repository stability check. Documentation, Nix, and
-agent-instruction changes use their applicable static, Nix, and link checks
-rather than an unconditional application/BDD/integration matrix.
+- Preserve the generic Compact envelope
+  `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
+- Update normative text and conformance vectors with behavioral changes.
+- Do not edit generated Compact output by hand.
+- Use pnpm and the lockfile; do not create npm or Yarn lockfiles.
+- Pack release evidence with `pnpm run artifacts:pack`; do not commit tarballs.
 
-For pull-request lifecycle gates, follow the configured `.devloops` policy,
-including the required local Codex review and current-head CI evidence. This
-mirror adds no independent mandatory PR gate, cross-repository lane, or
-validation list.
+Use the narrowest relevant target while iterating. Follow `AGENT.md` as the
+single source for the current pre-PR gate.
 
-## Packaging
+## Pull Requests
 
-```bash
-pnpm run artifacts:pack
-```
+- Work in an isolated `codex/*` branch and worktree based on the actual PR base.
+- Target the integration branch for feature work; target `main` only for an
+  explicit release-promotion PR.
+- Keep one scope per PR and no more than two active stack levels.
+- Sign commits with GPG and DCO.
+- Run the current-head external review and wait for terminal CI.
+- The repository defaults to human-only merges.
+- Ignore findings about deleted systems; fix defects in retained core behavior
+  or in the change's validation path.
 
-`tooling/artifacts/npm/` is generated release evidence. Do not commit tarballs
-or hand-copy `dist/` between repositories.
-
-## MCP
-
-Use a user-level Midnight MCP config when available; do not commit personal MCP files:
-
-```toml
-[mcp_servers.midnight]
-command = "pnpm"
-args = ["exec", "midnight-mcp@latest"]
-```
-
-## Workflow Safety
-
-### PR isolation and consolidation
-
-- Treat `develop` as the normal default PR base. During the core-only campaign,
-  use the explicitly requested `vc-core` integration branch. Before a mutating
-  task, run `git fetch origin` and use an isolated worktree/feature branch based
-  on the actual PR base; do not edit, validate, commit, or merge from the
-  primary checkout.
-- Use the repository `dev-loop` entrypoint for issue/PR lifecycle work. Resolve
-  the issue/PR state first; when an open linked PR exists, continue that
-  canonical PR rather than opening a duplicate. Consolidate bot work only after
-  selecting compatible `develop`-target PRs with current-head evidence.
-- Keep one issue/scope per PR and one writer per worktree. Never merge a branch
-  into local `main`, never target `main` by default, and never run `gh pr merge`.
-  The checked-in `humanMergeOnly` policy requires a human merge handoff.
-
-### CI failure triage
-
-- Re-baseline the canonical PR and current head SHA before acting. Identify the
-  failing check/job and confirm it ran against that head; use dev-loop CI-status
-  and CI-log helpers rather than shell polling or blind reruns.
-- Reproduce the named lane first. Then run `./run.sh --light` and select any
-  necessary Compact, package-consumer, or conformance target from `AGENT.md`.
-- Classify each failure as repo-fixable, flaky/transient, CI configuration,
-  external-service outage, or unknown. Make one narrow validated fix per cycle.
-  If logs are unavailable or classification remains unknown, report the
-  head/check/job and stop; do not claim green, push speculation, or merge.
-
-### Selective-disclosure changes
-
-- Treat `claims` as public and `claimCommitments` as the private commitment
-  surface. Do not call a type cast or fixture constructor a privacy migration:
-  preserve the verifier/circuit trust boundary or stop for a contract decision.
-- Test serialized submission payloads, exports, and proof-server DTOs. Assert
-  hidden plaintext is absent, public claims are allowlisted, expected
-  commitments are present, and only requested `(value, opening)` pairs disclose.
-- Use private high-entropy, field-domain-separated openings and an unlinkable,
-  verifier/request-bound subject reference. Never derive either from public DID,
-  fixture, student, or routing data. Test altered openings and known/default
-  openings fail verification or recovery attempts.
-- Ensure holder-private opening/correlation material survives every supported
-  restart. Explicitly document any process-local or transport-linkability
-  limitation rather than representing the flow as durable/private by default.
+Use a user-level Midnight MCP configuration when helpful. Never commit personal
+MCP settings, credentials, keys, witnesses, or credential data.

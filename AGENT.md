@@ -103,6 +103,7 @@ Before a PR, run:
 
 ```bash
 ./run.sh --light
+pnpm run docs:links
 git diff --check
 ```
 
@@ -113,6 +114,7 @@ product/use-case integration environments.
 
 - Base core-only work on the repository's current integration branch unless an
   active stack requires a documented predecessor branch.
+- Target `main` only for an explicit release-promotion PR.
 - Use `codex/*` branch names.
 - Keep no more than two active stack levels.
 - Commit with DCO and GPG:
