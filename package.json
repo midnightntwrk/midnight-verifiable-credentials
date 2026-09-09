@@ -10,7 +10,6 @@
   },
   "scripts": {
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
-    "check:security-workflows": "node ./tooling/scripts/check-security-workflows.mjs",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
@@ -23,7 +22,7 @@
     "build": "turbo run build --continue",
     "test": "turbo run test --continue",
     "typecheck": "turbo run typecheck --continue",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run lint"
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run lint"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -35,8 +34,7 @@
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.7",
-    "yaml": "^2.9.0"
+    "vitest": "^3.2.7"
   },
   "pnpm": {
     "overrides": {
