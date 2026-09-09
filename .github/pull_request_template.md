@@ -27,7 +27,7 @@ response shape. Leave unchecked only when the PR is not a surface change.
 - [ ] Generated Compact/runtime surface reviewed for downstream literal/import impact
 - [ ] Changelog or migration notes updated for breaking surface changes
 - [ ] Claim representation documented when `claims` / `claimCommitments` shape changes
-- [ ] Holder-binding terminology reviewed against [the canonical guide](../../docs/architecture/holder-binding-terminology.md) when holder profile names, aliases, or adapters change
+- [ ] Terminology reviewed against [the glossary](../spec/terminology.md) when public VC/VP terms change
 - [ ] Specs, README, templates, and scaffold guidance updated when a reusable pattern changes
 
 ## Links

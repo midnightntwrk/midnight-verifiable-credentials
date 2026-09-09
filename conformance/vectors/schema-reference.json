@@ -1,0 +1,33 @@
+{
+  "formatVersion": 1,
+  "category": "schema-reference",
+  "positive": [
+    {
+      "id": "schema-reference-v1",
+      "packageIdHex": "0101010101010101010101010101010101010101010101010101010101010101",
+      "schemaIdHex": "0202020202020202020202020202020202020202020202020202020202020202",
+      "majorVersion": "1",
+      "minorVersion": "0"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-empty-package-id",
+      "replace": "packageIdHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "package id"
+    },
+    {
+      "id": "reject-empty-schema-id",
+      "replace": "schemaIdHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "Schema id"
+    },
+    {
+      "id": "reject-zero-major-version",
+      "replace": "majorVersion",
+      "value": "0",
+      "errorIncludes": "major version"
+    }
+  ]
+}

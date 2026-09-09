@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "category": "compact-generated",
+  "vectors": [
+    {
+      "id": "issuance-context-tag-v1",
+      "circuit": "issuanceContextTag",
+      "expectedHex": "6d69646e696768743a76633a69737375616e6365000000000000000000000000"
+    },
+    {
+      "id": "presentation-context-tag-v1",
+      "circuit": "presentationContextTag",
+      "expectedHex": "6d69646e696768743a76633a70726573656e746174696f6e0000000000000000"
+    }
+  ]
+}
