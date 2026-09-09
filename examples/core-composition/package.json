@@ -24,9 +24,5 @@
     "README.md",
     "package.json",
     "tsconfig.json"
-  ],
-  "midnight": {
-    "maturity": "reference",
-    "packageClass": "source-only"
-  }
+  ]
 }

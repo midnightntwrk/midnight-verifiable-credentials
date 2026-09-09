@@ -8,11 +8,6 @@
     "node": ">=24",
     "pnpm": ">=10"
   },
-  "workspaces": [
-    "packages/core/model",
-    "packages/core/compact",
-    "examples/core-composition"
-  ],
   "scripts": {
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
     "check:security-workflows": "node ./tooling/scripts/check-security-workflows.mjs",

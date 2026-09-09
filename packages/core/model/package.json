@@ -53,10 +53,5 @@
     "README.md",
     "CHANGELOG.md",
     "package.json"
-  ],
-  "midnight": {
-    "maturity": "core",
-    "packageClass": "dist",
-    "releaseStage": "supported"
-  }
+  ]
 }
