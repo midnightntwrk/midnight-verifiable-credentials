@@ -2,16 +2,9 @@ import assert from "node:assert/strict";
 
 import {
   CredentialModelError,
-  assertCredentialCompositionManifest,
   assertCredentialFamilyDefinition,
   defineCredentialFamily,
 } from "@midnight-ntwrk/credential-model";
-
-const jsonCodec = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: JSON.parse,
-};
 
 const accessFamily = defineCredentialFamily({
   id: "fixture.access",
@@ -29,38 +22,11 @@ const accessFamily = defineCredentialFamily({
       },
     ],
   },
-  capabilities: [
-    {
-      id: "proof.range",
-      kind: "proof",
-      version: "1.0.0",
-      required: true,
-    },
-  ],
-  artifacts: [
-    {
-      id: "proof.range.verifier",
-      mediaType: "application/octet-stream",
-      purpose: "verifier",
-    },
-  ],
-  composition: {
-    formatVersion: 1,
-    packages: [],
-  },
-  credentialCodec: jsonCodec,
-  presentationCodec: jsonCodec,
 });
 
 assertCredentialFamilyDefinition(accessFamily);
-assertCredentialCompositionManifest(accessFamily.composition);
 assert.equal(accessFamily.id, "fixture.access");
-assert.equal(
-  accessFamily.credentialCodec.decode(
-    accessFamily.credentialCodec.encode({ accessLevel: 4 }),
-  ).accessLevel,
-  4,
-);
+assert.equal(accessFamily.schema.claims[0].id, "accessLevel");
 assert.throws(
   () =>
     defineCredentialFamily({
@@ -72,4 +38,4 @@ assert.throws(
     error.code === "INVALID_VERSION",
 );
 
-console.log("Node ESM consumed the bounded credential model tarball.");
+console.log("Node ESM consumed the credential metadata model tarball.");

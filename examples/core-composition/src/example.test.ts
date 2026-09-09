@@ -3,15 +3,9 @@ import { describe, expect, it } from "vitest";
 import { roundTripCompactValue, syntheticFamily } from "./index.js";
 
 describe("synthetic core composition", () => {
-  it("defines and encodes a synthetic credential", () => {
-    const credential = { subject: "subject-001", score: 7 };
-
-    expect(
-      syntheticFamily.credentialCodec.decode(
-        syntheticFamily.credentialCodec.encode(credential),
-      ),
-    ).toEqual(credential);
-    expect(syntheticFamily.composition.packages).toHaveLength(2);
+  it("defines generic family and schema metadata", () => {
+    expect(syntheticFamily.name).toBe("Synthetic score credential");
+    expect(syntheticFamily.schema.claims).toHaveLength(2);
   });
 
   it("round-trips an opaque Compact value", () => {

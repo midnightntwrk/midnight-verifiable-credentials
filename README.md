@@ -4,11 +4,11 @@ Protocol-independent verifiable credential and presentation building blocks for
 Midnight.
 
 This repository contains the normative VC/VP core specification, conformance
-vectors, a reusable TypeScript model, generic Compact primitives, and bounded
-credential capability and artifact descriptors. It does not contain method
-adapters, credential families, product use cases, applications, exchange
-protocols, or deployment environments. Those belong in independently versioned
-consumer repositories.
+vectors, generic credential-family and claim-schema metadata, and reusable
+Compact primitives. It does not contain concrete credential families, method
+adapters, product use cases, applications,
+exchange protocols, or deployment environments. Those belong in independently
+versioned consumer repositories.
 
 ## Start here
 
@@ -23,7 +23,7 @@ consumer repositories.
 
 | Package | Stage | Purpose |
 | --- | --- | --- |
-| `@midnight-ntwrk/credential-model` | supported | Family definitions, descriptors, codecs, and validation |
+| `@midnight-ntwrk/credential-model` | supported | Family and claim-schema metadata with validation |
 | `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
 
 The [release contract](./docs/architecture/package-release-contract.md) is the

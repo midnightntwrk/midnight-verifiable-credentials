@@ -4,8 +4,12 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased (0.2.0-rc1)
 
-- Bound the public API to protocol-neutral family, schema, capability, artifact,
-  composition-manifest, and codec contracts with their validation helpers.
+- BREAKING: reduce the public API to generic credential-family, schema, and
+  claim metadata with its validation helper.
+- Add optional human-readable names and descriptions to family and schema
+  descriptors.
+- Remove capability and proof-artifact descriptors, package-composition
+  manifests, codec ports, and their validators.
 - Remove semantic profile, deployment assembly, provider catalog, runtime family
   discovery, and aggregate business-decision APIs. Applications and credential
   family repositories own those concerns outside this core package.

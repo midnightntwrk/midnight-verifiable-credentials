@@ -2,7 +2,7 @@
 
 | Term | Meaning |
 | --- | --- |
-| Credential family definition | Versioned schema, capability, artifact, package, and codec descriptor. |
+| Credential family definition | Versioned metadata that identifies a credential family and its claim schema. |
 | Credential family | Independently released schema and family-specific circuits built on the core. |
 | VC | Canonical issuer-signed credential envelope. |
 | VP | Canonical holder-created presentation envelope. |

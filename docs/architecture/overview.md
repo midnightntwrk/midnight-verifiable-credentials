@@ -19,8 +19,8 @@ normative specification + conformance vectors
  external credential-family and application repositories
 ```
 
-- `packages/core` owns runtime-neutral models, bounded descriptors, and
-  generic Compact primitives.
+- `packages/core` owns generic family and claim-schema metadata, validation,
+  and generic Compact primitives.
 - `examples/core-composition` proves package composition with synthetic data.
   It is not a product example.
 

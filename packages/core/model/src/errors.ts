@@ -2,9 +2,7 @@ export type CredentialModelErrorCode =
   | "INVALID_IDENTIFIER"
   | "INVALID_VERSION"
   | "INVALID_DESCRIPTOR"
-  | "DUPLICATE_ID"
-  | "INVALID_PACKAGE_REQUIREMENT"
-  | "INVALID_CODEC";
+  | "DUPLICATE_ID";
 
 export class CredentialModelError extends Error {
   readonly code: CredentialModelErrorCode;
