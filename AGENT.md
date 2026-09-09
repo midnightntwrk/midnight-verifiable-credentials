@@ -126,7 +126,7 @@ product/use-case integration environments.
 ## References
 
 - [Specification](./spec/README.md)
+- [Terminology and glossary](./spec/terminology.md)
 - [Conformance](./conformance/README.md)
-- [Documentation index](./docs/README.md)
-- [Glossary](./docs/glossary.md)
-- [Architecture decisions](./docs/decisions/README.md)
+- [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
+- [npm publication runbook](./docs/guides/npmjs-publication.md)

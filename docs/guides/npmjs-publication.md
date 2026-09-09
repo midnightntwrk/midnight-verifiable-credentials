@@ -11,19 +11,12 @@ of this release train.
 - npm credentials and incident owner: `@midnightntwrk/mn-sre`
 - Security disclosure and escalation: [`SECURITY.md`](../../SECURITY.md)
 
-The initial release path follows `midnight-did`: it uses the organization
-`MIDNIGHTCI_NPMJS_TOKEN` secret directly from the reviewed workflow. A
-protected GitHub environment may be added when repository administration and
-release policy support it, but it is not required to bootstrap publication.
-The workflow needs `contents: read` and `id-token: write`; it does not need
-repository write access.
-
 ## Authentication
 
-The first publication uses the existing `MIDNIGHTCI_NPMJS_TOKEN`, matching the
-working `midnight-did` npmjs release path. That token must be a granular
-read/write token with bypass 2FA enabled and only the `@midnight-ntwrk` package
-permissions needed for this release.
+The workflow requests npm provenance identity and supplies the
+`MIDNIGHTCI_NPMJS_TOKEN` secret to the release script. The token is required
+for access and dist-tag operations, must be granular and read/write, and must
+be scoped to the required `@midnight-ntwrk` packages.
 
 `@midnightntwrk/mn-sre` owns token creation, rotation, and revocation. Never
 place a token in repository files, workflow inputs, command arguments,
@@ -94,15 +87,6 @@ Branch rules are fail closed:
 
 Automatic publication on pushes is intentionally disabled.
 
-## Migration from 0.1 prereleases
-
-`0.2.0-rc1` is the core-only reset. Consumers should replace removed family,
-protocol, proof-execution, status-registry, and use-case packages with code from
-their independently versioned product repositories. The two packages listed
-above are the complete supported release graph; no compatibility aliases or
-local vendor tarballs are retained here. Existing `0.1.x` versions remain
-immutable and may be deprecated on npm with a pointer to this release line.
-
 ## Verification
 
 The workflow waits for bounded npmjs propagation, installs each exact package
@@ -159,7 +143,7 @@ Do not move `latest` during RC rollback.
 
 For suspected token, workflow, provenance, or tarball compromise:
 
-1. Stop or reject pending jobs in the `npmjs` environment.
+1. Stop or reject pending publish jobs.
 2. Revoke the npm token or trusted-publisher binding.
 3. Remove affected moving tags without deleting evidence.
 4. Preserve workflow logs, uploaded tarballs, SBOMs, provenance, and npm

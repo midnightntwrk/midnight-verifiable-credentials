@@ -16,7 +16,7 @@
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
-    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md docs spec conformance packages examples tooling",
+    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github docs spec conformance packages examples tooling",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
     "test:release-package-consumers": "node ./tooling/scripts/check-release-package-contract.mjs --tarballs ./tooling/artifacts/npm && node ./tooling/scripts/test-release-package-consumers.mjs --tarballs ./tooling/artifacts/npm",
     "clean": "turbo run clean --continue",

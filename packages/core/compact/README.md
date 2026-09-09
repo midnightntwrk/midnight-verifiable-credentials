@@ -48,8 +48,8 @@ This package is the single canonical owner of reusable Compact VC/VP semantics.
 The retired compatibility packages are not part of the workspace or release
 surface. Their `verification-v1`, status-attestation, and hidden-holder
 entrypoints are not supported by this package. Technical ownership is the VC
-package maintainers; release ownership is defined by the repository release
-contract.
+package maintainers; release operation and incident ownership are defined by
+the repository's npm publication runbook.
 
 ## Usage boundary
 
