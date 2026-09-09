@@ -2,6 +2,8 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Removed the unrelated TypeScript Jubjub scalar helper from the VC package
+  surface.
 - Removed experimental secret-holder, blinded-holder, pseudonym, and
   same-holder circuits. The package now supports explicit holder binding only.
 - Removed unused issuance and presentation protocol choreography from the
