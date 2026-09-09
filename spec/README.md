@@ -17,6 +17,7 @@ normative requirements.
 - [Data model](./data-model.md)
 - [Canonical encoding](./canonical-encoding.md)
 - [Holder binding](./holder-binding.md)
+- [Signer authorization](./signer-authorization.md)
 - [Status](./status.md)
 - [Security considerations](./security-considerations.md)
 - [Privacy considerations](./privacy-considerations.md)

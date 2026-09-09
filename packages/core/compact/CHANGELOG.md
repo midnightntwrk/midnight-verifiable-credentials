@@ -2,6 +2,9 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Added source-neutral issuer/verifier authorization descriptors, exact
+  method/key/scope binding circuits, and a domain-separated Jubjub authority
+  proof context without introducing Trust Registry or datetime dependencies.
 - BREAKING: renamed `VerificationMethodRef.didContractAddress` to
   `controllerAddress` so the core can reference DID, registry, or other
   verification-method controllers without choosing a DID method.

@@ -1,0 +1,105 @@
+{
+  "formatVersion": 1,
+  "category": "signer-authorization",
+  "fixture": {
+    "schema": {
+      "packageIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "schemaIdHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "majorVersion": "1",
+      "minorVersion": "0"
+    },
+    "issuer": {
+      "didMethodId": "did:midnight:testnet:issuer#key-1",
+      "controllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "methodIdHex": "c5287737505711db38d794565e62cc73bd87ea0ee2e6d84d81a609907992563c",
+      "secretKey": "3"
+    },
+    "verifier": {
+      "didMethodId": "did:midnight:testnet:verifier#key-1",
+      "controllerAddressHex": "5555555555555555555555555555555555555555555555555555555555555555",
+      "methodIdHex": "f48c3644dd9de5c39ac10ea83dfbef72b88f1815f7d87dbc94ac785a2de3c4c2",
+      "secretKey": "5",
+      "scopeCommitmentHex": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    "authority": {
+      "didMethodId": "did:midnight:testnet:registry#authority-1",
+      "controllerAddressHex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "methodIdHex": "dba2ed100ae6157e37ee272fadd7145094bf35a027d91d85eda486c6f0fe5b00",
+      "secretKey": "7",
+      "nonceScalar": "11"
+    },
+    "authorizationIdHex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "policyCommitmentHex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "challengeHashHex": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "decisionSequence": "42",
+    "didStateVersion": "9"
+  },
+  "positive": [
+    {
+      "id": "active-issuer-assertion-method",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "operation": "issuer"
+    },
+    {
+      "id": "active-verifier-authentication",
+      "role": "verifier",
+      "relationship": "authentication",
+      "operation": "verifier"
+    },
+    {
+      "id": "active-verifier-capability-invocation",
+      "role": "verifier",
+      "relationship": "capabilityInvocation",
+      "operation": "verifier"
+    },
+    {
+      "id": "authority-signed-active-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "operation": "authority-proof"
+    },
+    {
+      "id": "authority-signed-suspended-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "state": "suspended",
+      "operation": "authority-proof"
+    },
+    {
+      "id": "authority-signed-revoked-issuer",
+      "role": "issuer",
+      "relationship": "assertionMethod",
+      "state": "revoked",
+      "operation": "authority-proof"
+    }
+  ],
+  "negative": [
+    { "id": "reject-unsupported-version", "operation": "validate", "mutation": "unsupported-version", "errorIncludes": "Signer authorization version mismatch" },
+    { "id": "reject-empty-authorization-id", "operation": "validate", "mutation": "empty-authorization-id", "errorIncludes": "Signer authorization id must be set" },
+    { "id": "reject-zero-decision-sequence", "operation": "validate", "mutation": "zero-decision-sequence", "errorIncludes": "decision sequence must be positive" },
+    { "id": "reject-zero-did-state-version", "operation": "validate", "mutation": "zero-did-state-version", "errorIncludes": "DID state version must be positive" },
+    { "id": "reject-empty-controller-address", "operation": "validate", "mutation": "empty-controller-address", "errorIncludes": "controller address must be set" },
+    { "id": "reject-empty-method-id", "operation": "validate", "mutation": "empty-method-id", "errorIncludes": "method reference must be set" },
+    { "id": "reject-identity-signer-key", "operation": "validate", "mutation": "identity-signer-key", "errorIncludes": "public key must not be the identity point" },
+    { "id": "reject-empty-scope", "operation": "validate", "mutation": "empty-scope", "errorIncludes": "scope commitment must be set" },
+    { "id": "reject-empty-policy", "operation": "validate", "mutation": "empty-policy", "errorIncludes": "policy commitment must be set" },
+    { "id": "reject-issuer-authentication-relationship", "operation": "validate", "mutation": "issuer-authentication-relationship", "errorIncludes": "Issuer authorization requires assertionMethod" },
+    { "id": "reject-verifier-assertion-relationship", "operation": "validate", "mutation": "verifier-assertion-relationship", "errorIncludes": "Verifier authorization requires authentication or capabilityInvocation" },
+    { "id": "reject-suspended-issuer", "operation": "issuer", "mutation": "suspended", "errorIncludes": "Signer authorization must be active" },
+    { "id": "reject-revoked-issuer", "operation": "issuer", "mutation": "revoked", "errorIncludes": "Signer authorization must be active" },
+    { "id": "reject-substituted-proof-controller", "operation": "issuer", "mutation": "proof-controller", "errorIncludes": "Proof signer controller does not match authorization" },
+    { "id": "reject-substituted-proof-method", "operation": "issuer", "mutation": "proof-method", "errorIncludes": "Proof signer method does not match authorization" },
+    { "id": "reject-substituted-proof-key", "operation": "issuer", "mutation": "proof-key", "errorIncludes": "Jubjub public keys do not match" },
+    { "id": "reject-issuer-scope-substitution", "operation": "issuer", "mutation": "issuer-scope", "errorIncludes": "Issuer authorization scope does not match schema" },
+    { "id": "reject-verifier-role-substitution", "operation": "verifier", "mutation": "issuer-role", "errorIncludes": "Signer authorization role must be verifier" },
+    { "id": "reject-verifier-scope-substitution", "operation": "verifier", "mutation": "verifier-scope", "errorIncludes": "Verifier authorization scope does not match request" },
+    { "id": "reject-authorization-proof-sequence-substitution", "operation": "authority-proof", "mutation": "proof-sequence", "errorIncludes": "Authorization proof sequence does not match descriptor" },
+    { "id": "reject-authorization-proof-authority-controller-substitution", "operation": "authority-proof", "mutation": "authority-controller", "errorIncludes": "Authorization proof controller does not match authority" },
+    { "id": "reject-authorization-proof-authority-method-substitution", "operation": "authority-proof", "mutation": "authority-method", "errorIncludes": "Authorization proof method does not match authority" },
+    { "id": "reject-authorization-proof-authority-key-substitution", "operation": "authority-proof", "mutation": "authority-key", "errorIncludes": "Jubjub public keys do not match" },
+    { "id": "reject-identity-authority-key", "operation": "authority-proof", "mutation": "identity-authority-key", "errorIncludes": "public key must not be the identity point" },
+    { "id": "reject-authorization-proof-challenge-substitution", "operation": "authority-proof", "mutation": "authority-challenge", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-signed-descriptor-policy-substitution", "operation": "authority-proof", "mutation": "signed-policy", "errorIncludes": "Signature verification failed" }
+  ]
+}

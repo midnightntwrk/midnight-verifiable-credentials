@@ -27,6 +27,10 @@ These definitions are normative where the specification uses the term.
 | Verifier | Entity that evaluates a credential or presentation under an explicit policy. |
 | DID | Decentralized Identifier resolved to a DID document. DID methods are outside the core. |
 | Proof | Cryptographic evidence evaluated under an explicit verifier policy and context. |
+| Signer authorization | Scoped decision accepting one exact verification method and key for an issuer or verifier role. |
+| Authorized signer descriptor | Canonical role, method, key, scope, policy, and decision-sequence binding consumed by signer-authorization checks. |
+| Decision sequence | Authenticated logical ordering value for authorization updates; it is not a wall-clock timestamp. |
+| Authorization source | Local application governance or external authority that evaluates policy and produces a signer authorization. |
 | Witness | Private or public input supplied to a circuit. |
 | Trusted time | Time evidence accepted from an explicitly configured authority or ledger source. |
 | Prover key | Circuit-specific artifact used to create a zero-knowledge proof. |

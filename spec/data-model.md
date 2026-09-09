@@ -52,3 +52,9 @@ request, challenge, predicate, and policy semantics around that envelope.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.
+
+Signer authorization is optional and separate from proof validity. A proof
+establishes control of its supplied public key. Applications that need an
+issuer or verifier trust decision MUST additionally bind that proof to an
+accepted signer authorization as defined in
+[`signer-authorization.md`](./signer-authorization.md).

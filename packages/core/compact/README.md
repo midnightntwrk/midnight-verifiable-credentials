@@ -12,11 +12,18 @@ credential family, proof artifact, or registry authority.
 
 The package contains generic VC/VP envelopes, schema references, issuer and
 holder-binding shapes, proof/challenge primitives, VC-side status-binding
-shapes, VC/VP linkage helpers, and
+shapes, source-neutral signer-authorization descriptors and binding helpers,
+VC/VP linkage helpers, and
 protocol-neutral `compact-value-v1.base64url` TypeScript framing for canonical
 Compact runtime values. `StatusRegistryRef` is vocabulary only: this package
 does not authenticate registry mutation, roots, time, witnesses, or final
 non-membership.
+
+Signer authorization supports two composition modes. Applications may install
+an accepted descriptor through local governance, or verify a domain-separated
+authority proof before materializing the same descriptor. This package does not
+resolve `midnight-did`, evaluate Trust Registry policy, synchronize registry
+state, or provide trusted wall-clock time.
 
 `verification-v1`, issuance/presentation protocol choreography, family claims
 and predicates, status-registry authority, proving/deployment artifacts,
