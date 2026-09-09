@@ -244,6 +244,7 @@ test("validates and binds positive and negative signer authorizations", () => {
         pureCircuits.assertAuthorizedIssuerProof(
           credentialBodyRoot,
           schema,
+          issuer.verificationMethodRef,
           proof,
           descriptor,
         ),
@@ -295,6 +296,7 @@ test("validates and binds positive and negative signer authorizations", () => {
     let descriptor = makeDescriptor("issuer", "assertionMethod");
     let proof = makeSignerProof("issuer");
     let requestScope = verifierScope;
+    let credentialIssuerVerificationMethodRef = issuer.verificationMethodRef;
     let previousDescriptor = {
       ...descriptor,
       decisionSequence: descriptor.decisionSequence - 1n,
@@ -353,6 +355,7 @@ test("validates and binds positive and negative signer authorizations", () => {
       case "verifier-role-for-issuer":
         descriptor = makeDescriptor("verifier", "authentication");
         proof = makeSignerProof("verifier");
+        credentialIssuerVerificationMethodRef = verifier.verificationMethodRef;
         break;
       case "empty-verifier-request-scope":
         descriptor = makeDescriptor("verifier", "authentication");
@@ -373,6 +376,7 @@ test("validates and binds positive and negative signer authorizations", () => {
             controllerAddress: alternateController,
           },
         };
+        credentialIssuerVerificationMethodRef = proof.signerVerificationMethodRef;
         break;
       case "proof-method":
         proof = {
@@ -382,9 +386,16 @@ test("validates and binds positive and negative signer authorizations", () => {
             methodId: alternateMethod,
           },
         };
+        credentialIssuerVerificationMethodRef = proof.signerVerificationMethodRef;
         break;
       case "proof-key":
         proof = { ...proof, publicKey: alternateKey };
+        break;
+      case "credential-issuer":
+        credentialIssuerVerificationMethodRef = {
+          ...credentialIssuerVerificationMethodRef,
+          methodId: alternateMethod,
+        };
         break;
       case "issuer-signature":
         proof = {
@@ -447,6 +458,7 @@ test("validates and binds positive and negative signer authorizations", () => {
         return pureCircuits.assertAuthorizedIssuerProof(
           credentialBodyRoot,
           schema,
+          credentialIssuerVerificationMethodRef,
           proof,
           descriptor,
         );

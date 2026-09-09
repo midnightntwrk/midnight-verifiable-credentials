@@ -129,6 +129,7 @@
     { "id": "reject-substituted-proof-controller", "operation": "issuer", "mutation": "proof-controller", "errorIncludes": "Proof signer controller does not match authorization" },
     { "id": "reject-substituted-proof-method", "operation": "issuer", "mutation": "proof-method", "errorIncludes": "Proof signer method does not match authorization" },
     { "id": "reject-substituted-proof-key", "operation": "issuer", "mutation": "proof-key", "errorIncludes": "Jubjub public keys do not match" },
+    { "id": "reject-substituted-credential-issuer", "operation": "issuer", "mutation": "credential-issuer", "errorIncludes": "Credential issuer does not match proof signer" },
     { "id": "reject-invalid-issuer-signature", "operation": "issuer", "mutation": "issuer-signature", "errorIncludes": "Signature verification failed" },
     { "id": "reject-issuer-scope-substitution", "operation": "issuer", "mutation": "issuer-scope", "errorIncludes": "Issuer authorization scope does not match schema" },
     { "id": "reject-verifier-role-substitution", "operation": "verifier", "mutation": "issuer-role", "errorIncludes": "Signer authorization role must be verifier" },

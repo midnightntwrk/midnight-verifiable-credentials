@@ -92,14 +92,16 @@ An issuer authorization check MUST require all of the following:
 1. the descriptor is structurally valid and active;
 2. its role is issuer and its relationship is `assertionMethod`;
 3. its scope equals the credential schema commitment;
-4. its verification-method controller and method ID equal the proof signer
+4. the credential issuer verification method equals the proof signer;
+5. its verification-method controller and method ID equal the proof signer
    reference; and
-5. its Jubjub public key equals `Proof.publicKey`.
+6. its Jubjub public key equals `Proof.publicKey`.
 
 `assertAuthorizedIssuerProof` verifies the normal issuance-context signature
 over the caller-supplied credential body root as well as the authorization
-binding. The caller MUST derive that root from the exact credential being
-accepted.
+binding. It also binds the caller-supplied credential issuer reference to the
+proof signer. The caller MUST derive the body root and issuer reference from the
+exact credential being accepted.
 
 A verifier authorization check verifies a proof over the request scope with
 the `midnight:vc:verifier-req:v1` context and applies the same exact method/key
