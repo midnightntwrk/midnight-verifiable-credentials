@@ -13,6 +13,8 @@ describe("status binding boundary", () => {
     );
     expect(source).toContain("StatusRegistryRef");
     expect(source).toContain("NoStatusBinding");
+    expect(source).not.toContain("StatusType");
+    expect(source).not.toContain("assertValidNoStatusBinding");
     expect(source).not.toMatch(
       /initializeRegistry|revokeStatus|ledger|witness/i,
     );

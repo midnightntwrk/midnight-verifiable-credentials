@@ -16,6 +16,8 @@ All notable changes to this project are documented here. The format follows
 - BREAKING: narrow `@midnight-ntwrk/credential-model` to generic family and
   claim-schema metadata; runtime composition, artifact, and codec contracts now
   belong to credential-family and application repositories.
+- BREAKING: remove the single-value status discriminator; registry-bound status
+  values have a new persistent hash in `0.2.0-rc1`.
 - upgrade the Compact compiler to `0.31.1` and
   `@midnight-ntwrk/compact-runtime` to `0.16.0`.
 - collapse local and CI validation into one non-Docker core gate.

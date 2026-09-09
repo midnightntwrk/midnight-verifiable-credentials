@@ -2,6 +2,9 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- BREAKING: removed the single-value status enum and no-op no-status validator.
+  The smaller `RegistryBoundStatusBinding` layout changes its persistent hash
+  from the `0.1.x` package surface.
 - Removed the unrelated TypeScript Jubjub scalar helper from the VC package
   surface.
 - Removed experimental secret-holder, blinded-holder, pseudonym, and
