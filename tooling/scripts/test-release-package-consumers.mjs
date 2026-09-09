@@ -346,26 +346,11 @@ for (const releasePackage of releasePackages) {
         );
         return realpathSync(output);
       };
-      const sameHolderVectors = path.join(
-        fixtureRoot,
-        "same-holder-vectors.mjs",
-      );
-      const runSameHolderVectors = (label, output) => {
-        if (!existsSync(sameHolderVectors)) return;
-        run(
-          "node",
-          [sameHolderVectors, output],
-          consumerRoot,
-          `${sourcePackageJson.name}: same-holder semantic vectors (${label})`,
-        );
-      };
       for (const [index, entrypoint] of standalone.entries()) {
-        const output = compileExternal(`compact-standalone-${index}`, [entrypoint]);
-        runSameHolderVectors("standalone", output);
+        compileExternal(`compact-standalone-${index}`, [entrypoint]);
       }
       for (const [index, entrypoint] of composition.entries()) {
-        const output = compileExternal(`compact-composition-${index}`, [entrypoint]);
-        runSameHolderVectors("composition", output);
+        compileExternal(`compact-composition-${index}`, [entrypoint]);
       }
     }
 

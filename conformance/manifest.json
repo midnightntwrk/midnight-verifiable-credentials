@@ -44,7 +44,7 @@
   "vectors": [
     {
       "path": "conformance/vectors/compact-generated.json",
-      "sha256": "dbee3a07d803b1d80c6c09203ae79e4277fec102502f65b3f16d19cc3c48009b"
+      "sha256": "2132cb6f9e05dbb56b67b3ba54937d3fc7777f144a6398c2220a38a73a3ac5e8"
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",

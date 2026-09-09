@@ -86,9 +86,9 @@ The current package set proves:
 
 Packages that expose Compact sources must declare and pass the Compact
 clean-consumer check. The `credential-compact` package also records compiler
-identity, generated-output provenance, source/artifact digests, same-holder
-vectors through both canonical roots, explicit Compact exports, and a
-forbidden-artifact tarball scan. It does not claim status-registry authority or
+identity, generated-output provenance, source/artifact digests, compilation of
+both canonical roots, explicit Compact exports, and a forbidden-artifact
+tarball scan. It does not claim hidden-holder, status-registry authority, or
 verification-v1 compatibility.
 
 ## Admission

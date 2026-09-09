@@ -10,7 +10,7 @@ This is a core-only VC/VP specification and implementation repository. Follow
 Keep here:
 
 - protocol-independent VC/VP data models and Compact primitives
-- holder-binding and same-holder primitives
+- explicit holder-binding primitives
 - bounded capability and proof-artifact descriptors
 - normative specifications and conformance vectors
 - minimal synthetic composition fixtures

@@ -9,7 +9,8 @@ Presentations SHOULD disclose only requested data. Verifier challenges,
 pseudonym scopes, schema references, status handles, timestamps, and repeated
 proof material can create linkability even when claims remain hidden.
 
-Hidden-holder designs require explicit unlinkability analysis and vectors.
+Hidden-holder designs are outside this core and require explicit unlinkability
+analysis and vectors in their owning credential-family repository.
 Status lookups can reveal holder activity to a registry or network observer;
 adapters SHOULD minimize correlatable queries and document their leakage.
 

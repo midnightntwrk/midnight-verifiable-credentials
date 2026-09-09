@@ -14,17 +14,7 @@ before comparing the credential and presentation bindings.
 The conformance vectors verify explicit-binding structure and equality only.
 Credential-family repositories own end-to-end protocol and negative vectors.
 
-## Hidden binding
-
-Hidden binding commits to holder-controlled secret material and proves control
-without exposing that secret. A conforming design requires domain-separated
-commitments, challenge binding, secure randomness, opening consistency,
-request binding, unlinkability analysis, and negative vectors.
-
-The package contains experimental secret and blinded-secret composition
-primitives, but the core conformance manifest does not claim a complete hidden
-holder-binding operation. Credential-family repositories own the threat model,
-protocol, and negative vectors required to use those primitives.
-
-A consumer that selects hidden holder binding MUST NOT silently substitute an
+Hidden-holder, pseudonym, and same-holder designs are not provided by this core.
+Credential-family repositories that implement them own their threat model,
+protocol binding, and negative vectors and MUST NOT silently substitute an
 explicit or unbound credential.
