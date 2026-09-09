@@ -17,8 +17,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PNPM_CONFIG_AUDIT: "false"
-  PNPM_CONFIG_FUND: "false"
   COMPACT_COMPILER_VERSION: 0.31.1
 
 jobs:

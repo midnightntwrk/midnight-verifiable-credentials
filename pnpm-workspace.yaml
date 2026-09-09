@@ -2,6 +2,3 @@ packages:
   - packages/core/model
   - packages/core/compact
   - examples/core-composition
-
-linkWorkspacePackages: true
-preferWorkspacePackages: true

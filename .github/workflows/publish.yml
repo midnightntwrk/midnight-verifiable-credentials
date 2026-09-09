@@ -36,8 +36,6 @@ concurrency:
 env:
   COMPACT_COMPILER_VERSION: 0.31.1
   NPM_REGISTRY: https://registry.npmjs.org/
-  PNPM_CONFIG_AUDIT: "false"
-  PNPM_CONFIG_FUND: "false"
 
 jobs:
   publish:
