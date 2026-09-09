@@ -48,7 +48,7 @@ test("validates positive and negative explicit holder bindings in Compact", () =
   const base = fixture.positive[0];
   const makeBinding = (value) => ({
     holderVerificationMethodRef: {
-      didContractAddress: { bytes: fromHex(value.didContractAddressHex) },
+      controllerAddress: { bytes: fromHex(value.controllerAddressHex) },
       methodId: fromHex(value.methodIdHex),
     },
   });
@@ -61,11 +61,20 @@ test("validates positive and negative explicit holder bindings in Compact", () =
   }
   for (const vector of fixture.negative) {
     const candidate = { ...base, [vector.replace]: vector.value };
+    const invalidBinding = makeBinding(candidate);
     assert.throws(
-      () =>
-        pureCircuits.assertValidExplicitHolderBinding(makeBinding(candidate)),
+      () => pureCircuits.assertValidExplicitHolderBinding(invalidBinding),
       (error) => String(error).includes(vector.errorIncludes),
       vector.id,
+    );
+    assert.throws(
+      () =>
+        pureCircuits.assertMatchingExplicitHolderBindings(
+          invalidBinding,
+          invalidBinding,
+        ),
+      (error) => String(error).includes(vector.errorIncludes),
+      `${vector.id}-matching`,
     );
   }
 });
