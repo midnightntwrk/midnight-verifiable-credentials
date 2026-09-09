@@ -26,7 +26,7 @@ versioned consumer repositories.
 | `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives |
 
 `supported` means the package is in the executable publication allowlist and
-passes build, metadata, export, reproducibility, and clean-consumer checks.
+passes build, metadata, export, tarball-content, and clean-consumer checks.
 Both packages are ESM-only prerelease APIs and follow semantic versioning.
 
 Use the smallest package that owns the required boundary. A credential-family

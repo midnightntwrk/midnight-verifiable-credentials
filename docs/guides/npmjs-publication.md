@@ -52,8 +52,8 @@ Before dispatch:
    the required npm scope permissions.
 5. Confirm the requested version does not already contain different bytes.
 
-The workflow reruns `./run.sh --light`, deterministic pack checks, local
-clean-consumer tests, SBOM generation, and provenance publication. It uploads
+The workflow reruns `./run.sh --light`, validates the packed release contents,
+runs local clean-consumer tests, generates SBOMs, and publishes with provenance. It uploads
 the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
 
 ## Prerelease publication
