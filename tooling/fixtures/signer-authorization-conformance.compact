@@ -1,0 +1,26 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "credentials/composable";
+
+import VC<
+  NoPublicClaims,
+  NoClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix ConformanceVC_;
+
+export pure circuit credentialBodyRoot(
+  credential: ConformanceVC_Credential
+): Bytes<32> {
+  return ConformanceVC_credentialBodyRoot(credential);
+}
+
+export pure circuit assertAuthorizedIssuerProof(
+  credential: ConformanceVC_Credential,
+  proof: Proof,
+  descriptor: AuthorizedSignerDescriptor
+): [] {
+  ConformanceVC_assertAuthorizedIssuerProof(credential, proof, descriptor);
+}

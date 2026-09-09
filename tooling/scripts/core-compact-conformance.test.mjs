@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
+import { pathToFileURL } from "node:url";
 
 import {
   AuthorizationState,
@@ -14,6 +16,31 @@ import {
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
   JSON.parse(readFileSync(resolve(root, path), "utf8"));
+const loadSignerAuthorizationConformance = async () => {
+  const cacheRoot = resolve(root, "packages/core/compact/.cache");
+  const packageJson = readJson("packages/core/compact/package.json");
+  mkdirSync(cacheRoot, { recursive: true });
+  const output = mkdtempSync(
+    resolve(cacheRoot, "signer-authorization-conformance-"),
+  );
+  execFileSync(
+    "compact",
+    [
+      "compile",
+      `+${packageJson.midnight.compactCompilerVersion}`,
+      "--skip-zk",
+      "--compact-path",
+      resolve(root, "packages/core/compact/src"),
+      resolve(root, "tooling/fixtures/signer-authorization-conformance.compact"),
+      output,
+    ],
+    { stdio: "pipe" },
+  );
+  const compiled = await import(
+    pathToFileURL(resolve(output, "contract/index.js")).href
+  );
+  return { output, pureCircuits: compiled.pureCircuits };
+};
 const fromHex = (value) => Uint8Array.from(Buffer.from(value, "hex"));
 const toHex = (value) => Buffer.from(value).toString("hex");
 const zeroBytes32 = () => new Uint8Array(32);
@@ -93,7 +120,7 @@ test("validates positive and negative explicit holder bindings in Compact", () =
   }
 });
 
-test("validates and binds positive and negative signer authorizations", () => {
+test("validates and binds positive and negative signer authorizations", async () => {
   const vectors = readJson("conformance/vectors/signer-authorization.json");
   const fixture = vectors.fixture;
   const schema = {
@@ -282,6 +309,89 @@ test("validates and binds positive and negative signer authorizations", () => {
     authorityProof.signature.s,
     BigInt(knownAnswers.authoritySignatureS),
   );
+
+  const conformance = await loadSignerAuthorizationConformance();
+  try {
+    const credential = {
+      version: 1n,
+      schema,
+      issuerVerificationMethodRef: issuer.verificationMethodRef,
+      holderBinding: {
+        holderVerificationMethodRef: verifier.verificationMethodRef,
+      },
+      statusBinding: {},
+      issuedAt: 40n,
+      hasExpiration: false,
+      expiresAt: 0n,
+      claims: {},
+      claimCommitments: {},
+      claimRoot: fromHex(
+        "1212121212121212121212121212121212121212121212121212121212121212",
+      ),
+    };
+    const bodyRoot = conformance.pureCircuits.credentialBodyRoot(credential);
+    const proof = signProof(
+      issuer,
+      BigInt(fixture.issuer.secretKey),
+      bodyRoot,
+      pureCircuits.issuanceProofChallenge,
+    );
+    assert.deepEqual(
+      conformance.pureCircuits.assertAuthorizedIssuerProof(
+        credential,
+        proof,
+        activeIssuerDescriptor,
+      ),
+      [],
+    );
+    assert.throws(
+      () =>
+        conformance.pureCircuits.assertAuthorizedIssuerProof(
+          {
+            ...credential,
+            schema: { ...schema, schemaId: alternateMethod },
+          },
+          proof,
+          activeIssuerDescriptor,
+        ),
+      (error) =>
+        String(error).includes(
+          "Issuer authorization scope does not match schema",
+        ),
+      "credential schema substitution",
+    );
+    assert.throws(
+      () =>
+        conformance.pureCircuits.assertAuthorizedIssuerProof(
+          {
+            ...credential,
+            issuerVerificationMethodRef: {
+              ...credential.issuerVerificationMethodRef,
+              methodId: alternateMethod,
+            },
+          },
+          proof,
+          activeIssuerDescriptor,
+        ),
+      (error) =>
+        String(error).includes(
+          "Issuer proof method reference does not match issuer verification method",
+        ),
+      "credential issuer substitution",
+    );
+    assert.throws(
+      () =>
+        conformance.pureCircuits.assertAuthorizedIssuerProof(
+          { ...credential, issuedAt: credential.issuedAt + 1n },
+          proof,
+          activeIssuerDescriptor,
+        ),
+      (error) => String(error).includes("Signature verification failed"),
+      "credential body substitution",
+    );
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
+  }
 
   for (const vector of vectors.positive) {
     const descriptor = makeDescriptor(
