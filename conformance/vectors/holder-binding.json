@@ -4,16 +4,16 @@
   "positive": [
     {
       "id": "explicit-holder-binding-v1",
-      "didContractAddressHex": "0303030303030303030303030303030303030303030303030303030303030303",
+      "controllerAddressHex": "0303030303030303030303030303030303030303030303030303030303030303",
       "methodIdHex": "0404040404040404040404040404040404040404040404040404040404040404"
     }
   ],
   "negative": [
     {
-      "id": "reject-empty-holder-contract",
-      "replace": "didContractAddressHex",
+      "id": "reject-empty-holder-controller",
+      "replace": "controllerAddressHex",
       "value": "0000000000000000000000000000000000000000000000000000000000000000",
-      "errorIncludes": "DID contract address"
+      "errorIncludes": "controller address"
     },
     {
       "id": "reject-empty-holder-method",

@@ -7,9 +7,11 @@ MUST carry the same binding, and its proof key MUST match the bound method. The
 binding and proof checks are distinct and both are required.
 
 The Compact binding contains a `holderVerificationMethodRef` with a Midnight
-`didContractAddress` and a 32-byte `methodId`. Both values MUST be non-zero. A
-core implementation MUST reject a zero contract address or zero method ID
-before comparing the credential and presentation bindings.
+`controllerAddress` and a 32-byte `methodId`. The controller MAY be a DID
+contract, registry, or another contract that resolves the referenced method.
+Both values MUST be non-zero. A core implementation MUST reject a zero
+controller address or zero method ID before comparing the credential and
+presentation bindings.
 
 The conformance vectors verify explicit-binding structure and equality only.
 Credential-family repositories own end-to-end protocol and negative vectors.

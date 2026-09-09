@@ -18,6 +18,10 @@ All notable changes to this project are documented here. The format follows
   belong to credential-family and application repositories.
 - BREAKING: remove the single-value status discriminator; registry-bound status
   values have a new persistent hash in `0.2.0-rc1`.
+- BREAKING: replace the DID-specific `didContractAddress` verification-method
+  field with the controller-neutral `controllerAddress` field.
+- reject zero controller addresses for every validated verification-method
+  reference and validate explicit holder references before equality checks.
 - upgrade the Compact compiler to `0.31.1` and
   `@midnight-ntwrk/compact-runtime` to `0.16.0`.
 - collapse local and CI validation into one non-Docker core gate.
