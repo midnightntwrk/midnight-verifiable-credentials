@@ -39,19 +39,101 @@ const isWithin = (parent, child) => {
 const tarballName = (packageJson) =>
   `${packageJson.name.slice(1).replace("/", "-")}-${packageJson.version}.tgz`;
 
+const collectExportTargets = (value, targets = []) => {
+  if (typeof value === "string") {
+    targets.push(value);
+  } else if (value && typeof value === "object" && !Array.isArray(value)) {
+    for (const nested of Object.values(value)) {
+      collectExportTargets(nested, targets);
+    }
+  } else {
+    fail("package exports must contain only strings or condition objects");
+  }
+  return targets;
+};
+
+const readTarballManifest = (tarballPath, sourcePackageJson) => {
+  const entries = execFileSync("tar", ["-tzf", tarballPath], {
+    encoding: "utf8",
+  })
+    .trim()
+    .split(/\r?\n/u)
+    .filter(Boolean);
+  const requiredEntries = [
+    "package/package.json",
+    "package/LICENSE",
+    "package/README.md",
+    "package/CHANGELOG.md",
+  ];
+
+  for (const entry of entries) {
+    const allowed =
+      requiredEntries.includes(entry) || entry.startsWith("package/dist/");
+    if (!allowed || entry.split("/").includes("..")) {
+      fail(`${path.basename(tarballPath)} contains unexpected path ${entry}`);
+    }
+  }
+  for (const entry of requiredEntries) {
+    if (!entries.includes(entry)) {
+      fail(`${path.basename(tarballPath)} is missing ${entry}`);
+    }
+  }
+
+  const manifest = JSON.parse(
+    execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
+      encoding: "utf8",
+    }),
+  );
+  if (
+    manifest.name !== sourcePackageJson.name ||
+    manifest.version !== sourcePackageJson.version
+  ) {
+    fail(`${path.basename(tarballPath)} has unexpected package identity`);
+  }
+  for (const target of collectExportTargets(manifest.exports)) {
+    if (!target.startsWith("./dist/") || target.includes("*")) {
+      fail(`${manifest.name} has unsupported export target ${target}`);
+    }
+    const entry = `package/${target.slice(2)}`;
+    if (!entries.includes(entry)) {
+      fail(`${manifest.name} export target ${target} is missing`);
+    }
+  }
+
+  const compactExports = Object.keys(manifest.exports ?? {})
+    .filter((subpath) => subpath.endsWith(".compact"))
+    .sort();
+  const compactEntrypoints = Object.values(
+    manifest.midnight?.compactEntrypoints ?? {},
+  )
+    .flat()
+    .sort();
+  if (
+    compactExports.length > 0 ||
+    compactEntrypoints.length > 0
+  ) {
+    if (JSON.stringify(compactExports) !== JSON.stringify(compactEntrypoints)) {
+      fail(`${manifest.name} Compact exports and entrypoints differ`);
+    }
+  }
+  return manifest;
+};
+
 const args = process.argv.slice(2);
 const tarballMode = args.length === 2 && args[0] === "--tarballs";
+const validationMode =
+  args.length === 2 && args[0] === "--validate-tarballs";
 const registryMode =
   args.length === 4 &&
   args[0] === "--registry" &&
   args[2] === "--version";
-if (!tarballMode && !registryMode) {
+if (!tarballMode && !validationMode && !registryMode) {
   fail(
-    "Usage: test-release-package-consumers.mjs --tarballs <directory> | --registry <url> --version <version>",
+    "Usage: test-release-package-consumers.mjs --tarballs <directory> | --validate-tarballs <directory> | --registry <url> --version <version>",
   );
 }
 
-const tarballDirectory = tarballMode
+const tarballDirectory = tarballMode || validationMode
   ? path.resolve(repoRoot, args[1])
   : undefined;
 const registry = registryMode ? args[1] : undefined;
@@ -142,10 +224,9 @@ for (const releasePackage of releasePackages) {
     if (!existsSync(tarballPath)) {
       fail(`${path.relative(repoRoot, tarballPath)} is missing`);
     }
-    const packedPackageJson = JSON.parse(
-      execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
-        encoding: "utf8",
-      }),
+    const packedPackageJson = readTarballManifest(
+      tarballPath,
+      sourcePackageJson,
     );
     for (const lifecycleHook of installLifecycleHooks) {
       if (packedPackageJson.scripts?.[lifecycleHook] !== undefined) {
@@ -154,6 +235,9 @@ for (const releasePackage of releasePackages) {
         );
       }
     }
+  }
+  if (validationMode) {
+    continue;
   }
 
   const temporaryRoot = mkdtempSync(

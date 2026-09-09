@@ -11,7 +11,6 @@
   "scripts": {
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
-    "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages examples tooling",
@@ -22,7 +21,7 @@
     "build": "turbo run build --continue",
     "test": "turbo run test --continue",
     "typecheck": "turbo run typecheck --continue",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run lint"
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run lint"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

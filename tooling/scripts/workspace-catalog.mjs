@@ -32,13 +32,6 @@ export const workspacePaths = [
   ...supportedWorkspacePaths,
   ...privateWorkspacePaths,
 ];
-export const releasePackageFiles = () => [
-  "dist/**",
-  "README.md",
-  "CHANGELOG.md",
-  "package.json",
-];
-
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
