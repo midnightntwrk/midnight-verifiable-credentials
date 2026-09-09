@@ -49,7 +49,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
 
-    pnpm run build:all
+    pnpm run build
 
     runHook postBuild
   '';

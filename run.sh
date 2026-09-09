@@ -49,26 +49,26 @@ node ./tooling/scripts/ensure-node-24.mjs
 case "$target" in
   full)
     pnpm run ci:lint
-    pnpm run build:all
-    pnpm run ci:typecheck
+    pnpm run build
+    pnpm run typecheck
     pnpm run test:core-conformance
-    pnpm run test:all
+    pnpm run test
     pnpm run artifacts:pack
     ;;
   lint)
     pnpm run ci:lint
     ;;
   build)
-    pnpm run build:all
+    pnpm run build
     ;;
   typecheck)
-    pnpm run ci:typecheck
+    pnpm run typecheck
     ;;
   test)
-    pnpm run test:all
+    pnpm run test
     ;;
   conformance)
-    pnpm run build:all
+    pnpm run build
     pnpm run test:core-conformance
     ;;
   package)

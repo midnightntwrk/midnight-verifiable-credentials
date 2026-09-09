@@ -74,7 +74,7 @@ generated outputs across package or repository boundaries.
 When Compact sources or runtime inputs change:
 
 ```bash
-pnpm run build:all
+pnpm run build
 ```
 
 Never commit wallet keys, signing keys, seeds, witnesses, credentials, or other
