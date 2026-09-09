@@ -86,9 +86,13 @@ const readTarballManifest = (tarballPath, sourcePackageJson) => {
   );
   if (
     manifest.name !== sourcePackageJson.name ||
-    manifest.version !== sourcePackageJson.version
+    manifest.version !== sourcePackageJson.version ||
+    manifest.private !== false ||
+    manifest.license !== "Apache-2.0"
   ) {
-    fail(`${path.basename(tarballPath)} has unexpected package identity`);
+    fail(
+      `${path.basename(tarballPath)} has unexpected package metadata`,
+    );
   }
   for (const target of collectExportTargets(manifest.exports)) {
     if (!target.startsWith("./dist/") || target.includes("*")) {
@@ -168,6 +172,7 @@ const scriptChecks = [
   ["browser", "bundle", "browser bundle"],
   ["browser", "test:bundle", "bundled execution"],
 ];
+const knownChecks = new Set(scriptChecks.map(([check]) => check));
 
 const run = (command, commandArgs, cwd, label) => {
   console.log(`[test-release-package-consumers] ${label}`);
@@ -184,6 +189,13 @@ if (releasePackages.length === 0) {
 }
 
 for (const releasePackage of releasePackages) {
+  if (
+    !Array.isArray(releasePackage.consumerChecks) ||
+    releasePackage.consumerChecks.length === 0 ||
+    releasePackage.consumerChecks.some((check) => !knownChecks.has(check))
+  ) {
+    fail(`${releasePackage.path} has invalid consumer checks`);
+  }
   if (typeof releasePackage.consumerFixture !== "string") {
     fail(`${releasePackage.path} has no clean-consumer fixture`);
   }
@@ -194,6 +206,11 @@ for (const releasePackage of releasePackages) {
       "utf8",
     ),
   );
+  for (const task of ["lint", "typecheck", "build", "test", "prepack"]) {
+    if (typeof sourcePackageJson.scripts?.[task] !== "string") {
+      fail(`${releasePackage.path} is missing the ${task} task`);
+    }
+  }
   const fixtureRoot = path.resolve(repoRoot, releasePackage.consumerFixture);
   if (!isWithin(repoRoot, fixtureRoot)) {
     fail(

@@ -9,7 +9,7 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/workspace-catalog.mjs --check",
+    "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
     "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
