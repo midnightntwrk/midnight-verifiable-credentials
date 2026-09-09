@@ -29,16 +29,11 @@
           compact-toolchain
           pkgs.bashInteractive
           pkgs.coreutils
-          pkgs.curl
           pkgs.git
           pkgs.gh
-          pkgs.gnused
-          pkgs.jq
           pkgs.just
           pkgs.nodejs_24
-          pkgs.openssl
           pkgs.pnpm_10
-          pkgs.which
         ];
 
         COMPACT_DIRECTORY = compact-toolchain;
