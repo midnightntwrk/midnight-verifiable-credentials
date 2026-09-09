@@ -48,16 +48,6 @@
         "CI"
       ],
       "outputs": []
-    },
-    "test:ci": {
-      "dependsOn": [
-        "build",
-        "^build"
-      ],
-      "env": [
-        "CI"
-      ],
-      "outputs": []
     }
   }
 }
