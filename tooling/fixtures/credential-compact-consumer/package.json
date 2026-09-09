@@ -2,6 +2,11 @@
   "name": "credential-compact-consumer",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10.34.5"
+  },
   "dependencies": {
     "@midnight-ntwrk/credential-compact": "file:./vendor/package.tgz"
   },
