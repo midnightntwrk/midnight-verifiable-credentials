@@ -15,9 +15,8 @@ exports and publication policy are defined by the
 
 ## Proof and status
 
-`credential-model` describes required capabilities and proof artifacts; it
-does not execute proofs or implement credential-status storage. Generic
-family-neutral proof and status-binding primitives remain in
+`credential-model` describes only generic credential-family and claim-schema
+metadata. Generic family-neutral proof and status-binding primitives remain in
 `credential-compact`. Concrete proof execution, status registries, authority,
 deployment, and verification policy belong to the credential-family or
 application repository that owns them. The [core status specification](../../spec/status.md)

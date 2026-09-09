@@ -1,32 +1,9 @@
-import {
-  defineCredentialFamily,
-  type CredentialCodec,
-  type PresentationCodec,
-} from "@midnight-ntwrk/credential-model";
-
-export interface AccessCredential {
-  accessLevel: number;
-}
-
-export interface AccessPresentation {
-  minimumAccessLevel: number;
-}
-
-const credentialCodec: CredentialCodec<AccessCredential, string> = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: (value) => JSON.parse(value) as AccessCredential,
-};
-
-const presentationCodec: PresentationCodec<AccessPresentation, string> = {
-  mediaType: "application/json",
-  encode: JSON.stringify,
-  decode: (value) => JSON.parse(value) as AccessPresentation,
-};
+import { defineCredentialFamily } from "@midnight-ntwrk/credential-model";
 
 export const accessFamily = defineCredentialFamily({
   id: "fixture.access",
   version: "0.1.0",
+  name: "Access credential",
   schema: {
     id: "urn:fixture:access",
     version: "1.0.0",
@@ -40,18 +17,4 @@ export const accessFamily = defineCredentialFamily({
       },
     ],
   },
-  capabilities: [
-    {
-      id: "proof.range",
-      kind: "proof",
-      required: true,
-    },
-  ],
-  artifacts: [],
-  composition: {
-    formatVersion: 1,
-    packages: [],
-  },
-  credentialCodec,
-  presentationCodec,
 });

@@ -2,11 +2,15 @@
 
 ## Credential family definition
 
-A TypeScript family definition identifies a versioned schema, bounded
-capabilities, required proof artifacts, package requirements, and codecs. It
-contains no executable provider, transport, deployment, wallet, or business
-policy. Family definitions belong to independently released credential-family
-repositories.
+A TypeScript family definition records a stable identifier, semantic version,
+optional human-readable name and description, and one versioned claim schema.
+The schema may also carry a human-readable name and description and records its
+credential types and claim metadata, including claim paths, disclosure modes,
+required flags, and optional value-type labels.
+
+The definition does not prescribe credential or presentation payload types,
+codecs, capabilities, proof artifacts, package composition, deployment, or
+protocol behavior. Credential-family repositories own those concerns.
 
 ## Schema reference
 

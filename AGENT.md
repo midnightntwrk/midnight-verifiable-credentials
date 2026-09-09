@@ -11,7 +11,7 @@ Keep here:
 
 - protocol-independent VC/VP data models and Compact primitives
 - explicit holder-binding primitives
-- bounded capability and proof-artifact descriptors
+- generic credential-family and claim-schema metadata
 - normative specifications and conformance vectors
 - minimal synthetic composition fixtures
 
