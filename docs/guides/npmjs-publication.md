@@ -79,7 +79,6 @@ stays ready for the next channel dispatch.
 
 Branch rules are fail closed:
 
-- `snapshot`: `develop` only
 - `rc`: `develop` or `main`
 - `release`: `main` only
 
