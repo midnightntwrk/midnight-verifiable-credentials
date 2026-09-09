@@ -248,7 +248,7 @@ test("validates positive and negative status bindings in Compact", () => {
       assert.fail(`unknown status-binding mutation ${vector.mutation}`);
     }
     assert.throws(
-      () => pureCircuits.assertValidRegistryBoundStatusBinding(binding),
+      () => invoke(vector.operation, binding),
       (error) => String(error).includes(vector.errorIncludes),
       vector.id,
     );
