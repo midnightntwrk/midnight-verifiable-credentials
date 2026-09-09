@@ -13,7 +13,7 @@ guides contributors through signing from the pull request when required.
 
 - Search existing issues and pull requests for related work.
 - Read [`AGENT.md`](./AGENT.md) for repository boundaries and validation.
-- Read the [architecture guide](./docs/architecture/overview.md)
+- Read the [core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
   before adding or moving reusable code.
 - Open or confirm an issue for substantial behavior, architecture, security, or
   public API changes.
@@ -25,8 +25,7 @@ guides contributors through signing from the pull request when required.
 - Fork the repository and create a focused branch from `develop`.
 - Keep changes scoped to the owning package and update nearby tests and docs.
 - Follow the existing TypeScript, Compact, linting, and formatting conventions.
-- Include unit, integration, negative, or conformance evidence appropriate to
-  the change.
+- Include unit, negative, or conformance evidence appropriate to the change.
 - Use clear Conventional Commit style messages.
 - Include a DCO sign-off (`Signed-off-by: Name <email>`). GPG-signed commits are
   required for repository-facing maintainer work and encouraged for external
@@ -49,9 +48,8 @@ Use:
 Common types are `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, and
 `chore`.
 
-Preferred architecture scopes include `root`, `docs`, `spec`, `core`,
-`registry`, `components`, and `tooling`. A package-specific scope is
-appropriate for a narrowly owned change.
+Preferred architecture scopes include `root`, `docs`, `spec`, `core`, and
+`tooling`. A package-specific scope is appropriate for a narrowly owned change.
 
 Keep the summary imperative and concise. Every commit in a multi-commit pull
 request should remain meaningful on its own.
@@ -77,8 +75,8 @@ For most pull requests, run:
 ./run.sh --light
 ```
 
-For Compact, package, release, or integration-sensitive changes, run the
-focused target first and the broader lane required by
+For Compact, package, or release-sensitive changes, run the focused target
+first and the broader lane required by
 [`AGENT.md`](./AGENT.md).
 
 If you cannot run a required command locally, explain why in the pull request

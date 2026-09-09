@@ -13,7 +13,7 @@ normative requirements.
 
 ## Documents
 
-- [Terminology](./terminology.md)
+- [Terminology and glossary](./terminology.md)
 - [Data model](./data-model.md)
 - [Canonical encoding](./canonical-encoding.md)
 - [Holder binding](./holder-binding.md)
