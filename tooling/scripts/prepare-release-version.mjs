@@ -41,6 +41,9 @@ export const computeReleaseVersion = ({
         npmTag: "rc",
       };
     case "release":
+      if (rcIndex !== undefined && rcIndex !== "") {
+        throw new Error("rc index is only valid for rc publication");
+      }
       return {
         channel,
         version: baseVersion,

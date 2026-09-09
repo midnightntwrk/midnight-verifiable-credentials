@@ -13,7 +13,6 @@
 /tooling/scripts/npm-release-state.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/prepare-release-version.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/publish-npm-packages.sh @midnightntwrk/ex-identus @midnightntwrk/mn-sre
-/tooling/scripts/release-resolve-context.sh @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/wait-for-npm-packages.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 CODE_OF_CONDUCT.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CODEOWNERS @midnightntwrk/mn-security @midnightntwrk/mn-sre
