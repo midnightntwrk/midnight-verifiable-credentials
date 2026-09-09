@@ -1,10 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "tsconfig.json",
-    ".eslintrc.json",
-    ".nvmrc"
-  ],
+  "globalDependencies": [".nvmrc"],
   "globalEnv": [
     "COMPACT_COMPILER_VERSION"
   ],
