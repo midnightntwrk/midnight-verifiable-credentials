@@ -13,6 +13,7 @@ Targets:
   test             Build and test every retained workspace
   conformance      Run TypeScript and Compact conformance vectors
   package          Pack and clean-consumer test all public packages
+  docs             Validate and build the documentation site
   clean-artifacts  Remove generated artifacts
   targets          Print this target list
 
@@ -72,6 +73,10 @@ case "$target" in
     ;;
   package)
     pnpm run artifacts:pack
+    ;;
+  docs)
+    pnpm run docs:validate
+    pnpm run docs:build
     ;;
   clean-artifacts)
     pnpm run clean:artifacts

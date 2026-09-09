@@ -1,0 +1,17 @@
+{
+  "name": "docs-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:prepare": "node scripts/sync-content.mjs",
+    "predocs:build": "pnpm run docs:prepare",
+    "predocs:validate": "pnpm run docs:prepare",
+    "docs:dev": "node scripts/dev.mjs",
+    "docs:build": "vitepress build .",
+    "docs:preview": "vitepress preview . --host 127.0.0.1 --port 4174",
+    "docs:validate": "node scripts/validate-docs.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4"
+  }
+}

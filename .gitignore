@@ -19,6 +19,20 @@ test-results/
 *.tgz
 *.log
 
+# Documentation site content synchronized from canonical repository sources
+docs-site/.vitepress/cache/
+docs-site/.vitepress/.temp/
+docs-site/spec/
+docs-site/conformance/
+docs-site/public/conformance/
+docs-site/packages/model.md
+docs-site/packages/model-changelog.md
+docs-site/packages/compact.md
+docs-site/packages/compact-changelog.md
+docs-site/architecture/core-only.md
+docs-site/development/npmjs-publication.md
+docs-site/development/security.md
+
 # Local runtime state and secrets
 .env
 .env.local
