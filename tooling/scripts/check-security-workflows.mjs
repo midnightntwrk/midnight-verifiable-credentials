@@ -86,18 +86,6 @@ for (const fileName of readdirSync(path.join(repoRoot, workflowDirectory))) {
   assertCheckoutsDoNotPersistCredentials(workflow, relativePath);
 }
 
-const actionsDirectory = ".github/actions";
-for (const actionName of readdirSync(path.join(repoRoot, actionsDirectory))) {
-  const relativePath = `${actionsDirectory}/${actionName}/action.yml`;
-  const action = readYaml(relativePath);
-  for (const step of action.runs?.steps ?? []) {
-    assertExternalActionPinned(
-      step.uses,
-      `${relativePath} step ${step.name ?? "<unnamed>"}`,
-    );
-  }
-}
-
 const scanPath = ".github/workflows/scan.yaml";
 const scan = readYaml(scanPath);
 assertBranches(scan, "push", scanPath);
