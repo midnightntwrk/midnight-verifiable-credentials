@@ -33,7 +33,7 @@
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.7"
+    "vitest": "^4.1.11"
   },
   "pnpm": {
     "overrides": {
