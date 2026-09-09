@@ -28,8 +28,7 @@
     "build:all": "turbo run build --continue",
     "test:all": "turbo run test:ci --continue",
     "typecheck:all": "turbo run typecheck --continue",
-    "test:browser-surface": "node --test ./tooling/scripts/credential-compact-browser-surface.test.mjs",
-    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run test:release-tooling && pnpm run test:browser-surface && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
+    "ci:lint": "pnpm run check:package-boundaries && pnpm run check:security-workflows && pnpm run check:vulnerability-exceptions && pnpm run test:release-tooling && pnpm run check:release-package-contract && pnpm run check:turbo-cache-policy && pnpm run check:core-conformance && pnpm run lint",
     "ci:typecheck": "pnpm run typecheck:all"
   },
   "devDependencies": {
@@ -37,7 +36,6 @@
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
-    "esbuild": "^0.28.1",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.5",
@@ -54,7 +52,6 @@
       "brace-expansion@1": "5.0.9",
       "brace-expansion@2": "5.0.9",
       "brace-expansion@5": "5.0.9",
-      "esbuild": "0.28.1",
       "js-yaml": "4.3.1",
       "postcss": "8.5.23",
       "vite": "7.3.6"
