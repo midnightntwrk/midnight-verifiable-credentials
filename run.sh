@@ -7,7 +7,7 @@ Usage: ./run.sh [target] [--light]
 
 Targets:
   full             Run the complete non-Docker release gate (default)
-  lint             Run repository policy checks and package lint
+  lint             Run package boundary, release, and lint checks
   build            Build every retained workspace
   typecheck        Build and typecheck every retained workspace
   test             Build and test every retained workspace

@@ -51,9 +51,6 @@ importers:
       vitest:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.2.0)(yaml@2.9.0)
-      yaml:
-        specifier: ^2.9.0
-        version: 2.9.0
 
   examples/core-composition:
     dependencies:
@@ -2073,6 +2070,7 @@ snapshots:
 
   word-wrap@1.2.5: {}
 
-  yaml@2.9.0: {}
+  yaml@2.9.0:
+    optional: true
 
   yocto-queue@0.1.0: {}
