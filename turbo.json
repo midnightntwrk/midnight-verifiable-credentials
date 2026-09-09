@@ -1,9 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".nvmrc"],
-  "globalEnv": [
-    "COMPACT_COMPILER_VERSION"
-  ],
   "globalPassThroughEnv": [
     "COMPACT_DIRECTORY",
     "NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS"
@@ -36,9 +33,6 @@
       "dependsOn": [
         "^build"
       ],
-      "env": [
-        "COMPACT_COMPILER_VERSION"
-      ],
       "outputs": [
         "dist/**",
         "src/managed/**",
@@ -51,8 +45,7 @@
         "^build"
       ],
       "env": [
-        "CI",
-        "COMPACT_COMPILER_VERSION"
+        "CI"
       ],
       "outputs": []
     },
@@ -62,8 +55,7 @@
         "^build"
       ],
       "env": [
-        "CI",
-        "COMPACT_COMPILER_VERSION"
+        "CI"
       ],
       "outputs": []
     }
