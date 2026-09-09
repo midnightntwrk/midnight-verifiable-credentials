@@ -15,7 +15,7 @@ import {
   decodeCompactValue,
   encodeCompactPayload,
   encodeCompactValue,
-} from "../index.js";
+} from "../compact-value-codec.js";
 
 type ExampleCredential = {
   readonly version: bigint;

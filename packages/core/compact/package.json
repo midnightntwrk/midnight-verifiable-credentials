@@ -45,7 +45,7 @@
     "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
-    "test": "pnpm run compact && vitest run",
+    "test": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist src/managed coverage reports .turbo *.tsbuildinfo"
   },
