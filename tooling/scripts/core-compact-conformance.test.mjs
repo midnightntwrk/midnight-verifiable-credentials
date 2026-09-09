@@ -344,6 +344,27 @@ test("validates and binds positive and negative signer authorizations", async ()
       ),
       [],
     );
+    assert.deepEqual(
+      conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+        credential,
+        proof,
+        bodyRoot,
+      ),
+      [],
+    );
+    assert.throws(
+      () =>
+        conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+          credential,
+          proof,
+          alternateMethod,
+        ),
+      (error) =>
+        String(error).includes(
+          "Credential body root does not match credential",
+        ),
+      "caller-supplied credential body root substitution",
+    );
     assert.throws(
       () =>
         conformance.pureCircuits.assertAuthorizedIssuerProof(
