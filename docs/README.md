@@ -16,7 +16,6 @@ documents.
 - [Package boundaries](./architecture/package-boundaries.md)
 - [Package release contract](./architecture/package-release-contract.md)
 - [npm publication](./guides/npmjs-publication.md)
-- [Vulnerability exceptions](./security/vulnerability-exceptions.md)
 - [Architecture decisions](./decisions/README.md)
 
 Historical implementation plans, duplicate specifications, protocol research,
