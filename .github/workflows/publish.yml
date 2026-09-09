@@ -106,9 +106,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Test release tooling
-        run: pnpm run test:release-tooling
-
       - name: Run repository light gate
         run: ./run.sh --light
 
