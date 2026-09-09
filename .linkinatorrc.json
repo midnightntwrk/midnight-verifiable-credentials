@@ -1,0 +1,12 @@
+{
+  "checkFragments": false,
+  "cleanUrls": true,
+  "concurrency": 25,
+  "recurse": true,
+  "retry": true,
+  "retryErrors": true,
+  "retryErrorsCount": 2,
+  "skip": ["^mailto:", "^did:"],
+  "timeout": 20000,
+  "verbosity": "warning"
+}
