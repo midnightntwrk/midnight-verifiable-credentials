@@ -13,7 +13,6 @@ documents.
 
 ## Maintain the repository
 
-- [Package boundaries](./architecture/package-boundaries.md)
 - [Package release contract](./architecture/package-release-contract.md)
 - [npm publication](./guides/npmjs-publication.md)
 - [Architecture decisions](./decisions/README.md)

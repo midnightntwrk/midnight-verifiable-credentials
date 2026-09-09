@@ -13,7 +13,7 @@ guides contributors through signing from the pull request when required.
 
 - Search existing issues and pull requests for related work.
 - Read [`AGENT.md`](./AGENT.md) for repository boundaries and validation.
-- Read the [package boundary guide](./docs/architecture/package-boundaries.md)
+- Read the [architecture guide](./docs/architecture/overview.md)
   before adding or moving reusable code.
 - Open or confirm an issue for substantial behavior, architecture, security, or
   public API changes.
