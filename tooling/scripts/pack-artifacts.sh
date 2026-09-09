@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(git rev-parse --show-toplevel)"
+ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 DEST_DIR="${1:-$ROOT_DIR/tooling/artifacts/npm}"
 SKIP_CONSUMER_TESTS="${2:-}"
+
+if [[ "$DEST_DIR" != /* ]]; then
+  DEST_DIR="$PWD/$DEST_DIR"
+fi
 
 if [[ -n "$SKIP_CONSUMER_TESTS" && "$SKIP_CONSUMER_TESTS" != "--skip-consumer-tests" ]]; then
   echo "Usage: $0 [destination] [--skip-consumer-tests]" >&2

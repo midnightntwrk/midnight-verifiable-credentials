@@ -37,38 +37,19 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     pnpmConfigHook
   ];
 
-  buildPhase = ''
-    runHook preBuild
-
-    export PATH=${pnpm_10}/bin:$PATH
-    export NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS=false
-    export COMPACT_DIRECTORY=${compact-toolchain}
-    export HOME=$TMPDIR
-
-    # Pre-populate zkir circuit parameters (required for compact compile in offline sandbox)
-    mkdir -p $HOME/.cache/midnight/zk-params
-    cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
-
-    pnpm run build
-
-    runHook postBuild
-  '';
+  dontBuild = true;
 
   installPhase = ''
     runHook preInstall
 
     export PATH=${pnpm_10}/bin:$PATH
     export NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS=false
-    # Pre-populate circuit parameters again for package prepack Compact compilation.
+    # Pre-populate circuit parameters for package prepack Compact compilation.
     export HOME=$TMPDIR
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
 
     export COMPACT_DIRECTORY=${compact-toolchain}
-
-    # Patch pack-artifacts.sh: replace git rev-parse with PWD (no .git in sandbox)
-    substituteInPlace tooling/scripts/pack-artifacts.sh \
-      --replace-fail 'ROOT_DIR="$(git rev-parse --show-toplevel)"' 'ROOT_DIR="$PWD"'
 
     mkdir -p $out
     # Consumer fixtures need registry-only dev tools; CI runs them outside the
