@@ -10,7 +10,7 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-compact').then(({ JUBJUB_SUBGROUP_ORDER }) => { if (JUBJUB_SUBGROUP_ORDER <= 0n) process.exit(1); })\"",
+    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-compact').then(({ pureCircuits }) => { if (typeof pureCircuits !== 'object') process.exit(1); })\"",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   }
 }
