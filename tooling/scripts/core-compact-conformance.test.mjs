@@ -312,29 +312,64 @@ test("validates and binds positive and negative signer authorizations", async ()
 
   const conformance = await loadSignerAuthorizationConformance();
   try {
+    const credentialProofVectors = readJson(
+      "conformance/vectors/credential-proof.json",
+    );
+    const credentialFixture = credentialProofVectors.fixture.credential;
+    const proofFixture = credentialProofVectors.fixture.proof;
     const credential = {
-      version: 1n,
-      schema,
-      issuerVerificationMethodRef: issuer.verificationMethodRef,
+      version: BigInt(credentialFixture.version),
+      schema: {
+        packageId: fromHex(credentialFixture.schema.packageIdHex),
+        schemaId: fromHex(credentialFixture.schema.schemaIdHex),
+        majorVersion: BigInt(credentialFixture.schema.majorVersion),
+        minorVersion: BigInt(credentialFixture.schema.minorVersion),
+      },
+      issuerVerificationMethodRef: {
+        controllerAddress: {
+          bytes: fromHex(credentialFixture.issuerControllerAddressHex),
+        },
+        methodId: fromHex(credentialFixture.issuerMethodIdHex),
+      },
       holderBinding: {
-        holderVerificationMethodRef: verifier.verificationMethodRef,
+        holderVerificationMethodRef: {
+          controllerAddress: {
+            bytes: fromHex(credentialFixture.holderControllerAddressHex),
+          },
+          methodId: fromHex(credentialFixture.holderMethodIdHex),
+        },
       },
       statusBinding: {},
-      issuedAt: 40n,
-      hasExpiration: false,
-      expiresAt: 0n,
+      issuedAt: BigInt(credentialFixture.issuedAt),
+      hasExpiration: credentialFixture.hasExpiration,
+      expiresAt: BigInt(credentialFixture.expiresAt),
       claims: {},
       claimCommitments: {},
-      claimRoot: fromHex(
-        "1212121212121212121212121212121212121212121212121212121212121212",
-      ),
+      claimRoot: fromHex(credentialFixture.claimRootHex),
     };
     const bodyRoot = conformance.pureCircuits.credentialBodyRoot(credential);
-    const proof = signProof(
-      issuer,
-      BigInt(fixture.issuer.secretKey),
-      bodyRoot,
-      pureCircuits.issuanceProofChallenge,
+    assert.equal(
+      toHex(bodyRoot),
+      credentialProofVectors.fixture.canonicalBodyRootHex,
+    );
+    const proof = {
+      signerVerificationMethodRef: {
+        controllerAddress: {
+          bytes: fromHex(proofFixture.signerControllerAddressHex),
+        },
+        methodId: fromHex(proofFixture.signerMethodIdHex),
+      },
+      createdAt: BigInt(proofFixture.createdAt),
+      challengeHash: fromHex(proofFixture.challengeHashHex),
+      publicKey: point(proofFixture.publicKey),
+      signature: {
+        r: point(proofFixture.signature.r),
+        s: BigInt(proofFixture.signature.s),
+      },
+    };
+    assert.equal(
+      conformance.pureCircuits.issuanceProofChallenge(bodyRoot, proof),
+      BigInt(credentialProofVectors.fixture.issuanceChallenge),
     );
     assert.deepEqual(
       conformance.pureCircuits.assertAuthorizedIssuerProof(
@@ -343,9 +378,6 @@ test("validates and binds positive and negative signer authorizations", async ()
         activeIssuerDescriptor,
       ),
       [],
-    );
-    const credentialProofVectors = readJson(
-      "conformance/vectors/credential-proof.json",
     );
     for (const vector of credentialProofVectors.positive) {
       assert.deepEqual(
@@ -364,7 +396,9 @@ test("validates and binds positive and negative signer authorizations", async ()
           conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
             credential,
             proof,
-            vector.mutation === "body-root" ? alternateMethod : bodyRoot,
+            vector.mutation === "body-root"
+              ? fromHex(credentialProofVectors.fixture.substitutedBodyRootHex)
+              : bodyRoot,
           ),
         (error) => String(error).includes(vector.errorIncludes),
         vector.id,

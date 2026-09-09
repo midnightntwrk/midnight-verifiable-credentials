@@ -92,7 +92,7 @@
     },
     {
       "path": "conformance/vectors/credential-proof.json",
-      "sha256": "56c2205db5e077c961756b8620bdbf2d28a137ab9b713634ebc163b86da25eec"
+      "sha256": "93354e6d5466b35e9dd17d4de9ef61ea94c1f7c8ecda36c0345b6d8b45f52a9e"
     },
     {
       "path": "conformance/vectors/holder-binding.json",
