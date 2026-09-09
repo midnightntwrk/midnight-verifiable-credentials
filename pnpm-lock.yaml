@@ -8,7 +8,6 @@ overrides:
   brace-expansion@1: 5.0.9
   brace-expansion@2: 5.0.9
   brace-expansion@5: 5.0.9
-  esbuild: 0.28.1
   js-yaml: 4.3.1
   postcss: 8.5.23
   vite: 7.3.6
@@ -34,9 +33,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.33.1
         version: 8.60.0(eslint@9.39.4)(typescript@5.9.3)
-      esbuild:
-        specifier: 0.28.1
-        version: 0.28.1
       eslint:
         specifier: ^9.28.0
         version: 9.39.4
