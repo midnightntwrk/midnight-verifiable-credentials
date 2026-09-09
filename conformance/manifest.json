@@ -59,12 +59,22 @@
       "id": "verify-signer-authorization-proof",
       "section": "spec/signer-authorization.md",
       "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "verify-verifier-request-proof",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "validate-signer-authorization-update",
+      "section": "spec/signer-authorization.md",
+      "vectorCategory": "signer-authorization"
     }
   ],
   "vectors": [
     {
       "path": "conformance/vectors/compact-generated.json",
-      "sha256": "e70f7dd65b3f244a304d4212e734bab9513ceb37f183ee851034207f5cdfe697"
+      "sha256": "2d6e616c8f4117cf2d9aa0d32185d68b7ba236335a40cf2ad355fdacf1b66922"
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",
@@ -80,7 +90,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "5810902ae054e34fd6f9947f71fd905806287508cb6c226d353dc2ecd364e814"
+      "sha256": "a726b95c2cec0ac10638238f141facc88ad65c663d234812fb55954585f72c49"
     }
   ],
   "allowedCoreImports": [

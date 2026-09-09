@@ -26,3 +26,9 @@ methods, public keys, policy commitments, decision sequences, or authority
 keys. A caller-provided `isTrusted` boolean, descriptor, or timestamp is not an
 authority unless it is bound to authenticated consumer state or a verified
 authority proof.
+
+An authorization-aware issuer or verifier-request check MUST verify both the
+proof signature and the accepted descriptor binding. Consumers replacing a
+stored descriptor MUST enforce increasing decision sequence and non-decreasing
+DID state version; accepting an older signed active descriptor after a newer
+suspension or revocation re-enables the signer.

@@ -48,20 +48,23 @@ the Jubjub identity point.
 
 ### Midnight DID method references
 
-`midnight-did` stores a verification-method identifier as
-`Opaque<"string">`, whereas the VC core uses a fixed-width `Bytes<32>` method
-reference. An adapter MUST set `VerificationMethodRef.controllerAddress` to the
-exact Midnight DID contract address and MUST set `methodId` to:
+`midnight-did` stores a verification-method identifier as a canonical fragment
+reference in `Opaque<"string">`, whereas the VC core uses a fixed-width
+`Bytes<32>` method reference. An adapter MUST set
+`VerificationMethodRef.controllerAddress` to the exact Midnight DID contract
+address and MUST set `methodId` to:
 
 ```text
-SHA-256(UTF-8(exact midnight-did verification method identifier))
+SHA-256(UTF-8(canonical midnight-did fragment identifier))
 ```
 
-The input is the exact, case-sensitive string supplied to the Midnight DID
-contract. It MUST NOT be trimmed, case-folded, normalized, truncated, or
-padded. The authorization source MUST retain that source string so it can read
-the matching DID entry and relationship before signing the descriptor. The
-conformance vectors publish the source strings and expected 32-byte values.
+The input is the exact, case-sensitive fragment stored by the Midnight DID
+contract, for example `#key-1`. A DID adapter MUST first apply the Midnight DID
+package's subject-binding and fragment-normalization rules. The canonical
+fragment MUST NOT then be trimmed, case-folded, truncated, or padded. The
+authorization source MUST retain that fragment so it can read the matching DID
+entry and relationship before signing the descriptor. The conformance vectors
+publish canonical fragments and expected 32-byte values.
 
 This mapping is computed off chain. Compact cannot hash an
 `Opaque<"string">` into provable state, and Ledger 8 cannot call the DID
@@ -93,12 +96,15 @@ An issuer authorization check MUST require all of the following:
    reference; and
 5. its Jubjub public key equals `Proof.publicKey`.
 
-The normal issuance-context proof verification remains independently required.
-Authorization does not replace credential signature verification.
+`assertAuthorizedIssuerProof` verifies the normal issuance-context signature
+over the caller-supplied credential body root as well as the authorization
+binding. The caller MUST derive that root from the exact credential being
+accepted.
 
-A verifier authorization check applies the same exact method/key binding to a
-protocol-neutral signed verifier request. It MUST NOT be applied to the holder's
-presentation proof as though the verifier signed the presentation.
+A verifier authorization check verifies a proof over the request scope with
+the `midnight:vc:verifier-req:v1` context and applies the same exact method/key
+binding. It MUST NOT be applied to the holder's presentation proof as though
+the verifier signed the presentation.
 
 ## Authority proof
 
@@ -125,9 +131,10 @@ to an expiry and represent that result as trusted time.
 This version defines current-trust semantics: a signer is trusted according to
 the newest authorization decision processed by the consumer. Consumers MUST
 reject an update whose sequence is not greater than the stored sequence for the
-same authorization. Registry-backed deployments require a relayer or monitor;
-revocation is not visible to a Ledger 8 consumer until the signed update is
-processed.
+same authorization. They MUST also reject an update whose observed DID state
+version is lower than the preceding descriptor. Registry-backed deployments
+require a relayer or monitor; revocation is not visible to a Ledger 8 consumer
+until the signed update is processed.
 
 Historical claims such as “trusted at issuance time” require an independently
 authenticated registry sequence or ledger event and are outside this version.
