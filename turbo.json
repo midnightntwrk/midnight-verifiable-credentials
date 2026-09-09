@@ -1,17 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
-    "package.json",
-    "pnpm-lock.yaml",
-    "pnpm-workspace.yaml",
-    "turbo.json",
-    "tsconfig*.json",
-    ".eslintrc*",
-    ".nvmrc",
-    ".github/workflows/*.yml",
-    ".github/workflows/*.yaml",
-    "tooling/scripts/**/*.mjs",
-    "tooling/scripts/**/*.sh"
+    "tsconfig.json",
+    ".eslintrc.json",
+    ".nvmrc"
   ],
   "globalEnv": [
     "COMPACT_COMPILER_VERSION"
