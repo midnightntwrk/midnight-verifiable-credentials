@@ -100,9 +100,6 @@ jobs:
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
-      - name: Verify Compact installation
-        run: compact compile --version
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 

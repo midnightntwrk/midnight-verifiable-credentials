@@ -44,9 +44,6 @@ jobs:
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
-      - name: Verify Compact installation
-        run: compact compile --version
-
       - name: Run core-only release gate
         run: ./run.sh --light
 
