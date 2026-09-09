@@ -15,7 +15,7 @@ export const supportedPackages = [
   {
     path: "packages/core/compact",
     consumerFixture: "tooling/fixtures/credential-compact-consumer",
-    consumerChecks: ["node", "typescript", "compact"],
+    consumerChecks: ["node", "typescript"],
   },
 ];
 
@@ -24,7 +24,6 @@ const allowedConsumerChecks = new Set([
   "node",
   "typescript",
   "browser",
-  "compact",
 ]);
 export const supportedWorkspacePaths = supportedPackages.map(
   ({ path: packagePath }) => packagePath,

@@ -84,11 +84,12 @@ The current package set proves:
 - `credential-compact`: Node ESM, strict TypeScript, and external Compact
   compilation.
 
-Packages that expose Compact sources must declare and pass the Compact
-clean-consumer check. The `credential-compact` package also records compiler
-identity, generated-output provenance, source/artifact digests, compilation of
-both canonical roots, and explicit Compact exports. It does not claim
-hidden-holder, status-registry authority, or verification-v1 compatibility.
+Packages that expose Compact sources must declare their entrypoints and pass
+metadata-driven clean-consumer compilation. The `credential-compact` package
+also records compiler identity, generated-output provenance, source/artifact
+digests, compilation of both canonical roots, and explicit Compact exports. It
+does not claim hidden-holder, status-registry authority, or verification-v1
+compatibility.
 
 ## Admission
 
