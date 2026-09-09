@@ -47,8 +47,9 @@ The repository does not own:
 - deployment assembly, runtime discovery, or product proving artifacts; or
 - rendering, localization, transliteration, and framework-specific UI.
 
-One synthetic example may demonstrate package composition. It is a test
-fixture, not a product, protocol implementation, or compatibility claim.
+Package-local tests, conformance vectors, and clean packed consumers provide
+the executable evidence. Runnable examples and use cases belong in consumer
+repositories.
 
 Credential families and applications use published versions or immutable
 package artifacts. Cross-repository source imports, workspace links, generated

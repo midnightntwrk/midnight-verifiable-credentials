@@ -52,22 +52,6 @@ importers:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.2.0)(yaml@2.9.0)
 
-  examples/core-composition:
-    dependencies:
-      '@midnight-ntwrk/credential-compact':
-        specifier: workspace:*
-        version: link:../../packages/core/compact
-      '@midnight-ntwrk/credential-model':
-        specifier: workspace:*
-        version: link:../../packages/core/model
-    devDependencies:
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-      vitest:
-        specifier: ^3.2.7
-        version: 3.2.7(@types/node@26.2.0)(yaml@2.9.0)
-
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':

@@ -13,7 +13,6 @@ Keep here:
 - explicit holder-binding primitives
 - generic credential-family and claim-schema metadata
 - normative specifications and conformance vectors
-- minimal synthetic composition fixtures
 
 Keep out:
 
@@ -41,15 +40,11 @@ work in them.
 
 ## Package layering
 
-Allowed dependency direction:
-
-```text
-examples -> core
-```
+The two public packages are independent; neither depends on the other.
 
 Rules:
 
-- `packages/core` must not depend on adapters, registries, examples, or apps.
+- `packages/core` must not depend on adapters, registries, or apps.
 - packages must expose public entrypoints; consumers must not deep-import
   another package's `src`, `dist`, or generated implementation files.
 - keep the workspace dependency graph acyclic.
