@@ -132,7 +132,7 @@ const checkCatalog = () => {
         consumerChecks.every((check) => allowedConsumerChecks.has(check)),
       `${packagePath} must declare known consumer checks`,
     );
-    for (const task of ["lint", "typecheck", "build", "test:ci", "prepack"]) {
+    for (const task of ["lint", "typecheck", "build", "test", "prepack"]) {
       assert.ok(
         packageJson.scripts?.[task],
         `${packagePath} is missing '${task}'`,

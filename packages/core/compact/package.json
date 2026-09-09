@@ -46,7 +46,6 @@
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "test": "pnpm run compact && vitest run",
-    "test:ci": "pnpm test",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist src/managed coverage reports .turbo *.tsbuildinfo"
   },

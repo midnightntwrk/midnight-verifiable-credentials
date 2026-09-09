@@ -7,7 +7,6 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
-    "test:ci": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf dist coverage .cache .turbo *.tsbuildinfo"
   },

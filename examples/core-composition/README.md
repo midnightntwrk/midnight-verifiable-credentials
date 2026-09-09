@@ -15,7 +15,7 @@ data. It is not published.
 Run its focused checks:
 
 ```bash
-pnpm turbo run typecheck test:ci \
+pnpm turbo run typecheck test \
   --filter=@midnight-ntwrk/credential-core-composition-example
 ```
 
