@@ -80,7 +80,7 @@ project.
 
 The current package set proves:
 
-- `credential-model`: Node ESM, strict and legacy TypeScript, and browser use;
+- `credential-model`: Node ESM, strict TypeScript, and browser use;
 - `credential-compact`: Node ESM, strict TypeScript, and external Compact
   compilation.
 

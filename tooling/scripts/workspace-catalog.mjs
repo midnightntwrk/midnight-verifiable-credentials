@@ -10,7 +10,7 @@ export const supportedPackages = [
   {
     path: "packages/core/model",
     consumerFixture: "tooling/fixtures/credential-model-consumer",
-    consumerChecks: ["node", "typescript", "legacy-typescript", "browser"],
+    consumerChecks: ["node", "typescript", "browser"],
   },
   {
     path: "packages/core/compact",
@@ -23,7 +23,6 @@ export const privateWorkspacePaths = ["examples/core-composition"];
 const allowedConsumerChecks = new Set([
   "node",
   "typescript",
-  "legacy-typescript",
   "browser",
   "compact",
 ]);

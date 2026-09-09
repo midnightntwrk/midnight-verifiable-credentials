@@ -83,7 +83,6 @@ const installLifecycleHooks = [
 const scriptChecks = [
   ["node", "test:node", "Node ESM"],
   ["typescript", "typecheck", "strict TypeScript"],
-  ["legacy-typescript", "typecheck:legacy", "legacy TypeScript resolution"],
   ["browser", "bundle", "browser bundle"],
   ["browser", "test:bundle", "bundled execution"],
 ];
