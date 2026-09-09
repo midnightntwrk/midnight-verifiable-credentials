@@ -562,6 +562,51 @@ test("validates and binds positive and negative signer authorizations", async ()
       case "proof-key":
         proof = { ...proof, publicKey: alternateKey };
         break;
+      case "empty-proof-controller":
+        proof = {
+          ...proof,
+          signerVerificationMethodRef: {
+            ...proof.signerVerificationMethodRef,
+            controllerAddress: { bytes: zeroBytes32() },
+          },
+        };
+        break;
+      case "empty-proof-method":
+        proof = {
+          ...proof,
+          signerVerificationMethodRef: {
+            ...proof.signerVerificationMethodRef,
+            methodId: zeroBytes32(),
+          },
+        };
+        break;
+      case "identity-proof-key":
+        proof = { ...proof, publicKey: identityPoint };
+        break;
+      case "off-curve-proof-key":
+        proof = { ...proof, publicKey: offCurvePoint };
+        break;
+      case "torsion-proof-key":
+        proof = { ...proof, publicKey: orderTwoPoint };
+        break;
+      case "identity-proof-nonce":
+        proof = {
+          ...proof,
+          signature: { ...proof.signature, r: identityPoint },
+        };
+        break;
+      case "off-curve-proof-nonce":
+        proof = {
+          ...proof,
+          signature: { ...proof.signature, r: offCurvePoint },
+        };
+        break;
+      case "torsion-proof-nonce":
+        proof = {
+          ...proof,
+          signature: { ...proof.signature, r: orderTwoPoint },
+        };
+        break;
       case "issuer-signature":
         proof = {
           ...proof,
@@ -637,6 +682,12 @@ test("validates and binds positive and negative signer authorizations", async ()
           proof,
           descriptor,
         );
+        return pureCircuits.assertValidIssuanceContextProof(
+          credentialBodyRoot,
+          proof,
+        );
+      }
+      if (vector.operation === "issuance-proof") {
         return pureCircuits.assertValidIssuanceContextProof(
           credentialBodyRoot,
           proof,

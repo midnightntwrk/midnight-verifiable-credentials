@@ -4,6 +4,8 @@ Conforming implementations MUST:
 
 - domain-separate issuance and presentation proofs;
 - bind proofs to the exact body, verification method, and supplied proof context;
+- reject identity, off-curve, and non-prime-subgroup proof public keys and nonce
+  points;
 - avoid treating a proof-carried public key as authorized without an independent
   application or authority decision;
 - validate schema and credential-family definitions before accepting proof results;
@@ -20,6 +22,10 @@ not replace canonical core checks.
 
 The manifest covers individual verified primitives. It MUST NOT be represented
 as an end-to-end issuance, presentation, or verification security claim.
+
+`Proof.createdAt` and `Proof.challengeHash` are signed inputs, not independently
+trusted time or freshness. Applications MUST validate the selected challenge,
+audience, replay, and time semantics outside the generic proof circuit.
 
 Signer authorization MUST fail on substituted roles, scopes, verification
 methods, public keys, policy commitments, decision sequences, or authority

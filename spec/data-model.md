@@ -29,29 +29,43 @@ fields identifies the exact schema contract used by a credential.
 
 ## Credential
 
-A canonical VC contains:
+A canonical credential body contains:
 
-- a format version;
+- `version`, which is `1` for this draft;
 - an exact schema reference;
+- the issuer verification-method reference;
+- signed `issuedAt`, `hasExpiration`, and `expiresAt` values;
 - typed direct claims or the empty direct-claims type;
 - typed claim commitments or the empty commitments type;
 - one holder-binding value;
 - one status-binding value; and
-- an issuer proof over the complete credential body and issuance context.
+- a claim root binding the family-defined claim representation.
 
 The claim and commitment layouts are fixed by the credential family. A core
 implementation MUST NOT accept an unbounded runtime claim map as canonical
-Compact input.
+Compact input. The issuer proof is a separate object over the complete
+credential body and issuance context; it is not a field of the credential
+body. `issuedAt` and `expiresAt` are signed numeric assertions, not trusted
+wall-clock evidence.
+
+The generic envelope validator checks the version, a caller-supplied expected
+claim root, and expiration ordering when `hasExpiration` is true. Family code
+MUST validate its claim root, schema, holder binding, and selected status
+binding before accepting the credential.
 
 ## Presentation
 
-A Compact presentation envelope contains a format version, exact schema
-reference, credential claim-root binding, issuer verification-method reference,
-holder binding, and family-defined disclosures. Family contracts define
-request, challenge, predicate, and policy semantics around that envelope.
+A Compact presentation body contains `version`, an exact schema reference, the
+credential claim-root binding, issuer verification-method reference, holder
+binding, and family-defined disclosures. Its proof is separate. The generic
+presentation validator checks only the version; credential-to-presentation
+relations, holder proof binding, disclosures, predicates, status, request
+scope, challenge freshness, and application policy are separate checks.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.
+Proof construction and verification are defined in
+[`proof-semantics.md`](./proof-semantics.md).
 
 Signer authorization is optional and separate from proof validity. A proof
 establishes control of its supplied public key. Applications that need an

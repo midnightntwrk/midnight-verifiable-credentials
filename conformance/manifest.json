@@ -26,6 +26,11 @@
       "vectorCategory": "compact-generated"
     },
     {
+      "id": "verify-context-proof",
+      "section": "spec/proof-semantics.md",
+      "vectorCategory": "signer-authorization"
+    },
+    {
       "id": "encode-compact-value",
       "section": "spec/canonical-encoding.md",
       "vectorCategory": "compact-value-encoding"
@@ -90,7 +95,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "399d973b90c937f5ddfd3f9f4c352db99fe0efd8aba93be99ef537aa693962ee"
+      "sha256": "4b9904ee1c5edbe738e8ae4a8b384111bd8b76f5b231d3b3382f2b9df5503492"
     }
   ],
   "allowedCoreImports": [

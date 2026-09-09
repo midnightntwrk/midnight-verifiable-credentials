@@ -19,6 +19,12 @@ Compact runtime values. `StatusRegistryRef` is vocabulary only: this package
 does not authenticate registry mutation, roots, time, witnesses, or final
 non-membership.
 
+Context-specific proof helpers validate signer references, reject identity,
+off-curve, and non-prime-subgroup Jubjub public keys and nonce points, derive
+domain-separated challenges, and verify Schnorr signatures. Signed timestamps
+and challenge hashes still require application-defined time, freshness,
+audience, and replay policy.
+
 Signer authorization supports two composition modes. Applications may install
 an accepted descriptor through local governance, or verify a domain-separated
 authority proof before materializing the same descriptor. The authorization

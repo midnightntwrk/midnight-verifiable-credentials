@@ -13,7 +13,8 @@ The byte sequence is encoded as canonical unpadded base64url and identified by
 `compact-value-v1.base64url`. Decoders MUST reject an invalid magic value,
 truncation, non-canonical base64url, trailing bytes, and descriptor leftovers.
 
-Context tags are fixed 32-byte Compact values. Issuance, presentation, signer
+Context tags, proof payload roots, and Schnorr challenges are defined in
+[`proof-semantics.md`](./proof-semantics.md). Issuance, presentation, signer
 authorization, and verifier-request proofs MUST use different tags. The checked
 vectors in
 [`../conformance/vectors/compact-generated.json`](../conformance/vectors/compact-generated.json)

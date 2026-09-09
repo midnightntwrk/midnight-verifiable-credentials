@@ -27,6 +27,34 @@ They therefore MUST keep the accepted descriptor or authority key in their own
 ledger state. Relayers MAY transport signed decisions but MUST NOT be treated
 as authorities.
 
+### Local flow without a Trust Registry
+
+1. The application obtains an issuer proof and complete credential.
+2. It verifies the credential-derived issuance proof.
+3. It applies its local issuer policy, optionally represented by a descriptor
+   installed through the consuming contract's deployment or governance path.
+4. It evaluates holder binding, status, and application policy separately.
+
+The local installation path is a trust boundary. A descriptor supplied as an
+ordinary witness is not trusted merely because it is structurally valid.
+
+### Authority-backed flow
+
+1. An external authority evaluates DID state and its own issuer or verifier
+   policy off chain or in its owning contract.
+2. It creates a descriptor with a newer logical decision sequence.
+3. It signs the domain-bound decision root with its configured Jubjub key.
+4. A relayer submits the descriptor and proof to the consuming Ledger 8
+   contract.
+5. The consumer verifies the authority anchor, domain, signature, and lifecycle
+   transition before replacing local state.
+6. Later credential or verifier-request checks read only that materialized
+   state.
+
+Relaying does not make revocation synchronous. Until the newer decision is
+accepted by the consumer, the consumer continues to apply its newest stored
+decision.
+
 ## Authorized signer descriptor
 
 An authorized signer descriptor contains:
@@ -116,10 +144,27 @@ An authority-signed descriptor uses the existing `Proof` structure with the
 contains the complete canonical descriptor root and the configured authority
 `domainCommitment`.
 
+The roots are derived as:
+
+```text
+descriptorRoot = persistentHash<AuthorizedSignerDescriptor>(descriptor)
+
+decisionRoot = persistentHash<Vector<2, Bytes<32>>>([
+  domainCommitment,
+  descriptorRoot
+])
+```
+
 The proof signer reference, public key, and non-zero domain commitment MUST equal
 a locally configured authority anchor. The domain commitment MUST uniquely bind
 the intended network and consuming contract or registry profile; consumers MUST
-NOT reuse a generic value across those domains. `Proof.createdAt` MUST equal
+NOT reuse a generic value across those domains. At minimum, its canonical
+preimage MUST identify the Midnight network and consuming contract. A
+registry-backed profile SHOULD additionally identify the registry and authority
+profile. The core accepts the resulting `Bytes<32>` commitment and does not
+define a portable string encoding for that preimage.
+
+`Proof.createdAt` MUST equal
 `decisionSequence` under this context. This equality defines sequence semantics
 only; it does not establish wall-clock time.
 
@@ -145,6 +190,12 @@ until the signed update is processed.
 Historical claims such as “trusted at issuance time” require an independently
 authenticated registry sequence or ledger event and are outside this version.
 
+For the same `authorizationId`, an update MAY replace the signer method/key,
+role, relationship, scope, or policy when the authority signs the complete
+new descriptor. Such a replacement is a new current decision, not inheritance
+from the previous key or role. The sequence MUST increase and the observed DID
+state version MUST NOT decrease.
+
 ## DID key rotation
 
 A changed DID key or DID state version does not silently inherit an existing
@@ -159,9 +210,11 @@ through a newer authority decision.
 
 ## Trust Registry profile
 
-A Trust Registry integration SHOULD sign an envelope containing its registry
-identifier, contract address, and the complete descriptor. The consuming
-contract MUST commit those registry values together with the network and
-consumer identity into its configured authority `domainCommitment`.
-Trust Registry policy evaluation, governance, DID resolution, evidence
-distribution, and key rotation remain outside the VC core.
+A Trust Registry integration SHOULD produce the same complete descriptor and
+authority proof defined above. Its profile MUST define a canonical
+`domainCommitment` preimage that includes the Midnight network, consuming
+contract, registry identifier, and authority or registry contract identity.
+The consumer pins the resulting commitment and authority verification method;
+it does not call the registry contract on Ledger 8. Trust Registry policy
+evaluation, governance, DID resolution, decision delivery, and key rotation
+remain outside the VC core.

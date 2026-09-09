@@ -15,6 +15,7 @@ normative requirements.
 
 - [Terminology and glossary](./terminology.md)
 - [Data model](./data-model.md)
+- [Proof semantics](./proof-semantics.md)
 - [Canonical encoding](./canonical-encoding.md)
 - [Holder binding](./holder-binding.md)
 - [Signer authorization](./signer-authorization.md)
@@ -25,9 +26,10 @@ normative requirements.
 
 ## Scope
 
-The specification owns family definitions, VC/VP envelopes, holder-binding and
-status-binding primitives, canonical Compact-value encoding, and conformance
-requirements for implemented operations.
+The specification owns generic family-definition metadata, VC/VP envelopes,
+proof semantics, holder-binding and status-binding primitives, canonical
+Compact-value encoding, and conformance requirements for implemented
+operations.
 
 It does not define issuance, presentation, or verification protocols;
 transports; OIDC; DIDComm; DApp Connector APIs; wallets; persistence;
