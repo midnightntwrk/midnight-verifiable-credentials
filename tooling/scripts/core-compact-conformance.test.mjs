@@ -232,6 +232,27 @@ test("validates positive and negative status bindings in Compact", () => {
       assert.deepEqual(result, []);
     }
   }
+  for (const vector of vectors.substitution) {
+    const binding = makeBinding();
+    if (vector.mutation === "registry") {
+      binding.registryRef.registryId = fromHex(vector.valueHex);
+    } else if (vector.mutation === "authority-controller") {
+      binding.registryRef.authorityVerificationMethodRef.controllerAddress = {
+        bytes: fromHex(vector.valueHex),
+      };
+    } else if (vector.mutation === "authority-method") {
+      binding.registryRef.authorityVerificationMethodRef.methodId = fromHex(
+        vector.valueHex,
+      );
+    } else if (vector.mutation === "status-handle") {
+      binding.statusHandleCommitment = fromHex(vector.valueHex);
+    } else {
+      assert.fail(`unknown status-binding substitution ${vector.mutation}`);
+    }
+    const rootHex = toHex(invoke("derive-root", binding));
+    assert.equal(rootHex, vector.expectedRootHex, vector.id);
+    assert.notEqual(rootHex, fixture.expectedRootHex, vector.id);
+  }
   for (const vector of vectors.negative) {
     const binding = makeBinding();
     if (vector.mutation === "empty-registry") {

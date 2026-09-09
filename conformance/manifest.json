@@ -142,7 +142,7 @@
     },
     {
       "path": "conformance/vectors/status-binding.json",
-      "sha256": "9261eb5915a6e8750bd3dfd1ff68fc617c14a35479663c23f74b1a804c63902e"
+      "sha256": "dcabc85846d462b425613203a4e66d8234c2f92e78fc8133086136232a6c0c6d"
     }
   ],
   "allowedCoreImports": [

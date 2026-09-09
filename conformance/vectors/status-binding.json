@@ -13,6 +13,12 @@
     { "id": "validate-registry-bound-status", "operation": "validate-binding" },
     { "id": "derive-registry-bound-status-root", "operation": "derive-root" }
   ],
+  "substitution": [
+    { "id": "bind-substituted-status-registry-id", "mutation": "registry", "valueHex": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "expectedRootHex": "5cd1c6c9e156b2974e98cf02cb0c6dcfc9f8b1953645802f1f7aff28f33d5106" },
+    { "id": "bind-substituted-status-authority-controller", "mutation": "authority-controller", "valueHex": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "expectedRootHex": "d65a4c9a0d25b4155d99cbe440249f70d91e33548c9af538cf2c954d9da091e9" },
+    { "id": "bind-substituted-status-authority-method", "mutation": "authority-method", "valueHex": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "expectedRootHex": "c09f572bfe0c91756475417871626b9169d3e4fa71a211800ad4902dd05d6415" },
+    { "id": "bind-substituted-status-handle", "mutation": "status-handle", "valueHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "expectedRootHex": "a942f4cf34a8bc32d2f785f76226d9fae9a6da537599e95f276ea434a146e0d4" }
+  ],
   "negative": [
     { "id": "reject-empty-registry-id-from-registry-validation", "operation": "validate-registry", "mutation": "empty-registry", "errorIncludes": "registry id" },
     { "id": "reject-empty-authority-controller-from-registry-validation", "operation": "validate-registry", "mutation": "empty-authority-controller", "errorIncludes": "controller address" },
