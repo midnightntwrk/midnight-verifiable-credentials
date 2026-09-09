@@ -37,7 +37,6 @@ test("computes rc and stable release metadata", () => {
       baseVersion: "0.2.0",
       channel: "rc",
       rcIndex: "1",
-      shortSha: "abc123",
     }),
     {
       channel: "rc",
@@ -49,28 +48,11 @@ test("computes rc and stable release metadata", () => {
     computeReleaseVersion({
       baseVersion: "0.2.0",
       channel: "release",
-      shortSha: "abc123",
     }),
     {
       channel: "release",
       version: "0.2.0",
       npmTag: "latest",
-    },
-  );
-});
-
-test("computes commit-bound snapshot metadata", () => {
-  assert.deepEqual(
-    computeReleaseVersion({
-      baseVersion: "0.2.0",
-      channel: "snapshot",
-      runNumber: "42",
-      shortSha: "abcdef123456",
-    }),
-    {
-      channel: "snapshot",
-      version: "0.2.0-snapshot.42.abcdef123456",
-      npmTag: "snapshot",
     },
   );
 });
@@ -83,7 +65,6 @@ test("rejects ambiguous versions and invalid rc indexes", () => {
         baseVersion: "0.2.0",
         channel: "rc",
         rcIndex: "0",
-        shortSha: "abc123",
       }),
     /positive integer/u,
   );

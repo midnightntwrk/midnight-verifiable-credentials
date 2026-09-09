@@ -20,16 +20,6 @@ if [[ -n "${version}" && ! "${version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0
 fi
 
 case "${channel}" in
-  snapshot)
-    if [[ "${ref_name}" != "develop" ]]; then
-      echo "::error::snapshot publication is only allowed from develop."
-      exit 1
-    fi
-    if [[ -n "${rc_index}" ]]; then
-      echo "::error::rc_index is only valid for rc publication."
-      exit 1
-    fi
-    ;;
   rc)
     if [[ "${ref_name}" != "develop" && "${ref_name}" != "main" ]]; then
       echo "::error::rc publication is only allowed from develop or main."

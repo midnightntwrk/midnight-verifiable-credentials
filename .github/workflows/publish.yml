@@ -9,7 +9,6 @@ on:
         type: choice
         default: rc
         options:
-          - snapshot
           - rc
           - release
       version:
