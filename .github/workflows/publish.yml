@@ -30,6 +30,9 @@ env:
 jobs:
   publish:
     name: Publish supported packages
+    if: >-
+      (inputs.channel == 'rc' && (github.ref_name == 'develop' || github.ref_name == 'main')) ||
+      (inputs.channel == 'release' && github.ref_name == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
@@ -41,13 +44,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Resolve publication context
-        id: context
-        env:
-          DISPATCH_CHANNEL: ${{ inputs.channel }}
-          DISPATCH_RC_INDEX: ${{ inputs.rc_index }}
-        run: ./tooling/scripts/release-resolve-context.sh
 
       - name: Set up pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -93,8 +89,8 @@ jobs:
       - name: Prepare release version
         id: version
         env:
-          CHANNEL: ${{ steps.context.outputs.channel }}
-          RC_INDEX: ${{ steps.context.outputs.rc_index }}
+          CHANNEL: ${{ inputs.channel }}
+          RC_INDEX: ${{ inputs.rc_index }}
         run: |
           args=(--channel "$CHANNEL" --github-output "$GITHUB_OUTPUT")
           if [[ -n "$RC_INDEX" ]]; then

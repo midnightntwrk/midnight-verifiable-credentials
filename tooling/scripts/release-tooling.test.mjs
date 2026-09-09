@@ -68,54 +68,15 @@ test("rejects ambiguous versions and invalid rc indexes", () => {
       }),
     /positive integer/u,
   );
-});
-
-test("allows rc publication from develop and rejects stable publication", () => {
-  const temporaryRoot = mkdtempSync(
-    path.join(os.tmpdir(), "midnight-vc-release-context-"),
+  assert.throws(
+    () =>
+      computeReleaseVersion({
+        baseVersion: "0.2.0",
+        channel: "release",
+        rcIndex: "1",
+      }),
+    /only valid for rc/u,
   );
-  const outputPath = path.join(temporaryRoot, "output");
-  try {
-    const rcResult = spawnSync(
-      "bash",
-      ["tooling/scripts/release-resolve-context.sh"],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        env: {
-          ...process.env,
-          DISPATCH_CHANNEL: "rc",
-          DISPATCH_RC_INDEX: "1",
-          GITHUB_EVENT_NAME: "workflow_dispatch",
-          GITHUB_OUTPUT: outputPath,
-          GITHUB_REF_NAME: "develop",
-        },
-      },
-    );
-    assert.equal(rcResult.status, 0, rcResult.stderr);
-    assert.match(readFileSync(outputPath, "utf8"), /channel=rc/u);
-
-    const stableResult = spawnSync(
-      "bash",
-      ["tooling/scripts/release-resolve-context.sh"],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        env: {
-          ...process.env,
-          DISPATCH_CHANNEL: "release",
-          GITHUB_EVENT_NAME: "workflow_dispatch",
-          GITHUB_OUTPUT: outputPath,
-          GITHUB_REF_NAME: "develop",
-        },
-      },
-    );
-    assert.notEqual(stableResult.status, 0);
-    assert.match(stableResult.stdout, /only allowed from main/u);
-
-  } finally {
-    rmSync(temporaryRoot, { recursive: true, force: true });
-  }
 });
 
 test("publishes the tested tarballs with provenance and the requested tag", () => {
