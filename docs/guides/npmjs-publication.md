@@ -32,12 +32,10 @@ older npm CLI before any release work begins.
 npm OIDC authorizes publication but not separate `dist-tag` or `access`
 commands. The normal path therefore uses the scoped
 `MIDNIGHTCI_NPMJS_TOKEN` for access and tag operations. By default, `--tag rc`
-applies `rc` and preserves `latest`. For an explicitly approved prerelease
-default promotion, dispatch with `promote_latest: true`; the workflow then
-moves both `rc` and `latest` to the requested version. The workflow snapshots
-and verifies the selected tag policy independently and fails closed when
-registry metadata cannot be read. An idempotent rerun is a no-op when the
-requested tags are already correct. See the
+applies `rc` and preserves `latest`. Only a stable release may move `latest`.
+The workflow snapshots and verifies the selected tag policy independently and
+fails closed when registry metadata cannot be read. An idempotent rerun is a
+no-op when the requested tags are already correct. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -106,10 +104,9 @@ for package in \
 done
 ```
 
-The `rc` tag must resolve to `${VERSION}` for both packages. By default,
-`latest` remains unchanged. If `promote_latest: true` was explicitly selected,
-`latest` must also resolve to `${VERSION}`. Retain the workflow URL and
-release-evidence artifact with the release record.
+The `rc` tag must resolve to `${VERSION}` for both packages and `latest` must
+remain unchanged. Retain the workflow URL and release-evidence artifact with
+the release record.
 
 ## Retry and rollback
 

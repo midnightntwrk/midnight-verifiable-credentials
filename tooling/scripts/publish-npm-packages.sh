@@ -8,7 +8,6 @@ registry="${NPM_REGISTRY:-https://registry.npmjs.org/}"
 publish_access="${NPM_ACCESS:-public}"
 artifact_directory="${ARTIFACT_DIRECTORY:-${repo_root}/tooling/artifacts/npm}"
 token="${NODE_AUTH_TOKEN:-${NPM_TOKEN:-}}"
-promote_latest="${PROMOTE_LATEST:-false}"
 npm_command="${NPM_COMMAND:-npm}"
 
 if [[ "${registry}" != "https://registry.npmjs.org/" ]]; then
@@ -27,11 +26,6 @@ if [[ ! "${npm_tag}" =~ ^[0-9A-Za-z._-]+$ ]]; then
   echo "::error::NPM_TAG contains unsupported characters."
   exit 1
 fi
-if [[ "${promote_latest}" != "true" && "${promote_latest}" != "false" ]]; then
-  echo "::error::PROMOTE_LATEST must be true or false."
-  exit 1
-fi
-
 npmrc="$(mktemp)"
 view_stderr="${npmrc}.view-stderr"
 cleanup() {
@@ -106,14 +100,6 @@ ensure_npm_dist_tags() {
 
   echo "[publish-npm-packages] Ensuring ${package_name}@${version} has npm dist-tag ${npm_tag}"
   "${npm_command}" dist-tag add "${package_name}@${version}" "${npm_tag}" --registry "${registry}"
-  if [[ "${npm_tag}" == "latest" ]]; then
-    return 0
-  fi
-
-  if [[ "${promote_latest}" == "true" ]]; then
-    echo "[publish-npm-packages] Promoting ${package_name}@${version} to latest"
-    "${npm_command}" dist-tag add "${package_name}@${version}" latest --registry "${registry}"
-  fi
 }
 
 workspaces=()
