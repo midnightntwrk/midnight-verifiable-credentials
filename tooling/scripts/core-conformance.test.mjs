@@ -138,18 +138,50 @@ test("classifies every circuit exported by each Compact entrypoint", () => {
   );
   assert.ok(compactPackage, "the Compact package must be implemented");
   const packageManifest = readJson(compactPackage.manifest);
+  const compactExports = Object.entries(packageManifest.exports)
+    .filter(
+      ([packageExport, target]) =>
+        packageExport.endsWith(".compact") ||
+        (typeof target === "string" && target.endsWith(".compact")),
+    )
+    .map(([packageExport, target]) => {
+      assert.match(
+        packageExport,
+        /^\.\/[a-z0-9/-]+\.compact$/u,
+        `${packageExport} has an invalid Compact export subpath`,
+      );
+      assert.equal(
+        typeof target,
+        "string",
+        `${packageExport} must have one Compact export target`,
+      );
+      assert.match(
+        target,
+        /^\.\/dist\/[a-z0-9/-]+\.compact$/u,
+        `${packageExport} has an invalid Compact export target`,
+      );
+      return {
+        export: packageExport,
+        source: target.slice("./dist/".length),
+      };
+    })
+    .sort((left, right) => left.export.localeCompare(right.export));
   const advertisedEntrypoints = Object.values(
     packageManifest.midnight.compactEntrypoints,
   )
     .flat()
     .sort();
-  const inventoriedEntrypoints = compactCircuitInventory.entrypoints
-    .map(({ export: packageExport }) => packageExport)
-    .sort();
   assert.deepEqual(
-    inventoriedEntrypoints,
+    compactExports.map(({ export: packageExport }) => packageExport),
     advertisedEntrypoints,
-    "the circuit inventory must cover every advertised Compact entrypoint",
+    "Compact entrypoint metadata must cover every published Compact export",
+  );
+  assert.deepEqual(
+    [...compactCircuitInventory.entrypoints].sort((left, right) =>
+      left.export.localeCompare(right.export),
+    ),
+    compactExports,
+    "the circuit inventory must match each published Compact export target",
   );
 
   const classifications = new Set([
@@ -197,10 +229,6 @@ test("classifies every circuit exported by each Compact entrypoint", () => {
       Object.keys(entrypoint).sort(),
       ["export", "source"],
       `${entrypoint.export} has an invalid entrypoint-inventory shape`,
-    );
-    assert.ok(
-      Object.hasOwn(packageManifest.exports, entrypoint.export),
-      `${entrypoint.export} is not a package export`,
     );
     const actualCircuitKeys = collectExportedCompactCircuits(
       sourceRoot,
