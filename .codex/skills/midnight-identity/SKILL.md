@@ -12,8 +12,8 @@ independently or checked out inside `midnight-identity-workspace`.
 
 1. Read [`AGENT.md`](../../../AGENT.md).
 2. Read the workspace-root `AGENT.md` when working inside the identity workspace.
-3. Confirm the requested PR base. Normal work targets `develop`; the core-only
-   migration targets `vc-core` while that integration branch exists.
+3. Confirm the requested PR base. Normal work targets `develop`; only explicit
+   release promotion targets `main`.
 
 ## Boundary
 
