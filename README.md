@@ -19,6 +19,7 @@ versioned consumer repositories.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
+- [Optional Pi development loop](./docs/guides/pi-development.md)
 
 ## Packages
 

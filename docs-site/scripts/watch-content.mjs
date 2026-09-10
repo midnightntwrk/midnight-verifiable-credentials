@@ -19,6 +19,7 @@ const watchPaths = [
   ["packages/core/compact/CHANGELOG.md", false],
   ["docs/decisions/0016-core-only-specification-and-implementation.md", false],
   ["docs/guides/npmjs-publication.md", false],
+  ["docs/guides/pi-development.md", false],
   ["SECURITY.md", false],
 ];
 
