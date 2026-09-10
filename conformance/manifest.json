@@ -16,7 +16,7 @@
   ],
   "compactCircuitInventory": {
     "path": "conformance/compact-circuits.json",
-    "sha256": "7d471b3dc9e3b0c407d6202d372d56eba5b8ce31922749786f9152fd4b860385"
+    "sha256": "ed192d1233248ee14dbe1a37ec3ddda30f5e944d579274436b1ec1cad073ce1e"
   },
   "operations": [
     {

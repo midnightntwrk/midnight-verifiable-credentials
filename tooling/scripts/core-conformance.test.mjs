@@ -163,7 +163,7 @@ test("classifies every circuit exported by each Compact entrypoint", () => {
   for (const circuit of compactCircuitInventory.circuits) {
     const expectedKeys =
       circuit.classification === "supported"
-        ? ["classification", "id", "operation", "source", "symbol"]
+        ? ["classification", "evidence", "id", "operation", "source", "symbol"]
         : ["classification", "id", "source", "symbol"];
     assert.deepEqual(
       Object.keys(circuit).sort(),
@@ -230,19 +230,41 @@ test("requires executable evidence for every supported Compact circuit", () => {
     if (circuit.classification !== "supported") continue;
     const operation = operations.get(circuit.operation);
     assert.ok(operation, `${circuit.id} has no operation`);
-    const evidence = vectors.get(operation.vectorCategory);
-    assert.ok(evidence, `${circuit.id} has no vector document`);
-    const positive = evidence.positive ?? evidence.vectors ?? [];
-    assert.ok(positive.length > 0, `${circuit.id} has no positive evidence`);
-    if (/^(?:bind|match|validate|verify)-/u.test(operation.id)) {
-      const rejection = [
-        ...(evidence.negative ?? []),
-        ...(evidence.substitution ?? []),
-      ];
+    const vectorDocument = vectors.get(operation.vectorCategory);
+    assert.ok(vectorDocument, `${circuit.id} has no vector document`);
+    const requireEvidence = (kind, allowedCollections) => {
+      const references = circuit.evidence[kind];
       assert.ok(
-        rejection.length > 0,
-        `${circuit.id} has no malformed or substitution evidence`,
+        Array.isArray(references) && references.length > 0,
+        `${circuit.id} has no circuit-specific ${kind} evidence`,
       );
+      for (const reference of references) {
+        const match = reference.match(
+          /^([a-z][a-z-]*)\/([a-z0-9][a-z0-9-]*)$/u,
+        );
+        assert.ok(match, `${circuit.id} has invalid evidence ${reference}`);
+        const [, collection, vectorId] = match;
+        assert.ok(
+          allowedCollections.has(collection),
+          `${circuit.id} uses ${collection} as ${kind} evidence`,
+        );
+        assert.ok(
+          Array.isArray(vectorDocument[collection]) &&
+            vectorDocument[collection].some(({ id }) => id === vectorId),
+          `${circuit.id} references missing ${reference}`,
+        );
+      }
+    };
+    assert.deepEqual(
+      Object.keys(circuit.evidence).sort(),
+      /^(?:bind|match|validate|verify)-/u.test(operation.id)
+        ? ["negative", "positive"]
+        : ["positive"],
+      `${circuit.id} has an invalid evidence shape`,
+    );
+    requireEvidence("positive", new Set(["positive", "updates", "vectors"]));
+    if (/^(?:bind|match|validate|verify)-/u.test(operation.id)) {
+      requireEvidence("negative", new Set(["negative", "substitution"]));
     }
   }
 });

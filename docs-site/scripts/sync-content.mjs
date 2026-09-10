@@ -92,10 +92,15 @@ const rewriteLinks = (source, sourcePath) => {
       );
   }
   if (sourcePath === "packages/core/compact/README.md") {
-    return rewritten.replace(
-      "[`CHANGELOG.md`](./CHANGELOG.md)",
-      "[package changelog](/packages/compact-changelog)",
-    );
+    return rewritten
+      .replace(
+        "[`CHANGELOG.md`](./CHANGELOG.md)",
+        "[package changelog](/packages/compact-changelog)",
+      )
+      .replace(
+        "(../../../conformance/compact-circuits.json)",
+        "(/conformance/compact-circuits.json)",
+      );
   }
   if (sourcePath === "docs/guides/npmjs-publication.md") {
     return rewritten.replace(
