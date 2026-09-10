@@ -39,6 +39,7 @@ const pages = [
     "docs/guides/npmjs-publication.md",
     "docs-site/development/npmjs-publication.md",
   ],
+  ["docs/guides/pi-development.md", "docs-site/development/pi-development.md"],
   ["SECURITY.md", "docs-site/development/security.md"],
 ];
 
