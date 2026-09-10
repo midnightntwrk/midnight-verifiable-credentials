@@ -143,12 +143,7 @@
       "id": "presentation-context-proof-validation",
       "source": "credentials/proofs.compact",
       "symbol": "assertValidPresentationContextProof",
-      "classification": "supported",
-      "operation": "verify-presentation-proof",
-      "evidence": {
-        "positive": ["positive/verify-presentation-proof-from-canonical-body"],
-        "negative": ["negative/reject-issuance-context-for-presentation-proof"]
-      }
+      "classification": "low-level"
     },
     {
       "id": "signer-authorization-context-proof-validation",
