@@ -33,6 +33,59 @@ const extractImportSpecifiers = (source) => [
   ...source.matchAll(/\bimport\s*\(\s*["']([^"']+)["']\s*\)/gu),
 ].map((match) => match[1]);
 const compactCircuitKey = ({ source, symbol }) => `${source}#${symbol}`;
+const stripCompactComments = (source) => {
+  let output = "";
+  let state = "code";
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (state === "line-comment") {
+      if (character === "\n") {
+        state = "code";
+        output += character;
+      } else {
+        output += " ";
+      }
+    } else if (state === "block-comment") {
+      if (character === "*" && next === "/") {
+        output += "  ";
+        index += 1;
+        state = "code";
+      } else {
+        output += character === "\n" ? character : " ";
+      }
+    } else if (state === "string") {
+      output += character;
+      if (character === "\\" && next !== undefined) {
+        output += next;
+        index += 1;
+      } else if (character === '"') {
+        state = "code";
+      }
+    } else if (character === "/" && next === "/") {
+      output += "  ";
+      index += 1;
+      state = "line-comment";
+    } else if (character === "/" && next === "*") {
+      output += "  ";
+      index += 1;
+      state = "block-comment";
+    } else {
+      output += character;
+      if (character === '"') state = "string";
+    }
+  }
+  return output;
+};
+const stripCompactStrings = (source) =>
+  source.replace(/"(?:\\.|[^"\\])*"/gsu, (value) =>
+    value.replace(/[^\n]/gu, " "),
+  );
+const collectExportedCircuitSymbols = (source) => [
+  ...stripCompactStrings(stripCompactComments(source)).matchAll(
+    /^\s*export\s+(?:pure\s+)?circuit\s+([A-Za-z][A-Za-z0-9_]*)\s*\(/gmu,
+  ),
+].map((match) => match[1]);
 const collectExportedCompactCircuits = (sourceRoot, entrypointSource) => {
   const visited = new Set();
   const circuits = [];
@@ -41,12 +94,13 @@ const collectExportedCompactCircuits = (sourceRoot, entrypointSource) => {
     visited.add(source);
     const absoluteSource = resolve(sourceRoot, source);
     const text = readFileSync(absoluteSource, "utf8");
-    for (const match of text.matchAll(
-      /\bexport\s+(?:pure\s+)?circuit\s+([A-Za-z][A-Za-z0-9_]*)\s*\(/gu,
-    )) {
-      circuits.push({ source, symbol: match[1] });
+    for (const symbol of collectExportedCircuitSymbols(text)) {
+      circuits.push({ source, symbol });
     }
-    for (const match of text.matchAll(/^\s*include\s+"([^"]+)"\s*;/gmu)) {
+    const uncommentedText = stripCompactComments(text);
+    for (const match of uncommentedText.matchAll(
+      /^\s*include\s+"([^"]+)"\s*;/gmu,
+    )) {
       const included = resolve(dirname(absoluteSource), `${match[1]}.compact`);
       const relativeInclude = relative(sourceRoot, included);
       assert.ok(
@@ -59,6 +113,16 @@ const collectExportedCompactCircuits = (sourceRoot, entrypointSource) => {
   visit(entrypointSource);
   return circuits;
 };
+
+test("ignores non-code Compact circuit declarations", () => {
+  const source = `
+// export pure circuit lineComment(): [] {}
+/* export circuit blockComment(): [] {} */
+const text = "export pure circuit stringValue(): [] {}";
+export pure circuit retainedCircuit(): [] {}
+`;
+  assert.deepEqual(collectExportedCircuitSymbols(source), ["retainedCircuit"]);
+});
 
 test("maps every retained operation to a normative section and vector", () => {
   assert.equal(manifest.formatVersion, 3);
@@ -254,6 +318,25 @@ test("requires executable evidence for every supported Compact circuit", () => {
       return [document.category, document];
     }),
   );
+  const evidenceOwners = new Map();
+  for (const [category, document] of vectors) {
+    for (const collection of [
+      "positive",
+      "negative",
+      "substitution",
+      "updates",
+      "vectors",
+    ]) {
+      for (const vector of document[collection] ?? []) {
+        const reference = `${collection}/${vector.id}`;
+        assert.ok(
+          !evidenceOwners.has(reference),
+          `${reference} is ambiguous between ${evidenceOwners.get(reference)} and ${category}`,
+        );
+        evidenceOwners.set(reference, category);
+      }
+    }
+  }
   for (const circuit of compactCircuitInventory.circuits) {
     if (circuit.classification !== "supported") continue;
     const operation = operations.get(circuit.operation);
