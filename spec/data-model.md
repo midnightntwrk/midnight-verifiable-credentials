@@ -61,6 +61,9 @@ binding, and family-defined disclosures. Its proof is separate. The generic
 presentation validator checks only the version; credential-to-presentation
 relations, holder proof binding, disclosures, predicates, status, request
 scope, challenge freshness, and application policy are separate checks.
+The generic credential-to-presentation relation requires the exact schema
+reference, credential claim root, and issuer verification-method reference to
+match before family-specific disclosure or predicate checks run.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.

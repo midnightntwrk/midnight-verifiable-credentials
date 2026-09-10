@@ -1,0 +1,30 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "credentials/composable";
+
+import VC<
+  NoPublicClaims,
+  NoClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix ConformanceVC_;
+import VP<NoPublicClaims, ExplicitHolderBinding> prefix ConformanceVP_;
+import CredentialPresentationRelations<
+  NoPublicClaims,
+  NoClaimCommitments,
+  NoPublicClaims,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix ConformanceRelations_;
+
+export pure circuit assertMatchingCredentialPresentation(
+  credential: ConformanceVC_Credential,
+  presentation: ConformanceVP_Presentation
+): [] {
+  ConformanceRelations_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+}

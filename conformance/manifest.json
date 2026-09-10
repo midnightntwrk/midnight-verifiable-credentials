@@ -51,6 +51,36 @@
       "vectorCategory": "holder-binding"
     },
     {
+      "id": "match-explicit-holder-bindings",
+      "section": "spec/holder-binding.md",
+      "vectorCategory": "holder-binding"
+    },
+    {
+      "id": "bind-presentation-proof-reference",
+      "section": "spec/holder-binding.md",
+      "vectorCategory": "holder-binding"
+    },
+    {
+      "id": "bind-credential-presentation",
+      "section": "spec/data-model.md",
+      "vectorCategory": "credential-presentation"
+    },
+    {
+      "id": "validate-status-registry-reference",
+      "section": "spec/status.md",
+      "vectorCategory": "status-binding"
+    },
+    {
+      "id": "validate-registry-bound-status-binding",
+      "section": "spec/status.md",
+      "vectorCategory": "status-binding"
+    },
+    {
+      "id": "derive-registry-bound-status-binding-root",
+      "section": "spec/status.md",
+      "vectorCategory": "status-binding"
+    },
+    {
       "id": "validate-authorized-signer-descriptor",
       "section": "spec/signer-authorization.md",
       "vectorCategory": "signer-authorization"
@@ -95,8 +125,12 @@
       "sha256": "93354e6d5466b35e9dd17d4de9ef61ea94c1f7c8ecda36c0345b6d8b45f52a9e"
     },
     {
+      "path": "conformance/vectors/credential-presentation.json",
+      "sha256": "07cd688d89090d884200313eb4405e29fd5ea4a1fbad7b3d5803257b44eebf64"
+    },
+    {
       "path": "conformance/vectors/holder-binding.json",
-      "sha256": "23b94967a8a1f98f4e499f5899c32f6cb18ddac6eca78fa3dfad7008e2b90789"
+      "sha256": "ec9e0836098820f6b8f99bc0f612763929d805ce2d9b112bb3d90b1764375fb5"
     },
     {
       "path": "conformance/vectors/schema-reference.json",
@@ -105,6 +139,10 @@
     {
       "path": "conformance/vectors/signer-authorization.json",
       "sha256": "4b9904ee1c5edbe738e8ae4a8b384111bd8b76f5b231d3b3382f2b9df5503492"
+    },
+    {
+      "path": "conformance/vectors/status-binding.json",
+      "sha256": "dcabc85846d462b425613203a4e66d8234c2f92e78fc8133086136232a6c0c6d"
     }
   ],
   "allowedCoreImports": [
