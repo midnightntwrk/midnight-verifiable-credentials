@@ -68,6 +68,30 @@
       "replace": "minorVersion",
       "value": "1",
       "errorIncludes": "Schema reference mismatch"
+    },
+    {
+      "id": "reject-matching-empty-package-id",
+      "operation": "match",
+      "matchBoth": true,
+      "replace": "packageIdHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "package id"
+    },
+    {
+      "id": "reject-matching-empty-schema-id",
+      "operation": "match",
+      "matchBoth": true,
+      "replace": "schemaIdHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "Schema id"
+    },
+    {
+      "id": "reject-matching-zero-major-version",
+      "operation": "match",
+      "matchBoth": true,
+      "replace": "majorVersion",
+      "value": "0",
+      "errorIncludes": "major version"
     }
   ]
 }

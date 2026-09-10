@@ -167,11 +167,11 @@
     },
     {
       "path": "conformance/vectors/presentation-proof.json",
-      "sha256": "50bf81e20c9d086a79f707e2f6b05b3a10f94e1ff3b1a14a72f370463ec6d195"
+      "sha256": "171883daa252d34c72d96ff019782ce04c7305daef1d4326deabe105e467a5e5"
     },
     {
       "path": "conformance/vectors/schema-reference.json",
-      "sha256": "4ad18fe8611d985a4ef46a8ba0480e0460da156dec5415ebea3f6b8fb5f8565e"
+      "sha256": "9fb16ed2143fe83871d1e276253bfc4077b2b1dfcfebd2431ea542dff9b560da"
     },
     {
       "path": "conformance/vectors/signer-authorization.json",

@@ -125,7 +125,7 @@ test("validates positive and negative schema references in Compact", () => {
         () =>
           vector.operation === "match"
             ? pureCircuits.assertMatchingSchemaRefs(
-                makeSchemaRef(base),
+                makeSchemaRef(vector.matchBoth ? candidate : base),
                 makeSchemaRef(candidate),
               )
             : pureCircuits.assertValidSchemaRef(makeSchemaRef(candidate)),
@@ -352,6 +352,8 @@ test("binds presentation proofs to their body, holder, and context", async () =>
         };
       } else if (vector.mutation === "signature") {
         candidateProof.signature.s += 1n;
+      } else if (vector.mutation === "version") {
+        candidatePresentation.version += 1n;
       } else if (vector.mutation !== "issuance-context") {
         assert.fail(`unknown presentation-proof mutation ${vector.mutation}`);
       }
@@ -1405,12 +1407,6 @@ test("validates and binds positive and negative signer authorizations", async ()
         );
       }
       if (vector.operation === "verifier") {
-        if (vector.mutation === "verifier-signature") {
-          return pureCircuits.assertValidVerifierRequestContextProof(
-            requestScope,
-            proof,
-          );
-        }
         return pureCircuits.assertAuthorizedVerifierProof(
           requestScope,
           proof,
@@ -1501,6 +1497,19 @@ test("validates and binds positive and negative signer authorizations", async ()
         vector.id,
       ),
     );
+    if (vector.mutation === "verifier-signature") {
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            pureCircuits.assertValidVerifierRequestContextProof(
+              requestScope,
+              proof,
+            ),
+          (error) => String(error).includes(vector.errorIncludes),
+          `${vector.id}-context-primitive`,
+        ),
+      );
+    }
   }
 });
 

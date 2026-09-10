@@ -44,6 +44,11 @@
   ],
   "negative": [
     {
+      "id": "reject-unsupported-presentation-version-in-proof",
+      "mutation": "version",
+      "errorIncludes": "Presentation version mismatch"
+    },
+    {
       "id": "reject-issuance-context-for-presentation-proof",
       "mutation": "issuance-context",
       "errorIncludes": "Signature verification failed"
