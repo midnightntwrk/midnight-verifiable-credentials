@@ -31,6 +31,11 @@
       "vectorCategory": "signer-authorization"
     },
     {
+      "id": "verify-credential-proof-for-body-root",
+      "section": "spec/proof-semantics.md",
+      "vectorCategory": "credential-proof"
+    },
+    {
       "id": "encode-compact-value",
       "section": "spec/canonical-encoding.md",
       "vectorCategory": "compact-value-encoding"
@@ -84,6 +89,10 @@
     {
       "path": "conformance/vectors/compact-value-encoding.json",
       "sha256": "744f1e8671a36d3feb988f7fc538535f862b53ea37458eb501b4f01fabf88366"
+    },
+    {
+      "path": "conformance/vectors/credential-proof.json",
+      "sha256": "93354e6d5466b35e9dd17d4de9ef61ea94c1f7c8ecda36c0345b6d8b45f52a9e"
     },
     {
       "path": "conformance/vectors/holder-binding.json",

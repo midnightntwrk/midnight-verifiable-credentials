@@ -2,6 +2,8 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Reject caller-supplied credential body roots that do not equal the canonical
+  root recomputed from the complete credential before issuer-proof validation.
 - Added source-neutral issuer/verifier authorization descriptors, signature and
   exact method/key/scope binding circuits, monotonic lifecycle validation, and
   domain-separated Jubjub authority and verifier-request proof contexts without
