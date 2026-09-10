@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js 24 or newer
-- pnpm 10 or newer
+- pnpm 10.34.5 or newer
 - Compact `0.31.1` when consuming the Compact package
 
 ## Install
