@@ -8,6 +8,7 @@ Usage: ./run.sh [target] [--light]
 Targets:
   full             Run the complete non-Docker release gate (default)
   lint             Run package boundary, release, and lint checks
+  audit            Check production and development dependencies for high-severity vulnerabilities
   build            Build every retained workspace
   typecheck        Build and typecheck every retained workspace
   test             Build and test every retained workspace
@@ -49,6 +50,7 @@ node ./tooling/scripts/ensure-node-24.mjs
 
 case "$target" in
   full)
+    pnpm run audit
     pnpm run ci:lint
     pnpm run typecheck
     pnpm run test:core-conformance
@@ -57,6 +59,9 @@ case "$target" in
     ;;
   lint)
     pnpm run ci:lint
+    ;;
+  audit)
+    pnpm run audit
     ;;
   build)
     pnpm run build
