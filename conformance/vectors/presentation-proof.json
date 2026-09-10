@@ -1,0 +1,77 @@
+{
+  "formatVersion": 1,
+  "category": "presentation-proof",
+  "fixture": {
+    "presentation": {
+      "version": "1",
+      "schema": {
+        "packageIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+        "schemaIdHex": "2222222222222222222222222222222222222222222222222222222222222222",
+        "majorVersion": "1",
+        "minorVersion": "0"
+      },
+      "credentialClaimRootHex": "6666666666666666666666666666666666666666666666666666666666666666",
+      "issuerControllerAddressHex": "7777777777777777777777777777777777777777777777777777777777777777",
+      "issuerMethodIdHex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "holderControllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "holderMethodIdHex": "d9693a7799b4dc4c435fe91d13810fb1082365cc6bce7e6498f4a59446c2fe4a"
+    },
+    "proof": {
+      "signerControllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "signerMethodIdHex": "d9693a7799b4dc4c435fe91d13810fb1082365cc6bce7e6498f4a59446c2fe4a",
+      "createdAt": "42",
+      "challengeHashHex": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "publicKey": {
+        "x": "8976934280167817951893283006885971257354735267084857365287645009060806900685",
+        "y": "32390198301931076333580527807646215534390721674374179703346145430428257692101"
+      },
+      "signature": {
+        "r": {
+          "x": "16827724475775646817464036582159000260353701469526893325788649359360731655092",
+          "y": "44031289517654383275236023968950953006749154478578562892906183459209162884018"
+        },
+        "s": "462977629003601477388962348327205376600384140598201963528941314869893392786"
+      }
+    },
+    "canonicalBodyRootHex": "0465fcdecc846d7b3db18fa074e17c20de9c09f9f931525f5ac51f5f4871973e",
+    "presentationChallenge": "154325876334533825796320782775735125533461380199400654509647104956631130925",
+    "alternateHex": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "positive": [
+    {
+      "id": "verify-presentation-proof-from-canonical-body"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-issuance-context-for-presentation-proof",
+      "mutation": "issuance-context",
+      "errorIncludes": "Signature verification failed"
+    },
+    {
+      "id": "reject-presentation-schema-substitution-in-proof",
+      "mutation": "schema",
+      "errorIncludes": "Signature verification failed"
+    },
+    {
+      "id": "reject-presentation-claim-root-substitution-in-proof",
+      "mutation": "claim-root",
+      "errorIncludes": "Signature verification failed"
+    },
+    {
+      "id": "reject-presentation-issuer-substitution-in-proof",
+      "mutation": "issuer-method",
+      "errorIncludes": "Signature verification failed"
+    },
+    {
+      "id": "reject-presentation-holder-substitution-in-proof",
+      "mutation": "holder-controller",
+      "errorIncludes": "Presentation proof signer must match holder binding"
+    },
+    {
+      "id": "reject-invalid-presentation-proof-signature",
+      "mutation": "signature",
+      "errorIncludes": "Signature verification failed"
+    }
+  ]
+}

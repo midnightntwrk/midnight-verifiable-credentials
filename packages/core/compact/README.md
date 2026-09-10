@@ -58,6 +58,10 @@ the shared root.
 The external consumer gate compiles both canonical roots from the packed
 tarball. Hidden-holder, pseudonym, and same-holder semantics require a dedicated
 threat model and belong in independently versioned credential-family packages.
+The repository's
+[`compact-circuits.json`](../../../conformance/compact-circuits.json) inventory
+classifies the complete exported circuit surface and distinguishes supported
+semantic operations from low-level composition primitives.
 
 ## Ownership
 

@@ -74,15 +74,258 @@ test("validates positive and negative schema references in Compact", () => {
   });
 
   for (const vector of fixture.positive) {
-    assert.deepEqual(pureCircuits.assertValidSchemaRef(makeSchemaRef(vector)), []);
+    const schema = makeSchemaRef(vector);
+    const result =
+      vector.operation === "match"
+        ? pureCircuits.assertMatchingSchemaRefs(schema, schema)
+        : pureCircuits.assertValidSchemaRef(schema);
+    assert.deepEqual(result, [], vector.id);
   }
   for (const vector of fixture.negative) {
     const candidate = { ...base, [vector.replace]: vector.value };
     assert.throws(
-      () => pureCircuits.assertValidSchemaRef(makeSchemaRef(candidate)),
+      () =>
+        vector.operation === "match"
+          ? pureCircuits.assertMatchingSchemaRefs(
+              makeSchemaRef(base),
+              makeSchemaRef(candidate),
+            )
+          : pureCircuits.assertValidSchemaRef(makeSchemaRef(candidate)),
       (error) => String(error).includes(vector.errorIncludes),
       vector.id,
     );
+  }
+});
+
+test("validates verification-method references in Compact", () => {
+  const vectors = readJson(
+    "conformance/vectors/verification-method-reference.json",
+  );
+  const makeReference = () => ({
+    controllerAddress: {
+      bytes: fromHex(vectors.fixture.controllerAddressHex),
+    },
+    methodId: fromHex(vectors.fixture.methodIdHex),
+  });
+
+  for (const vector of vectors.positive) {
+    assert.deepEqual(
+      pureCircuits.assertValidVerificationMethodRef(makeReference()),
+      [],
+      vector.id,
+    );
+  }
+  for (const vector of vectors.negative) {
+    const reference = makeReference();
+    if (vector.mutation === "empty-controller") {
+      reference.controllerAddress = { bytes: zeroBytes32() };
+    } else if (vector.mutation === "empty-method") {
+      reference.methodId = zeroBytes32();
+    } else {
+      assert.fail(`unknown verification-method mutation ${vector.mutation}`);
+    }
+    assert.throws(
+      () => pureCircuits.assertValidVerificationMethodRef(reference),
+      (error) => String(error).includes(vector.errorIncludes),
+      vector.id,
+    );
+  }
+});
+
+test("validates credential and presentation envelopes in Compact", async () => {
+  const vectors = readJson("conformance/vectors/envelope.json");
+  const fixture = vectors.fixture;
+  const schema = {
+    packageId: fromHex(fixture.schema.packageIdHex),
+    schemaId: fromHex(fixture.schema.schemaIdHex),
+    majorVersion: BigInt(fixture.schema.majorVersion),
+    minorVersion: BigInt(fixture.schema.minorVersion),
+  };
+  const issuerVerificationMethodRef = {
+    controllerAddress: {
+      bytes: fromHex(fixture.issuerControllerAddressHex),
+    },
+    methodId: fromHex(fixture.issuerMethodIdHex),
+  };
+  const holderBinding = {
+    holderVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(fixture.holderControllerAddressHex),
+      },
+      methodId: fromHex(fixture.holderMethodIdHex),
+    },
+  };
+  const claimRoot = fromHex(fixture.claimRootHex);
+  const makeCredential = (hasExpiration = false) => ({
+    version: 1n,
+    schema,
+    issuerVerificationMethodRef,
+    holderBinding,
+    statusBinding: {},
+    issuedAt: BigInt(fixture.issuedAt),
+    hasExpiration,
+    expiresAt: BigInt(fixture.expiresAt),
+    claims: {},
+    claimCommitments: {},
+    claimRoot,
+  });
+  const makePresentation = () => ({
+    version: 1n,
+    schema,
+    credentialClaimRoot: claimRoot,
+    issuerVerificationMethodRef,
+    holderBinding,
+    disclosed: {},
+  });
+  const conformance = await loadCoreBindingsConformance();
+  try {
+    for (const vector of vectors.positive) {
+      const result =
+        vector.operation === "credential"
+          ? conformance.pureCircuits.assertValidCredentialEnvelope(
+              makeCredential(vector.hasExpiration),
+              claimRoot,
+            )
+          : conformance.pureCircuits.assertValidPresentationEnvelope(
+              makePresentation(),
+            );
+      assert.deepEqual(result, [], vector.id);
+    }
+    for (const vector of vectors.negative) {
+      const credential = makeCredential(true);
+      const presentation = makePresentation();
+      let expectedClaimRoot = claimRoot;
+      if (vector.mutation === "credential-version") {
+        credential.version = 2n;
+      } else if (vector.mutation === "expected-claim-root") {
+        expectedClaimRoot = fromHex("ff".repeat(32));
+      } else if (vector.mutation === "expiration-order") {
+        credential.expiresAt = credential.issuedAt - 1n;
+      } else if (vector.mutation === "presentation-version") {
+        presentation.version = 2n;
+      } else {
+        assert.fail(`unknown envelope mutation ${vector.mutation}`);
+      }
+      assert.throws(
+        () =>
+          vector.operation === "credential"
+            ? conformance.pureCircuits.assertValidCredentialEnvelope(
+                credential,
+                expectedClaimRoot,
+              )
+            : conformance.pureCircuits.assertValidPresentationEnvelope(
+                presentation,
+              ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      );
+    }
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
+  }
+});
+
+test("binds presentation proofs to their body, holder, and context", async () => {
+  const vectors = readJson("conformance/vectors/presentation-proof.json");
+  const fixture = vectors.fixture;
+  const presentationFixture = fixture.presentation;
+  const proofFixture = fixture.proof;
+  const makePresentation = () => ({
+    version: BigInt(presentationFixture.version),
+    schema: {
+      packageId: fromHex(presentationFixture.schema.packageIdHex),
+      schemaId: fromHex(presentationFixture.schema.schemaIdHex),
+      majorVersion: BigInt(presentationFixture.schema.majorVersion),
+      minorVersion: BigInt(presentationFixture.schema.minorVersion),
+    },
+    credentialClaimRoot: fromHex(presentationFixture.credentialClaimRootHex),
+    issuerVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(presentationFixture.issuerControllerAddressHex),
+      },
+      methodId: fromHex(presentationFixture.issuerMethodIdHex),
+    },
+    holderBinding: {
+      holderVerificationMethodRef: {
+        controllerAddress: {
+          bytes: fromHex(presentationFixture.holderControllerAddressHex),
+        },
+        methodId: fromHex(presentationFixture.holderMethodIdHex),
+      },
+    },
+    disclosed: {},
+  });
+  const makeProof = () => ({
+    signerVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(proofFixture.signerControllerAddressHex),
+      },
+      methodId: fromHex(proofFixture.signerMethodIdHex),
+    },
+    createdAt: BigInt(proofFixture.createdAt),
+    challengeHash: fromHex(proofFixture.challengeHashHex),
+    publicKey: point(proofFixture.publicKey),
+    signature: {
+      r: point(proofFixture.signature.r),
+      s: BigInt(proofFixture.signature.s),
+    },
+  });
+  const conformance = await loadCoreBindingsConformance();
+  try {
+    const presentation = makePresentation();
+    const proof = makeProof();
+    const bodyRoot = conformance.pureCircuits.presentationBodyRoot(presentation);
+    assert.equal(toHex(bodyRoot), fixture.canonicalBodyRootHex);
+    assert.equal(
+      conformance.pureCircuits.presentationProofChallenge(bodyRoot, proof),
+      BigInt(fixture.presentationChallenge),
+    );
+    for (const vector of vectors.positive) {
+      assert.deepEqual(
+        conformance.pureCircuits.assertValidPresentationProof(
+          makePresentation(),
+          makeProof(),
+        ),
+        [],
+        vector.id,
+      );
+    }
+    for (const vector of vectors.negative) {
+      const candidatePresentation = makePresentation();
+      const candidateProof = makeProof();
+      const alternate = fromHex(fixture.alternateHex);
+      if (vector.mutation === "schema") {
+        candidatePresentation.schema.schemaId = alternate;
+      } else if (vector.mutation === "claim-root") {
+        candidatePresentation.credentialClaimRoot = alternate;
+      } else if (vector.mutation === "issuer-method") {
+        candidatePresentation.issuerVerificationMethodRef.methodId = alternate;
+      } else if (vector.mutation === "holder-controller") {
+        candidatePresentation.holderBinding.holderVerificationMethodRef.controllerAddress = {
+          bytes: alternate,
+        };
+      } else if (vector.mutation === "signature") {
+        candidateProof.signature.s += 1n;
+      } else if (vector.mutation !== "issuance-context") {
+        assert.fail(`unknown presentation-proof mutation ${vector.mutation}`);
+      }
+      assert.throws(
+        () =>
+          vector.mutation === "issuance-context"
+            ? conformance.pureCircuits.assertValidIssuanceContextProof(
+                bodyRoot,
+                candidateProof,
+              )
+            : conformance.pureCircuits.assertValidPresentationProof(
+                candidatePresentation,
+                candidateProof,
+              ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      );
+    }
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
   }
 });
 
@@ -635,26 +878,72 @@ test("validates and binds positive and negative signer authorizations", async ()
       [],
     );
     for (const vector of credentialProofVectors.positive) {
+      const invoke =
+        vector.operation === "verify-derived-root"
+          ? () =>
+              conformance.pureCircuits.assertValidCredentialProof(
+                credential,
+                proof,
+              )
+          : () =>
+              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+                credential,
+                proof,
+                bodyRoot,
+              );
       assert.deepEqual(
-        conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-          credential,
-          proof,
-          bodyRoot,
-        ),
+        invoke(),
         [],
         vector.id,
       );
     }
     for (const vector of credentialProofVectors.negative) {
+      let candidateCredential = credential;
+      let candidateProof = proof;
+      let candidateBodyRoot = bodyRoot;
+      if (vector.mutation === "body-root") {
+        candidateBodyRoot = fromHex(
+          credentialProofVectors.fixture.substitutedBodyRootHex,
+        );
+      } else if (vector.mutation === "issuer-controller") {
+        candidateCredential = {
+          ...credential,
+          issuerVerificationMethodRef: {
+            ...credential.issuerVerificationMethodRef,
+            controllerAddress: alternateController,
+          },
+        };
+      } else if (vector.mutation === "issuer-method") {
+        candidateCredential = {
+          ...credential,
+          issuerVerificationMethodRef: {
+            ...credential.issuerVerificationMethodRef,
+            methodId: alternateMethod,
+          },
+        };
+      } else if (vector.mutation === "signature") {
+        candidateProof = {
+          ...proof,
+          signature: { ...proof.signature, s: proof.signature.s + 1n },
+        };
+      } else {
+        assert.fail(`unknown credential-proof mutation ${vector.mutation}`);
+      }
+      const invoke =
+        vector.operation === "verify-derived-root"
+          ? () =>
+              conformance.pureCircuits.assertValidCredentialProof(
+                candidateCredential,
+                candidateProof,
+              )
+          : () =>
+              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+                candidateCredential,
+                candidateProof,
+                candidateBodyRoot,
+              );
       assert.throws(
-        () =>
-          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-            credential,
-            proof,
-            vector.mutation === "body-root"
-              ? fromHex(credentialProofVectors.fixture.substitutedBodyRootHex)
-              : bodyRoot,
-          ),
+        invoke,
         (error) => String(error).includes(vector.errorIncludes),
         vector.id,
       );

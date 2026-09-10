@@ -18,6 +18,22 @@ The machine-readable source of current implementation coverage is
 operations with callable implementation and vectors. Future protocol work is
 not recorded as an unsupported pseudo-surface.
 
+The manifest binds the complete exported Compact circuit inventory in
+[`../conformance/compact-circuits.json`](../conformance/compact-circuits.json).
+Every exported circuit MUST be classified as:
+
+- `supported`: a stable semantic operation with a normative section and
+  executable conformance vectors;
+- `low-level`: a composition primitive that makes no independent semantic
+  conformance claim; or
+- `implementation-detail`: a compiler-visible unstable helper that consumers
+  MUST NOT depend on.
+
+Every published Compact entrypoint MUST expose exactly the classified circuit
+set recorded by the inventory. Adding or removing an exported circuit requires
+an inventory update. A `supported` circuit without an implemented operation is
+invalid.
+
 Normative test entrypoints MUST import only the exact retained core surfaces in
 the manifest allowlist. Protocol, credential-family, use-case, application, and
 sibling-repository source imports are forbidden. Repository package-boundary

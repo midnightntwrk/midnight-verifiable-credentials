@@ -25,6 +25,13 @@ export pure circuit assertValidCredentialProofForBodyRoot(
   ConformanceVC_assertValidCredentialProofForBodyRoot(credential, proof, bodyRoot);
 }
 
+export pure circuit assertValidCredentialProof(
+  credential: ConformanceVC_Credential,
+  proof: Proof
+): [] {
+  ConformanceVC_assertValidCredentialProof(credential, proof);
+}
+
 export pure circuit assertAuthorizedIssuerProof(
   credential: ConformanceVC_Credential,
   proof: Proof,

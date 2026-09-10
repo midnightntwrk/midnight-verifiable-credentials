@@ -1,0 +1,61 @@
+{
+  "formatVersion": 1,
+  "category": "envelope",
+  "fixture": {
+    "schema": {
+      "packageIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "schemaIdHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "majorVersion": "1",
+      "minorVersion": "0"
+    },
+    "issuerControllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+    "issuerMethodIdHex": "4444444444444444444444444444444444444444444444444444444444444444",
+    "holderControllerAddressHex": "5555555555555555555555555555555555555555555555555555555555555555",
+    "holderMethodIdHex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "claimRootHex": "7777777777777777777777777777777777777777777777777777777777777777",
+    "issuedAt": "40",
+    "expiresAt": "50"
+  },
+  "positive": [
+    {
+      "id": "valid-credential-without-expiration",
+      "operation": "credential",
+      "hasExpiration": false
+    },
+    {
+      "id": "valid-credential-with-expiration",
+      "operation": "credential",
+      "hasExpiration": true
+    },
+    {
+      "id": "valid-presentation-envelope",
+      "operation": "presentation"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-unsupported-credential-version",
+      "operation": "credential",
+      "mutation": "credential-version",
+      "errorIncludes": "Credential version mismatch"
+    },
+    {
+      "id": "reject-credential-claim-root-substitution",
+      "operation": "credential",
+      "mutation": "expected-claim-root",
+      "errorIncludes": "Credential claim root mismatch"
+    },
+    {
+      "id": "reject-expiration-before-issuance",
+      "operation": "credential",
+      "mutation": "expiration-order",
+      "errorIncludes": "Expiration must not precede issuance"
+    },
+    {
+      "id": "reject-unsupported-presentation-version",
+      "operation": "presentation",
+      "mutation": "presentation-version",
+      "errorIncludes": "Presentation version mismatch"
+    }
+  ]
+}

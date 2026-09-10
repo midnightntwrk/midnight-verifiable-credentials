@@ -1,5 +1,5 @@
 {
-  "formatVersion": 2,
+  "formatVersion": 3,
   "specification": "0.2-draft",
   "normativeRoot": "spec",
   "implementationPackages": [
@@ -14,11 +14,25 @@
       "version": "0.2.0"
     }
   ],
+  "compactCircuitInventory": {
+    "path": "conformance/compact-circuits.json",
+    "sha256": "7d471b3dc9e3b0c407d6202d372d56eba5b8ce31922749786f9152fd4b860385"
+  },
   "operations": [
     {
       "id": "validate-schema-reference",
       "section": "spec/data-model.md",
       "vectorCategory": "schema-reference"
+    },
+    {
+      "id": "match-schema-references",
+      "section": "spec/data-model.md",
+      "vectorCategory": "schema-reference"
+    },
+    {
+      "id": "validate-verification-method-reference",
+      "section": "spec/proof-semantics.md",
+      "vectorCategory": "verification-method-reference"
     },
     {
       "id": "derive-proof-context-tags",
@@ -31,9 +45,24 @@
       "vectorCategory": "signer-authorization"
     },
     {
+      "id": "verify-presentation-proof",
+      "section": "spec/proof-semantics.md",
+      "vectorCategory": "presentation-proof"
+    },
+    {
       "id": "verify-credential-proof-for-body-root",
       "section": "spec/proof-semantics.md",
       "vectorCategory": "credential-proof"
+    },
+    {
+      "id": "validate-credential-envelope",
+      "section": "spec/data-model.md",
+      "vectorCategory": "envelope"
+    },
+    {
+      "id": "validate-presentation-envelope",
+      "section": "spec/data-model.md",
+      "vectorCategory": "envelope"
     },
     {
       "id": "encode-compact-value",
@@ -122,19 +151,27 @@
     },
     {
       "path": "conformance/vectors/credential-proof.json",
-      "sha256": "93354e6d5466b35e9dd17d4de9ef61ea94c1f7c8ecda36c0345b6d8b45f52a9e"
+      "sha256": "7b1fa6f3313e313a8dfd2cac062f43224de243d36974b55f09b0b3f0a49ef8bd"
     },
     {
       "path": "conformance/vectors/credential-presentation.json",
       "sha256": "07cd688d89090d884200313eb4405e29fd5ea4a1fbad7b3d5803257b44eebf64"
     },
     {
+      "path": "conformance/vectors/envelope.json",
+      "sha256": "cb5005bca868cb0a2dab97741aef417e0ff27e7518944897f9b8622f24f52345"
+    },
+    {
       "path": "conformance/vectors/holder-binding.json",
       "sha256": "ec9e0836098820f6b8f99bc0f612763929d805ce2d9b112bb3d90b1764375fb5"
     },
     {
+      "path": "conformance/vectors/presentation-proof.json",
+      "sha256": "50bf81e20c9d086a79f707e2f6b05b3a10f94e1ff3b1a14a72f370463ec6d195"
+    },
+    {
       "path": "conformance/vectors/schema-reference.json",
-      "sha256": "ea26d3c2fa0ca5dee676bd945daa599a11b4b473dc0f5ad86383554f6841b3ce"
+      "sha256": "4ad18fe8611d985a4ef46a8ba0480e0460da156dec5415ebea3f6b8fb5f8565e"
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
@@ -143,6 +180,10 @@
     {
       "path": "conformance/vectors/status-binding.json",
       "sha256": "dcabc85846d462b425613203a4e66d8234c2f92e78fc8133086136232a6c0c6d"
+    },
+    {
+      "path": "conformance/vectors/verification-method-reference.json",
+      "sha256": "93e68f122c3b5e1598362e400f2bcbe1429778d29c510447788be2380957919d"
     }
   ],
   "allowedCoreImports": [

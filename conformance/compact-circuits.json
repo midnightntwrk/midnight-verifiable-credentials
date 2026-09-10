@@ -1,0 +1,297 @@
+{
+  "formatVersion": 1,
+  "package": "@midnight-ntwrk/credential-compact",
+  "sourceRoot": "packages/core/compact/src",
+  "entrypoints": [
+    {
+      "export": "./credentials.compact",
+      "source": "credentials.compact"
+    },
+    {
+      "export": "./credentials/composable.compact",
+      "source": "credentials/composable.compact"
+    }
+  ],
+  "circuits": [
+    {
+      "id": "schema-reference-validation",
+      "source": "credentials/types.compact",
+      "symbol": "assertValidSchemaRef",
+      "classification": "supported",
+      "operation": "validate-schema-reference"
+    },
+    {
+      "id": "schema-reference-matching",
+      "source": "credentials/types.compact",
+      "symbol": "assertMatchingSchemaRefs",
+      "classification": "supported",
+      "operation": "match-schema-references"
+    },
+    {
+      "id": "verification-method-reference-validation",
+      "source": "credentials/types.compact",
+      "symbol": "assertValidVerificationMethodRef",
+      "classification": "supported",
+      "operation": "validate-verification-method-reference"
+    },
+    {
+      "id": "raw-signature-verification",
+      "source": "credentials/proofs.compact",
+      "symbol": "verifySignature",
+      "classification": "low-level"
+    },
+    {
+      "id": "issuance-context-tag",
+      "source": "credentials/proofs.compact",
+      "symbol": "issuanceContextTag",
+      "classification": "supported",
+      "operation": "derive-proof-context-tags"
+    },
+    {
+      "id": "presentation-context-tag",
+      "source": "credentials/proofs.compact",
+      "symbol": "presentationContextTag",
+      "classification": "supported",
+      "operation": "derive-proof-context-tags"
+    },
+    {
+      "id": "signer-authorization-context-tag",
+      "source": "credentials/proofs.compact",
+      "symbol": "signerAuthorizationContextTag",
+      "classification": "supported",
+      "operation": "derive-proof-context-tags"
+    },
+    {
+      "id": "verifier-request-context-tag",
+      "source": "credentials/proofs.compact",
+      "symbol": "verifierRequestContextTag",
+      "classification": "supported",
+      "operation": "derive-proof-context-tags"
+    },
+    {
+      "id": "issuance-proof-payload-root",
+      "source": "credentials/proofs.compact",
+      "symbol": "issuanceProofPayloadRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "presentation-proof-payload-root",
+      "source": "credentials/proofs.compact",
+      "symbol": "presentationProofPayloadRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "issuance-proof-challenge",
+      "source": "credentials/proofs.compact",
+      "symbol": "issuanceProofChallenge",
+      "classification": "low-level"
+    },
+    {
+      "id": "presentation-proof-challenge",
+      "source": "credentials/proofs.compact",
+      "symbol": "presentationProofChallenge",
+      "classification": "low-level"
+    },
+    {
+      "id": "signer-authorization-proof-challenge",
+      "source": "credentials/proofs.compact",
+      "symbol": "signerAuthorizationProofChallenge",
+      "classification": "low-level"
+    },
+    {
+      "id": "verifier-request-proof-challenge",
+      "source": "credentials/proofs.compact",
+      "symbol": "verifierRequestProofChallenge",
+      "classification": "low-level"
+    },
+    {
+      "id": "issuance-context-proof-validation",
+      "source": "credentials/proofs.compact",
+      "symbol": "assertValidIssuanceContextProof",
+      "classification": "supported",
+      "operation": "verify-context-proof"
+    },
+    {
+      "id": "presentation-context-proof-validation",
+      "source": "credentials/proofs.compact",
+      "symbol": "assertValidPresentationContextProof",
+      "classification": "supported",
+      "operation": "verify-presentation-proof"
+    },
+    {
+      "id": "signer-authorization-context-proof-validation",
+      "source": "credentials/proofs.compact",
+      "symbol": "assertValidSignerAuthorizationContextProof",
+      "classification": "supported",
+      "operation": "verify-context-proof"
+    },
+    {
+      "id": "verifier-request-context-proof-validation",
+      "source": "credentials/proofs.compact",
+      "symbol": "assertValidVerifierRequestContextProof",
+      "classification": "supported",
+      "operation": "verify-verifier-request-proof"
+    },
+    {
+      "id": "authorized-signer-descriptor-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertValidAuthorizedSignerDescriptor",
+      "classification": "supported",
+      "operation": "validate-authorized-signer-descriptor"
+    },
+    {
+      "id": "authorized-signer-descriptor-root",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "authorizedSignerDescriptorRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "issuer-scope-commitment",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "issuerScopeCommitment",
+      "classification": "low-level"
+    },
+    {
+      "id": "proof-signer-authorization-matching",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertProofSignerMatchesAuthorization",
+      "classification": "low-level"
+    },
+    {
+      "id": "authorized-issuer-descriptor-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertAuthorizedIssuerDescriptor",
+      "classification": "supported",
+      "operation": "bind-authorized-issuer-proof"
+    },
+    {
+      "id": "authorized-verifier-proof-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertAuthorizedVerifierProof",
+      "classification": "supported",
+      "operation": "bind-authorized-verifier-proof"
+    },
+    {
+      "id": "signer-authorization-authority-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertValidSignerAuthorizationAuthority",
+      "classification": "low-level"
+    },
+    {
+      "id": "signer-authorization-decision-root",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "signerAuthorizationDecisionRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "signer-authorization-proof-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertValidSignerAuthorizationProof",
+      "classification": "supported",
+      "operation": "verify-signer-authorization-proof"
+    },
+    {
+      "id": "signer-authorization-update-validation",
+      "source": "credentials/signer-authorization.compact",
+      "symbol": "assertValidSignerAuthorizationUpdate",
+      "classification": "supported",
+      "operation": "validate-signer-authorization-update"
+    },
+    {
+      "id": "status-registry-reference-validation",
+      "source": "credentials/status-bindings.compact",
+      "symbol": "assertValidStatusRegistryRef",
+      "classification": "supported",
+      "operation": "validate-status-registry-reference"
+    },
+    {
+      "id": "registry-bound-status-validation",
+      "source": "credentials/status-bindings.compact",
+      "symbol": "assertValidRegistryBoundStatusBinding",
+      "classification": "supported",
+      "operation": "validate-registry-bound-status-binding"
+    },
+    {
+      "id": "registry-bound-status-root",
+      "source": "credentials/status-bindings.compact",
+      "symbol": "registryBoundStatusBindingRoot",
+      "classification": "supported",
+      "operation": "derive-registry-bound-status-binding-root"
+    },
+    {
+      "id": "explicit-holder-binding-validation",
+      "source": "credentials/holder-bindings.compact",
+      "symbol": "assertValidExplicitHolderBinding",
+      "classification": "supported",
+      "operation": "validate-explicit-holder-binding"
+    },
+    {
+      "id": "explicit-holder-binding-matching",
+      "source": "credentials/holder-bindings.compact",
+      "symbol": "assertMatchingExplicitHolderBindings",
+      "classification": "supported",
+      "operation": "match-explicit-holder-bindings"
+    },
+    {
+      "id": "explicit-holder-proof-matching",
+      "source": "credentials/holder-bindings.compact",
+      "symbol": "assertProofMatchesExplicitHolderBinding",
+      "classification": "supported",
+      "operation": "bind-presentation-proof-reference"
+    },
+    {
+      "id": "credential-body-root",
+      "source": "credentials/vc.compact",
+      "symbol": "credentialBodyRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "credential-envelope-validation",
+      "source": "credentials/vc.compact",
+      "symbol": "assertValidCredentialEnvelope",
+      "classification": "supported",
+      "operation": "validate-credential-envelope"
+    },
+    {
+      "id": "credential-proof-validation",
+      "source": "credentials/vc.compact",
+      "symbol": "assertValidCredentialProof",
+      "classification": "supported",
+      "operation": "verify-credential-proof-for-body-root"
+    },
+    {
+      "id": "precomputed-credential-root-proof-validation",
+      "source": "credentials/vc.compact",
+      "symbol": "assertValidCredentialProofForBodyRoot",
+      "classification": "supported",
+      "operation": "verify-credential-proof-for-body-root"
+    },
+    {
+      "id": "authorized-credential-issuer-proof-validation",
+      "source": "credentials/vc.compact",
+      "symbol": "assertAuthorizedIssuerProof",
+      "classification": "supported",
+      "operation": "bind-authorized-issuer-proof"
+    },
+    {
+      "id": "presentation-body-root",
+      "source": "credentials/vp.compact",
+      "symbol": "presentationBodyRoot",
+      "classification": "low-level"
+    },
+    {
+      "id": "presentation-envelope-validation",
+      "source": "credentials/vp.compact",
+      "symbol": "assertValidPresentationEnvelope",
+      "classification": "supported",
+      "operation": "validate-presentation-envelope"
+    },
+    {
+      "id": "credential-presentation-matching",
+      "source": "credentials/relations.compact",
+      "symbol": "assertMatchingCredentialPresentation",
+      "classification": "supported",
+      "operation": "bind-credential-presentation"
+    }
+  ]
+}

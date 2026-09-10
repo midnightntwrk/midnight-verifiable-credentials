@@ -19,6 +19,37 @@ import CredentialPresentationRelations<
   NoStatusBinding
 > prefix ConformanceRelations_;
 
+export pure circuit assertValidCredentialEnvelope(
+  credential: ConformanceVC_Credential,
+  expectedClaimRoot: Bytes<32>
+): [] {
+  ConformanceVC_assertValidCredentialEnvelope(credential, expectedClaimRoot);
+}
+
+export pure circuit assertValidPresentationEnvelope(
+  presentation: ConformanceVP_Presentation
+): [] {
+  ConformanceVP_assertValidPresentationEnvelope(presentation);
+}
+
+export pure circuit presentationBodyRoot(
+  presentation: ConformanceVP_Presentation
+): Bytes<32> {
+  return ConformanceVP_presentationBodyRoot(presentation);
+}
+
+export pure circuit assertValidPresentationProof(
+  presentation: ConformanceVP_Presentation,
+  proof: Proof
+): [] {
+  ConformanceVP_assertValidPresentationEnvelope(presentation);
+  assertProofMatchesExplicitHolderBinding(presentation.holderBinding, proof);
+  assertValidPresentationContextProof(
+    ConformanceVP_presentationBodyRoot(presentation),
+    proof
+  );
+}
+
 export pure circuit assertMatchingCredentialPresentation(
   credential: ConformanceVC_Credential,
   presentation: ConformanceVP_Presentation
