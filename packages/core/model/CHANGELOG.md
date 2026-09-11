@@ -4,6 +4,12 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased (0.2.0-rc1)
 
+- Accept untyped credential-family input through an assertion boundary and
+  report field-specific `CredentialModelError` failures.
+- Enforce SemVer 2.0 syntax for family and schema versions, including strict
+  prerelease and build identifiers.
+- Preserve literal inference for source-authored definitions and expand the
+  descriptor validation matrix.
 - BREAKING: reduce the public API to generic credential-family, schema, and
   claim metadata with its validation helper.
 - Add optional human-readable names and descriptions to family and schema

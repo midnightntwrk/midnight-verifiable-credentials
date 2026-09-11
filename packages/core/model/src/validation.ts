@@ -1,16 +1,38 @@
 import { CredentialModelError } from "./errors.js";
 import type { CredentialFamilyDefinition } from "./types.js";
 
-const semanticVersionPattern =
-  /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
-const claimDisclosures = new Set([
+const numericIdentifier = String.raw`(?:0|[1-9]\d*)`;
+const nonNumericIdentifier = String.raw`(?:\d*[A-Za-z-][0-9A-Za-z-]*)`;
+const prereleaseIdentifier = `(?:${numericIdentifier}|${nonNumericIdentifier})`;
+const semanticVersionPattern = new RegExp(
+  `^${numericIdentifier}[.]${numericIdentifier}[.]${numericIdentifier}` +
+    `(?:-${prereleaseIdentifier}(?:[.]${prereleaseIdentifier})*)?` +
+    `(?:[+][0-9A-Za-z-]+(?:[.][0-9A-Za-z-]+)*)?$`,
+  "u",
+);
+const claimDisclosures: ReadonlySet<unknown> = new Set([
   "public",
   "selective",
   "committed",
   "predicate-only",
 ]);
 
-const assertIdentifier = (value: string, path: string): void => {
+type UnknownRecord = Readonly<Record<string, unknown>>;
+
+function assertRecord(
+  value: unknown,
+  path: string,
+  message = "must be an object",
+): asserts value is UnknownRecord {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new CredentialModelError("INVALID_DESCRIPTOR", path, message);
+  }
+}
+
+function assertIdentifier(
+  value: unknown,
+  path: string,
+): asserts value is string {
   if (typeof value !== "string" || value.trim() !== value || value.length === 0) {
     throw new CredentialModelError(
       "INVALID_IDENTIFIER",
@@ -18,19 +40,29 @@ const assertIdentifier = (value: string, path: string): void => {
       "must be a non-empty trimmed string",
     );
   }
-};
+}
 
-const assertVersion = (value: string, path: string): void => {
-  if (typeof value !== "string" || !semanticVersionPattern.test(value)) {
+function assertVersion(
+  value: unknown,
+  path: string,
+): asserts value is string {
+  if (
+    typeof value !== "string" ||
+    value.trim() !== value ||
+    !semanticVersionPattern.test(value)
+  ) {
     throw new CredentialModelError(
       "INVALID_VERSION",
       path,
       "must be a semantic version",
     );
   }
-};
+}
 
-const assertOptionalText = (value: string | undefined, path: string): void => {
+function assertOptionalText(
+  value: unknown,
+  path: string,
+): asserts value is string | undefined {
   if (
     value !== undefined &&
     (typeof value !== "string" || value.trim() !== value || value.length === 0)
@@ -41,118 +73,92 @@ const assertOptionalText = (value: string | undefined, path: string): void => {
       "must be a non-empty trimmed string when present",
     );
   }
-};
+}
 
-const assertUniqueIds = (
-  values: readonly unknown[],
-  path: string,
-): void => {
-  const ids = new Set<string>();
-  for (const [index, value] of values.entries()) {
-    if (typeof value !== "object" || value === null) {
-      throw new CredentialModelError(
-        "INVALID_DESCRIPTOR",
-        `${path}[${index}]`,
-        "must be an object",
-      );
-    }
-    const identified = value as { readonly id?: unknown };
-    assertIdentifier(identified.id as string, `${path}[${index}].id`);
-    if (ids.has(identified.id as string)) {
-      throw new CredentialModelError(
-        "DUPLICATE_ID",
-        `${path}[${index}].id`,
-        `duplicates '${identified.id}'`,
-      );
-    }
-    ids.add(identified.id as string);
-  }
-};
-
-export const assertCredentialFamilyDefinition = (
-  definition: CredentialFamilyDefinition,
-): void => {
-  if (
-    typeof definition !== "object" ||
-    definition === null ||
-    typeof definition.schema !== "object" ||
-    definition.schema === null
-  ) {
-    throw new CredentialModelError(
-      "INVALID_DESCRIPTOR",
-      "definition",
-      "must declare a credential schema",
-    );
-  }
+export function assertCredentialFamilyDefinition(
+  definition: unknown,
+): asserts definition is CredentialFamilyDefinition {
+  assertRecord(definition, "definition");
   assertIdentifier(definition.id, "id");
   assertVersion(definition.version, "version");
   assertOptionalText(definition.name, "name");
   assertOptionalText(definition.description, "description");
-  assertIdentifier(definition.schema.id, "schema.id");
-  assertVersion(definition.schema.version, "schema.version");
-  assertOptionalText(definition.schema.name, "schema.name");
-  assertOptionalText(definition.schema.description, "schema.description");
 
-  if (
-    !Array.isArray(definition.schema.credentialTypes) ||
-    definition.schema.credentialTypes.length === 0
-  ) {
+  assertRecord(definition.schema, "schema", "must declare a credential schema");
+  const schema = definition.schema;
+  assertIdentifier(schema.id, "schema.id");
+  assertVersion(schema.version, "schema.version");
+  assertOptionalText(schema.name, "schema.name");
+  assertOptionalText(schema.description, "schema.description");
+
+  if (!Array.isArray(schema.credentialTypes) || schema.credentialTypes.length === 0) {
     throw new CredentialModelError(
       "INVALID_DESCRIPTOR",
       "schema.credentialTypes",
       "must contain at least one credential type",
     );
   }
-  for (const [index, credentialType] of
-    definition.schema.credentialTypes.entries()) {
+  for (const [index, credentialType] of schema.credentialTypes.entries()) {
     assertIdentifier(credentialType, `schema.credentialTypes[${index}]`);
   }
 
-  if (!Array.isArray(definition.schema.claims)) {
+  if (!Array.isArray(schema.claims)) {
     throw new CredentialModelError(
       "INVALID_DESCRIPTOR",
       "schema.claims",
       "must be an array",
     );
   }
-  assertUniqueIds(definition.schema.claims, "schema.claims");
-  for (const [index, claim] of definition.schema.claims.entries()) {
+
+  const claimIds = new Set<string>();
+  for (const [index, claim] of schema.claims.entries()) {
+    const claimPath = `schema.claims[${index}]`;
+    assertRecord(claim, claimPath);
+    assertIdentifier(claim.id, `${claimPath}.id`);
+    if (claimIds.has(claim.id)) {
+      throw new CredentialModelError(
+        "DUPLICATE_ID",
+        `${claimPath}.id`,
+        `duplicates '${claim.id}'`,
+      );
+    }
+    claimIds.add(claim.id);
+
     if (!claimDisclosures.has(claim.disclosure)) {
       throw new CredentialModelError(
         "INVALID_DESCRIPTOR",
-        `schema.claims[${index}].disclosure`,
+        `${claimPath}.disclosure`,
         "must be public, selective, committed, or predicate-only",
       );
     }
     if (typeof claim.required !== "boolean") {
       throw new CredentialModelError(
         "INVALID_DESCRIPTOR",
-        `schema.claims[${index}].required`,
+        `${claimPath}.required`,
         "must be a boolean",
       );
     }
     if (claim.valueType !== undefined) {
-      assertIdentifier(
-        claim.valueType,
-        `schema.claims[${index}].valueType`,
-      );
+      assertIdentifier(claim.valueType, `${claimPath}.valueType`);
     }
     if (!Array.isArray(claim.path) || claim.path.length === 0) {
       throw new CredentialModelError(
         "INVALID_DESCRIPTOR",
-        `schema.claims[${index}].path`,
+        `${claimPath}.path`,
         "must contain at least one path segment",
       );
     }
     for (const [pathIndex, segment] of claim.path.entries()) {
-      assertIdentifier(segment, `schema.claims[${index}].path[${pathIndex}]`);
+      assertIdentifier(segment, `${claimPath}.path[${pathIndex}]`);
     }
   }
-};
+}
 
-export const defineCredentialFamily = (
-  definition: CredentialFamilyDefinition,
-): CredentialFamilyDefinition => {
+export const defineCredentialFamily = <
+  const Definition extends CredentialFamilyDefinition,
+>(
+  definition: Definition,
+): Definition => {
   assertCredentialFamilyDefinition(definition);
   return definition;
 };
