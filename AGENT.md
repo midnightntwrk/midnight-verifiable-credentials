@@ -112,6 +112,8 @@ product/use-case integration environments.
 - Commit with DCO and GPG:
   `git commit -S --signoff -m "<type>: <subject>"`.
 - Follow `.devloops` for the required current-head external review and CI state.
+- Follow the [Pi development guide](./docs/guides/pi-development.md) when using
+  the optional repository-local harness.
 - This repository uses human-only merges. Agents may push and prepare PRs but
   must not merge them.
 - Treat findings against deleted or superseded surfaces as obsolete. Fix only
@@ -124,3 +126,4 @@ product/use-case integration environments.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
+- [Pi development loop](./docs/guides/pi-development.md)

@@ -25,3 +25,5 @@ business policy remain outside the core.
 This core defines only the credential-side status binding. It does not provide
 status evidence creation or verification, and consumers MUST NOT treat a
 binding-only check as proof of current non-revocation.
+Conformance covers structural validation and deterministic binding-root
+derivation, including malformed registry, authority, and handle references.

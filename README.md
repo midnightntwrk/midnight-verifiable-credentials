@@ -19,6 +19,7 @@ versioned consumer repositories.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
+- [Optional Pi development loop](./docs/guides/pi-development.md)
 
 ## Packages
 
@@ -52,7 +53,7 @@ docs/                        Core-only decision and release runbook
 
 ## Development
 
-Use Node.js 24, pnpm 10, and the pinned Compact toolchain.
+Use Node.js 24, pnpm 10.34.5 or newer, and the pinned Compact toolchain.
 
 ```bash
 pnpm install --frozen-lockfile

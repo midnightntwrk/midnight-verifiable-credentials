@@ -2,6 +2,11 @@
 # This file intentionally uses only the config schema supported by dev-loops 0.9.0.
 version: 1
 
+strategy:
+  default: github-first
+inputSource:
+  default: tracker
+
 gates:
   draft:
     angles:
@@ -17,6 +22,8 @@ gates:
     mandatoryAngles:
       - external-review
       - pr-description
+    required: true
+    requireCi: false
   preApproval:
     angles:
       - correctness
@@ -30,6 +37,8 @@ gates:
     mandatoryAngles:
       - external-review
       - pr-checklist-matrix
+    required: true
+    requireCi: true
 
 personas:
   security:
@@ -38,8 +47,9 @@ personas:
       Review retained core code for secret or witness exposure, invalid proof,
       holder, issuer, or status-reference binding, fail-open status semantics,
       dependency risk, and unsafe GitHub workflow behavior. Ignore deleted
-      application and protocol surfaces. Report concrete findings with file
-      and line references.
+      application and protocol surfaces. Report only concrete must-fix or
+      worth-fixing-now findings with file and line references. Do not propose
+      speculative governance, style, or future-protocol work.
     defaultModel: null
 
   midnight-vc-surface:
@@ -53,7 +63,9 @@ personas:
       method behavior in midnight-did, releasable credential families in
       independent repositories, and runnable use cases in
       midnight-identity-solution-examples. Report concrete findings with file
-      and line references.
+      and line references only when they affect the retained core or its
+      release boundary. Treat deleted-surface and hypothetical protocol
+      findings as out of scope.
     defaultModel: null
 
   external-review:
@@ -67,7 +79,9 @@ personas:
       changes, check proof, holder, issuer, and status-reference binding,
       witness exposure, managed artifact freshness, negative vectors, and spec
       drift. Ignore deleted application and protocol surfaces. Return only
-      actionable findings with file/line references, or "No findings".
+      must-fix or worth-fixing-now findings with file/line references, or "No
+      findings". Do not turn optional hardening or process preferences into
+      blockers.
     defaultModel: null
 
 refinement:

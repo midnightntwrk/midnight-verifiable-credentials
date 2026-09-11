@@ -23,7 +23,8 @@ The package exports:
 
 - credential-family, schema, and claim descriptors;
 - `defineCredentialFamily(...)`;
-- `assertCredentialFamilyDefinition(...)`;
+- `assertCredentialFamilyDefinition(value: unknown)`, which narrows valid input
+  to `CredentialFamilyDefinition`;
 - `CredentialModelError` and the bounded validation error-code union.
 
 It has zero runtime dependencies.
@@ -57,7 +58,26 @@ export const employeeFamily = defineCredentialFamily({
 
 `defineCredentialFamily(...)` validates descriptor identifiers, semantic
 versions, optional display metadata, credential types, claim paths, disclosure
-modes, required flags, and unique claim IDs.
+modes, required flags, and unique claim IDs. Versions follow SemVer 2.0 syntax.
+The helper preserves the inferred type of source-authored definitions.
+
+Use the assertion function for JSON, configuration, or other untyped input:
+
+```ts
+import {
+  assertCredentialFamilyDefinition,
+  type CredentialFamilyDefinition,
+} from "@midnight-ntwrk/credential-model";
+
+export const parseFamily = (value: unknown): CredentialFamilyDefinition => {
+  assertCredentialFamilyDefinition(value);
+  return value;
+};
+```
+
+Invalid input throws `CredentialModelError` with a stable error code and field
+path. Validation is structural; applications remain responsible for policy and
+business constraints beyond the generic descriptor model.
 
 ## Boundaries
 

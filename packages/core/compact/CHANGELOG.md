@@ -2,6 +2,14 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Classified every exported Compact circuit and added fail-closed coverage for
+  envelope invariants, verification-method references, proof contexts, and
+  credential and presentation body substitution.
+- Reject caller-supplied credential body roots that do not equal the canonical
+  root recomputed from the complete credential before issuer-proof validation.
+- Bind credential presentations to the exact credential schema and add
+  positive and substitution-negative conformance for VC/VP relations, explicit
+  holder-proof references, and structural status bindings.
 - Added source-neutral issuer/verifier authorization descriptors, signature and
   exact method/key/scope binding circuits, monotonic lifecycle validation, and
   domain-separated Jubjub authority and verifier-request proof contexts without

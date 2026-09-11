@@ -39,6 +39,7 @@ const pages = [
     "docs/guides/npmjs-publication.md",
     "docs-site/development/npmjs-publication.md",
   ],
+  ["docs/guides/pi-development.md", "docs-site/development/pi-development.md"],
   ["SECURITY.md", "docs-site/development/security.md"],
 ];
 
@@ -61,6 +62,10 @@ const rewriteLinks = (source, sourcePath) => {
       "(/conformance/manifest.sha256.txt)",
     )
     .replaceAll(
+      "(../conformance/compact-circuits.json)",
+      "(/conformance/compact-circuits.json)",
+    )
+    .replaceAll(
       "(../conformance/vectors/compact-generated.json)",
       "(/conformance/vectors/compact-generated.json)",
     );
@@ -69,6 +74,10 @@ const rewriteLinks = (source, sourcePath) => {
     rewritten = rewritten
       .replace("(./manifest.json)", "(/conformance/manifest.json)")
       .replace("(./manifest.sha256)", "(/conformance/manifest.sha256.txt)")
+      .replace(
+        "(./compact-circuits.json)",
+        "(/conformance/compact-circuits.json)",
+      )
       .replace("(./vectors/)", "(./vectors)");
   }
   if (sourcePath === "packages/core/model/README.md") {
@@ -83,10 +92,15 @@ const rewriteLinks = (source, sourcePath) => {
       );
   }
   if (sourcePath === "packages/core/compact/README.md") {
-    return rewritten.replace(
-      "[`CHANGELOG.md`](./CHANGELOG.md)",
-      "[package changelog](/packages/compact-changelog)",
-    );
+    return rewritten
+      .replace(
+        "[`CHANGELOG.md`](./CHANGELOG.md)",
+        "[package changelog](/packages/compact-changelog)",
+      )
+      .replace(
+        "(../../../conformance/compact-circuits.json)",
+        "(/conformance/compact-circuits.json)",
+      );
   }
   if (sourcePath === "docs/guides/npmjs-publication.md") {
     return rewritten.replace(
@@ -109,7 +123,11 @@ for (const [sourcePath, targetPath] of pages) {
 
 const publicConformance = resolve(docsRoot, "public", "conformance");
 await mkdir(resolve(publicConformance, "vectors"), { recursive: true });
-for (const file of ["manifest.json", "manifest.sha256"]) {
+for (const file of [
+  "compact-circuits.json",
+  "manifest.json",
+  "manifest.sha256",
+]) {
   await copyFile(
     resolve(repoRoot, "conformance", file),
     resolve(
