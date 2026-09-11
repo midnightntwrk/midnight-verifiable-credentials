@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 
 import {
   AuthorizationState,
-  pureCircuits,
+  pureCircuits as generatedPureCircuits,
   SignerRole,
   VerificationRelationship,
 } from "../../packages/core/compact/src/managed/credentials/contract/index.js";
@@ -16,6 +16,38 @@ import {
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
   JSON.parse(readFileSync(resolve(root, path), "utf8"));
+const compactCircuitInventory = readJson("conformance/compact-circuits.json");
+const circuitIdBySymbol = new Map(
+  compactCircuitInventory.circuits.map(({ id, symbol }) => [symbol, id]),
+);
+const executedEvidence = new Map();
+let activeEvidence;
+const instrumentCircuits = (circuits) =>
+  new Proxy(circuits, {
+    get(target, property, receiver) {
+      const circuit = Reflect.get(target, property, receiver);
+      const circuitId = circuitIdBySymbol.get(property);
+      if (typeof circuit !== "function" || circuitId === undefined) return circuit;
+      return (...args) => {
+        if (activeEvidence !== undefined) {
+          const evidence = executedEvidence.get(circuitId) ?? new Set();
+          evidence.add(activeEvidence);
+          executedEvidence.set(circuitId, evidence);
+        }
+        return circuit(...args);
+      };
+    },
+  });
+const pureCircuits = instrumentCircuits(generatedPureCircuits);
+const withEvidence = (collection, vector, invoke) => {
+  const previousEvidence = activeEvidence;
+  activeEvidence = `${collection}/${vector.id}`;
+  try {
+    return invoke();
+  } finally {
+    activeEvidence = previousEvidence;
+  }
+};
 const loadCompactConformance = async (fixtureName) => {
   const cacheRoot = resolve(root, "packages/core/compact/.cache");
   const packageJson = readJson("packages/core/compact/package.json");
@@ -37,7 +69,7 @@ const loadCompactConformance = async (fixtureName) => {
   const compiled = await import(
     pathToFileURL(resolve(output, "contract/index.js")).href
   );
-  return { output, pureCircuits: compiled.pureCircuits };
+  return { output, pureCircuits: instrumentCircuits(compiled.pureCircuits) };
 };
 const loadSignerAuthorizationConformance = () =>
   loadCompactConformance("signer-authorization-conformance");
@@ -59,7 +91,11 @@ test("matches deterministic outputs from generated Compact circuits", () => {
   for (const vector of fixture.vectors) {
     const circuit = pureCircuits[vector.circuit];
     assert.equal(typeof circuit, "function", vector.circuit);
-    assert.equal(toHex(circuit()), vector.expectedHex, vector.id);
+    assert.equal(
+      toHex(withEvidence("vectors", vector, () => circuit())),
+      vector.expectedHex,
+      vector.id,
+    );
   }
 });
 
@@ -74,15 +110,270 @@ test("validates positive and negative schema references in Compact", () => {
   });
 
   for (const vector of fixture.positive) {
-    assert.deepEqual(pureCircuits.assertValidSchemaRef(makeSchemaRef(vector)), []);
+    const schema = makeSchemaRef(vector);
+    const result = withEvidence("positive", vector, () =>
+      vector.operation === "match"
+        ? pureCircuits.assertMatchingSchemaRefs(schema, schema)
+        : pureCircuits.assertValidSchemaRef(schema),
+    );
+    assert.deepEqual(result, [], vector.id);
   }
   for (const vector of fixture.negative) {
     const candidate = { ...base, [vector.replace]: vector.value };
-    assert.throws(
-      () => pureCircuits.assertValidSchemaRef(makeSchemaRef(candidate)),
-      (error) => String(error).includes(vector.errorIncludes),
+    withEvidence("negative", vector, () =>
+      assert.throws(
+        () =>
+          vector.operation === "match"
+            ? pureCircuits.assertMatchingSchemaRefs(
+                makeSchemaRef(vector.matchBoth ? candidate : base),
+                makeSchemaRef(candidate),
+              )
+            : pureCircuits.assertValidSchemaRef(makeSchemaRef(candidate)),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      ),
+    );
+  }
+});
+
+test("validates verification-method references in Compact", () => {
+  const vectors = readJson(
+    "conformance/vectors/verification-method-reference.json",
+  );
+  const makeReference = () => ({
+    controllerAddress: {
+      bytes: fromHex(vectors.fixture.controllerAddressHex),
+    },
+    methodId: fromHex(vectors.fixture.methodIdHex),
+  });
+
+  for (const vector of vectors.positive) {
+    assert.deepEqual(
+      withEvidence("positive", vector, () =>
+        pureCircuits.assertValidVerificationMethodRef(makeReference()),
+      ),
+      [],
       vector.id,
     );
+  }
+  for (const vector of vectors.negative) {
+    const reference = makeReference();
+    if (vector.mutation === "empty-controller") {
+      reference.controllerAddress = { bytes: zeroBytes32() };
+    } else if (vector.mutation === "empty-method") {
+      reference.methodId = zeroBytes32();
+    } else {
+      assert.fail(`unknown verification-method mutation ${vector.mutation}`);
+    }
+    withEvidence("negative", vector, () =>
+      assert.throws(
+        () => pureCircuits.assertValidVerificationMethodRef(reference),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      ),
+    );
+  }
+});
+
+test("validates credential and presentation envelopes in Compact", async () => {
+  const vectors = readJson("conformance/vectors/envelope.json");
+  const fixture = vectors.fixture;
+  const schema = {
+    packageId: fromHex(fixture.schema.packageIdHex),
+    schemaId: fromHex(fixture.schema.schemaIdHex),
+    majorVersion: BigInt(fixture.schema.majorVersion),
+    minorVersion: BigInt(fixture.schema.minorVersion),
+  };
+  const issuerVerificationMethodRef = {
+    controllerAddress: {
+      bytes: fromHex(fixture.issuerControllerAddressHex),
+    },
+    methodId: fromHex(fixture.issuerMethodIdHex),
+  };
+  const holderBinding = {
+    holderVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(fixture.holderControllerAddressHex),
+      },
+      methodId: fromHex(fixture.holderMethodIdHex),
+    },
+  };
+  const claimRoot = fromHex(fixture.claimRootHex);
+  const makeCredential = (hasExpiration = false) => ({
+    version: 1n,
+    schema,
+    issuerVerificationMethodRef,
+    holderBinding,
+    statusBinding: {},
+    issuedAt: BigInt(fixture.issuedAt),
+    hasExpiration,
+    expiresAt: BigInt(fixture.expiresAt),
+    claims: {},
+    claimCommitments: {},
+    claimRoot,
+  });
+  const makePresentation = () => ({
+    version: 1n,
+    schema,
+    credentialClaimRoot: claimRoot,
+    issuerVerificationMethodRef,
+    holderBinding,
+    disclosed: {},
+  });
+  const conformance = await loadCoreBindingsConformance();
+  try {
+    for (const vector of vectors.positive) {
+      const result = withEvidence("positive", vector, () =>
+        vector.operation === "credential"
+          ? conformance.pureCircuits.assertValidCredentialEnvelope(
+              makeCredential(vector.hasExpiration),
+              claimRoot,
+            )
+          : conformance.pureCircuits.assertValidPresentationEnvelope(
+              makePresentation(),
+            ),
+      );
+      assert.deepEqual(result, [], vector.id);
+    }
+    for (const vector of vectors.negative) {
+      const credential = makeCredential(true);
+      const presentation = makePresentation();
+      let expectedClaimRoot = claimRoot;
+      if (vector.mutation === "credential-version") {
+        credential.version = 2n;
+      } else if (vector.mutation === "expected-claim-root") {
+        expectedClaimRoot = fromHex("ff".repeat(32));
+      } else if (vector.mutation === "expiration-order") {
+        credential.expiresAt = credential.issuedAt - 1n;
+      } else if (vector.mutation === "presentation-version") {
+        presentation.version = 2n;
+      } else {
+        assert.fail(`unknown envelope mutation ${vector.mutation}`);
+      }
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            vector.operation === "credential"
+              ? conformance.pureCircuits.assertValidCredentialEnvelope(
+                  credential,
+                  expectedClaimRoot,
+                )
+              : conformance.pureCircuits.assertValidPresentationEnvelope(
+                  presentation,
+                ),
+          (error) => String(error).includes(vector.errorIncludes),
+          vector.id,
+        ),
+      );
+    }
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
+  }
+});
+
+test("binds presentation proofs to their body, holder, and context", async () => {
+  const vectors = readJson("conformance/vectors/presentation-proof.json");
+  const fixture = vectors.fixture;
+  const presentationFixture = fixture.presentation;
+  const proofFixture = fixture.proof;
+  const makePresentation = () => ({
+    version: BigInt(presentationFixture.version),
+    schema: {
+      packageId: fromHex(presentationFixture.schema.packageIdHex),
+      schemaId: fromHex(presentationFixture.schema.schemaIdHex),
+      majorVersion: BigInt(presentationFixture.schema.majorVersion),
+      minorVersion: BigInt(presentationFixture.schema.minorVersion),
+    },
+    credentialClaimRoot: fromHex(presentationFixture.credentialClaimRootHex),
+    issuerVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(presentationFixture.issuerControllerAddressHex),
+      },
+      methodId: fromHex(presentationFixture.issuerMethodIdHex),
+    },
+    holderBinding: {
+      holderVerificationMethodRef: {
+        controllerAddress: {
+          bytes: fromHex(presentationFixture.holderControllerAddressHex),
+        },
+        methodId: fromHex(presentationFixture.holderMethodIdHex),
+      },
+    },
+    disclosed: {},
+  });
+  const makeProof = () => ({
+    signerVerificationMethodRef: {
+      controllerAddress: {
+        bytes: fromHex(proofFixture.signerControllerAddressHex),
+      },
+      methodId: fromHex(proofFixture.signerMethodIdHex),
+    },
+    createdAt: BigInt(proofFixture.createdAt),
+    challengeHash: fromHex(proofFixture.challengeHashHex),
+    publicKey: point(proofFixture.publicKey),
+    signature: {
+      r: point(proofFixture.signature.r),
+      s: BigInt(proofFixture.signature.s),
+    },
+  });
+  const conformance = await loadCoreBindingsConformance();
+  try {
+    const presentation = makePresentation();
+    const proof = makeProof();
+    const bodyRoot = conformance.pureCircuits.presentationBodyRoot(presentation);
+    assert.equal(toHex(bodyRoot), fixture.canonicalBodyRootHex);
+    assert.equal(
+      conformance.pureCircuits.presentationProofChallenge(bodyRoot, proof),
+      BigInt(fixture.presentationChallenge),
+    );
+    for (const vector of vectors.positive) {
+      assert.deepEqual(
+        conformance.pureCircuits.assertValidPresentationProof(
+          makePresentation(),
+          makeProof(),
+        ),
+        [],
+        vector.id,
+      );
+    }
+    for (const vector of vectors.negative) {
+      const candidatePresentation = makePresentation();
+      const candidateProof = makeProof();
+      const alternate = fromHex(fixture.alternateHex);
+      if (vector.mutation === "schema") {
+        candidatePresentation.schema.schemaId = alternate;
+      } else if (vector.mutation === "claim-root") {
+        candidatePresentation.credentialClaimRoot = alternate;
+      } else if (vector.mutation === "issuer-method") {
+        candidatePresentation.issuerVerificationMethodRef.methodId = alternate;
+      } else if (vector.mutation === "holder-controller") {
+        candidatePresentation.holderBinding.holderVerificationMethodRef.controllerAddress = {
+          bytes: alternate,
+        };
+      } else if (vector.mutation === "signature") {
+        candidateProof.signature.s += 1n;
+      } else if (vector.mutation === "version") {
+        candidatePresentation.version += 1n;
+      } else if (vector.mutation !== "issuance-context") {
+        assert.fail(`unknown presentation-proof mutation ${vector.mutation}`);
+      }
+      assert.throws(
+        () =>
+          vector.mutation === "issuance-context"
+            ? conformance.pureCircuits.assertValidIssuanceContextProof(
+                bodyRoot,
+                candidateProof,
+              )
+            : conformance.pureCircuits.assertValidPresentationProof(
+                candidatePresentation,
+                candidateProof,
+              ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      );
+    }
+  } finally {
+    rmSync(conformance.output, { force: true, recursive: true });
   }
 });
 
@@ -127,11 +418,13 @@ test("validates positive and negative explicit holder bindings in Compact", () =
 
   for (const vector of fixture.positive) {
     assert.deepEqual(
-      invoke(
-        vector.operation,
-        baseBinding,
-        baseBinding,
-        makeProof(baseBinding.holderVerificationMethodRef),
+      withEvidence("positive", vector, () =>
+        invoke(
+          vector.operation,
+          baseBinding,
+          baseBinding,
+          makeProof(baseBinding.holderVerificationMethodRef),
+        ),
       ),
       [],
       vector.id,
@@ -182,16 +475,18 @@ test("validates positive and negative explicit holder bindings in Compact", () =
     } else {
       assert.fail(`unknown holder-binding mutation ${vector.mutation}`);
     }
-    assert.throws(
-      () =>
-        invoke(
-          vector.operation,
-          credentialBinding,
-          presentationBinding,
-          proof,
-        ),
-      (error) => String(error).includes(vector.errorIncludes),
-      vector.id,
+    withEvidence("negative", vector, () =>
+      assert.throws(
+        () =>
+          invoke(
+            vector.operation,
+            credentialBinding,
+            presentationBinding,
+            proof,
+          ),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      ),
     );
   }
 });
@@ -225,7 +520,9 @@ test("validates positive and negative status bindings in Compact", () => {
   };
 
   for (const vector of vectors.positive) {
-    const result = invoke(vector.operation, makeBinding());
+    const result = withEvidence("positive", vector, () =>
+      invoke(vector.operation, makeBinding()),
+    );
     if (vector.operation === "derive-root") {
       assert.equal(toHex(result), fixture.expectedRootHex, vector.id);
     } else {
@@ -249,7 +546,9 @@ test("validates positive and negative status bindings in Compact", () => {
     } else {
       assert.fail(`unknown status-binding substitution ${vector.mutation}`);
     }
-    const rootHex = toHex(invoke("derive-root", binding));
+    const rootHex = toHex(
+      withEvidence("substitution", vector, () => invoke("derive-root", binding)),
+    );
     assert.equal(rootHex, vector.expectedRootHex, vector.id);
     assert.notEqual(rootHex, fixture.expectedRootHex, vector.id);
   }
@@ -268,10 +567,12 @@ test("validates positive and negative status bindings in Compact", () => {
     } else {
       assert.fail(`unknown status-binding mutation ${vector.mutation}`);
     }
-    assert.throws(
-      () => invoke(vector.operation, binding),
-      (error) => String(error).includes(vector.errorIncludes),
-      vector.id,
+    withEvidence("negative", vector, () =>
+      assert.throws(
+        () => invoke(vector.operation, binding),
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      ),
     );
   }
 });
@@ -331,9 +632,11 @@ test("rejects credential-to-presentation substitutions in Compact", async () => 
   try {
     for (const vector of vectors.positive) {
       assert.deepEqual(
-        conformance.pureCircuits.assertMatchingCredentialPresentation(
-          credential,
-          makePresentation(),
+        withEvidence("positive", vector, () =>
+          conformance.pureCircuits.assertMatchingCredentialPresentation(
+            credential,
+            makePresentation(),
+          ),
         ),
         [],
         vector.id,
@@ -360,14 +663,16 @@ test("rejects credential-to-presentation substitutions in Compact", async () => 
       } else {
         assert.fail(`unknown credential-presentation mutation ${vector.mutation}`);
       }
-      assert.throws(
-        () =>
-          conformance.pureCircuits.assertMatchingCredentialPresentation(
-            credential,
-            presentation,
-          ),
-        (error) => String(error).includes(vector.errorIncludes),
-        vector.id,
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            conformance.pureCircuits.assertMatchingCredentialPresentation(
+              credential,
+              presentation,
+            ),
+          (error) => String(error).includes(vector.errorIncludes),
+          vector.id,
+        ),
       );
     }
   } finally {
@@ -626,39 +931,111 @@ test("validates and binds positive and negative signer authorizations", async ()
       conformance.pureCircuits.issuanceProofChallenge(bodyRoot, proof),
       BigInt(credentialProofVectors.fixture.issuanceChallenge),
     );
+    const activeIssuerEvidence = vectors.positive.find(
+      ({ id }) => id === "active-issuer-assertion-method",
+    );
+    assert.ok(activeIssuerEvidence);
     assert.deepEqual(
-      conformance.pureCircuits.assertAuthorizedIssuerProof(
-        credential,
-        proof,
-        activeIssuerDescriptor,
+      withEvidence("positive", activeIssuerEvidence, () =>
+        conformance.pureCircuits.assertAuthorizedIssuerProof(
+          credential,
+          proof,
+          activeIssuerDescriptor,
+        ),
       ),
       [],
     );
     for (const vector of credentialProofVectors.positive) {
+      const invoke =
+        vector.operation === "verify-derived-root"
+          ? () =>
+              conformance.pureCircuits.assertValidCredentialProof(
+                credential,
+                proof,
+              )
+          : () =>
+              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+                credential,
+                proof,
+                bodyRoot,
+              );
       assert.deepEqual(
-        conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-          credential,
-          proof,
-          bodyRoot,
-        ),
+        withEvidence("positive", vector, invoke),
         [],
         vector.id,
       );
     }
     for (const vector of credentialProofVectors.negative) {
-      assert.throws(
-        () =>
-          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-            credential,
-            proof,
-            vector.mutation === "body-root"
-              ? fromHex(credentialProofVectors.fixture.substitutedBodyRootHex)
-              : bodyRoot,
-          ),
-        (error) => String(error).includes(vector.errorIncludes),
-        vector.id,
+      let candidateCredential = credential;
+      let candidateProof = proof;
+      let candidateBodyRoot = bodyRoot;
+      if (vector.mutation === "body-root") {
+        candidateBodyRoot = fromHex(
+          credentialProofVectors.fixture.substitutedBodyRootHex,
+        );
+      } else if (vector.mutation === "issuer-controller") {
+        candidateCredential = {
+          ...credential,
+          issuerVerificationMethodRef: {
+            ...credential.issuerVerificationMethodRef,
+            controllerAddress: alternateController,
+          },
+        };
+      } else if (vector.mutation === "issuer-method") {
+        candidateCredential = {
+          ...credential,
+          issuerVerificationMethodRef: {
+            ...credential.issuerVerificationMethodRef,
+            methodId: alternateMethod,
+          },
+        };
+      } else if (vector.mutation === "signature") {
+        candidateProof = {
+          ...proof,
+          signature: { ...proof.signature, s: proof.signature.s + 1n },
+        };
+      } else {
+        assert.fail(`unknown credential-proof mutation ${vector.mutation}`);
+      }
+      const invoke =
+        vector.operation === "verify-derived-root"
+          ? () =>
+              conformance.pureCircuits.assertValidCredentialProof(
+                candidateCredential,
+                candidateProof,
+              )
+          : () =>
+              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+                candidateCredential,
+                candidateProof,
+                candidateBodyRoot,
+              );
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          invoke,
+          (error) => String(error).includes(vector.errorIncludes),
+          vector.id,
+        ),
       );
     }
+    const invalidIssuerSignatureEvidence = vectors.negative.find(
+      ({ id }) => id === "reject-invalid-issuer-signature",
+    );
+    assert.ok(invalidIssuerSignatureEvidence);
+    withEvidence("negative", invalidIssuerSignatureEvidence, () =>
+      assert.throws(
+        () =>
+          conformance.pureCircuits.assertAuthorizedIssuerProof(
+            credential,
+            {
+              ...proof,
+              signature: { ...proof.signature, s: proof.signature.s + 1n },
+            },
+            activeIssuerDescriptor,
+          ),
+        (error) => String(error).includes("Signature verification failed"),
+      ),
+    );
     assert.throws(
       () =>
         conformance.pureCircuits.assertAuthorizedIssuerProof(
@@ -709,53 +1086,72 @@ test("validates and binds positive and negative signer authorizations", async ()
   }
 
   for (const vector of vectors.positive) {
-    const descriptor = makeDescriptor(
-      vector.role,
-      vector.relationship,
-      vector.state,
-    );
-    const proof = makeSignerProof(vector.role);
-    assert.deepEqual(
-      pureCircuits.assertValidAuthorizedSignerDescriptor(descriptor),
-      [],
-      vector.id,
-    );
-    if (vector.operation === "issuer") {
+    withEvidence("positive", vector, () => {
+      const descriptor = makeDescriptor(
+        vector.role,
+        vector.relationship,
+        vector.state,
+      );
+      const proof = makeSignerProof(vector.role);
       assert.deepEqual(
-        pureCircuits.assertAuthorizedIssuerDescriptor(
-          schema,
-          proof,
-          descriptor,
-        ),
+        pureCircuits.assertValidAuthorizedSignerDescriptor(descriptor),
         [],
         vector.id,
       );
-      assert.deepEqual(
-        pureCircuits.assertValidIssuanceContextProof(credentialBodyRoot, proof),
-        [],
-        `${vector.id}-proof`,
-      );
-    } else if (vector.operation === "verifier") {
-      assert.deepEqual(
-        pureCircuits.assertAuthorizedVerifierProof(
-          verifierScope,
-          proof,
+      if (vector.operation === "issuer") {
+        assert.deepEqual(
+          pureCircuits.assertAuthorizedIssuerDescriptor(schema, proof, descriptor),
+          [],
+          vector.id,
+        );
+        assert.deepEqual(
+          pureCircuits.assertValidIssuanceContextProof(credentialBodyRoot, proof),
+          [],
+          `${vector.id}-proof`,
+        );
+      } else if (vector.operation === "verifier") {
+        assert.deepEqual(
+          pureCircuits.assertAuthorizedVerifierProof(
+            verifierScope,
+            proof,
+            descriptor,
+          ),
+          [],
+          vector.id,
+        );
+        assert.deepEqual(
+          pureCircuits.assertValidVerifierRequestContextProof(
+            verifierScope,
+            proof,
+          ),
+          [],
+          `${vector.id}-proof`,
+        );
+      } else {
+        const authorizationProof = signAuthorization(descriptor);
+        const decisionRoot = pureCircuits.signerAuthorizationDecisionRoot(
           descriptor,
-        ),
-        [],
-        vector.id,
-      );
-    } else {
-      assert.deepEqual(
-        pureCircuits.assertValidSignerAuthorizationProof(
-          descriptor,
-          signAuthorization(descriptor),
-          authority,
-        ),
-        [],
-        vector.id,
-      );
-    }
+          authority.domainCommitment,
+        );
+        assert.deepEqual(
+          pureCircuits.assertValidSignerAuthorizationProof(
+            descriptor,
+            authorizationProof,
+            authority,
+          ),
+          [],
+          vector.id,
+        );
+        assert.deepEqual(
+          pureCircuits.assertValidSignerAuthorizationContextProof(
+            decisionRoot,
+            authorizationProof,
+          ),
+          [],
+          `${vector.id}-proof`,
+        );
+      }
+    });
   }
 
   for (const vector of vectors.updates) {
@@ -770,7 +1166,9 @@ test("validates and binds positive and negative signer authorizations", async ()
       didStateVersion: BigInt(vector.nextDidStateVersion),
     };
     assert.deepEqual(
-      pureCircuits.assertValidSignerAuthorizationUpdate(previous, next),
+      withEvidence("updates", vector, () =>
+        pureCircuits.assertValidSignerAuthorizationUpdate(previous, next),
+      ),
       [],
       vector.id,
     );
@@ -1069,6 +1467,13 @@ test("validates and binds positive and negative signer authorizations", async ()
           ...authorizationProof,
           challengeHash: alternateMethod,
         };
+        return pureCircuits.assertValidSignerAuthorizationContextProof(
+          pureCircuits.signerAuthorizationDecisionRoot(
+            descriptor,
+            authority.domainCommitment,
+          ),
+          authorizationProof,
+        );
       } else if (vector.mutation === "signed-policy") {
         authorizationProof = signAuthorization(descriptor);
         descriptor = {
@@ -1085,10 +1490,41 @@ test("validates and binds positive and negative signer authorizations", async ()
       );
     };
 
-    assert.throws(
-      invoke,
-      (error) => String(error).includes(vector.errorIncludes),
-      vector.id,
+    withEvidence("negative", vector, () =>
+      assert.throws(
+        invoke,
+        (error) => String(error).includes(vector.errorIncludes),
+        vector.id,
+      ),
     );
+    if (vector.mutation === "verifier-signature") {
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            pureCircuits.assertValidVerifierRequestContextProof(
+              requestScope,
+              proof,
+            ),
+          (error) => String(error).includes(vector.errorIncludes),
+          `${vector.id}-context-primitive`,
+        ),
+      );
+    }
+  }
+});
+
+test("executes every declared supported-circuit evidence vector", () => {
+  for (const circuit of compactCircuitInventory.circuits) {
+    if (circuit.classification !== "supported") continue;
+    const actual = executedEvidence.get(circuit.id) ?? new Set();
+    for (const reference of [
+      ...circuit.evidence.positive,
+      ...(circuit.evidence.negative ?? []),
+    ]) {
+      assert.ok(
+        actual.has(reference),
+        `${circuit.id} did not execute ${reference}`,
+      );
+    }
   }
 });

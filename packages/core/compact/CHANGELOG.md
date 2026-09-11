@@ -2,6 +2,9 @@
 
 ## Unreleased (0.2.0-rc1)
 
+- Classified every exported Compact circuit and added fail-closed coverage for
+  envelope invariants, verification-method references, proof contexts, and
+  credential and presentation body substitution.
 - Reject caller-supplied credential body roots that do not equal the canonical
   root recomputed from the complete credential before issuer-proof validation.
 - Bind credential presentations to the exact credential schema and add

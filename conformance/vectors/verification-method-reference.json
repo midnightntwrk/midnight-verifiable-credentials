@@ -1,0 +1,25 @@
+{
+  "formatVersion": 1,
+  "category": "verification-method-reference",
+  "fixture": {
+    "controllerAddressHex": "3333333333333333333333333333333333333333333333333333333333333333",
+    "methodIdHex": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "positive": [
+    {
+      "id": "valid-verification-method-reference"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-empty-verification-method-controller",
+      "mutation": "empty-controller",
+      "errorIncludes": "controller address must be set"
+    },
+    {
+      "id": "reject-empty-verification-method-id",
+      "mutation": "empty-method",
+      "errorIncludes": "method reference must be set"
+    }
+  ]
+}

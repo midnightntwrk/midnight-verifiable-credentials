@@ -65,6 +65,12 @@ Compact `persistentHash`, `transientHash`, and conversion semantics are defined
 by the pinned compiler/runtime pair. JSON serialization is not an equivalent
 signing representation.
 
+Presentation verification MUST derive the body root from the complete supplied
+presentation, validate the presentation envelope, match the proof signer
+reference to the selected holder binding, and verify the presentation-context
+proof over that derived root. A caller-supplied root, method-reference match,
+or valid signature alone is not an equivalent composition.
+
 ## Trust boundary
 
 A valid proof establishes control of the proof public key for the signed body
