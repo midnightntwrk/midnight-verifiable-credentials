@@ -79,7 +79,19 @@ test("rejects ambiguous versions and invalid rc indexes", () => {
   );
 });
 
-test("publishes the tested tarballs with provenance and the requested tag", () => {
+test("configures npm publication for the protected OIDC environment", () => {
+  const workflow = readFileSync(
+    path.join(repoRoot, ".github/workflows/publish.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /^    environment: npm-release$/mu);
+  assert.match(workflow, /^      id-token: write$/mu);
+  assert.doesNotMatch(workflow, /MIDNIGHTCI_NPMJS_TOKEN/u);
+  assert.doesNotMatch(workflow, /NODE_AUTH_TOKEN/u);
+});
+
+test("publishes tested tarballs through tokenless OIDC with provenance and the requested tag", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-publish-test-"),
   );
@@ -118,7 +130,8 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          NODE_AUTH_TOKEN: "test-token",
+          NPM_TOKEN: "",
+          NODE_AUTH_TOKEN: "",
           VERSION: "0.2.0",
         },
       },
@@ -129,7 +142,7 @@ exit 0
     assert.match(commands, /publish .*credential-compact-0\.2\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
-    assert.match(commands, /dist-tag add .*credential-model@0\.2\.0 rc/u);
+    assert.doesNotMatch(commands, /dist-tag add/u);
     assert.doesNotMatch(commands, /dist-tag rm/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
@@ -333,6 +346,8 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
+          NPM_TOKEN: "",
+          NODE_AUTH_TOKEN: "",
           VERSION: "0.2.0",
         },
       },
@@ -345,7 +360,7 @@ exit 0
   }
 });
 
-test("fails closed when dist-tag updates lack npm token authority", () => {
+test("fails closed when an existing version needs token-authorized tag repair", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-read-error-test-"),
   );
@@ -354,9 +369,10 @@ test("fails closed when dist-tag updates lack npm token authority", () => {
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
-  echo "npm error code E503" >&2
-  exit 23
+if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
+  echo "0.2.0"
+elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
+  echo "0.0.9"
 fi
 exit 0
 `,
@@ -384,7 +400,58 @@ exit 0
     );
     assert.equal(result.status, 1);
     assert.match(result.stderr, /dist-tag updates require the scoped npm token/u);
-    assert.match(result.stdout, /Publishing tested/u);
+    assert.match(result.stdout, /exists; repairing rc/u);
+    assert.doesNotMatch(result.stdout, /Publishing tested/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
+test("treats an existing version with the requested tag as a tokenless no-op", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-tag-noop-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  const npmLog = path.join(temporaryRoot, "npm.log");
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
+if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
+  echo "0.2.0"
+elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
+  echo "0.2.0"
+fi
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+  writeSupportedTarballs(temporaryRoot);
+
+  try {
+    const result = spawnSync(
+      "bash",
+      ["tooling/scripts/publish-npm-packages.sh"],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ARTIFACT_DIRECTORY: temporaryRoot,
+          FAKE_NPM_LOG: npmLog,
+          NPM_ACCESS: "public",
+          NPM_COMMAND: fakeNpm,
+          NPM_REGISTRY: "https://registry.npmjs.org/",
+          NPM_TAG: "rc",
+          VERSION: "0.2.0",
+        },
+      },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /no action required/u);
+    const commands = readFileSync(npmLog, "utf8");
+    assert.doesNotMatch(commands, /^publish /mu);
+    assert.doesNotMatch(commands, /dist-tag add/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
