@@ -13,29 +13,41 @@ of this release train.
 
 ## Authentication
 
-The workflow requests npm provenance identity and supplies the
-`MIDNIGHTCI_NPMJS_TOKEN` secret to the release script. The token is required
-for access and dist-tag operations, must be granular and read/write, and must
-be scoped to the required `@midnight-ntwrk` packages.
+The normal release workflow uses npm trusted publishing through GitHub OIDC.
+It does not receive a long-lived npm token. Each publish runs in the protected
+`npm-release` GitHub environment and requests `id-token: write` only for the
+publishing job.
 
-`@midnightntwrk/mn-sre` owns token creation, rotation, and revocation. Never
-place a token in repository files, workflow inputs, command arguments,
-artifacts, or logs. After the first release, configure npm trusted publishing
-for `midnightntwrk/midnight-verifiable-credentials` and
-`.github/workflows/publish.yml`, then remove the token fallback when
-organization policy permits.
+An npm owner must configure a trusted publisher on both supported packages
+with these exact values:
+
+| Setting | Value |
+| --- | --- |
+| Organization | `midnightntwrk` |
+| Repository | `midnight-verifiable-credentials` |
+| Workflow filename | `publish.yml` |
+| Environment | `npm-release` |
+| Allowed action | `npm publish` |
+
+The GitHub environment should require the designated release reviewers and
+permit only the repository release branches. `@midnightntwrk/mn-sre` owns the
+npm trusted-publisher bindings and incident response. Never place a token in
+repository files, workflow inputs, command arguments, artifacts, or logs.
 
 npm trusted publishing requires npm 11.5.1 or newer and Node.js 22.14.0 or
 newer. The workflow uses the repository's Node.js 24 baseline and rejects an
 older npm CLI before any release work begins.
 
 npm OIDC authorizes publication but not separate `dist-tag` or `access`
-commands. The normal path therefore uses the scoped
-`MIDNIGHTCI_NPMJS_TOKEN` for access and tag operations. By default, `--tag rc`
-applies `rc` and preserves `latest`. Only a stable release may move `latest`.
+commands. The normal path therefore applies public access and the intended tag
+as options to `npm publish` and performs no separate authenticated mutation.
+By default, `--tag rc` applies `rc` and preserves `latest`. Only a stable
+release may move `latest`.
 The workflow snapshots and verifies the selected tag policy independently and
-fails closed when registry metadata cannot be read. An idempotent rerun is a
-no-op when the requested tags are already correct. See the
+fails closed when registry metadata cannot be read. A tokenless idempotent
+rerun is a no-op when the immutable version and requested tag already exist.
+If the version exists under the wrong tag, the workflow stops and reports that
+a separately authorized maintenance operation is required. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -46,8 +58,8 @@ Before dispatch:
 2. Confirm `workspace-catalog.mjs --publishable-paths` lists only approved
    reusable packages.
 3. Confirm the package changelog, support policy, and version are current.
-4. Confirm `MIDNIGHTCI_NPMJS_TOKEN` is available to this repository and has
-   the required npm scope permissions.
+4. Confirm both packages have the exact npm trusted-publisher configuration
+   above and the `npm-release` GitHub environment is protected.
 5. Confirm the requested version does not already contain different bytes.
 
 The workflow reruns `./run.sh --light`, validates the packed release contents,
@@ -109,9 +121,10 @@ the release record.
 ## Retry and rollback
 
 npm package versions are immutable. A rerun skips an existing exact version.
-It is a no-op when the requested dist-tag is already correct and repairs only
-that tag when scoped token authentication is available. Never unpublish a
-consumed release as a routine rollback.
+It is a no-op when the requested dist-tag is already correct. A mismatched tag
+requires a separate, human-authorized npm maintenance operation because OIDC
+does not authorize `npm dist-tag`. Never unpublish a consumed release as a
+routine rollback.
 
 For a bad RC:
 
