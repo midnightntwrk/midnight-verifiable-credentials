@@ -148,7 +148,8 @@ for index in "${!workspaces[@]}"; do
   if [[ "${existing_version}" == "${version}" ]]; then
     current_tag="$(read_tag "${package_name}" "${npm_tag}")"
     if [[ "${current_tag}" == "${version}" ]]; then
-      echo "[publish-npm-packages] ${package_name}@${version} and tag ${npm_tag} already exist; checking dist-tags."
+      echo "[publish-npm-packages] ${package_name}@${version} and tag ${npm_tag} already exist; no action required."
+      continue
     else
       echo "[publish-npm-packages] ${package_name}@${version} exists; repairing ${npm_tag}."
     fi
@@ -162,5 +163,4 @@ for index in "${!workspaces[@]}"; do
     --provenance \
     --registry "${registry}" \
     --tag "${npm_tag}"
-  ensure_npm_dist_tags "${package_name}"
 done

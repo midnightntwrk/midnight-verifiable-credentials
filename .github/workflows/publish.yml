@@ -34,6 +34,7 @@ jobs:
       (inputs.channel == 'rc' && (github.ref_name == 'develop' || github.ref_name == 'main')) ||
       (inputs.channel == 'release' && github.ref_name == 'main')
     runs-on: ubuntu-latest
+    environment: npm-release
     timeout-minutes: 120
     permissions:
       contents: read
@@ -129,7 +130,6 @@ jobs:
 
       - name: Publish tested tarballs to npmjs
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.MIDNIGHTCI_NPMJS_TOKEN }}
           NPM_ACCESS: public
           NPM_TAG: ${{ steps.version.outputs.npm_tag }}
           VERSION: ${{ steps.version.outputs.version }}
