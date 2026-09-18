@@ -126,6 +126,14 @@ requires a separate, human-authorized npm maintenance operation because OIDC
 does not authorize `npm dist-tag`. Never unpublish a consumed release as a
 routine rollback.
 
+A successful `npm publish` response means npm accepted the mutation, but the
+new version may remain temporarily absent from registry reads. If the workflow
+times out after publication, do not immediately rerun the publishing job.
+Preserve the run evidence and repeat the read-only verification commands above
+until the propagation window has been ruled out. Rerun only after confirming
+the exact version is absent; the workflow will otherwise take its idempotent
+verification path.
+
 For a bad RC:
 
 1. Move or remove the `rc` tag so new consumers cannot select it.

@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-18
+
 ### Changed
 
 - BREAKING: reset the repository to a protocol-independent VC/VP specification,
@@ -27,6 +29,9 @@ All notable changes to this project are documented here. The format follows
 - collapse local and CI validation into one non-Docker core gate.
 - require publication to preflight, publish, and verify the complete supported
   package set while preserving the existing npm `latest` tag for prereleases.
+- establish the published `midnight-did` `0.6.0` package family as the current
+  downstream adapter compatibility baseline without adding a cross-repository
+  runtime dependency to the VC core.
 
 ### Removed
 
