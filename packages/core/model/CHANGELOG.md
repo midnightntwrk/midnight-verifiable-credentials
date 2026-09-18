@@ -2,7 +2,7 @@
 
 All notable changes to this package are documented in this file.
 
-## Unreleased (0.2.0-rc1)
+## 0.2.0 - 2026-09-18
 
 - Accept untyped credential-family input through an assertion boundary and
   report field-specific `CredentialModelError` failures.

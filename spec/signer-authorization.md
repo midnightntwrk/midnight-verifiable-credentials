@@ -76,6 +76,12 @@ Jubjub prime-subgroup points and MUST NOT be the identity point.
 
 ### Midnight DID method references
 
+The `0.2.0` implementation profile uses the published `midnight-did` `0.6.0`
+package family as its current downstream adapter compatibility baseline. The VC
+core deliberately does not import those packages; the consuming application or
+credential-family repository owns DID resolution and the adapter described
+below.
+
 `midnight-did` stores a verification-method identifier as a canonical fragment
 reference in `Opaque<"string">`, whereas the VC core uses a fixed-width
 `Bytes<32>` method reference. An adapter MUST set
