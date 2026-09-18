@@ -62,6 +62,13 @@ const requireBytes32 = (value: Uint8Array, label: string): Uint8Array => {
   return new Uint8Array(value);
 };
 
+const requirePositiveUint64 = (value: bigint, label: string): bigint => {
+  if (value < 1n || value > UINT64_MAX) {
+    throw new Error(`${label} must be a positive uint64`);
+  }
+  return value;
+};
+
 const parseStateVersion = (versionId: string | null | undefined): bigint => {
   if (!/^[1-9]\d*$/u.test(versionId ?? "")) {
     throw new Error(
@@ -261,7 +268,10 @@ export const createMidnightDIDSignerDescriptor = (
   return {
     version: 1n,
     authorizationId: requireBytes32(options.authorizationId, "authorizationId"),
-    decisionSequence: options.decisionSequence,
+    decisionSequence: requirePositiveUint64(
+      options.decisionSequence,
+      "decisionSequence",
+    ),
     state: options.state,
     role: options.role,
     signerVerificationMethodRef: method.verificationMethodRef,

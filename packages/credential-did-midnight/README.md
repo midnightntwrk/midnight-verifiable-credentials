@@ -42,19 +42,28 @@ accepted because the core controller is a Compact `ContractAddress`.
 
 ## Compact composition
 
-Use the standalone entrypoint when the consumer does not already include the
-VC core:
+Add each installed package's `dist` directory to the Compact compiler search
+path. On Unix-like systems, for example:
+
+```bash
+compact compile --compact-path \
+  "node_modules/@midnight-ntwrk/credential-compact/dist:node_modules/@midnight-ntwrk/credential-did-midnight/dist" \
+  src/contract.compact managed/contract
+```
+
+Use the standalone entrypoint when the consumer does not already include the VC
+core:
 
 ```compact
-include "@midnight-ntwrk/credential-did-midnight/did-midnight";
+include "did-midnight";
 ```
 
 Use the composition entrypoint when assembling a larger contract. Include the
 core root exactly once, then this extension:
 
 ```compact
-include "@midnight-ntwrk/credential-compact/credentials/composable";
-include "@midnight-ntwrk/credential-did-midnight/did-midnight/composable";
+include "credentials/composable";
+include "did-midnight/composable";
 ```
 
 The extension exports `MidnightDIDMethodBinding`,

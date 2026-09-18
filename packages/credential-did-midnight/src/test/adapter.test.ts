@@ -189,4 +189,29 @@ describe("binding composition helpers", () => {
       }),
     ).toThrow("requires assertionMethod");
   });
+
+  it("rejects decision sequences outside the positive uint64 range", async () => {
+    const assertion = await resolveMidnightDIDMethodBinding({
+      resolver: resolver(),
+      did,
+      verificationMethodId: "#issuer-key",
+      relationship: "assertionMethod",
+    });
+    const options = {
+      authorizationId: Uint8Array.from({ length: 32 }, () => 1),
+      state: AuthorizationState.active,
+      role: SignerRole.issuer,
+      scopeCommitment: Uint8Array.from({ length: 32 }, () => 2),
+      policyCommitment: Uint8Array.from({ length: 32 }, () => 3),
+    } as const;
+
+    for (const decisionSequence of [0n, -1n, 1n << 64n]) {
+      expect(() =>
+        createMidnightDIDSignerDescriptor(assertion, {
+          ...options,
+          decisionSequence,
+        }),
+      ).toThrow("decisionSequence must be a positive uint64");
+    }
+  });
 });
