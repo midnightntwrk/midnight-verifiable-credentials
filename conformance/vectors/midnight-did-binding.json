@@ -1,0 +1,108 @@
+{
+  "formatVersion": 1,
+  "category": "midnight-did-binding",
+  "fixture": {
+    "controllerAddressHex": "0101010101010101010101010101010101010101010101010101010101010101",
+    "methodIdHex": "0202020202020202020202020202020202020202020202020202020202020202",
+    "publicKey": {
+      "x": "47805549206756120863994733988949966563868680443409072344285414365387721651928",
+      "y": "10883866336127360287053583923937114185802477515052223349661086820822299756070"
+    },
+    "alternatePublicKey": {
+      "x": "41781039653558041424378087441097781830366075995084681920492076253857675647465",
+      "y": "4831175673904690165972121461665559889565427034601926888148043923603184925457"
+    },
+    "didStateVersion": "12",
+    "verificationRelationship": 1
+  },
+  "positive": [
+    {
+      "id": "valid-midnight-did-method-binding",
+      "operation": "validate"
+    },
+    {
+      "id": "derive-midnight-did-method-binding-root",
+      "operation": "root",
+      "expectedHex": "59bdb59cb2f3b5ab800fd62fe933099f089c3cc111909a8e93c015506317ab9a"
+    },
+    {
+      "id": "bind-proof-to-midnight-did-method",
+      "operation": "proof"
+    },
+    {
+      "id": "bind-holder-to-midnight-did-method",
+      "operation": "holder"
+    },
+    {
+      "id": "bind-authorization-to-midnight-did-method",
+      "operation": "authorization"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-empty-midnight-did-controller",
+      "operation": "validate",
+      "mutation": "empty-controller"
+    },
+    {
+      "id": "reject-empty-midnight-did-method",
+      "operation": "validate",
+      "mutation": "empty-method"
+    },
+    {
+      "id": "reject-identity-midnight-did-key",
+      "operation": "validate",
+      "mutation": "identity-key"
+    },
+    {
+      "id": "reject-zero-midnight-did-state-version",
+      "operation": "validate",
+      "mutation": "zero-state-version"
+    },
+    {
+      "id": "reject-midnight-did-proof-controller-substitution",
+      "operation": "proof",
+      "mutation": "proof-controller"
+    },
+    {
+      "id": "reject-midnight-did-proof-method-substitution",
+      "operation": "proof",
+      "mutation": "proof-method"
+    },
+    {
+      "id": "reject-midnight-did-proof-key-substitution",
+      "operation": "proof",
+      "mutation": "proof-key"
+    },
+    {
+      "id": "reject-midnight-did-holder-relationship-substitution",
+      "operation": "holder",
+      "mutation": "holder-relationship"
+    },
+    {
+      "id": "reject-midnight-did-holder-method-substitution",
+      "operation": "holder",
+      "mutation": "holder-method"
+    },
+    {
+      "id": "reject-midnight-did-authorization-method-substitution",
+      "operation": "authorization",
+      "mutation": "authorization-method"
+    },
+    {
+      "id": "reject-midnight-did-authorization-key-substitution",
+      "operation": "authorization",
+      "mutation": "authorization-key"
+    },
+    {
+      "id": "reject-midnight-did-authorization-state-version-substitution",
+      "operation": "authorization",
+      "mutation": "authorization-state-version"
+    },
+    {
+      "id": "reject-midnight-did-authorization-relationship-substitution",
+      "operation": "authorization",
+      "mutation": "authorization-relationship"
+    }
+  ]
+}

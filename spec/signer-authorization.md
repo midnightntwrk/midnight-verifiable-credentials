@@ -77,10 +77,10 @@ Jubjub prime-subgroup points and MUST NOT be the identity point.
 ### Midnight DID method references
 
 The `0.2.0` implementation profile uses the published `midnight-did` `0.6.0`
-package family as its current downstream adapter compatibility baseline. The VC
-core deliberately does not import those packages; the consuming application or
-credential-family repository owns DID resolution and the adapter described
-below.
+package family as its adapter compatibility baseline. The optional
+`@midnight-ntwrk/credential-did-midnight` package owns the deterministic mapping
+and structural Compact binding. Consumers still own resolver configuration,
+DID-state acceptance, and trust policy.
 
 `midnight-did` stores a verification-method identifier as a canonical fragment
 reference in `Opaque<"string">`, whereas the VC core uses a fixed-width
@@ -104,6 +104,9 @@ This mapping is computed off chain. Compact cannot hash an
 `Opaque<"string">` into provable state, and Ledger 8 cannot call the DID
 contract. The authority signature binds the resulting method reference, key,
 DID contract address, and observed DID state version for the consumer.
+
+The complete mapping and composition rules are specified in
+[Midnight DID Binding](./midnight-did-binding.md).
 
 Issuer authorization MUST use the `assertionMethod` verification relationship.
 Verifier authorization MUST use `authentication` or `capabilityInvocation`.

@@ -19,6 +19,7 @@ normative requirements.
 - [Canonical encoding](./canonical-encoding.md)
 - [Holder binding](./holder-binding.md)
 - [Signer authorization](./signer-authorization.md)
+- [Midnight DID binding](./midnight-did-binding.md)
 - [Status](./status.md)
 - [Security considerations](./security-considerations.md)
 - [Privacy considerations](./privacy-considerations.md)
@@ -28,8 +29,8 @@ normative requirements.
 
 The specification owns generic family-definition metadata, VC/VP envelopes,
 proof semantics, holder-binding and status-binding primitives, canonical
-Compact-value encoding, and conformance requirements for implemented
-operations.
+Compact-value encoding, the optional Midnight DID-to-core binding, and
+conformance requirements for implemented operations.
 
 It does not define issuance, presentation, or verification protocols;
 transports; OIDC; DIDComm; DApp Connector APIs; wallets; persistence;

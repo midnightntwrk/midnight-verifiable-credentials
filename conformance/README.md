@@ -14,6 +14,11 @@ An `implementation-detail` circuit would be compiler-visible but unstable;
 there are currently no exported circuits in that class. The conformance lane
 fails when an entrypoint and this inventory differ.
 
+[`credential-did-midnight-circuits.json`](./credential-did-midnight-circuits.json)
+classifies the circuits owned by the optional Midnight DID composition
+extension. Its executable vectors cover controller, method, key, state-version,
+relationship, holder, proof, and signer-authorization substitution.
+
 Signer-authorization vectors include fixed known-answer roots, challenges, and
 signature scalars so challenge derivation and signature verification cannot
 drift together without detection.
@@ -43,6 +48,6 @@ Run:
 ./run.sh conformance
 ```
 
-The check intentionally imports only `packages/core/compact` source/generated
-surfaces. It must remain independent from protocols, concrete credential
-families, use cases, applications, and sibling repositories.
+The check imports only retained package source/generated surfaces. It remains
+independent from protocols, concrete credential families, use cases,
+applications, and sibling repositories.

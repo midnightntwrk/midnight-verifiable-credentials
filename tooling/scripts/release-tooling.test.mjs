@@ -24,6 +24,7 @@ const repoRoot = path.resolve(
 const supportedTarballNames = [
   "midnight-ntwrk-credential-model",
   "midnight-ntwrk-credential-compact",
+  "midnight-ntwrk-credential-did-midnight",
 ];
 const writeSupportedTarballs = (directory, version = "0.2.0") => {
   for (const packageName of supportedTarballNames) {
@@ -140,6 +141,7 @@ exit 0
     const commands = readFileSync(npmLog, "utf8");
     assert.match(commands, /publish .*credential-model-0\.2\.0\.tgz/u);
     assert.match(commands, /publish .*credential-compact-0\.2\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-did-midnight-0\.2\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
     assert.doesNotMatch(commands, /dist-tag add/u);
@@ -246,7 +248,7 @@ echo "0.2.0"
       },
     );
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /2 package\(s\) visible/u);
+    assert.match(result.stdout, /3 package\(s\) visible/u);
     assert.match(readFileSync(npmLog, "utf8"), /--userconfig \/dev\/null/u);
     assert.doesNotMatch(result.stdout, /publish-secret/u);
     assert.doesNotMatch(result.stderr, /publish-secret/u);

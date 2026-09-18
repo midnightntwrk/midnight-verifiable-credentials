@@ -18,7 +18,7 @@ It does not receive a long-lived npm token. Each publish runs in the protected
 `npm-release` GitHub environment and requests `id-token: write` only for the
 publishing job.
 
-An npm owner must configure a trusted publisher on both supported packages
+An npm owner must configure a trusted publisher on all supported packages
 with these exact values:
 
 | Setting | Value |
@@ -58,7 +58,7 @@ Before dispatch:
 2. Confirm `workspace-catalog.mjs --publishable-paths` lists only approved
    reusable packages.
 3. Confirm the package changelog, support policy, and version are current.
-4. Confirm both packages have the exact npm trusted-publisher configuration
+4. Confirm all packages have the exact npm trusted-publisher configuration
    above and the `npm-release` GitHub environment is protected.
 5. Confirm the requested version does not already contain different bytes.
 
@@ -73,13 +73,14 @@ release PR, then dispatch `Publish npmjs Packages` from `develop`. For example:
 
 ```text
 channel: rc
-rc_index: 1
+rc_index: 2
 ```
 
-The current release graph publishes two packages under the `rc` dist-tag:
+The current release graph publishes three packages under the `rc` dist-tag:
 
 - `@midnight-ntwrk/credential-model`
 - `@midnight-ntwrk/credential-compact`
+- `@midnight-ntwrk/credential-did-midnight`
 
 The workflow preserves an existing `latest` tag and fails if npm changes it
 during a prerelease.
@@ -105,16 +106,17 @@ Set `VERSION` to the exact version reported by the workflow, then verify every
 package version and the moving tags:
 
 ```bash
-VERSION=0.2.0-rc1
+VERSION=0.2.0-rc2
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact; do
+  @midnight-ntwrk/credential-compact \
+  @midnight-ntwrk/credential-did-midnight; do
   npm view "${package}@${VERSION}" version
   npm view "${package}" dist-tags --json
 done
 ```
 
-The `rc` tag must resolve to `${VERSION}` for both packages and `latest` must
+The `rc` tag must resolve to `${VERSION}` for all packages and `latest` must
 remain unchanged. Retain the workflow URL and release-evidence artifact with
 the release record.
 
@@ -144,10 +146,11 @@ For a bad RC:
 Example operator commands:
 
 ```bash
-VERSION=0.2.0-rc1
+VERSION=0.2.0-rc2
 for package in \
   @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact; do
+  @midnight-ntwrk/credential-compact \
+  @midnight-ntwrk/credential-did-midnight; do
   npm dist-tag rm "${package}" rc
   npm deprecate "${package}@${VERSION}" "Use the replacement RC"
 done

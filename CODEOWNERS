@@ -8,6 +8,7 @@
 /.github/workflows/publish.yml @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/dependabot.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /packages/core/model/ @midnightntwrk/ex-identus
+/packages/credential-did-midnight/ @midnightntwrk/ex-identus
 /docs/guides/npmjs-publication.md @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/generate-release-sbom.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/npm-release-state.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre

@@ -1,0 +1,5 @@
+// Composition-safe Midnight DID extension. The consuming root must include
+// @midnight-ntwrk/credential-compact/credentials/composable.compact once before
+// this file because Compact does not deduplicate repeated includes.
+
+include "./bindings";

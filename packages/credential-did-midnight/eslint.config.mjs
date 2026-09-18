@@ -1,0 +1,34 @@
+import js from "@eslint/js";
+import plugin from "@typescript-eslint/eslint-plugin";
+import parser from "@typescript-eslint/parser";
+import pluginPrettier from "eslint-plugin-prettier";
+import pluginSimpleImportSort from "eslint-plugin-simple-import-sort";
+
+export default [
+  { ignores: ["./node_modules/**", "./dist/**", "./src/managed/**"] },
+  js.configs.recommended,
+  {
+    files: ["**/*.ts"],
+    languageOptions: {
+      parser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: ["./tsconfig.json"],
+      },
+    },
+    plugins: {
+      "@typescript-eslint": plugin,
+      prettier: pluginPrettier,
+      "simple-import-sort": pluginSimpleImportSort,
+    },
+    rules: {
+      "prettier/prettier": "error",
+      "no-unused-vars": "off",
+      "no-duplicate-imports": "error",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
+    },
+  },
+];
