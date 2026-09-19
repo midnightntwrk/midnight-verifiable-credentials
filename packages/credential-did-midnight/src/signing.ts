@@ -7,12 +7,16 @@ import {
   JUBJUB_ORDER,
   normalizeScalar,
 } from "@midnight-ntwrk/midnight-did-jubjub-schnorr";
-import { randomBytes } from "@noble/hashes/utils.js";
+import { hmac } from "@noble/hashes/hmac.js";
+import { sha512 } from "@noble/hashes/sha2.js";
+import { concatBytes, randomBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 
 import { pureCircuits } from "./managed/did-midnight/contract/index.js";
 import type { MidnightDIDMethodBinding } from "./types.js";
 
 const UINT64_MAX = (1n << 64n) - 1n;
+const MAX_NONCE_ATTEMPTS = 512;
+const NONCE_DOMAIN = utf8ToBytes("midnight:vc:proof-nonce:v1");
 
 export type SignMidnightDIDProofOptions = {
   readonly methodBinding: MidnightDIDMethodBinding;
@@ -44,12 +48,43 @@ const bytesToBigIntBE = (bytes: Uint8Array): bigint => {
   return value;
 };
 
-const randomNonzeroScalar = (): bigint => {
-  for (;;) {
-    const candidate = bytesToBigIntBE(randomBytes(64)) % JUBJUB_ORDER;
-    if (candidate !== 0n) return candidate;
+const bigintToFixedBytesBE = (value: bigint, length: number): Uint8Array => {
+  const output = new Uint8Array(length);
+  let remaining = value;
+  for (let index = length - 1; index >= 0; index -= 1) {
+    output[index] = Number(remaining & 0xffn);
+    remaining >>= 8n;
   }
+  if (remaining !== 0n) throw new Error("Integer does not fit nonce encoding");
+  return output;
 };
+
+const deriveNonceScalar = (
+  secretScalar: bigint,
+  contextDomain: Uint8Array,
+  bodyRoot: Uint8Array,
+  createdAt: bigint,
+  challengeHash: Uint8Array,
+  methodBinding: MidnightDIDMethodBinding,
+  attempt: number,
+): bigint =>
+  bytesToBigIntBE(
+    hmac(
+      sha512,
+      bigintToFixedBytesBE(secretScalar, 32),
+      concatBytes(
+        NONCE_DOMAIN,
+        contextDomain,
+        randomBytes(32),
+        bodyRoot,
+        methodBinding.verificationMethodRef.controllerAddress.bytes,
+        methodBinding.verificationMethodRef.methodId,
+        bigintToFixedBytesBE(createdAt, 8),
+        challengeHash,
+        bigintToFixedBytesBE(BigInt(attempt), 4),
+      ),
+    ),
+  ) % JUBJUB_ORDER;
 
 const matchingPoint = (
   left: Proof["publicKey"],
@@ -62,6 +97,7 @@ type VerificationCircuit = (bodyRoot: Uint8Array, proof: Proof) => unknown;
 const signProof = (
   options: SignMidnightDIDProofOptions,
   requiredRelationship: VerificationRelationship,
+  contextDomain: Uint8Array,
   challengeCircuit: ChallengeCircuit,
   verificationCircuit: VerificationCircuit,
 ): Proof => {
@@ -86,35 +122,52 @@ const signProof = (
     );
   }
 
-  const nonceScalar = randomNonzeroScalar();
-  const noncePoint = deriveJubjubPublicKey(nonceScalar);
   const bodyRoot = requireBytes32(options.bodyRoot, "bodyRoot");
-  const unsignedProof: Proof = {
-    signerVerificationMethodRef: {
-      controllerAddress: {
-        bytes: new Uint8Array(
-          methodBinding.verificationMethodRef.controllerAddress.bytes,
-        ),
-      },
-      methodId: new Uint8Array(methodBinding.verificationMethodRef.methodId),
-    },
-    createdAt: requireUint64(options.createdAt, "createdAt"),
-    challengeHash: requireBytes32(options.challengeHash, "challengeHash"),
-    publicKey,
-    signature: { r: noncePoint, s: 0n },
-  };
-  const challenge = challengeCircuit(bodyRoot, unsignedProof);
-  const proof: Proof = {
-    ...unsignedProof,
-    signature: {
-      r: noncePoint,
-      s: normalizeScalar(nonceScalar + challenge * secretScalar),
-    },
-  };
+  const createdAt = requireUint64(options.createdAt, "createdAt");
+  const challengeHash = requireBytes32(options.challengeHash, "challengeHash");
 
-  verificationCircuit(bodyRoot, proof);
-  pureCircuits.assertMidnightDIDProofMatchesMethod(proof, methodBinding);
-  return proof;
+  for (let attempt = 0; attempt < MAX_NONCE_ATTEMPTS; attempt += 1) {
+    const nonceScalar = deriveNonceScalar(
+      secretScalar,
+      contextDomain,
+      bodyRoot,
+      createdAt,
+      challengeHash,
+      methodBinding,
+      attempt,
+    );
+    if (nonceScalar === 0n) continue;
+    const noncePoint = deriveJubjubPublicKey(nonceScalar);
+    const unsignedProof: Proof = {
+      signerVerificationMethodRef: {
+        controllerAddress: {
+          bytes: new Uint8Array(
+            methodBinding.verificationMethodRef.controllerAddress.bytes,
+          ),
+        },
+        methodId: new Uint8Array(methodBinding.verificationMethodRef.methodId),
+      },
+      createdAt,
+      challengeHash,
+      publicKey,
+      signature: { r: noncePoint, s: 0n },
+    };
+    const challenge = challengeCircuit(bodyRoot, unsignedProof);
+    if (challenge >= JUBJUB_ORDER) continue;
+    const proof: Proof = {
+      ...unsignedProof,
+      signature: {
+        r: noncePoint,
+        s: normalizeScalar(nonceScalar + challenge * secretScalar),
+      },
+    };
+
+    verificationCircuit(bodyRoot, proof);
+    pureCircuits.assertMidnightDIDProofMatchesMethod(proof, methodBinding);
+    return proof;
+  }
+
+  throw new Error("Unable to derive a Ledger 8-safe Jubjub challenge");
 };
 
 export const signMidnightDIDCredentialProof = (
@@ -123,6 +176,7 @@ export const signMidnightDIDCredentialProof = (
   signProof(
     options,
     VerificationRelationship.assertionMethod,
+    utf8ToBytes("issuance"),
     pureCircuits.issuanceProofChallenge,
     pureCircuits.assertValidIssuanceContextProof,
   );
@@ -133,6 +187,7 @@ export const signMidnightDIDPresentationProof = (
   signProof(
     options,
     VerificationRelationship.authentication,
+    utf8ToBytes("presentation"),
     pureCircuits.presentationProofChallenge,
     pureCircuits.assertValidPresentationContextProof,
   );

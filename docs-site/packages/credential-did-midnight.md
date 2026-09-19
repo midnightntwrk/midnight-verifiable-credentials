@@ -48,10 +48,14 @@ const descriptor = createMidnightDIDSignerDescriptor(method, {
 
 ## Signing credential and presentation proofs
 
-The signing helpers accept a software-held Jubjub secret scalar, require it to
-match the resolved method binding, generate a fresh nonzero nonce with the
-platform cryptographic random source, derive the canonical Compact challenge,
-and verify the completed proof before returning it.
+The signing helpers accept a software-held Jubjub secret scalar and require it
+to match the resolved method binding. They derive each nonce with HMAC-SHA-512
+over the secret, operation domain, signed inputs, method reference, fresh
+platform entropy, and retry counter. They retry until the nonce is nonzero and
+the canonical Compact challenge is below the Jubjub subgroup order. This keeps
+Ledger 8 scalar multiplication in its valid range and protects against a
+repeating entropy source across different messages. Each completed proof is
+verified before it is returned.
 
 ```ts
 import {

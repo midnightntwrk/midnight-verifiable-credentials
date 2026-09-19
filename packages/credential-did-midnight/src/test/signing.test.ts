@@ -13,6 +13,7 @@ import {
 import { VerificationMethodType } from "@midnight-ntwrk/midnight-did-domain";
 import {
   deriveJubjubPublicKey,
+  JUBJUB_ORDER,
   seedBytesToJubjubSecretScalar,
 } from "@midnight-ntwrk/midnight-did-jubjub-schnorr";
 import { describe, expect, it } from "vitest";
@@ -75,6 +76,9 @@ describe("Midnight DID proof signing", () => {
     });
 
     expect(proof.publicKey).toEqual(publicKey);
+    expect(
+      credentialPureCircuits.issuanceProofChallenge(bodyRoot, proof),
+    ).toBeLessThan(JUBJUB_ORDER);
     expect(() =>
       credentialPureCircuits.assertValidIssuanceContextProof(bodyRoot, proof),
     ).not.toThrow();
@@ -123,11 +127,44 @@ describe("Midnight DID proof signing", () => {
         proof,
       ),
     ).not.toThrow();
+    expect(
+      credentialPureCircuits.presentationProofChallenge(bodyRoot, proof),
+    ).toBeLessThan(JUBJUB_ORDER);
+    const secondProof = signMidnightDIDPresentationProof({
+      methodBinding,
+      secretScalar,
+      bodyRoot,
+      createdAt: 43n,
+      challengeHash,
+    });
+    expect(secondProof.signature.r).not.toEqual(proof.signature.r);
     expect(() =>
       credentialPureCircuits.assertValidPresentationContextProof(
         bodyRoot,
         substituted,
       ),
+    ).toThrow("Signature verification failed");
+
+    for (const changed of [
+      { ...proof, challengeHash: bytes(0xee) },
+      { ...proof, createdAt: proof.createdAt + 1n },
+      {
+        ...proof,
+        signature: {
+          ...proof.signature,
+          r: deriveJubjubPublicKey(17n),
+        },
+      },
+    ]) {
+      expect(() =>
+        credentialPureCircuits.assertValidPresentationContextProof(
+          bodyRoot,
+          changed,
+        ),
+      ).toThrow("Signature verification failed");
+    }
+    expect(() =>
+      credentialPureCircuits.assertValidIssuanceContextProof(bodyRoot, proof),
     ).toThrow("Signature verification failed");
   });
 
@@ -185,5 +222,17 @@ describe("Midnight DID proof signing", () => {
     expect(() =>
       signMidnightDIDCredentialProof({ ...options, createdAt: -1n }),
     ).toThrow("createdAt must fit into uint64");
+    expect(() =>
+      signMidnightDIDCredentialProof({
+        ...options,
+        createdAt: 1n << 64n,
+      }),
+    ).toThrow("createdAt must fit into uint64");
+    expect(() =>
+      signMidnightDIDCredentialProof({
+        ...options,
+        createdAt: (1n << 64n) - 1n,
+      }),
+    ).not.toThrow();
   });
 });

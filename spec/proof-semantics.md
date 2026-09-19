@@ -55,6 +55,17 @@ degradeToTransient(persistentHash<Vector<3, Bytes<32>>>([
 ]))
 ```
 
+For the Ledger 8 profile, proof producers MUST retry with a fresh nonce point
+until the integer challenge is less than the Jubjub subgroup order:
+
+```text
+6554484396890773809930967563523245729705921265872317281365359162392183254199
+```
+
+This keeps the challenge in the scalar range consumed by Ledger 8 Jubjub
+multiplication. Changing the nonce point changes the challenge because
+`signature.r` is part of the challenge preimage.
+
 Verification checks the equation:
 
 ```text

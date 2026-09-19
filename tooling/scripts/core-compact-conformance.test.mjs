@@ -81,6 +81,8 @@ const zeroBytes32 = () => new Uint8Array(32);
 const point = (value) => ({ x: BigInt(value.x), y: BigInt(value.y) });
 const subgroupOrder =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
+const assertLedger8Challenge = (challenge, label) =>
+  assert.ok(challenge < subgroupOrder, `${label} exceeds Jubjub subgroup order`);
 const mod = (value) => {
   const reduced = value % subgroupOrder;
   return reduced >= 0n ? reduced : reduced + subgroupOrder;
@@ -322,10 +324,10 @@ test("binds presentation proofs to their body, holder, and context", async () =>
     const proof = makeProof();
     const bodyRoot = conformance.pureCircuits.presentationBodyRoot(presentation);
     assert.equal(toHex(bodyRoot), fixture.canonicalBodyRootHex);
-    assert.equal(
-      conformance.pureCircuits.presentationProofChallenge(bodyRoot, proof),
-      BigInt(fixture.presentationChallenge),
-    );
+    const presentationChallenge =
+      conformance.pureCircuits.presentationProofChallenge(bodyRoot, proof);
+    assert.equal(presentationChallenge, BigInt(fixture.presentationChallenge));
+    assertLedger8Challenge(presentationChallenge, "presentation challenge");
     for (const vector of vectors.positive) {
       assert.deepEqual(
         conformance.pureCircuits.assertValidPresentationProof(
@@ -846,10 +848,18 @@ test("validates and binds positive and negative signer authorizations", async ()
     pureCircuits.issuanceProofChallenge(credentialBodyRoot, issuerProof),
     BigInt(knownAnswers.issuerChallenge),
   );
+  assertLedger8Challenge(
+    pureCircuits.issuanceProofChallenge(credentialBodyRoot, issuerProof),
+    "issuer challenge",
+  );
   assert.equal(issuerProof.signature.s, BigInt(knownAnswers.issuerSignatureS));
   assert.equal(
     pureCircuits.verifierRequestProofChallenge(verifierScope, verifierProof),
     BigInt(knownAnswers.verifierChallenge),
+  );
+  assertLedger8Challenge(
+    pureCircuits.verifierRequestProofChallenge(verifierScope, verifierProof),
+    "verifier challenge",
   );
   assert.equal(
     verifierProof.signature.s,
@@ -864,6 +874,16 @@ test("validates and binds positive and negative signer authorizations", async ()
       authorityProof,
     ),
     BigInt(knownAnswers.authorityChallenge),
+  );
+  assertLedger8Challenge(
+    pureCircuits.signerAuthorizationProofChallenge(
+      pureCircuits.signerAuthorizationDecisionRoot(
+        activeIssuerDescriptor,
+        authority.domainCommitment,
+      ),
+      authorityProof,
+    ),
+    "authority challenge",
   );
   assert.equal(
     authorityProof.signature.s,
@@ -930,6 +950,10 @@ test("validates and binds positive and negative signer authorizations", async ()
     assert.equal(
       conformance.pureCircuits.issuanceProofChallenge(bodyRoot, proof),
       BigInt(credentialProofVectors.fixture.issuanceChallenge),
+    );
+    assertLedger8Challenge(
+      conformance.pureCircuits.issuanceProofChallenge(bodyRoot, proof),
+      "credential challenge",
     );
     const activeIssuerEvidence = vectors.positive.find(
       ({ id }) => id === "active-issuer-assertion-method",
