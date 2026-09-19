@@ -87,12 +87,11 @@ of possession or an authenticated VC/VP decision.
 An implementation MAY provide software signing helpers for the issuance and
 presentation contexts. Such a helper MUST derive the challenge with the
 matching core challenge circuit, MUST require the signing public key to equal
-the resolved method binding, and MUST use fresh nonzero nonces until it derives
-a challenge below the Jubjub subgroup order. It MUST return a proof accepted by
-both the matching core context verifier and the Midnight DID method-binding
-circuit. Its body root MUST be derived from the complete VC or VP with the
-matching core circuit. The Midnight DID contract payload-signing challenge is
-not an equivalent VC/VP challenge.
+the resolved method binding, and MUST use a fresh nonzero nonce. It MUST return
+a proof accepted by both the matching core context verifier and the Midnight
+DID method-binding circuit. Its body root MUST be derived from the complete VC
+or VP with the matching core circuit. The Midnight DID contract payload-signing
+challenge is not an equivalent VC/VP challenge.
 
 A software helper that accepts raw key material MUST derive its nonce from the
 secret, operation domain, complete signed inputs, and fresh cryptographic

@@ -16,8 +16,8 @@ All notable changes to this project are documented here. The format follows
 - add credential and presentation signing helpers that bind a supplied Midnight
   DID Jubjub secret to the canonical VC core challenge and self-verify the
   resulting proof.
-- constrain Ledger 8 signing helpers to subgroup-range challenges and use
-  hedged nonces bound to the secret, operation, signed inputs, and fresh entropy.
+- use hedged nonces bound to the secret, operation, signed inputs, and fresh
+  entropy in the Ledger 8 signing helpers.
 
 ## [0.2.0] - 2026-09-18
 

@@ -34,10 +34,9 @@ applications, and credential families remain outside this repository.
 The helpers reuse Midnight DID key/scalar primitives but derive the challenge
 through the VC core's generated context-specific circuits. They do not call the
 Midnight DID contract payload signer because that operation has a different
-challenge domain. For the Ledger 8 profile, they retry with fresh nonce points
-until the VC challenge is below the Jubjub subgroup order. Software-held keys
-use a hedged nonce derived from the secret, operation domain, signed inputs,
-fresh entropy, and retry counter; hardware-backed custody remains external.
+challenge domain. Software-held keys use a hedged nonce derived from the secret,
+operation domain, signed inputs, fresh entropy, and retry counter;
+hardware-backed custody remains external.
 
 The binding circuits do not verify signatures. Consumers must compose them with
 the core context-specific proof circuit over a body root recomputed from the

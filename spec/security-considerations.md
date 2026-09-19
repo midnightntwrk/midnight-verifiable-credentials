@@ -4,8 +4,6 @@ Conforming implementations MUST:
 
 - domain-separate issuance and presentation proofs;
 - bind proofs to the exact body, verification method, and supplied proof context;
-- rejection-sample nonce points until the Ledger 8 proof challenge is below the
-  Jubjub subgroup order;
 - reject identity, off-curve, and non-prime-subgroup proof public keys and nonce
   points;
 - avoid treating a proof-carried public key as authorized without an independent

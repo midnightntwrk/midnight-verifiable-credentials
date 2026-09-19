@@ -13,7 +13,6 @@ import {
 import { VerificationMethodType } from "@midnight-ntwrk/midnight-did-domain";
 import {
   deriveJubjubPublicKey,
-  JUBJUB_ORDER,
   seedBytesToJubjubSecretScalar,
 } from "@midnight-ntwrk/midnight-did-jubjub-schnorr";
 import { describe, expect, it } from "vitest";
@@ -76,9 +75,6 @@ describe("Midnight DID proof signing", () => {
     });
 
     expect(proof.publicKey).toEqual(publicKey);
-    expect(
-      credentialPureCircuits.issuanceProofChallenge(bodyRoot, proof),
-    ).toBeLessThan(JUBJUB_ORDER);
     expect(() =>
       credentialPureCircuits.assertValidIssuanceContextProof(bodyRoot, proof),
     ).not.toThrow();
@@ -127,14 +123,11 @@ describe("Midnight DID proof signing", () => {
         proof,
       ),
     ).not.toThrow();
-    expect(
-      credentialPureCircuits.presentationProofChallenge(bodyRoot, proof),
-    ).toBeLessThan(JUBJUB_ORDER);
     const secondProof = signMidnightDIDPresentationProof({
       methodBinding,
       secretScalar,
       bodyRoot,
-      createdAt: 43n,
+      createdAt: proof.createdAt,
       challengeHash,
     });
     expect(secondProof.signature.r).not.toEqual(proof.signature.r);
@@ -165,6 +158,12 @@ describe("Midnight DID proof signing", () => {
     }
     expect(() =>
       credentialPureCircuits.assertValidIssuanceContextProof(bodyRoot, proof),
+    ).toThrow("Signature verification failed");
+    expect(() =>
+      credentialPureCircuits.assertValidPresentationContextProof(
+        bytes(0xdd),
+        proof,
+      ),
     ).toThrow("Signature verification failed");
   });
 
