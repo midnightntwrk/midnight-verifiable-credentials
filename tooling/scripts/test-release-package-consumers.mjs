@@ -402,6 +402,7 @@ for (const releasePackage of releasePackages) {
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
       const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
       const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
+      const expectedLedger = installedPackageJson.midnight.ledgerVersion;
       const buildManifest = JSON.parse(
         readFileSync(path.join(installedPackageRoot, "dist/compact-build.json"), "utf8"),
       );
@@ -413,6 +414,12 @@ for (const releasePackage of releasePackages) {
       ).version;
       if (buildManifest.compiler !== expectedCompiler || buildManifest.runtime?.version !== expectedRuntime) {
         fail(`${sourcePackageJson.name} generated metadata does not match pinned Compact tuple`);
+      }
+      if (
+        expectedLedger !== undefined &&
+        buildManifest.ledger !== expectedLedger
+      ) {
+        fail(`${sourcePackageJson.name} generated metadata does not match pinned Ledger version`);
       }
       if (resolvedRuntime !== expectedRuntime) {
         fail(`${sourcePackageJson.name} resolved runtime ${resolvedRuntime} instead of ${expectedRuntime}`);

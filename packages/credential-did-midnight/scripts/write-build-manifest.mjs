@@ -35,16 +35,20 @@ const compiler = execFileSync("compact", ["compile", "--version"], {
 const compilerVersion = compiler.match(
   /(?:^|\s)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(?:\s|$)/u,
 )?.[1];
+const ledgerVersion = execFileSync("compact", ["compile", "--ledger-version"], {
+  encoding: "utf8",
+}).trim();
 const require = createRequire(import.meta.url);
 const runtimeVersion = require(
   "@midnight-ntwrk/compact-runtime/package.json",
 ).version;
 if (
   compilerVersion !== packageJson.midnight.compactCompilerVersion ||
-  runtimeVersion !== packageJson.midnight.compactRuntimeVersion
+  runtimeVersion !== packageJson.midnight.compactRuntimeVersion ||
+  ledgerVersion !== packageJson.midnight.ledgerVersion
 ) {
   throw new Error(
-    `Generated output toolchain drifted: compiler ${compilerVersion ?? compiler}, runtime ${runtimeVersion}`,
+    `Generated output toolchain drifted: compiler ${compilerVersion ?? compiler}, runtime ${runtimeVersion}, ledger ${ledgerVersion}`,
   );
 }
 const sourceFiles = filesUnder(
@@ -61,6 +65,7 @@ writeFileSync(
     {
       schema: 1,
       compiler: compilerVersion,
+      ledger: ledgerVersion,
       runtime: {
         name: "@midnight-ntwrk/compact-runtime",
         version: runtimeVersion,

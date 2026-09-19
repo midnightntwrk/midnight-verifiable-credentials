@@ -11,6 +11,8 @@ All notable changes to this project are documented here. The format follows
 - restore `@midnight-ntwrk/credential-did-midnight` as a flat Midnight DID
   `0.6.0` binding extension with TypeScript resolution, composable Compact
   circuits, negative conformance vectors, and clean packed-consumer coverage.
+- pin its Ledger `8.0.2` build profile and require explicit composition with
+  core context-specific signature verification.
 
 ## [0.2.0] - 2026-09-18
 

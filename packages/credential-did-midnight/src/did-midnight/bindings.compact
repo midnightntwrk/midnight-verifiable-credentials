@@ -32,6 +32,9 @@ export pure circuit assertMidnightDIDProofMatchesMethod(
   proof: Proof,
   binding: MidnightDIDMethodBinding
 ): [] {
+  // This is a key/reference binding primitive, not signature verification.
+  // Consumers must also invoke the core context-specific proof circuit over a
+  // body root recomputed from the complete credential or presentation.
   assertValidMidnightDIDMethodBinding(binding);
   assert(
     proof.signerVerificationMethodRef.controllerAddress
@@ -50,6 +53,7 @@ export pure circuit assertMidnightDIDHolderBinding(
   binding: MidnightDIDHolderBinding,
   presentationProof: Proof
 ): [] {
+  // Holder binding does not authenticate the presentation body by itself.
   assertValidMidnightDIDMethodBinding(binding.methodBinding);
   assert(
     binding.methodBinding.verificationRelationship

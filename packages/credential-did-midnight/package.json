@@ -65,6 +65,7 @@
   "midnight": {
     "compactCompilerVersion": "0.31.1",
     "compactRuntimeVersion": "0.16.0",
+    "ledgerVersion": "ledger-8.0.2",
     "compactEntrypoints": {
       "standalone": [
         "./did-midnight.compact"

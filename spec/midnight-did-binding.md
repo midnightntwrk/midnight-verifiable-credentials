@@ -64,6 +64,25 @@ The extension circuits MUST reject any substitution of the controller, method
 ID, key, state version, or relationship when binding a proof, explicit holder,
 or authorized signer descriptor.
 
+The binding circuits establish reference and key equality only. They do not
+verify a signature or authenticate a credential, presentation, authorization
+decision, or verifier request. A consumer MUST also invoke the matching core
+context proof circuit over a body root derived from the complete input:
+
+- issuance uses `VC<>::assertValidCredentialProof` or
+  `VC<>::assertAuthorizedIssuerProof`;
+- presentation validates the complete presentation envelope, matches its
+  holder binding, derives `VP<>::presentationBodyRoot`, and invokes
+  `assertValidPresentationContextProof`; and
+- authority and verifier decisions use
+  `assertValidSignerAuthorizationProof` and
+  `assertAuthorizedVerifierProof`, respectively.
+
+Calling `assertMidnightDIDProofMatchesMethod`,
+`assertMidnightDIDHolderBinding`, or
+`assertMidnightDIDSignerAuthorization` alone MUST NOT be represented as proof
+of possession or an authenticated VC/VP decision.
+
 The standalone Compact entrypoint includes the VC core. The composition
 entrypoint contains only Midnight DID-owned declarations and requires a
 consumer to include the VC core composition root exactly once before it.
@@ -80,3 +99,6 @@ binding root through its own governance path or verify an authority-signed
 `AuthorizedSignerDescriptor`. A caller-supplied binding that is merely
 structurally valid MUST NOT be represented as current DID or trust-registry
 evidence.
+
+This version targets Compact `0.31.1`, runtime `0.16.0`, and Ledger `8.0.2`.
+Ledger 9 cross-contract validation is outside this version.

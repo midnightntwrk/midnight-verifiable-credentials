@@ -7,13 +7,13 @@ import {
 import {
   createMidnightDIDDocument,
   createMidnightDIDString,
+  LedgerToDomain,
   type MidnightDIDResolverInterface,
   MidnightNetwork,
   parseContractAddress,
 } from "@midnight-ntwrk/midnight-did";
 import {
   CurveType,
-  encodeBase64Url,
   KeyType,
   VerificationMethodType,
 } from "@midnight-ntwrk/midnight-did-domain";
@@ -26,19 +26,13 @@ import {
   resolveMidnightDIDMethodBinding,
 } from "../index.js";
 
-const bigintToLittleEndian32 = (value: bigint): Uint8Array => {
-  const bytes = new Uint8Array(32);
-  let remaining = value;
-  for (let index = 0; index < bytes.length; index += 1) {
-    bytes[index] = Number(remaining & 0xffn);
-    remaining >>= 8n;
-  }
-  return bytes;
-};
-
 const address = parseContractAddress("11".repeat(32));
 const did = createMidnightDIDString(address, MidnightNetwork.Testnet);
 const publicKey = ecMulGenerator(7n);
+const publicKeyJwk = LedgerToDomain.schnorrJubjubPublicKeyJwk({
+  id: "#issuer-key",
+  publicKey,
+} as never);
 const document = createMidnightDIDDocument({
   id: did,
   verificationMethod: [
@@ -46,24 +40,35 @@ const document = createMidnightDIDDocument({
       id: "#issuer-key",
       type: VerificationMethodType.JsonWebKey,
       controller: did,
-      publicKeyJwk: {
-        kty: KeyType.EC,
-        crv: CurveType.Jubjub,
-        x: encodeBase64Url(bigintToLittleEndian32(publicKey.x)),
-        y: encodeBase64Url(bigintToLittleEndian32(publicKey.y)),
-      },
+      publicKeyJwk,
     } as never,
   ],
   authentication: ["#issuer-key"],
   assertionMethod: ["#issuer-key"],
 });
 
+type ResolutionResult = NonNullable<
+  Awaited<ReturnType<MidnightDIDResolverInterface["resolveResult"]>>
+>;
+type VerificationMethod = NonNullable<
+  ResolutionResult["didDocument"]["verificationMethod"]
+>[number];
+
+const documentWith = (
+  overrides: Partial<ResolutionResult["didDocument"]>,
+): ResolutionResult["didDocument"] => ({ ...document, ...overrides });
+
+const documentWithMethod = (
+  overrides: Partial<VerificationMethod>,
+): ResolutionResult["didDocument"] => ({
+  ...document,
+  verificationMethod: [
+    { ...document.verificationMethod?.[0], ...overrides } as VerificationMethod,
+  ],
+});
+
 const resolver = (
-  overrides: Partial<
-    NonNullable<
-      Awaited<ReturnType<MidnightDIDResolverInterface["resolveResult"]>>
-    >
-  > = {},
+  overrides: Partial<ResolutionResult> = {},
 ): Pick<MidnightDIDResolverInterface, "resolveResult"> => ({
   resolveResult: async () => ({
     didDocument: document,
@@ -92,6 +97,12 @@ describe("resolveMidnightDIDMethodBinding", () => {
     expect(binding.verificationRelationship).toBe(
       VerificationRelationship.assertionMethod,
     );
+    expect(publicKeyJwk).toEqual({
+      kty: KeyType.EC,
+      crv: CurveType.Jubjub,
+      x: "2LaxH9UXm4bl4V_1cwWXRMhmZzjBtZ2FZqABjGP7sGk",
+      y: "JsacxJLhN6OKsp2Ac4fM1wAhqxQ8II7RIel9ks8MEBg",
+    });
   });
 
   it("hashes the exact case-sensitive canonical fragment", () => {
@@ -135,6 +146,156 @@ describe("resolveMidnightDIDMethodBinding", () => {
       }),
     ).rejects.toThrow("positive versionId");
   });
+
+  it("rejects unresolved, mismatched, and offchain DID subjects", async () => {
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: { resolveResult: async () => null },
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("could not be resolved");
+
+    const otherDid = createMidnightDIDString(
+      parseContractAddress("22".repeat(32)),
+      MidnightNetwork.Testnet,
+    );
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({ id: otherDid as typeof document.id }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("subject does not match");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver(),
+        did: `did:midnight:offchain:${"ab".repeat(32)}` as typeof did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("Offchain Midnight DIDs");
+  });
+
+  it("rejects methods outside the subject-owned native Jubjub profile", async () => {
+    const otherDid = createMidnightDIDString(
+      parseContractAddress("22".repeat(32)),
+      MidnightNetwork.Testnet,
+    );
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({ verificationMethod: [] }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("absent from the DID document");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            controller: otherDid as unknown as VerificationMethod["controller"],
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("controller does not match");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            type: VerificationMethodType.Undefined,
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("must use JsonWebKey");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            publicKeyJwk: {
+              kty: KeyType.OKP,
+              crv: CurveType.Ed25519,
+              x: "AA",
+            },
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("native EC/Jubjub");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            publicKeyJwk: {
+              kty: KeyType.EC,
+              crv: CurveType.Jubjub,
+              x: publicKeyJwk.x,
+            },
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("native EC/Jubjub");
+  });
+
+  it("rejects malformed native coordinates and non-fragment method ids", async () => {
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            publicKeyJwk: { ...publicKeyJwk, x: "AA" },
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("exactly 32 bytes");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver(),
+        did,
+        verificationMethodId: `${did}/keys/issuer-key`,
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("must be a fragment");
+  });
+
+  it.each(["0", "-1", "1.0", "18446744073709551616"])(
+    "rejects invalid DID state version %s",
+    async (versionId) => {
+      await expect(
+        resolveMidnightDIDMethodBinding({
+          resolver: resolver({ didDocumentMetadata: { versionId } }),
+          did,
+          verificationMethodId: "#issuer-key",
+          relationship: "assertionMethod",
+        }),
+      ).rejects.toThrow(/positive versionId|fit into uint64/u);
+    },
+  );
 });
 
 describe("binding composition helpers", () => {
@@ -188,6 +349,26 @@ describe("binding composition helpers", () => {
         policyCommitment: Uint8Array.from({ length: 32 }, () => 3),
       }),
     ).toThrow("requires assertionMethod");
+
+    const assertion = await resolveMidnightDIDMethodBinding({
+      resolver: resolver(),
+      did,
+      verificationMethodId: "#issuer-key",
+      relationship: "assertionMethod",
+    });
+    expect(() => createMidnightDIDHolderBinding(assertion)).toThrow(
+      "requires authentication",
+    );
+    expect(() =>
+      createMidnightDIDSignerDescriptor(assertion, {
+        authorizationId: Uint8Array.from({ length: 32 }, () => 1),
+        decisionSequence: 1n,
+        state: AuthorizationState.active,
+        role: SignerRole.verifier,
+        scopeCommitment: Uint8Array.from({ length: 32 }, () => 2),
+        policyCommitment: Uint8Array.from({ length: 32 }, () => 3),
+      }),
+    ).toThrow("requires authentication or capabilityInvocation");
   });
 
   it("rejects decision sequences outside the positive uint64 range", async () => {

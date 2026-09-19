@@ -11,6 +11,12 @@ Jubjub verification method to the core `VerificationMethodRef`, the observed DID
 state version, and one supported verification relationship. It does not sign,
 deploy, mutate a DID, select a trust policy, or call another contract.
 
+> **Ledger 8 security boundary:** this package's binding circuits compare DID
+> references and keys; they do not verify signatures or prove that resolved DID
+> state is current. Always compose them with the matching core context-proof
+> circuit over a root recomputed from the complete VC/VP input, then pin the
+> accepted binding root or verify an authority-signed descriptor.
+
 ```ts
 import {
   createMidnightDIDSignerDescriptor,
@@ -73,6 +79,15 @@ The extension exports `MidnightDIDMethodBinding`,
 a proof or holder, bind an authorized signer descriptor, and derive a stable
 binding root.
 
+The exported `assertMidnightDID*` circuits are low-level equality checks, not
+proof-of-possession checks. For issuance use
+`VC<>::assertValidCredentialProof` or `VC<>::assertAuthorizedIssuerProof`. For
+presentation, validate the complete presentation, derive its body root, and
+invoke `assertValidPresentationContextProof` in addition to the DID holder
+binding. Authority and verifier decisions likewise require the core
+`assertValidSignerAuthorizationProof` or `assertAuthorizedVerifierProof`
+circuit.
+
 ## Ledger 8 trust boundary
 
 These circuits prove internal consistency between values already supplied to a
@@ -80,3 +95,6 @@ consumer contract. They cannot query the DID contract on Ledger 8 and therefore
 do not prove that a method is current. The consumer must pin an accepted binding
 root or verify an authority-signed descriptor before relying on it. DID and
 Trust Registry policy stays outside this package.
+
+The supported build profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
+`8.0.2`. Ledger 9 cross-contract validation is future work.

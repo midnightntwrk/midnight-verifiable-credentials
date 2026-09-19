@@ -31,8 +31,16 @@ The package owns only deterministic DID-to-core mapping and structural binding
 circuits. DID lifecycle, signing, trust decisions, registries, protocols,
 wallets, applications, and credential families remain outside this repository.
 
+The binding circuits do not verify signatures. Consumers must compose them with
+the core context-specific proof circuit over a body root recomputed from the
+complete credential, presentation, authorization decision, or verifier request.
+This is a normative security boundary, not an optional integration pattern.
+
 Ledger 8 consumers must pin an accepted binding or verify an authority proof;
 the extension does not claim live cross-contract DID resolution.
+
+The initial support profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
+`8.0.2`. Cross-contract DID validation is deferred until a later Ledger profile.
 
 ## Consequences
 
