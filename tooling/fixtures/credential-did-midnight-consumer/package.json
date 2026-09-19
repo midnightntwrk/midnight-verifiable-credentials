@@ -15,7 +15,7 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-did-midnight').then(({ midnightDIDMethodId }) => { if (midnightDIDMethodId('#key-1').length !== 32) process.exit(1); })\"",
+    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-did-midnight').then(({ midnightDIDMethodId, signMidnightDIDCredentialProof, signMidnightDIDPresentationProof }) => { if (midnightDIDMethodId('#key-1').length !== 32 || typeof signMidnightDIDCredentialProof !== 'function' || typeof signMidnightDIDPresentationProof !== 'function') process.exit(1); })\"",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   }
 }

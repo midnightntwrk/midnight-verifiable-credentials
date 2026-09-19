@@ -7,8 +7,9 @@ verification method into the protocol-independent VC/VP structures. It is an
 optional extension: the core VC/VP primitives remain usable with another
 verification-method source.
 
-The binding does not define DID creation or mutation, signing, trust policy,
-credential exchange, or a transport protocol.
+The binding does not define DID creation or mutation, key custody, trust
+policy, credential exchange, or a transport protocol. It reuses the core proof
+semantics without defining a second signature scheme or challenge domain.
 
 ## Resolution profile
 
@@ -82,6 +83,15 @@ Calling `assertMidnightDIDProofMatchesMethod`,
 `assertMidnightDIDHolderBinding`, or
 `assertMidnightDIDSignerAuthorization` alone MUST NOT be represented as proof
 of possession or an authenticated VC/VP decision.
+
+An implementation MAY provide software signing helpers for the issuance and
+presentation contexts. Such a helper MUST derive the challenge with the
+matching core challenge circuit, MUST require the signing public key to equal
+the resolved method binding, MUST use a fresh nonzero nonce, and MUST return a
+proof accepted by both the matching core context verifier and the Midnight DID
+method-binding circuit. Its body root MUST be derived from the complete VC or VP
+with the matching core circuit. The Midnight DID contract payload-signing
+challenge is not an equivalent VC/VP challenge.
 
 The standalone Compact entrypoint includes the VC core. The composition
 entrypoint contains only Midnight DID-owned declarations and requires a

@@ -13,6 +13,9 @@ All notable changes to this project are documented here. The format follows
   circuits, negative conformance vectors, and clean packed-consumer coverage.
 - pin its Ledger `8.0.2` build profile and require explicit composition with
   core context-specific signature verification.
+- add credential and presentation signing helpers that bind a supplied Midnight
+  DID Jubjub secret to the canonical VC core challenge and self-verify the
+  resulting proof.
 
 ## [0.2.0] - 2026-09-18
 

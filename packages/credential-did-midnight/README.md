@@ -6,8 +6,10 @@ in `@midnight-ntwrk/credential-compact`.
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected `@midnight-ntwrk/midnight-did` resolver. It binds a subject-owned native
 Jubjub verification method to the core `VerificationMethodRef`, the observed DID
-state version, and one supported verification relationship. It does not sign,
-deploy, mutate a DID, select a trust policy, or call another contract.
+state version, and one supported verification relationship. Bounded software
+helpers can sign credential and presentation proofs with that method. The
+package does not store keys, deploy or mutate a DID, select a trust policy, or
+call another contract.
 
 > **Ledger 8 security boundary:** this package's binding circuits compare DID
 > references and keys; they do not verify signatures or prove that resolved DID
@@ -41,6 +43,51 @@ const descriptor = createMidnightDIDSignerDescriptor(method, {
   policyCommitment,
 });
 ```
+
+## Signing credential and presentation proofs
+
+The signing helpers accept a software-held Jubjub secret scalar, require it to
+match the resolved method binding, generate a fresh nonzero nonce with the
+platform cryptographic random source, derive the canonical Compact challenge,
+and verify the completed proof before returning it.
+
+```ts
+import {
+  signMidnightDIDCredentialProof,
+  signMidnightDIDPresentationProof,
+} from "@midnight-ntwrk/credential-did-midnight";
+
+const credentialProof = signMidnightDIDCredentialProof({
+  methodBinding: issuerMethod,
+  secretScalar: issuerSecretScalar,
+  bodyRoot: credentialBodyRoot,
+  createdAt: issuedAt,
+  challengeHash: issuanceContextHash,
+});
+
+const presentationProof = signMidnightDIDPresentationProof({
+  methodBinding: holderMethod,
+  secretScalar: holderSecretScalar,
+  bodyRoot: presentationBodyRoot,
+  createdAt: presentedAt,
+  challengeHash: verifierChallengeHash,
+});
+```
+
+`signMidnightDIDCredentialProof` requires an `assertionMethod` binding;
+`signMidnightDIDPresentationProof` requires an `authentication` binding. The
+caller remains responsible for secure scalar storage and for the application
+semantics of `createdAt` and `challengeHash`. `bodyRoot` must be derived with
+the matching core circuit from the complete credential or presentation; signing
+an arbitrary caller-provided root does not authenticate a different envelope.
+
+Do not substitute
+`@midnight-ntwrk/midnight-did-jubjub-schnorr`'s
+`signJubjubPayloadFromSeed`. That operation intentionally uses the DID
+contract's payload-digest challenge domain. These helpers reuse its Jubjub key
+and scalar primitives but use the VC core's issuance or presentation challenge.
+Wallet and hardware-backed signers should implement that same two-phase
+nonce/challenge/response operation without exporting their secret scalar.
 
 `methodId` is `SHA-256(UTF-8(fragment))` over the exact canonical,
 case-sensitive fragment, including `#`. Only on-chain Midnight DIDs are

@@ -27,9 +27,16 @@ It depends one-way on `@midnight-ntwrk/credential-compact` and the published
 Midnight DID `0.6.0` packages. It provides an injected TypeScript resolver
 adapter plus standalone and composition-safe Compact entrypoints.
 
-The package owns only deterministic DID-to-core mapping and structural binding
-circuits. DID lifecycle, signing, trust decisions, registries, protocols,
-wallets, applications, and credential families remain outside this repository.
+The package owns deterministic DID-to-core mapping, structural binding
+circuits, and bounded software helpers that assemble core issuance and
+presentation proofs for a supplied Jubjub secret scalar. DID lifecycle,
+long-lived key custody, trust decisions, registries, protocols, wallets,
+applications, and credential families remain outside this repository.
+
+The helpers reuse Midnight DID key/scalar primitives but derive the challenge
+through the VC core's generated context-specific circuits. They do not call the
+Midnight DID contract payload signer because that operation has a different
+challenge domain.
 
 The binding circuits do not verify signatures. Consumers must compose them with
 the core context-specific proof circuit over a body root recomputed from the

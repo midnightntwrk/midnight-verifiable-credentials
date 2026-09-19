@@ -10,6 +10,8 @@
   Jubjub verification methods.
 - Added standalone and composition-safe Compact entrypoints for method, holder,
   proof, and signer-authorization binding.
+- Added credential-issuance and presentation signing helpers that interoperate
+  with Midnight DID Jubjub keys and the VC core Compact challenge circuits.
 - Pinned the supported Ledger 8 profile and documented that binding circuits
   require composition with core signature-verification circuits.
 
