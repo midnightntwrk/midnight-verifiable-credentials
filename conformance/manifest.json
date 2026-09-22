@@ -12,12 +12,23 @@
       "manifest": "packages/core/compact/package.json",
       "name": "@midnight-ntwrk/credential-compact",
       "version": "0.2.0"
+    },
+    {
+      "manifest": "packages/credential-did-midnight/package.json",
+      "name": "@midnight-ntwrk/credential-did-midnight",
+      "version": "0.2.0"
     }
   ],
   "compactCircuitInventory": {
     "path": "conformance/compact-circuits.json",
     "sha256": "ae78d2fc13524598d4668978d3f89332ff64b8259b806b55427cafad843fc8c9"
   },
+  "extensionCircuitInventories": [
+    {
+      "path": "conformance/credential-did-midnight-circuits.json",
+      "sha256": "0f84c7375669e906df01b46c6684855143f6db7b69837976a012ab023ab22029"
+    }
+  ],
   "operations": [
     {
       "id": "validate-schema-reference",
@@ -138,6 +149,31 @@
       "id": "validate-signer-authorization-update",
       "section": "spec/signer-authorization.md",
       "vectorCategory": "signer-authorization"
+    },
+    {
+      "id": "validate-midnight-did-method-binding",
+      "section": "spec/midnight-did-binding.md",
+      "vectorCategory": "midnight-did-binding"
+    },
+    {
+      "id": "derive-midnight-did-method-binding-root",
+      "section": "spec/midnight-did-binding.md",
+      "vectorCategory": "midnight-did-binding"
+    },
+    {
+      "id": "bind-proof-to-midnight-did-method",
+      "section": "spec/midnight-did-binding.md",
+      "vectorCategory": "midnight-did-binding"
+    },
+    {
+      "id": "bind-holder-to-midnight-did-method",
+      "section": "spec/midnight-did-binding.md",
+      "vectorCategory": "midnight-did-binding"
+    },
+    {
+      "id": "bind-authorization-to-midnight-did-method",
+      "section": "spec/midnight-did-binding.md",
+      "vectorCategory": "midnight-did-binding"
     }
   ],
   "vectors": [
@@ -164,6 +200,10 @@
     {
       "path": "conformance/vectors/holder-binding.json",
       "sha256": "ec9e0836098820f6b8f99bc0f612763929d805ce2d9b112bb3d90b1764375fb5"
+    },
+    {
+      "path": "conformance/vectors/midnight-did-binding.json",
+      "sha256": "b402caba8906afb33db2dff22b82f580dc74c4199e1f96ac0242188bca3e3074"
     },
     {
       "path": "conformance/vectors/presentation-proof.json",

@@ -1,0 +1,9 @@
+// Copyright (C) 2026 Midnight Foundation
+// SPDX-License-Identifier: Apache-2.0
+
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "credentials/composable";
+include "./did-midnight/composable";

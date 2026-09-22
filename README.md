@@ -5,10 +5,11 @@ Midnight.
 
 This repository contains the normative VC/VP core specification, conformance
 vectors, generic credential-family and claim-schema metadata, and reusable
-Compact primitives. It does not contain concrete credential families, method
-adapters, product use cases, applications,
-exchange protocols, or deployment environments. Those belong in independently
-versioned consumer repositories.
+Compact primitives. It also contains one bounded Midnight DID binding extension
+so consumers do not reproduce canonical method and key mapping. It does not
+contain concrete credential families, general adapter frameworks, product use
+cases, applications, exchange protocols, or deployment environments. Those
+belong in independently versioned consumer repositories.
 
 ## Start here
 
@@ -18,23 +19,27 @@ versioned consumer repositories.
 - [Glossary](./spec/terminology.md)
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
+- [Midnight DID binding decision](./docs/decisions/0017-midnight-did-binding-extension.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
 - [Optional Pi development loop](./docs/guides/pi-development.md)
 
 ## Packages
 
-| Package                              | Stage     | Purpose                                          |
-| ------------------------------------ | --------- | ------------------------------------------------ |
-| `@midnight-ntwrk/credential-model`   | supported | Family and claim-schema metadata with validation |
-| `@midnight-ntwrk/credential-compact` | supported | Family-neutral Compact VC/VP primitives          |
+| Package                                   | Stage     | Purpose                                          |
+| ----------------------------------------- | --------- | ------------------------------------------------ |
+| `@midnight-ntwrk/credential-model`        | supported | Family and claim-schema metadata with validation |
+| `@midnight-ntwrk/credential-compact`      | supported | Family-neutral Compact VC/VP primitives          |
+| `@midnight-ntwrk/credential-did-midnight` | supported | Midnight DID resolver and Compact binding        |
 
 `supported` means the package is in the executable publication allowlist and
 its packed artifact passes build and clean-consumer checks.
-Both packages are ESM-only prerelease APIs and follow semantic versioning.
+All packages are ESM-only prerelease APIs and follow semantic versioning.
 
 Use the smallest package that owns the required boundary. A credential-family
 repository normally depends on both: `credential-model` describes its metadata,
 while `credential-compact` provides the generic circuit primitives. The
+optional `credential-did-midnight` package maps resolved Midnight DID methods
+into those primitives. The
 executable package catalog in `tooling/scripts/workspace-catalog.mjs` is the
 publication allowlist.
 
@@ -48,6 +53,7 @@ packages and must not import this repository's source or generated internals.
 spec/                        Normative VC/VP core
 conformance/                 Machine-readable vectors and operation mapping
 packages/core/               Runtime-neutral packages and Compact primitives
+packages/credential-did-midnight/  Optional Midnight DID binding extension
 docs/                        Core-only decision and release runbook
 ```
 

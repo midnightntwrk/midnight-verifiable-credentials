@@ -1,0 +1,106 @@
+export struct MidnightDIDMethodBinding {
+  verificationMethodRef: VerificationMethodRef,
+  publicKey: JubjubPoint,
+  didStateVersion: Uint<64>,
+  verificationRelationship: VerificationRelationship,
+}
+
+export struct MidnightDIDHolderBinding {
+  explicitBinding: ExplicitHolderBinding,
+  methodBinding: MidnightDIDMethodBinding,
+}
+
+export pure circuit assertValidMidnightDIDMethodBinding(
+  binding: MidnightDIDMethodBinding
+): [] {
+  assertValidVerificationMethodRef(binding.verificationMethodRef);
+  assertUsableJubjubPoint(binding.publicKey);
+  assert(
+    binding.didStateVersion > 0,
+    "Midnight DID state version must be positive"
+  );
+}
+
+export pure circuit midnightDIDMethodBindingRoot(
+  binding: MidnightDIDMethodBinding
+): Bytes<32> {
+  assertValidMidnightDIDMethodBinding(binding);
+  return persistentHash<MidnightDIDMethodBinding>(binding);
+}
+
+export pure circuit assertMidnightDIDProofMatchesMethod(
+  proof: Proof,
+  binding: MidnightDIDMethodBinding
+): [] {
+  // This is a key/reference binding primitive, not signature verification.
+  // Consumers must also invoke the core context-specific proof circuit over a
+  // body root recomputed from the complete credential or presentation.
+  assertValidMidnightDIDMethodBinding(binding);
+  assert(
+    proof.signerVerificationMethodRef.controllerAddress
+      == binding.verificationMethodRef.controllerAddress,
+    "Proof signer controller does not match Midnight DID binding"
+  );
+  assert(
+    proof.signerVerificationMethodRef.methodId
+      == binding.verificationMethodRef.methodId,
+    "Proof signer method does not match Midnight DID binding"
+  );
+  assertMatchingJubjubPoints(binding.publicKey, proof.publicKey);
+}
+
+export pure circuit assertMidnightDIDHolderBinding(
+  binding: MidnightDIDHolderBinding,
+  presentationProof: Proof
+): [] {
+  // Holder binding does not authenticate the presentation body by itself.
+  assertValidMidnightDIDMethodBinding(binding.methodBinding);
+  assert(
+    binding.methodBinding.verificationRelationship
+      == VerificationRelationship.authentication,
+    "Midnight DID holder binding requires authentication"
+  );
+  assert(
+    binding.explicitBinding.holderVerificationMethodRef.controllerAddress
+      == binding.methodBinding.verificationMethodRef.controllerAddress,
+    "Holder controller does not match Midnight DID binding"
+  );
+  assert(
+    binding.explicitBinding.holderVerificationMethodRef.methodId
+      == binding.methodBinding.verificationMethodRef.methodId,
+    "Holder method does not match Midnight DID binding"
+  );
+  assertProofMatchesExplicitHolderBinding(
+    binding.explicitBinding,
+    presentationProof
+  );
+  assertMidnightDIDProofMatchesMethod(presentationProof, binding.methodBinding);
+}
+
+export pure circuit assertMidnightDIDSignerAuthorization(
+  binding: MidnightDIDMethodBinding,
+  descriptor: AuthorizedSignerDescriptor
+): [] {
+  assertValidMidnightDIDMethodBinding(binding);
+  assertValidAuthorizedSignerDescriptor(descriptor);
+  assert(
+    descriptor.signerVerificationMethodRef.controllerAddress
+      == binding.verificationMethodRef.controllerAddress,
+    "Authorized signer controller does not match Midnight DID binding"
+  );
+  assert(
+    descriptor.signerVerificationMethodRef.methodId
+      == binding.verificationMethodRef.methodId,
+    "Authorized signer method does not match Midnight DID binding"
+  );
+  assertMatchingJubjubPoints(binding.publicKey, descriptor.signerPublicKey);
+  assert(
+    descriptor.didStateVersion == binding.didStateVersion,
+    "Authorized signer DID state version does not match binding"
+  );
+  assert(
+    descriptor.verificationRelationship
+      == binding.verificationRelationship,
+    "Authorized signer relationship does not match Midnight DID binding"
+  );
+}

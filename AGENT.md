@@ -10,6 +10,7 @@ This is a core-only VC/VP specification and implementation repository. Follow
 Keep here:
 
 - protocol-independent VC/VP data models and Compact primitives
+- the bounded Midnight DID-to-core binding defined by ADR-0017
 - explicit holder-binding primitives
 - generic credential-family and claim-schema metadata
 - normative specifications and conformance vectors
@@ -40,11 +41,15 @@ work in them.
 
 ## Package layering
 
-The two public packages are independent; neither depends on the other.
+The model and Compact core packages are independent. The flat Midnight DID
+binding is an optional extension and depends one-way on the Compact core.
 
 Rules:
 
 - `packages/core` must not depend on adapters, registries, or apps.
+- `packages/credential-did-midnight` may depend on
+  `@midnight-ntwrk/credential-compact` and published Midnight DID packages, but
+  core packages must not depend on it.
 - packages must expose public entrypoints; consumers must not deep-import
   another package's `src`, `dist`, or generated implementation files.
 - keep the workspace dependency graph acyclic.
