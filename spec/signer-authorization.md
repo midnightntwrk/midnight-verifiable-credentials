@@ -76,7 +76,7 @@ Jubjub prime-subgroup points and MUST NOT be the identity point.
 
 ### Midnight DID method references
 
-The `0.2.0` implementation profile uses the published `midnight-did` `0.6.0`
+The `0.2.0` implementation profile uses the published `midnight-did` `0.7.0`
 package family as its adapter compatibility baseline. The optional
 `@midnight-ntwrk/credential-did-midnight` package owns the deterministic mapping
 and structural Compact binding. Consumers still own resolver configuration,

@@ -14,6 +14,8 @@ import {
 } from "@midnight-ntwrk/midnight-did";
 import {
   CurveType,
+  decodeBase64UrlBytes32,
+  decodeJubjubJwkCoordinate,
   KeyType,
   VerificationMethodType,
 } from "@midnight-ntwrk/midnight-did-domain";
@@ -25,6 +27,7 @@ import {
   midnightDIDMethodId,
   resolveMidnightDIDMethodBinding,
 } from "../index.js";
+import { pureCircuits } from "../managed/did-midnight/contract/index.js";
 
 const address = parseContractAddress("11".repeat(32));
 const did = createMidnightDIDString(address, MidnightNetwork.Testnet);
@@ -33,6 +36,16 @@ const publicKeyJwk = LedgerToDomain.schnorrJubjubPublicKeyJwk({
   id: "#issuer-key",
   publicKey,
 } as never);
+const midnightDID07Vector = {
+  kty: KeyType.EC,
+  crv: CurveType.Jubjub,
+  x: "EMyWcM8XCxkJTyn8MDXM4q6wVLMfqCxYCu0MwT0hHPQ",
+  y: "H0wYFnDb0GGRQPznl3NU9G1sohdsMMrVdZpEQyiZrd0",
+} as const;
+const midnightDID06LegacyVector = {
+  x: "9BwhPcEM7QpYLKgfs1SwruLMNTD8KU8JGQsXz3CWzBA",
+  y: "3a2ZKENEmnXVyjBsF6JsbfRUc5fn_ECRYdDbcBYYTB8",
+} as const;
 const document = createMidnightDIDDocument({
   id: did,
   verificationMethod: [
@@ -77,6 +90,14 @@ const resolver = (
   }),
 });
 
+const bytesToBigIntLE = (bytes: Uint8Array): bigint => {
+  let value = 0n;
+  for (let index = bytes.length - 1; index >= 0; index -= 1) {
+    value = (value << 8n) | BigInt(bytes[index] ?? 0);
+  }
+  return value;
+};
+
 describe("resolveMidnightDIDMethodBinding", () => {
   it("maps a subject-bound native Jubjub method to Compact values", async () => {
     const binding = await resolveMidnightDIDMethodBinding({
@@ -100,9 +121,61 @@ describe("resolveMidnightDIDMethodBinding", () => {
     expect(publicKeyJwk).toEqual({
       kty: KeyType.EC,
       crv: CurveType.Jubjub,
-      x: "2LaxH9UXm4bl4V_1cwWXRMhmZzjBtZ2FZqABjGP7sGk",
-      y: "JsacxJLhN6OKsp2Ac4fM1wAhqxQ8II7RIel9ks8MEBg",
+      x: "abD7Y4wBoGaFnbXBOGdmyESXBXP1X-HlhpsX1R-xttg",
+      y: "GBAMz5J96SHRjiA8FKshANfMh3OAnbKKozfhksScxiY",
     });
+  });
+
+  it("maps the Midnight DID 0.7 vector without changing the native binding root", async () => {
+    const binding = await resolveMidnightDIDMethodBinding({
+      resolver: resolver({
+        didDocument: documentWithMethod({
+          publicKeyJwk: midnightDID07Vector,
+        }),
+      }),
+      did,
+      verificationMethodId: "#issuer-key",
+      relationship: "assertionMethod",
+    });
+    const canonicalPoint = {
+      x: decodeJubjubJwkCoordinate(midnightDID07Vector.x),
+      y: decodeJubjubJwkCoordinate(midnightDID07Vector.y),
+    };
+    const explicitlyMigratedLegacyPoint = {
+      x: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.x)),
+      y: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.y)),
+    };
+
+    expect(canonicalPoint).toEqual({
+      x: 7598480681822221782718178047163596477795643279066990822821099025308848299252n,
+      y: 14156144929920967796411782896064901209526447247090983247242446280553821482461n,
+    });
+    expect(binding.publicKey).toEqual(canonicalPoint);
+    expect(explicitlyMigratedLegacyPoint).toEqual(canonicalPoint);
+    expect(pureCircuits.midnightDIDMethodBindingRoot(binding)).toEqual(
+      pureCircuits.midnightDIDMethodBindingRoot({
+        ...binding,
+        publicKey: explicitlyMigratedLegacyPoint,
+      }),
+    );
+  });
+
+  it("does not auto-detect the Midnight DID 0.6 little-endian profile", async () => {
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWithMethod({
+            publicKeyJwk: {
+              ...midnightDID07Vector,
+              ...midnightDID06LegacyVector,
+            },
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("less than the Jubjub base field modulus");
   });
 
   it("hashes the exact case-sensitive canonical fragment", () => {

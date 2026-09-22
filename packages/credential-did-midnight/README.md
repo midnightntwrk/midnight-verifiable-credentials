@@ -11,6 +11,12 @@ helpers can sign credential and presentation proofs with that method. The
 package does not store keys, deploy or mutate a DID, select a trust policy, or
 call another contract.
 
+The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
+are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
+are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
+0.6 little-endian DID-document snapshots must be re-resolved or explicitly
+migrated; the adapter does not guess the byte order.
+
 > **Ledger 8 security boundary:** this package's binding circuits compare DID
 > references and keys; they do not verify signatures or prove that resolved DID
 > state is current. Always compose them with the matching core context-proof
