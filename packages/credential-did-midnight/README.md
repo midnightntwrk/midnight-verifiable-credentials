@@ -57,9 +57,10 @@ const descriptor = createMidnightDIDSignerDescriptor(method, {
 The signing helpers accept a software-held Jubjub secret scalar and require it
 to match the resolved method binding. They derive each nonce with HMAC-SHA-512
 over the secret, operation domain, signed inputs, method reference, fresh
-platform entropy, and retry counter. They retry if the derived nonce is zero,
-protecting against a repeating entropy source across different messages. Each
-completed proof is verified before it is returned.
+platform entropy, and retry counter. Secret and signed-input binding preserves
+per-message separation even if the entropy source repeats; the helper retries
+only when the derived scalar is zero. Each completed proof is verified before
+it is returned.
 
 ```ts
 import {
