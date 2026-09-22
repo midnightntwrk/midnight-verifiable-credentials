@@ -9,7 +9,7 @@ All notable changes to this project are documented here. The format follows
 ### Added
 
 - restore `@midnight-ntwrk/credential-did-midnight` as a flat Midnight DID
-  `0.6.0` binding extension with TypeScript resolution, composable Compact
+  `0.7.0` binding extension with TypeScript resolution, composable Compact
   circuits, negative conformance vectors, and clean packed-consumer coverage.
 - pin its Ledger `8.0.2` build profile and require explicit composition with
   core context-specific signature verification.
@@ -18,6 +18,9 @@ All notable changes to this project are documented here. The format follows
   resulting proof.
 - use hedged nonces bound to the secret, operation, signed inputs, and fresh
   entropy in the Ledger 8 signing helpers.
+- adopt Midnight DID 0.7 canonical big-endian Jubjub JWK coordinates through
+  the public domain codec while preserving the native Compact point and binding
+  root; historical 0.6 snapshots require explicit migration.
 
 ## [0.2.0] - 2026-09-18
 

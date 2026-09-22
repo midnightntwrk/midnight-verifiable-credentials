@@ -11,6 +11,14 @@ helpers can sign credential and presentation proofs with that method. The
 package does not store keys, deploy or mutate a DID, select a trust policy, or
 call another contract.
 
+The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
+are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
+are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
+0.6 little-endian DID-document snapshots must be re-resolved or explicitly
+migrated; the adapter does not guess the byte order. Not every 0.6 snapshot is
+detectably invalid under the 0.7 decoder, so supplying one can silently bind a
+different native point rather than fail.
+
 > **Ledger 8 security boundary:** this package's binding circuits compare DID
 > references and keys; they do not verify signatures or prove that resolved DID
 > state is current. Always compose them with the matching core context-proof
@@ -49,9 +57,10 @@ const descriptor = createMidnightDIDSignerDescriptor(method, {
 The signing helpers accept a software-held Jubjub secret scalar and require it
 to match the resolved method binding. They derive each nonce with HMAC-SHA-512
 over the secret, operation domain, signed inputs, method reference, fresh
-platform entropy, and retry counter. They retry if the derived nonce is zero,
-protecting against a repeating entropy source across different messages. Each
-completed proof is verified before it is returned.
+platform entropy, and retry counter. Secret and signed-input binding preserves
+per-message separation even if the entropy source repeats; the helper retries
+only when the derived scalar is zero. Each completed proof is verified before
+it is returned.
 
 ```ts
 import {

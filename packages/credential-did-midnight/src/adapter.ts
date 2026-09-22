@@ -4,7 +4,7 @@ import {
 } from "@midnight-ntwrk/credential-compact";
 import {
   CurveType,
-  decodeBase64UrlBytes32,
+  decodeJubjubJwkCoordinate,
   KeyType,
   MidnightNetwork,
   parseMidnightDID,
@@ -32,14 +32,6 @@ const compactRelationships = {
   MidnightDIDVerificationRelationship,
   VerificationRelationship
 >;
-
-const bytesToBigIntLE = (bytes: Uint8Array): bigint => {
-  let value = 0n;
-  for (let index = bytes.length - 1; index >= 0; index -= 1) {
-    value = (value << 8n) | BigInt(bytes[index] ?? 0);
-  }
-  return value;
-};
 
 const hexToBytes32 = (value: string): Uint8Array => {
   if (!/^[0-9a-f]{64}$/u.test(value)) {
@@ -207,16 +199,14 @@ export const resolveMidnightDIDMethodBinding = async ({
     );
   }
 
-  const x = decodeBase64UrlBytes32(method.publicKeyJwk.x, "Jubjub x");
-  const y = decodeBase64UrlBytes32(method.publicKeyJwk.y, "Jubjub y");
   return {
     verificationMethodRef: {
       controllerAddress: { bytes: hexToBytes32(String(parsed.id)) },
       methodId: midnightDIDMethodId(fragment),
     },
     publicKey: {
-      x: bytesToBigIntLE(x),
-      y: bytesToBigIntLE(y),
+      x: decodeJubjubJwkCoordinate(method.publicKeyJwk.x, "Jubjub x"),
+      y: decodeJubjubJwkCoordinate(method.publicKeyJwk.y, "Jubjub y"),
     },
     didStateVersion: parseStateVersion(result.didDocumentMetadata.versionId),
     verificationRelationship: compactRelationships[relationship],

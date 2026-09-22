@@ -76,14 +76,14 @@ importers:
         specifier: workspace:*
         version: link:../core/compact
       '@midnight-ntwrk/midnight-did':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       '@midnight-ntwrk/midnight-did-jubjub-schnorr':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       '@noble/hashes':
         specifier: ^2.2.0
         version: 2.4.0
@@ -439,20 +439,20 @@ packages:
   '@midnight-ntwrk/ledger-v8@8.1.0':
     resolution: {integrity: sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==}
 
-  '@midnight-ntwrk/midnight-did-contract@0.6.0':
-    resolution: {integrity: sha512-Ks2/ADf0+Q7lLRsccvOoALzhU8cj5DYKynfUupk4DlQBw+fcLBR3N6El6rSniTiMyKCQXIGHfPwzzcXgn4y96Q==}
+  '@midnight-ntwrk/midnight-did-contract@0.7.0':
+    resolution: {integrity: sha512-5WutzC5tU61UtAGF39rEKdH+9kr3//0m8wkXFb25W1QETsK8s1ynLJb1V8WL4DNnoO0G0CveSnkAa0HkrT5H/g==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-domain@0.6.0':
-    resolution: {integrity: sha512-BaSOQDerVcYTwGwRriNLNRFIIjq0sGO2DzmQIPtk+rRp3Ot8Iq63oASXuoQhYOeStsEBqsu2GrQownqy6O94eg==}
+  '@midnight-ntwrk/midnight-did-domain@0.7.0':
+    resolution: {integrity: sha512-GmD1S4zC7JTW9p3h/rpNbpN8sp2tJqcVzmvbHZLaUilxlDRHJoZ4eRzHcoaLhuVoz0mKEpqAO3TcfFSjZAd4QQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.6.0':
-    resolution: {integrity: sha512-Xt2ssfSwXhbI+pmTvt2y4f5ulqV9847YNXLmFEDrvJegZBFk24yo1fKOQmJ2mVoklU+set0taV7xI1p6ty79dw==}
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.7.0':
+    resolution: {integrity: sha512-ph90vqpIVdPoQAn/OtVPv2BLZzfrBwCKPv2TxzSKwZegUdciP5kTqawxW3k6CDkkb+u4XdMeOc5CJYDBKeqU6g==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did@0.6.0':
-    resolution: {integrity: sha512-yJqffzNc3WAtFBGEAzdVXIaYN7k3cxXNrcBAfRT6rkUt7IDm50nMHSOpzfloNu25Cta2br96GghCMG+Z5qBtfQ==}
+  '@midnight-ntwrk/midnight-did@0.7.0':
+    resolution: {integrity: sha512-l1ZOGiV2YpiakHTFgutfHb7RPuTZkAaOVgQZrOmSh4mpx1QVJMBBTOAWl8zgJdBS1cA67e/LZRzLxCWKw2hBkA==}
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0':
@@ -1931,27 +1931,27 @@ snapshots:
 
   '@midnight-ntwrk/ledger-v8@8.1.0': {}
 
-  '@midnight-ntwrk/midnight-did-contract@0.6.0':
+  '@midnight-ntwrk/midnight-did-contract@0.7.0':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.16.0
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.6.0
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.7.0
 
-  '@midnight-ntwrk/midnight-did-domain@0.6.0':
+  '@midnight-ntwrk/midnight-did-domain@0.7.0':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.16.0
       '@noble/hashes': 2.4.0
       zod: 4.6.5
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.6.0':
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.7.0':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.16.0
       '@midnight-ntwrk/ledger-v8': 8.1.0
       '@noble/hashes': 2.4.0
 
-  '@midnight-ntwrk/midnight-did@0.6.0':
+  '@midnight-ntwrk/midnight-did@0.7.0':
     dependencies:
-      '@midnight-ntwrk/midnight-did-contract': 0.6.0
-      '@midnight-ntwrk/midnight-did-domain': 0.6.0
+      '@midnight-ntwrk/midnight-did-contract': 0.7.0
+      '@midnight-ntwrk/midnight-did-domain': 0.7.0
       zod: 4.6.5
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0': {}

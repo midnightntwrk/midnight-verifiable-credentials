@@ -14,7 +14,7 @@ semantics without defining a second signature scheme or challenge domain.
 ## Resolution profile
 
 An implementation MUST resolve an on-chain `did:midnight` through a resolver
-compatible with `@midnight-ntwrk/midnight-did` `0.6.0`. It MUST reject:
+compatible with `@midnight-ntwrk/midnight-did` `0.7.0`. It MUST reject:
 
 - an unresolved or deactivated DID;
 - a DID document whose subject differs from the requested DID;
@@ -46,9 +46,20 @@ SHA-256(UTF-8(canonical fragment))
 The hash input includes the leading `#` and remains case-sensitive. For
 example, `#key-1` and `#Key-1` are different methods.
 
-Jubjub JWK `x` and `y` coordinates are 32-byte base64url values in the encoding
-defined by Midnight DID. The binding MUST decode those bytes as little-endian
-field integers for Compact's `JubjubPoint` representation.
+Jubjub JWK `x` and `y` coordinates MUST use the Midnight DID 0.7 profile:
+canonical unpadded base64url of exactly 32 unsigned big-endian bytes, with each
+decoded integer below the Jubjub base-field modulus. The binding MUST use the
+public `decodeJubjubJwkCoordinate` codec from
+`@midnight-ntwrk/midnight-did-domain`.
+
+Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
+DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
+re-resolve the DID through a 0.7 resolver or perform an explicit, version-bound
+migration before invoking this package. The binding MUST NOT guess the profile
+by trying both byte orders. Resolver `versionId` describes ledger state and MUST
+NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
+also valid 0.7 coordinate encodings and will silently map to a different native
+point, so range validation alone is not a migration detector.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
