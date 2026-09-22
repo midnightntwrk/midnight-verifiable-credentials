@@ -46,6 +46,10 @@ const midnightDID06LegacyVector = {
   x: "9BwhPcEM7QpYLKgfs1SwruLMNTD8KU8JGQsXz3CWzBA",
   y: "3a2ZKENEmnXVyjBsF6JsbfRUc5fn_ECRYdDbcBYYTB8",
 } as const;
+const inRangeMidnightDID06LegacyVector = {
+  x: "G9I46uhjutFSklG1VnRyxlD1mUmrO8_G5_GolmIcd0s",
+  y: "C3LZoGUlZNw4ciofiiFUndanSelzUXyGDx-1PLiCrx8",
+} as const;
 const document = createMidnightDIDDocument({
   id: did,
   verificationMethod: [
@@ -176,6 +180,31 @@ describe("resolveMidnightDIDMethodBinding", () => {
         relationship: "assertionMethod",
       }),
     ).rejects.toThrow("less than the Jubjub base field modulus");
+  });
+
+  it("documents that an in-range 0.6 snapshot can silently bind the wrong point", async () => {
+    const binding = await resolveMidnightDIDMethodBinding({
+      resolver: resolver({
+        didDocument: documentWithMethod({
+          publicKeyJwk: {
+            ...midnightDID07Vector,
+            ...inRangeMidnightDID06LegacyVector,
+          },
+        }),
+      }),
+      did,
+      verificationMethodId: "#issuer-key",
+      relationship: "assertionMethod",
+    });
+
+    expect(binding.publicKey).toEqual({
+      x: 12583877626248071689428163872318497461764264202911183490367287333497264174923n,
+      y: 5178363903001310833953657657903501026548857661131666140410637086019855494943n,
+    });
+    expect(binding.publicKey).not.toEqual({
+      x: 34133914351292434048413503276202728289265490189576620060413629725504410538523n,
+      y: 14331798736465991320125906355460685144102305233516748184833801044822620467723n,
+    });
   });
 
   it("hashes the exact case-sensitive canonical fragment", () => {

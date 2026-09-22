@@ -57,7 +57,9 @@ DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
 re-resolve the DID through a 0.7 resolver or perform an explicit, version-bound
 migration before invoking this package. The binding MUST NOT guess the profile
 by trying both byte orders. Resolver `versionId` describes ledger state and MUST
-NOT be used as an encoding-version discriminator.
+NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
+also valid 0.7 coordinate encodings and will silently map to a different native
+point, so range validation alone is not a migration detector.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not

@@ -15,7 +15,9 @@ The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
 0.6 little-endian DID-document snapshots must be re-resolved or explicitly
-migrated; the adapter does not guess the byte order.
+migrated; the adapter does not guess the byte order. Not every 0.6 snapshot is
+detectably invalid under the 0.7 decoder, so supplying one can silently bind a
+different native point rather than fail.
 
 > **Ledger 8 security boundary:** this package's binding circuits compare DID
 > references and keys; they do not verify signatures or prove that resolved DID

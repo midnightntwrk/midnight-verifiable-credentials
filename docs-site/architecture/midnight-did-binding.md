@@ -52,8 +52,10 @@ The adapter accepts only the Midnight DID 0.7 canonical big-endian Jubjub JWK
 profile and delegates coordinate decoding and range validation to the public
 domain package codec. Historical 0.6 little-endian snapshots require an
 explicit migration; byte-order auto-detection and use of ledger `versionId` as
-an encoding marker are rejected. This transport change does not alter the
-native point or its Compact binding root.
+an encoding marker are rejected. Because some legacy values remain in range
+under the new byte order, a mis-supplied 0.6 snapshot can silently bind the
+wrong point. This transport change does not alter the native point or its
+Compact binding root when migration is explicit.
 
 The initial support profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
 `8.0.2`. Cross-contract DID validation is deferred until a later Ledger profile.

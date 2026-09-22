@@ -46,7 +46,7 @@ All notable changes to this project are documented here. The format follows
 - collapse local and CI validation into one non-Docker core gate.
 - require publication to preflight, publish, and verify the complete supported
   package set while preserving the existing npm `latest` tag for prereleases.
-- establish the published `midnight-did` `0.7.0` package family as the current
+- establish the published `midnight-did` `0.6.0` package family as the current
   adapter compatibility baseline while keeping its runtime dependencies in the
   optional binding extension rather than the VC core.
 

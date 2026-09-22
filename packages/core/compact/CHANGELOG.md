@@ -14,7 +14,7 @@
   exact method/key/scope binding circuits, monotonic lifecycle validation, and
   domain-separated Jubjub authority and verifier-request proof contexts without
   introducing Trust Registry or datetime dependencies.
-- Documented `midnight-did` `0.7.0` as the current downstream adapter
+- Documented `midnight-did` `0.6.0` as the current downstream adapter
   compatibility baseline while keeping the Compact package DID-independent.
 - Bound authority decisions to an explicit consumer/network domain, made
   revocation terminal per authorization ID, validated Jubjub subgroup
