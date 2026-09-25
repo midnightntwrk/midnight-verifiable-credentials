@@ -187,6 +187,17 @@ const releasePackages = supportedPackages;
 if (releasePackages.length === 0) {
   fail("workspace catalog has no supported release packages");
 }
+const releasePackageByName = new Map(
+  releasePackages.map((releasePackage) => {
+    const packageJson = JSON.parse(
+      readFileSync(
+        path.join(repoRoot, releasePackage.path, "package.json"),
+        "utf8",
+      ),
+    );
+    return [packageJson.name, { ...releasePackage, packageJson }];
+  }),
+);
 
 for (const releasePackage of releasePackages) {
   if (
@@ -198,6 +209,15 @@ for (const releasePackage of releasePackages) {
   }
   if (typeof releasePackage.consumerFixture !== "string") {
     fail(`${releasePackage.path} has no clean-consumer fixture`);
+  }
+  if (
+    releasePackage.localReleaseDependencies !== undefined &&
+    (!Array.isArray(releasePackage.localReleaseDependencies) ||
+      releasePackage.localReleaseDependencies.some(
+        (dependency) => !releasePackageByName.has(dependency),
+      ))
+  ) {
+    fail(`${releasePackage.path} has invalid local release dependencies`);
   }
 
   const sourcePackageJson = JSON.parse(
@@ -267,11 +287,47 @@ for (const releasePackage of releasePackages) {
       fail("temporary consumer must live outside the repository");
     }
     cpSync(fixtureRoot, consumerRoot, { recursive: true });
+    const allowedLocalLocators = new Set([
+      "file:./vendor/package.tgz",
+      "file:vendor/package.tgz",
+    ]);
     if (tarballPath !== undefined) {
       mkdirSync(path.join(consumerRoot, "vendor"));
       copyFileSync(
         tarballPath,
         path.join(consumerRoot, "vendor", "package.tgz"),
+      );
+      for (const dependencyName of
+        releasePackage.localReleaseDependencies ?? []) {
+        const dependency = releasePackageByName.get(dependencyName);
+        const dependencyTarballName = tarballName(dependency.packageJson);
+        const dependencyTarball = path.join(
+          tarballDirectory,
+          dependencyTarballName,
+        );
+        if (!existsSync(dependencyTarball)) {
+          fail(`${dependencyTarballName} is missing`);
+        }
+        const dependencyDirectory = path.join(
+          consumerRoot,
+          "vendor",
+          "dependencies",
+        );
+        mkdirSync(dependencyDirectory, { recursive: true });
+        copyFileSync(
+          dependencyTarball,
+          path.join(dependencyDirectory, dependencyTarballName),
+        );
+        const locator = `file:./vendor/dependencies/${dependencyTarballName}`;
+        fixturePackageJson.pnpm ??= {};
+        fixturePackageJson.pnpm.overrides ??= {};
+        fixturePackageJson.pnpm.overrides[dependencyName] = locator;
+        allowedLocalLocators.add(locator);
+        allowedLocalLocators.add(locator.replace("file:./", "file:"));
+      }
+      writeFileSync(
+        path.join(consumerRoot, "package.json"),
+        `${JSON.stringify(fixturePackageJson, null, 2)}\n`,
       );
     } else {
       fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
@@ -308,11 +364,7 @@ for (const releasePackage of releasePackages) {
       /(?:file|link|workspace|git(?:\+[^:]+)?|https?):[^\s,'"}\]]+/gu,
     ) ?? [];
     for (const locator of localLocators) {
-      if (
-        tarballPath !== undefined &&
-        (locator === "file:./vendor/package.tgz" ||
-          locator === "file:vendor/package.tgz")
-      ) {
+      if (tarballPath !== undefined && allowedLocalLocators.has(locator)) {
         continue;
       }
       fail(`consumer lockfile contains forbidden local locator ${locator}`);
@@ -350,6 +402,7 @@ for (const releasePackage of releasePackages) {
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
       const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
       const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
+      const expectedLedger = installedPackageJson.midnight.ledgerVersion;
       const buildManifest = JSON.parse(
         readFileSync(path.join(installedPackageRoot, "dist/compact-build.json"), "utf8"),
       );
@@ -361,6 +414,12 @@ for (const releasePackage of releasePackages) {
       ).version;
       if (buildManifest.compiler !== expectedCompiler || buildManifest.runtime?.version !== expectedRuntime) {
         fail(`${sourcePackageJson.name} generated metadata does not match pinned Compact tuple`);
+      }
+      if (
+        expectedLedger !== undefined &&
+        buildManifest.ledger !== expectedLedger
+      ) {
+        fail(`${sourcePackageJson.name} generated metadata does not match pinned Ledger version`);
       }
       if (resolvedRuntime !== expectedRuntime) {
         fail(`${sourcePackageJson.name} resolved runtime ${resolvedRuntime} instead of ${expectedRuntime}`);
@@ -396,12 +455,22 @@ for (const releasePackage of releasePackages) {
     const expectedCompactEntrypoints =
       sourcePackageJson.midnight?.compactEntrypoints;
     const compactEntrypoints = installedPackageJson.midnight?.compactEntrypoints;
+    const expectedCompactDependencies =
+      sourcePackageJson.midnight?.compactDependencies;
+    const compactDependencies = installedPackageJson.midnight?.compactDependencies;
     if (
       expectedCompactEntrypoints !== undefined &&
       JSON.stringify(compactEntrypoints) !==
         JSON.stringify(expectedCompactEntrypoints)
     ) {
       fail(`${sourcePackageJson.name} has unexpected Compact entrypoint metadata`);
+    }
+    if (
+      expectedCompactDependencies !== undefined &&
+      JSON.stringify(compactDependencies) !==
+        JSON.stringify(expectedCompactDependencies)
+    ) {
+      fail(`${sourcePackageJson.name} has unexpected Compact dependency metadata`);
     }
     if (compactEntrypoints !== undefined) {
       if (typeof installedPackageJson.midnight?.compactCompilerVersion !== "string") {
@@ -420,13 +489,54 @@ for (const releasePackage of releasePackages) {
           fail(`${sourcePackageJson.name} metadata advertises unexported Compact entrypoint ${entrypoint}`);
         }
       }
+      if (
+        compactDependencies !== undefined &&
+        (!Array.isArray(compactDependencies) ||
+          compactDependencies.some(
+            (dependency) =>
+              typeof dependency?.package !== "string" ||
+              typeof dependency?.compositionEntrypoint !== "string",
+          ))
+      ) {
+        fail(`${sourcePackageJson.name} has invalid Compact dependencies`);
+      }
+      const compactSearchPaths = [path.join(installedPackageRoot, "dist")];
+      const compositionPrelude = [];
+      const packageRequire = createRequire(
+        path.join(installedPackageRoot, "dist/index.js"),
+      );
+      for (const dependency of compactDependencies ?? []) {
+        const dependencyEntry = packageRequire.resolve(dependency.package);
+        const dependencyRoot = path.resolve(
+          path.dirname(dependencyEntry),
+          "..",
+        );
+        const dependencyManifest = JSON.parse(
+          readFileSync(path.join(dependencyRoot, "package.json"), "utf8"),
+        );
+        if (dependencyManifest.name !== dependency.package) {
+          fail(
+            `${sourcePackageJson.name} resolved an unexpected Compact dependency`,
+          );
+        }
+        if (
+          dependencyManifest.exports?.[dependency.compositionEntrypoint] ===
+          undefined
+        ) {
+          fail(
+            `${dependency.package} does not export ${dependency.compositionEntrypoint}`,
+          );
+        }
+        compactSearchPaths.push(path.join(dependencyRoot, "dist"));
+        compositionPrelude.push(dependency.compositionEntrypoint);
+      }
       const compileExternalSource = (name, source) => {
         const wrapper = path.join(consumerRoot, `${name}.compact`);
         const output = path.join(installedPackageRoot, ".compact-consumer", `${name}-output`);
         writeFileSync(wrapper, source);
         run(
           "compact",
-          ["compile", `+${installedPackageJson.midnight.compactCompilerVersion}`, "--skip-zk", "--compact-path", path.join(installedPackageRoot, "dist"), wrapper, output],
+          ["compile", `+${installedPackageJson.midnight.compactCompilerVersion}`, "--skip-zk", "--compact-path", compactSearchPaths.join(path.delimiter), wrapper, output],
           consumerRoot,
           `${sourcePackageJson.name}: external Compact ${name}`,
         );
@@ -443,7 +553,10 @@ for (const releasePackage of releasePackages) {
         compileExternal(`compact-standalone-${index}`, [entrypoint]);
       }
       for (const [index, entrypoint] of composition.entries()) {
-        compileExternal(`compact-composition-${index}`, [entrypoint]);
+        compileExternal(`compact-composition-${index}`, [
+          ...compositionPrelude,
+          entrypoint,
+        ]);
       }
       if (sourcePackageJson.name === "@midnight-ntwrk/credential-compact") {
         compileExternalSource(

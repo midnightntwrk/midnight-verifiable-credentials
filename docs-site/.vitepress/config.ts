@@ -55,6 +55,7 @@ export default defineConfig({
               text: "Signer Authorization",
               link: "/spec/signer-authorization",
             },
+            { text: "Midnight DID Binding", link: "/spec/midnight-did-binding" },
             { text: "Status", link: "/spec/status" },
             { text: "Security", link: "/spec/security-considerations" },
             { text: "Privacy", link: "/spec/privacy-considerations" },
@@ -75,6 +76,10 @@ export default defineConfig({
             { text: "Overview", link: "/packages/" },
             { text: "Credential Model", link: "/packages/model" },
             { text: "Credential Compact", link: "/packages/compact" },
+            {
+              text: "Credential DID Midnight",
+              link: "/packages/credential-did-midnight",
+            },
           ],
         },
       ],
@@ -84,6 +89,10 @@ export default defineConfig({
           items: [
             { text: "Overview", link: "/architecture/" },
             { text: "Core-only Decision", link: "/architecture/core-only" },
+            {
+              text: "Midnight DID Extension",
+              link: "/architecture/midnight-did-binding",
+            },
           ],
         },
       ],

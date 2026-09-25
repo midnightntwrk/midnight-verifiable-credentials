@@ -19,11 +19,13 @@ independently or checked out inside `midnight-identity-workspace`.
 
 This repository owns the protocol-independent specification, conformance
 vectors, `@midnight-ntwrk/credential-model`, and
-`@midnight-ntwrk/credential-compact`.
+`@midnight-ntwrk/credential-compact`. ADR-0017 also permits the bounded
+`@midnight-ntwrk/credential-did-midnight` mapping and Compact extension.
 
-Keep DID methods, credential families, applications, transports, wallets,
-registries, deployment environments, UI, and substantial use cases in their
-own repositories. Do not add compatibility implementations for removed code.
+Keep DID method lifecycle implementations, general adapter frameworks,
+credential families, applications, transports, wallets, registries, deployment
+environments, UI, and substantial use cases in their own repositories. Do not
+add compatibility implementations for removed code.
 Cross-repository dependencies use published packages or workspace-root-managed
 tarballs, never sibling source or generated output.
 

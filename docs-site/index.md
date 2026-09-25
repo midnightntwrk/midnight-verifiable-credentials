@@ -4,7 +4,7 @@ Protocol-independent verifiable credential and presentation building blocks for
 Midnight.
 
 This site documents the normative core specification, conformance evidence, and
-the two reusable packages published by this repository. Concrete credential
+the reusable packages published by this repository. Concrete credential
 families, protocols, wallets, applications, and deployment environments belong
 in independently versioned consumer repositories.
 
@@ -17,13 +17,14 @@ in independently versioned consumer repositories.
 
 ## Published Packages
 
-| Package                              | Responsibility                                               |
-| ------------------------------------ | ------------------------------------------------------------ |
-| `@midnight-ntwrk/credential-model`   | Credential-family and claim-schema metadata with validation  |
-| `@midnight-ntwrk/credential-compact` | Family-neutral Compact VC/VP structures and proof primitives |
+| Package                                   | Responsibility                                               |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| `@midnight-ntwrk/credential-model`        | Credential-family and claim-schema metadata with validation  |
+| `@midnight-ntwrk/credential-compact`      | Family-neutral Compact VC/VP structures and proof primitives |
+| `@midnight-ntwrk/credential-did-midnight` | Optional Midnight DID-to-core binding and Compact extension  |
 
-Both packages are intentionally small, independently consumable building
-blocks. Neither package defines an issuance or presentation protocol.
+The packages are intentionally small, composable building blocks. None defines
+an issuance or presentation protocol.
 
 ## Trust Boundary
 

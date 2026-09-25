@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-08
-- Updated: 2026-09-09
+- Updated: 2026-09-18
 - Owners: VC maintainers
 - Supersedes: product, protocol, and multi-package architecture decisions archived in Git history
 
@@ -28,10 +28,14 @@ This repository owns:
 - positive and negative conformance vectors; and
 - the build, test, and release tooling for those surfaces.
 
-The supported public release graph contains exactly:
+The original supported public release graph contained:
 
 - `@midnight-ntwrk/credential-model`;
 - `@midnight-ntwrk/credential-compact`.
+
+[ADR-0017](./0017-midnight-did-binding-extension.md) adds the flat,
+protocol-independent `@midnight-ntwrk/credential-did-midnight` extension while
+preserving the exclusions below.
 
 The core defines reusable data structures and cryptographic composition
 primitives. Complete issuer, holder, and verifier ceremonies belong to the
@@ -43,7 +47,7 @@ The repository does not own:
 
 - concrete credential families, schemas, applications, or business contracts;
 - OID4VC, DIDComm, HTTP, QR, DApp Connector, or wallet integrations;
-- DID-method adapters, trust registries, or status services;
+- general DID-adapter frameworks, trust registries, or status services;
 - deployment assembly, runtime discovery, or product proving artifacts; or
 - rendering, localization, transliteration, and framework-specific UI.
 

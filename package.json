@@ -12,7 +12,7 @@
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
-    "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
+    "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs ./tooling/scripts/credential-did-midnight-conformance.test.mjs",
     "audit": "pnpm audit --audit-level high",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages tooling",
     "docs:prepare": "pnpm --filter docs-site docs:prepare",
