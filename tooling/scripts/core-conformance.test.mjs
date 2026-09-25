@@ -400,6 +400,15 @@ test("matches the recorded conformance manifest and vector digests", () => {
     manifest.compactCircuitInventory.sha256,
     `${manifest.compactCircuitInventory.path} digest mismatch`,
   );
+  for (const inventory of manifest.extensionCircuitInventories ?? []) {
+    const extensionInventoryBytes = readFileSync(resolve(root, inventory.path));
+    assert.match(inventory.sha256, /^[a-f0-9]{64}$/u);
+    assert.equal(
+      createHash("sha256").update(extensionInventoryBytes).digest("hex"),
+      inventory.sha256,
+      `${inventory.path} digest mismatch`,
+    );
+  }
 
   const manifestBytes = readFileSync(resolve(root, "conformance/manifest.json"));
   const digestRecord = readFileSync(

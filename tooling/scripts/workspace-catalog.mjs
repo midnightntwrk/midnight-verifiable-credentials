@@ -14,6 +14,12 @@ export const supportedPackages = [
     consumerFixture: "tooling/fixtures/credential-compact-consumer",
     consumerChecks: ["node", "typescript"],
   },
+  {
+    path: "packages/credential-did-midnight",
+    consumerFixture: "tooling/fixtures/credential-did-midnight-consumer",
+    consumerChecks: ["node", "typescript"],
+    localReleaseDependencies: ["@midnight-ntwrk/credential-compact"],
+  },
 ];
 
 export const supportedWorkspacePaths = supportedPackages.map(

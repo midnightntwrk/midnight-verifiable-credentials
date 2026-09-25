@@ -81,6 +81,7 @@ for (const route of [
   "conformance/index.md",
   "packages/model.md",
   "packages/compact.md",
+  "packages/credential-did-midnight.md",
   "architecture/core-only.md",
 ]) {
   if (!(await exists(resolve(docsRoot, route))))

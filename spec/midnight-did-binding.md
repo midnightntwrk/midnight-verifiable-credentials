@@ -1,0 +1,130 @@
+# Midnight DID Binding
+
+## Purpose
+
+The Midnight DID binding maps a resolved, subject-owned native Jubjub
+verification method into the protocol-independent VC/VP structures. It is an
+optional extension: the core VC/VP primitives remain usable with another
+verification-method source.
+
+The binding does not define DID creation or mutation, key custody, trust
+policy, credential exchange, or a transport protocol. It reuses the core proof
+semantics without defining a second signature scheme or challenge domain.
+
+## Resolution profile
+
+An implementation MUST resolve an on-chain `did:midnight` through a resolver
+compatible with `@midnight-ntwrk/midnight-did` `0.7.0`. It MUST reject:
+
+- an unresolved or deactivated DID;
+- a DID document whose subject differs from the requested DID;
+- an off-chain Midnight DID, because it has no Compact contract address;
+- a verification method not controlled by the DID subject;
+- a method absent from the requested verification relationship;
+- a non-`JsonWebKey` method;
+- a key other than native `EC`/`Jubjub`; and
+- a missing, zero, non-decimal, or greater-than-`uint64` DID `versionId`.
+
+The supported relationships are `assertionMethod`, `authentication`, and
+`capabilityInvocation`. Issuer authorization requires `assertionMethod`.
+Holder binding requires `authentication`. Verifier authorization requires
+`authentication` or `capabilityInvocation`.
+
+## Canonical mapping
+
+`VerificationMethodRef.controllerAddress` MUST contain the exact 32-byte
+contract address encoded by the DID subject.
+
+The verification method MUST be a fragment of that subject. After applying the
+Midnight DID package's subject-binding and reference normalization rules,
+`VerificationMethodRef.methodId` MUST be:
+
+```text
+SHA-256(UTF-8(canonical fragment))
+```
+
+The hash input includes the leading `#` and remains case-sensitive. For
+example, `#key-1` and `#Key-1` are different methods.
+
+Jubjub JWK `x` and `y` coordinates MUST use the Midnight DID 0.7 profile:
+canonical unpadded base64url of exactly 32 unsigned big-endian bytes, with each
+decoded integer below the Jubjub base-field modulus. The binding MUST use the
+public `decodeJubjubJwkCoordinate` codec from
+`@midnight-ntwrk/midnight-did-domain`.
+
+Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
+DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
+re-resolve the DID through a 0.7 resolver or perform an explicit, version-bound
+migration before invoking this package. The binding MUST NOT guess the profile
+by trying both byte orders. Resolver `versionId` describes ledger state and MUST
+NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
+also valid 0.7 coordinate encodings and will silently map to a different native
+point, so range validation alone is not a migration detector.
+
+`didStateVersion` MUST equal the positive resolver `versionId` observed for the
+document used to create the binding. It is a logical ledger state version, not
+a timestamp.
+
+## Compact extension
+
+`MidnightDIDMethodBinding` contains the canonical verification-method
+reference, native Jubjub key, observed DID state version, and verification
+relationship. Its root is the canonical Compact persistent hash of the complete
+structure.
+
+The extension circuits MUST reject any substitution of the controller, method
+ID, key, state version, or relationship when binding a proof, explicit holder,
+or authorized signer descriptor.
+
+The binding circuits establish reference and key equality only. They do not
+verify a signature or authenticate a credential, presentation, authorization
+decision, or verifier request. A consumer MUST also invoke the matching core
+context proof circuit over a body root derived from the complete input:
+
+- issuance uses `VC<>::assertValidCredentialProof` or
+  `VC<>::assertAuthorizedIssuerProof`;
+- presentation validates the complete presentation envelope, matches its
+  holder binding, derives `VP<>::presentationBodyRoot`, and invokes
+  `assertValidPresentationContextProof`; and
+- authority and verifier decisions use
+  `assertValidSignerAuthorizationProof` and
+  `assertAuthorizedVerifierProof`, respectively.
+
+Calling `assertMidnightDIDProofMatchesMethod`,
+`assertMidnightDIDHolderBinding`, or
+`assertMidnightDIDSignerAuthorization` alone MUST NOT be represented as proof
+of possession or an authenticated VC/VP decision.
+
+An implementation MAY provide software signing helpers for the issuance and
+presentation contexts. Such a helper MUST derive the challenge with the
+matching core challenge circuit, MUST require the signing public key to equal
+the resolved method binding, and MUST use a fresh nonzero nonce. It MUST return
+a proof accepted by both the matching core context verifier and the Midnight
+DID method-binding circuit. Its body root MUST be derived from the complete VC
+or VP with the matching core circuit. The Midnight DID contract payload-signing
+challenge is not an equivalent VC/VP challenge.
+
+A software helper that accepts raw key material MUST derive its nonce from the
+secret, operation domain, complete signed inputs, and fresh cryptographic
+entropy. A wallet or hardware-backed implementation SHOULD retain the scalar
+inside its signing boundary and perform the same nonce/challenge/response flow.
+
+The standalone Compact entrypoint includes the VC core. The composition
+entrypoint contains only Midnight DID-owned declarations and requires a
+consumer to include the VC core composition root exactly once before it.
+
+## Ledger 8 trust boundary
+
+The binding establishes consistency between resolved off-chain input and values
+used by a consumer contract. On Ledger 8, the circuit cannot call the DID
+contract and therefore cannot independently establish that the supplied state
+is current.
+
+A consumer that makes a trust decision MUST either pin an accepted method
+binding root through its own governance path or verify an authority-signed
+`AuthorizedSignerDescriptor`. A caller-supplied binding that is merely
+structurally valid MUST NOT be represented as current DID or trust-registry
+evidence.
+
+This version targets Compact `0.31.1`, runtime `0.16.0`, and Ledger `8.0.2`.
+Ledger 9 cross-contract validation is outside this version.

@@ -13,6 +13,7 @@ Install only the package boundaries the consumer needs:
 ```bash
 pnpm add @midnight-ntwrk/credential-model@rc
 pnpm add @midnight-ntwrk/credential-compact@rc
+pnpm add @midnight-ntwrk/credential-did-midnight@rc
 ```
 
 Pin exact prerelease versions for reproducible credential-family builds.
@@ -54,6 +55,10 @@ export const membershipFamily = defineCredentialFamily({
 
 Use only package exports. Do not import repository `src`, generated `managed`,
 or `dist` internals.
+
+For Midnight DID-aware contracts, include either the binding package's
+standalone `./did-midnight.compact` root or include the core composable root
+once followed by `./did-midnight/composable.compact`.
 
 ## Verify the Repository
 

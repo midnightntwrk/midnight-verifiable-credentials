@@ -1,0 +1,21 @@
+{
+  "name": "credential-did-midnight-consumer",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10.34.5"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/credential-did-midnight": "file:./vendor/package.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-did-midnight').then(({ midnightDIDMethodId, signMidnightDIDCredentialProof, signMidnightDIDPresentationProof }) => { if (midnightDIDMethodId('#key-1').length !== 32 || typeof signMidnightDIDCredentialProof !== 'function' || typeof signMidnightDIDPresentationProof !== 'function') process.exit(1); })\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

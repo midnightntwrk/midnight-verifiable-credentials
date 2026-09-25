@@ -1,0 +1,85 @@
+{
+  "name": "@midnight-ntwrk/credential-did-midnight",
+  "version": "0.2.0",
+  "description": "Composable Midnight DID binding for Midnight verifiable credentials",
+  "license": "Apache-2.0",
+  "private": false,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/credential-did-midnight"
+  },
+  "keywords": [
+    "midnight",
+    "verifiable-credentials",
+    "did",
+    "compact"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10.34.5"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./did-midnight.compact": "./dist/did-midnight.compact",
+    "./did-midnight/composable.compact": "./dist/did-midnight/composable.compact"
+  },
+  "scripts": {
+    "check-toolchain": "node scripts/check-toolchain.mjs",
+    "compact": "pnpm run check-toolchain && rm -rf src/managed/did-midnight && compact compile --compact-path ../core/compact/dist src/did-midnight.compact src/managed/did-midnight && rm -rf src/managed/did-midnight/compiler",
+    "build": "pnpm run compact && rm -rf dist .cache && mkdir -p dist && tsc -b tsconfig.build.json --force && cp src/did-midnight.compact dist/ && cp -Rf src/did-midnight dist/ && cp -Rf src/managed dist/ && node scripts/write-build-manifest.mjs",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ignore-pattern 'src/managed/**'",
+    "lint:fix": "eslint src --ignore-pattern 'src/managed/**' --fix",
+    "clean": "rm -rf dist src/managed coverage .cache .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
+    "@midnight-ntwrk/credential-compact": "workspace:*",
+    "@midnight-ntwrk/midnight-did": "0.7.0",
+    "@midnight-ntwrk/midnight-did-domain": "0.7.0",
+    "@midnight-ntwrk/midnight-did-jubjub-schnorr": "0.7.0",
+    "@noble/hashes": "^2.2.0"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "midnight": {
+    "compactCompilerVersion": "0.31.1",
+    "compactRuntimeVersion": "0.16.0",
+    "ledgerVersion": "ledger-8.0.2",
+    "compactEntrypoints": {
+      "standalone": [
+        "./did-midnight.compact"
+      ],
+      "composition": [
+        "./did-midnight/composable.compact"
+      ]
+    },
+    "compactDependencies": [
+      {
+        "package": "@midnight-ntwrk/credential-compact",
+        "compositionEntrypoint": "./credentials/composable.compact"
+      }
+    ]
+  }
+}

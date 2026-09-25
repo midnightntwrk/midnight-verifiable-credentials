@@ -32,8 +32,20 @@ const pages = [
     "docs-site/packages/compact-changelog.md",
   ],
   [
+    "packages/credential-did-midnight/README.md",
+    "docs-site/packages/credential-did-midnight.md",
+  ],
+  [
+    "packages/credential-did-midnight/CHANGELOG.md",
+    "docs-site/packages/credential-did-midnight-changelog.md",
+  ],
+  [
     "docs/decisions/0016-core-only-specification-and-implementation.md",
     "docs-site/architecture/core-only.md",
+  ],
+  [
+    "docs/decisions/0017-midnight-did-binding-extension.md",
+    "docs-site/architecture/midnight-did-binding.md",
   ],
   [
     "docs/guides/npmjs-publication.md",
@@ -102,6 +114,21 @@ const rewriteLinks = (source, sourcePath) => {
         "(/conformance/compact-circuits.json)",
       );
   }
+  if (sourcePath === "packages/credential-did-midnight/README.md") {
+    return rewritten.replace(
+      "[`CHANGELOG.md`](./CHANGELOG.md)",
+      "[package changelog](/packages/credential-did-midnight-changelog)",
+    );
+  }
+  if (
+    sourcePath ===
+    "docs/decisions/0016-core-only-specification-and-implementation.md"
+  ) {
+    return rewritten.replace(
+      "(./0017-midnight-did-binding-extension.md)",
+      "(/architecture/midnight-did-binding)",
+    );
+  }
   if (sourcePath === "docs/guides/npmjs-publication.md") {
     return rewritten.replace(
       "[`SECURITY.md`](../../SECURITY.md)",
@@ -125,6 +152,7 @@ const publicConformance = resolve(docsRoot, "public", "conformance");
 await mkdir(resolve(publicConformance, "vectors"), { recursive: true });
 for (const file of [
   "compact-circuits.json",
+  "credential-did-midnight-circuits.json",
   "manifest.json",
   "manifest.sha256",
 ]) {
