@@ -139,7 +139,10 @@ binding root.
 
 The exported `assertMidnightDID*` circuits are low-level equality checks, not
 proof-of-possession checks. For issuance use
-`VC<>::assertValidCredentialProof` or `VC<>::assertAuthorizedIssuerProof`. For
+`VC<>::assertValidCredentialProof` only for cryptographic validity of the
+self-declared issuer. Authorization-aware issuance MUST use
+`VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is enforced
+independently. For
 presentation, validate the complete presentation, derive its body root, and
 invoke `assertValidPresentationContextProof` in addition to the DID holder
 binding. Authority and verifier decisions likewise require the core

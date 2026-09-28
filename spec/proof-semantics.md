@@ -85,5 +85,9 @@ root does not authenticate the supplied credential.
 An application that does not use a Trust Registry MAY validate an issuer proof
 and make its own local trust decision. An application that requires signer
 authorization MUST additionally apply the descriptor checks in
-[`signer-authorization.md`](./signer-authorization.md). Presentation freshness,
-holder binding, status, and application policy remain separate checks.
+[`signer-authorization.md`](./signer-authorization.md). For credentials,
+`VC<>::assertAuthorizedIssuerProof` is the supported composed authorization
+decision. `VC<>::assertValidCredentialProof` and its precomputed-root sibling
+establish cryptographic validity for the credential's self-declared issuer only;
+they do not establish issuer authorization. Presentation freshness, holder
+binding, status, and application policy remain separate checks.

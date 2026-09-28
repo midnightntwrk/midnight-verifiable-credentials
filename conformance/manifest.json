@@ -21,7 +21,7 @@
   ],
   "compactCircuitInventory": {
     "path": "conformance/compact-circuits.json",
-    "sha256": "ae78d2fc13524598d4668978d3f89332ff64b8259b806b55427cafad843fc8c9"
+    "sha256": "0fd774d527d06b9f2707d6ce93ce2b0e6b67fcfbc2934d97f37d3fe8a2bf025b"
   },
   "extensionCircuitInventories": [
     {
@@ -215,7 +215,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "4b9904ee1c5edbe738e8ae4a8b384111bd8b76f5b231d3b3382f2b9df5503492"
+      "sha256": "012b07e49d3c47855b5fc9fb7ae982e0a2694296d8a07fea4208145326bb9e66"
     },
     {
       "path": "conformance/vectors/status-binding.json",

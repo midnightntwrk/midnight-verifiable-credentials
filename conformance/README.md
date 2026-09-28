@@ -22,6 +22,9 @@ relationship, holder, proof, and signer-authorization substitution.
 Signer-authorization vectors include fixed known-answer roots, challenges, and
 signature scalars so challenge derivation and signature verification cannot
 drift together without detection.
+The invalid issuer-signature vector also records the low-level boundary: bare
+descriptor matching accepts matching method/key metadata, while the composed
+`VC<>::assertAuthorizedIssuerProof` circuit rejects the forged signature.
 
 Credential-proof vectors require implementations that accept a precomputed
 body root to reject any value other than the canonical root of the supplied
