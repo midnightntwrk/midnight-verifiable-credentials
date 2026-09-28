@@ -135,15 +135,32 @@ verify_release() (
     @midnight-ntwrk/credential-model \
     @midnight-ntwrk/credential-compact \
     @midnight-ntwrk/credential-did-midnight; do
-    npm view --registry "$NPM_REGISTRY" "${package}@${VERSION}" version
-    actual_tag="$(npm view --registry "$NPM_REGISTRY" \
-      "${package}" "dist-tags.${TAG}")"
+    if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}@${VERSION}" version)"; then
+      printf 'unable to read %s@%s\n' "${package}" "${VERSION}" >&2
+      status=1
+      continue
+    fi
+    if [[ "${actual_version}" != "${VERSION}" ]]; then
+      printf 'expected %s version=%s, got %s\n' \
+        "${package}" "${VERSION}" "${actual_version}" >&2
+      status=1
+    fi
+    if ! actual_tag="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}" "dist-tags.${TAG}")"; then
+      printf 'unable to read %s dist-tag %s\n' "${package}" "${TAG}" >&2
+      status=1
+      continue
+    fi
     if [[ "${actual_tag}" != "${VERSION}" ]]; then
       printf 'expected %s %s=%s, got %s\n' \
         "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
       status=1
     fi
-    npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json
+    if ! npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json; then
+      printf 'unable to read %s dist-tags\n' "${package}" >&2
+      status=1
+    fi
   done
   exit "$status"
 )

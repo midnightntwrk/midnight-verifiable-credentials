@@ -39,8 +39,9 @@ All notable changes to this project are documented here. The format follows
   entropy in the Ledger 8 signing helpers; and
 - adopt Midnight DID 0.7 canonical big-endian Jubjub JWK coordinates through
   the public domain codec while preserving the native Compact point and binding
-  root; historical 0.6 snapshots must be re-resolved through a 0.7-compatible
-  resolver and must not be reinterpreted as 0.7 coordinates.
+  root; historical 0.6 snapshots require re-resolution or an external,
+  provenance-authenticated conversion of the same native point and must never
+  be reinterpreted directly as 0.7 coordinates.
 
 ### Changed
 

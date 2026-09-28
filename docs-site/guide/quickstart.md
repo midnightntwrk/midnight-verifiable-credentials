@@ -28,9 +28,9 @@ install_stable_graph() (
     exit 1
   fi
   pnpm add -E \
-    "@midnight-ntwrk/credential-model@${MODEL_STABLE}" \
-    "@midnight-ntwrk/credential-compact@${MODEL_STABLE}" \
-    "@midnight-ntwrk/credential-did-midnight@${MODEL_STABLE}"
+    "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" \
+    "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" \
+    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
 )
 
 install_stable_graph 0.2.0

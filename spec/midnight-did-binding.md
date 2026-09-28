@@ -53,18 +53,19 @@ public `decodeJubjubJwkCoordinate` codec from
 `@midnight-ntwrk/midnight-did-domain`.
 
 Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
-DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
-re-resolve the DID through a 0.7-compatible resolver and create the binding only
-from the resulting current DID document. The binding MUST NOT guess the profile
-by trying both byte orders, and consumers MUST NOT hand-construct a binding from
-a cached 0.6 snapshot. Resolver `versionId` describes ledger state and MUST NOT
-be used as an encoding-version discriminator. Some 0.6 byte strings are also
-valid 0.7 coordinate encodings and will silently map to a different native
-point, so range validation alone is not a migration detector.
+DID-document snapshots MUST NOT be supplied directly to the 0.7 binding.
+Consumers MUST either re-resolve the DID through a 0.7-compatible resolver or,
+when 0.6 provenance is authenticated, use a version-specific migration that
+decodes the 0.6 little-endian coordinates and re-encodes the same native point
+in the canonical 0.7 profile. The binding MUST NOT guess the profile by trying
+both byte orders. Resolver `versionId` describes ledger state and MUST NOT be
+used as an encoding-version discriminator. Some 0.6 byte strings are also valid
+0.7 coordinate encodings and will silently map to a different native point, so
+range validation alone is not a migration detector.
 
-After successful re-resolution, consumers MUST discard or quarantine the old
-snapshot. If encoding provenance is unknown, re-resolution remains mandatory;
-reinterpretation or byte reversal is forbidden.
+After successful re-resolution or migration, consumers MUST discard or
+quarantine the old snapshot. If encoding provenance is unknown, re-resolution
+is mandatory; reinterpretation or unauthenticated byte reversal is forbidden.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
