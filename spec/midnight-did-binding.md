@@ -67,8 +67,10 @@ and will silently map to a different native point, so range validation alone is
 not a migration detector.
 
 After successful re-resolution or migration, consumers MUST discard or
-quarantine the old snapshot. Unauthenticated reinterpretation, byte-order
-trial, and byte reversal are forbidden.
+quarantine the old snapshot. Outside the authenticated, version-specific
+migration defined above, reinterpretation or byte reversal is forbidden. A
+migration MUST use the known 0.6 profile directly and MUST NOT trial both byte
+orders.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not

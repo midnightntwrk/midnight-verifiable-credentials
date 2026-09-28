@@ -24,6 +24,12 @@ does not auto-detect the byte order. Not every 0.6 snapshot is detectably
 invalid under the 0.7 decoder, so supplying one directly can silently bind a
 different native point rather than fail.
 
+> **Ledger 8 security boundary:** this package's binding circuits compare DID
+> references and keys; they do not verify signatures or prove that resolved DID
+> state is current. Always compose them with the matching core context-proof
+> circuit over a root recomputed from the complete VC/VP input, then pin the
+> accepted binding root or verify an authority-signed descriptor.
+
 ## Migrating Midnight DID 0.6 snapshots
 
 Prefer re-resolution: resolve the DID through a Midnight DID 0.7 resolver, then call
@@ -42,14 +48,8 @@ The exported TypeScript binding type is structural, so the package cannot prove
 the provenance of a hand-built object. Never try both byte orders or use
 `versionId` as an encoding marker. Discard or quarantine the old snapshot after
 either path. See the
-[normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
+[normative canonical mapping](../../spec/midnight-did-binding.md#canonical-mapping)
 for the required validation and migration boundary.
-
-> **Ledger 8 security boundary:** this package's binding circuits compare DID
-> references and keys; they do not verify signatures or prove that resolved DID
-> state is current. Always compose them with the matching core context-proof
-> circuit over a root recomputed from the complete VC/VP input, then pin the
-> accepted binding root or verify an authority-signed descriptor.
 
 ```ts
 import {

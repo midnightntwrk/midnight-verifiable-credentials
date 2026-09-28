@@ -130,38 +130,47 @@ verify_release() (
   VERSION="${1:?usage: verify_release VERSION TAG}"
   TAG="${2:?usage: verify_release VERSION TAG}"
   NPM_REGISTRY=https://registry.npmjs.org/
-  status=0
+  verification_failed=0
+  if ! package_paths="$(node \
+    ./tooling/scripts/workspace-catalog.mjs --publishable-paths)"; then
+    printf 'unable to read the publishable package catalog\n' >&2
+    exit 1
+  fi
+  if [[ -z "$package_paths" ]]; then
+    printf 'publishable package catalog is empty\n' >&2
+    exit 1
+  fi
   while IFS= read -r package_path; do
     package="$(node -p \
       "require('./${package_path}/package.json').name")"
     if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
       "${package}@${VERSION}" version)"; then
       printf 'unable to read %s@%s\n' "${package}" "${VERSION}" >&2
-      status=1
+      verification_failed=1
       continue
     fi
     if [[ "${actual_version}" != "${VERSION}" ]]; then
       printf 'expected %s version=%s, got %s\n' \
         "${package}" "${VERSION}" "${actual_version}" >&2
-      status=1
+      verification_failed=1
     fi
     if ! actual_tag="$(npm view --registry "$NPM_REGISTRY" \
       "${package}" "dist-tags.${TAG}")"; then
       printf 'unable to read %s dist-tag %s\n' "${package}" "${TAG}" >&2
-      status=1
+      verification_failed=1
       continue
     fi
     if [[ "${actual_tag}" != "${VERSION}" ]]; then
       printf 'expected %s %s=%s, got %s\n' \
         "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
-      status=1
+      verification_failed=1
     fi
     if ! npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json; then
       printf 'unable to read %s dist-tags\n' "${package}" >&2
-      status=1
+      verification_failed=1
     fi
-  done < <(node ./tooling/scripts/workspace-catalog.mjs --publishable-paths)
-  exit "$status"
+  done <<< "$package_paths"
+  exit "$verification_failed"
 )
 
 verify_release 0.2.0 latest

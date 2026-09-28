@@ -17,12 +17,18 @@ install_stable_graph() (
   set -euo pipefail
   EXPECTED_STABLE="${1:?usage: install_stable_graph VERSION}"
   NPM_REGISTRY=https://registry.npmjs.org/
-  npm view --registry "$NPM_REGISTRY" \
-    "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" version
-  npm view --registry "$NPM_REGISTRY" \
-    "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" version
-  npm view --registry "$NPM_REGISTRY" \
-    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}" version
+  for package in \
+    @midnight-ntwrk/credential-model \
+    @midnight-ntwrk/credential-compact \
+    @midnight-ntwrk/credential-did-midnight; do
+    actual_version="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}@${EXPECTED_STABLE}" version)"
+    if [[ "$actual_version" != "$EXPECTED_STABLE" ]]; then
+      printf 'expected %s version=%s, got %s\n' \
+        "$package" "$EXPECTED_STABLE" "$actual_version" >&2
+      exit 1
+    fi
+  done
   pnpm add -E \
     "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" \
     "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" \
