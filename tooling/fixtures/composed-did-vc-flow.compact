@@ -72,8 +72,13 @@ export pure circuit assertComposedDIDBackedFlow(
     credential,
     presentation
   );
+  assert(
+    presentation.disclosed.assuranceLevel == credential.claims.assuranceLevel,
+    "Presentation assurance level does not match credential claim"
+  );
   SyntheticPresentationProof_assertValidPresentationProof(
     credential.holderBinding,
+    holderBinding.methodBinding.publicKey,
     presentation,
     presentationProof
   );

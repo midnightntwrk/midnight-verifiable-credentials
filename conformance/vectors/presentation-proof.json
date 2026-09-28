@@ -93,6 +93,11 @@
       "errorIncludes": "Presentation proof signer must match holder binding"
     },
     {
+      "id": "reject-presentation-proof-key-substitution",
+      "mutation": "proof-key",
+      "errorIncludes": "Jubjub points do not match"
+    },
+    {
       "id": "reject-invalid-presentation-proof-signature",
       "mutation": "signature",
       "errorIncludes": "Signature verification failed"

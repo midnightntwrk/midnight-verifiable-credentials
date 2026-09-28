@@ -32,9 +32,9 @@ derives each Compact identifier as SHA-256 of `<id>@<version>`, resolves
 separate issuer and holder Midnight DID methods, signs credential and
 presentation bodies, and executes the core plus DID binding composition.
 
-The driver requires exact rejection messages for claim, body-root, issuer,
-holder, verification-method, public-key, relationship, proof-context, and
-signature substitutions. It installs no repository source and runs outside the
+The driver requires exact rejection messages for credential-claim, disclosure,
+body-root, issuer, holder, verification-method, public-key, relationship,
+proof-context, and signature substitutions. It installs no repository source and runs outside the
 checkout. It deliberately contains no protocol, wallet, network service,
 product credential-family implementation, Trust Registry policy, or deployment
 code.

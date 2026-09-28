@@ -9,7 +9,8 @@ All notable changes to this project are documented here. The format follows
 ### Added
 
 - add the canonical explicit-holder presentation-proof circuit with complete
-  holder equality, signer-reference, derived-root, and signature composition;
+  holder equality, signer-reference, accepted-key, derived-root, and signature
+  composition;
 - add reverse conformance coverage from normative Compact operations to shipped
   supported circuits;
 - add a synthetic packed-package consumer proving a complete DID-backed VC/VP

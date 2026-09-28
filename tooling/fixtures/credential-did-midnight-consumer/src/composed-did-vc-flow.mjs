@@ -222,6 +222,28 @@ expectReject("claim-substitution", "Credential claim root mismatch", () =>
   verify(changedClaims),
 );
 
+const changedDisclosure = clone(presentation);
+changedDisclosure.disclosed.assuranceLevel = 99n;
+const changedDisclosureProof = signMidnightDIDPresentationProof({
+  methodBinding: holderMethod,
+  secretScalar: actors.holder.secret,
+  bodyRoot: pureCircuits.presentationBodyRoot(changedDisclosure),
+  createdAt: 103n,
+  challengeHash: digest("presentation:changed-disclosure"),
+});
+expectReject(
+  "disclosure-substitution",
+  "Presentation assurance level does not match credential claim",
+  () =>
+    verify(
+      credential,
+      issuerProof,
+      issuerMethod,
+      changedDisclosure,
+      changedDisclosureProof,
+    ),
+);
+
 const changedBody = clone(credential);
 changedBody.issuedAt += 1n;
 expectReject("body-substitution", "Signature verification failed", () =>
@@ -242,7 +264,7 @@ const attackerPresentationProof = signMidnightDIDPresentationProof({
   methodBinding: attackerMethod,
   secretScalar: actors.attacker.secret,
   bodyRoot: pureCircuits.presentationBodyRoot(attackerPresentation),
-  createdAt: 103n,
+  createdAt: 104n,
   challengeHash: digest("presentation:attacker"),
 });
 expectReject(

@@ -41,11 +41,13 @@ export pure circuit presentationBodyRoot(
 
 export pure circuit assertValidPresentationProof(
   credentialHolderBinding: ExplicitHolderBinding,
+  expectedHolderPublicKey: JubjubPoint,
   presentation: ConformanceVP_Presentation,
   proof: Proof
 ): [] {
   ConformancePresentationProof_assertValidPresentationProof(
     credentialHolderBinding,
+    expectedHolderPublicKey,
     presentation,
     proof
   );
@@ -58,9 +60,5 @@ export pure circuit assertMatchingCredentialPresentation(
   ConformanceRelations_assertMatchingCredentialPresentation(
     credential,
     presentation
-  );
-  assertMatchingExplicitHolderBindings(
-    credential.holderBinding,
-    presentation.holderBinding
   );
 }

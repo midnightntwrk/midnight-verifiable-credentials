@@ -3,8 +3,8 @@
 ## Unreleased
 
 - Add the supported explicit-holder presentation-proof composition, including
-  credential-to-presentation holder equality, signer-reference binding,
-  internally derived body-root verification, and substitution-negative
+  credential-to-presentation holder equality, signer-reference and accepted-key
+  binding, internally derived body-root verification, and substitution-negative
   conformance.
 - Require every normative non-codec operation to map back to a supported core
   or extension Compact circuit.

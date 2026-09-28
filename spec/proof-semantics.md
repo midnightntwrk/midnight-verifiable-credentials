@@ -67,16 +67,18 @@ signing representation.
 
 Presentation verification MUST derive the body root from the complete supplied
 presentation, validate the presentation envelope, match the proof signer
-reference to the selected holder binding, and verify the presentation-context
-proof over that derived root. A caller-supplied root, method-reference match,
-or valid signature alone is not an equivalent composition.
+reference to the selected holder binding, match `Proof.publicKey` to the accepted
+holder key resolved by the verifier, and verify the presentation-context proof
+over that derived root. A caller-supplied root, method-reference match, or valid
+signature alone is not an equivalent composition.
 
 For the supported explicit-holder profile,
 `ExplicitHolderPresentationProof<TDisclosures>::assertValidPresentationProof`
 is the canonical composition. Its first argument MUST be the holder binding
-from the credential being presented. The circuit derives the presentation body
-root internally, validates the envelope, requires the credential and
-presentation holder bindings to match, binds the proof signer reference to that
+from the credential being presented, and its second MUST be the accepted public
+key resolved for that binding. The circuit derives the presentation body root
+internally, validates the envelope, requires the credential and presentation
+holder bindings to match, binds the proof signer reference and key to that
 holder, and verifies the presentation-context signature. It does not replace
 credential-to-presentation relation checks, DID method resolution, challenge
 freshness, status validation, or application policy.

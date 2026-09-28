@@ -39,7 +39,7 @@ Envelope and verification-method vectors cover version, claim-root,
 expiration-order, controller, and method invariants. Presentation-proof vectors
 exercise the shipped explicit-holder composition, recompute the presentation
 body root, and reject context, body, credential-to-presentation holder, proof
-signer, and signature substitution. The fixture delegates to the package
+signer, proof-key, and signature substitution. The fixture delegates to the package
 circuit instead of maintaining a second implementation.
 
 The conformance lane also checks the reverse mapping from every normative
@@ -52,10 +52,10 @@ same fixture outside the repository against only the installed tarball's public
 Compact path. It also executes a small synthetic DID-backed VC/VP composition
 from packed public packages with nonempty typed claims, deterministic schema
 identifiers derived from validated credential-family metadata, resolved
-assertion/authentication methods, real Jubjub signatures, and targeted claim,
-body, issuer, holder, method, key, relationship, context, and signature
-substitutions. The fixture is composition evidence rather than a protocol or
-product use case.
+assertion/authentication methods, real Jubjub signatures, and targeted
+credential-claim, disclosure, body, issuer, holder, method, key, relationship,
+context, and signature substitutions. The fixture is composition evidence
+rather than a protocol or product use case.
 
 Run:
 
