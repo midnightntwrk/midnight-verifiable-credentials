@@ -81,8 +81,10 @@ verify a signature or authenticate a credential, presentation, authorization
 decision, or verifier request. A consumer MUST also invoke the matching core
 context proof circuit over a body root derived from the complete input:
 
-- issuance uses `VC<>::assertValidCredentialProof` or
-  `VC<>::assertAuthorizedIssuerProof`;
+- cryptographic-only issuance proof validation uses
+  `VC<>::assertValidCredentialProof`; authorization-aware issuance MUST use
+  `VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is
+  enforced independently;
 - presentation validates the complete presentation envelope, matches its
   holder binding, derives `VP<>::presentationBodyRoot`, and invokes
   `assertValidPresentationContextProof`; and

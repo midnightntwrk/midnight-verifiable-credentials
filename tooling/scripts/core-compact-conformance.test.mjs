@@ -1590,6 +1590,17 @@ test("validates and binds positive and negative signer authorizations", async ()
         vector.id,
       ),
     );
+    if (vector.bareDescriptorAccepts === true) {
+      assert.deepEqual(
+        pureCircuits.assertAuthorizedIssuerDescriptor(
+          schema,
+          proof,
+          descriptor,
+        ),
+        [],
+        `${vector.id}-bare-descriptor-is-not-signature-verification`,
+      );
+    }
     if (vector.mutation === "verifier-signature") {
       withEvidence("negative", vector, () =>
         assert.throws(

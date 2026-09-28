@@ -31,6 +31,11 @@ authority proof before materializing the same descriptor. The authorization
 proof is bound to a caller-configured network/consumer domain. The composed
 `VC<>::assertAuthorizedIssuerProof` and verifier-request helper verify the
 signature as well as the exact role, method, key, and scope binding. This
+composed issuer helper is the supported authorization-aware issuance path.
+`assertAuthorizedIssuerDescriptor` and
+`assertProofSignerMatchesAuthorization` are low-level metadata comparisons and
+do not verify a signature. `VC<>::assertValidCredentialProof` verifies a
+credential's self-declared issuer proof but does not authorize that issuer. This
 package does not resolve
 `midnight-did`, evaluate Trust Registry policy, synchronize registry state, or
 provide trusted wall-clock time.

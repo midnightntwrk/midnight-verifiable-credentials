@@ -200,12 +200,7 @@
       "id": "authorized-issuer-descriptor-validation",
       "source": "credentials/signer-authorization.compact",
       "symbol": "assertAuthorizedIssuerDescriptor",
-      "classification": "supported",
-      "operation": "bind-authorized-issuer-proof",
-      "evidence": {
-        "positive": ["positive/active-issuer-assertion-method"],
-        "negative": ["negative/reject-verifier-role-for-issuer-proof"]
-      }
+      "classification": "low-level"
     },
     {
       "id": "authorized-verifier-proof-validation",
