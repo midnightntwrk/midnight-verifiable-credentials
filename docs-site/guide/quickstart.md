@@ -9,33 +9,27 @@
 ## Install
 
 When a consumer needs the complete model, Compact, and Midnight DID graph, use
-this guarded function. It requires every stable tag to remain on the version
-the consumer explicitly approved and records that version exactly:
+this guarded function. It verifies that every immutable package version exists
+and records that approved version exactly:
 
 ```bash
 install_stable_graph() (
   set -euo pipefail
   EXPECTED_STABLE="${1:?usage: install_stable_graph VERSION}"
   NPM_REGISTRY=https://registry.npmjs.org/
-  MODEL_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.latest)"
-  COMPACT_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.latest)"
-  DID_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.latest)"
-  if [[ "$MODEL_STABLE" != "$EXPECTED_STABLE" || \
-    "$COMPACT_STABLE" != "$EXPECTED_STABLE" || \
-    "$DID_STABLE" != "$EXPECTED_STABLE" ]]; then
-    printf 'refusing unapproved stable graph: expected=%s model=%s compact=%s did=%s\n' \
-      "$EXPECTED_STABLE" "$MODEL_STABLE" "$COMPACT_STABLE" "$DID_STABLE" >&2
-    exit 1
-  fi
+  npm view --registry "$NPM_REGISTRY" \
+    "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" version
+  npm view --registry "$NPM_REGISTRY" \
+    "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" version
+  npm view --registry "$NPM_REGISTRY" \
+    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}" version
   pnpm add -E \
     "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" \
     "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" \
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
 )
 
-printf 'Approved stable version: '
-read -r EXPECTED_STABLE
-install_stable_graph "$EXPECTED_STABLE"
+install_stable_graph 0.2.0
 ```
 
 If the consumer only needs protocol-neutral family and claim-schema metadata,
@@ -63,14 +57,14 @@ install rechecks every moving tag against that approved version before using the
 immutable version:
 
 ```bash
-(
+install_rc_graph() (
   set -euo pipefail
+  EXPECTED_RC="${1:?usage: install_rc_graph VERSION}"
   NPM_REGISTRY=https://registry.npmjs.org/
-  EXPECTED_RC=0.3.0-rc1 # Replace with the version inspected above.
   MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
   COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
   DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
-  if [[ -z "$EXPECTED_RC" || "$MODEL_RC" != "$EXPECTED_RC" || \
+  if [[ "$MODEL_RC" != "$EXPECTED_RC" || \
     "$COMPACT_RC" != "$EXPECTED_RC" || "$DID_RC" != "$EXPECTED_RC" ]]; then
     printf 'refusing unapproved RC graph: expected=%s model=%s compact=%s did=%s\n' \
       "$EXPECTED_RC" "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
@@ -81,6 +75,8 @@ immutable version:
     "@midnight-ntwrk/credential-compact@${EXPECTED_RC}" \
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"
 )
+
+install_rc_graph 0.2.0-rc2
 ```
 
 Use those install commands only when the reported `rc` versions are the exact

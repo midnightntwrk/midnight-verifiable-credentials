@@ -19,25 +19,29 @@ The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
 0.6 little-endian DID-document snapshots must be re-resolved through a 0.7
-resolver. The adapter does not auto-detect the byte order. Not every 0.6
-snapshot is detectably invalid under the 0.7 decoder, so supplying one directly
-can silently bind a different native point rather than fail.
+resolver or explicitly migrated from authenticated 0.6 provenance. The adapter
+does not auto-detect the byte order. Not every 0.6 snapshot is detectably
+invalid under the 0.7 decoder, so supplying one directly can silently bind a
+different native point rather than fail.
 
 ## Migrating Midnight DID 0.6 snapshots
 
-Resolve the DID through a Midnight DID 0.7 resolver, then call
+Prefer re-resolution: resolve the DID through a Midnight DID 0.7 resolver, then call
 `resolveMidnightDIDMethodBinding` with that resolver, DID, method ID, and
 required verification relationship. This validates the current DID document
-and captures its current resolver `versionId` in the binding. An offline
-coordinate conversion can preserve the native point but cannot supply that
-current state observation, so it is not a supported migration path.
+and captures its observed resolver `versionId` in the binding.
 
-The exported TypeScript binding type is structural; downstream code can create
-an object literal, and the package cannot prove its coordinate provenance.
-Treat a hand-built binding from a cached 0.6 snapshot as invalid input. Never
-try both byte orders, use `versionId` as an encoding marker, or reverse cached
-coordinate bytes. Discard or quarantine the old snapshot after re-resolution.
-See the
+When re-resolution is unavailable, an external migration may construct the
+structural binding only after authenticating the snapshot's DID, method,
+relationship, positive observed `versionId`, and 0.6 encoding profile. It must
+decode the known little-endian coordinates and re-encode the same native point
+as canonical 0.7 JWK coordinates while preserving the authenticated binding
+fields. This package does not implement that migration.
+
+The exported TypeScript binding type is structural, so the package cannot prove
+the provenance of a hand-built object. Never try both byte orders or use
+`versionId` as an encoding marker. Discard or quarantine the old snapshot after
+either path. See the
 [normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
 for the required validation and migration boundary.
 

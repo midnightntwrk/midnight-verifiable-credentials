@@ -131,10 +131,9 @@ verify_release() (
   TAG="${2:?usage: verify_release VERSION TAG}"
   NPM_REGISTRY=https://registry.npmjs.org/
   status=0
-  for package in \
-    @midnight-ntwrk/credential-model \
-    @midnight-ntwrk/credential-compact \
-    @midnight-ntwrk/credential-did-midnight; do
+  while IFS= read -r package_path; do
+    package="$(node -p \
+      "require('./${package_path}/package.json').name")"
     if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
       "${package}@${VERSION}" version)"; then
       printf 'unable to read %s@%s\n' "${package}" "${VERSION}" >&2
@@ -161,7 +160,7 @@ verify_release() (
       printf 'unable to read %s dist-tags\n' "${package}" >&2
       status=1
     fi
-  done
+  done < <(node ./tooling/scripts/workspace-catalog.mjs --publishable-paths)
   exit "$status"
 )
 

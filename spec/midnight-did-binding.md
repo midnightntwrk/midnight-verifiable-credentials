@@ -54,16 +54,21 @@ public `decodeJubjubJwkCoordinate` codec from
 
 Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
 DID-document snapshots MUST NOT be supplied directly to the 0.7 binding.
-Consumers MUST re-resolve the DID through a 0.7-compatible resolver. An offline
-coordinate conversion can preserve the native point but cannot establish the
-current resolver `versionId` required by the binding. The binding MUST NOT guess
-the profile by trying both byte orders. Resolver `versionId` describes ledger
-state and MUST NOT be used as an encoding-version discriminator. Some 0.6 byte
-strings are also valid 0.7 coordinate encodings and will silently map to a
-different native point, so range validation alone is not a migration detector.
+Consumers MUST either re-resolve the DID through a 0.7-compatible resolver or
+perform an explicit migration whose authenticated provenance establishes the
+snapshot's DID, verification method, relationship, positive observed
+`versionId`, and 0.6 encoding profile. That migration MUST decode the known 0.6
+little-endian coordinates and re-encode the same native point in the canonical
+0.7 profile while preserving the authenticated binding fields. The binding
+MUST NOT guess the profile by trying both byte orders. Resolver `versionId`
+describes ledger state and MUST NOT be used as an encoding-version
+discriminator. Some 0.6 byte strings are also valid 0.7 coordinate encodings
+and will silently map to a different native point, so range validation alone is
+not a migration detector.
 
-After successful re-resolution, consumers MUST discard or quarantine the old
-snapshot. Reinterpretation, byte-order trial, and byte reversal are forbidden.
+After successful re-resolution or migration, consumers MUST discard or
+quarantine the old snapshot. Unauthenticated reinterpretation, byte-order
+trial, and byte reversal are forbidden.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
