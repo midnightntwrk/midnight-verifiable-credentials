@@ -74,6 +74,12 @@ migration defined above, reinterpretation or byte reversal is forbidden. A
 migration MUST use the known 0.6 profile directly and MUST NOT trial both byte
 orders. An offline migration reconstructs an authenticated historical binding;
 it does not prove that the DID remains active or that the method is current.
+The migrated snapshot MUST still satisfy the on-chain subject, subject match,
+subject-owned method, relationship membership, `JsonWebKey`, native
+`EC`/`Jubjub`, and positive `uint64` `versionId` requirements above. A consumer
+SHOULD expose the canonical migrated snapshot through a
+`MidnightDIDResolutionSource` and invoke `resolveMidnightDIDMethodBinding` so
+those checks and canonical method-ID derivation are not bypassed.
 Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
 on that binding for authorization.
 

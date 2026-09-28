@@ -141,15 +141,17 @@ verify_release() (
     exit 1
   fi
   while IFS= read -r package_path; do
-    package="$(node -p \
-      "require('./${package_path}/package.json').name")"
+    if ! package="$(node -p \
+      "require('./${package_path}/package.json').name")"; then
+      printf 'unable to read package metadata for %s\n' "$package_path" >&2
+      verification_failed=1
+      continue
+    fi
     if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
       "${package}@${VERSION}" version)"; then
       printf 'unable to read %s@%s\n' "${package}" "${VERSION}" >&2
       verification_failed=1
-      continue
-    fi
-    if [[ "${actual_version}" != "${VERSION}" ]]; then
+    elif [[ "${actual_version}" != "${VERSION}" ]]; then
       printf 'expected %s version=%s, got %s\n' \
         "${package}" "${VERSION}" "${actual_version}" >&2
       verification_failed=1
@@ -158,9 +160,7 @@ verify_release() (
       "${package}" "dist-tags.${TAG}")"; then
       printf 'unable to read %s dist-tag %s\n' "${package}" "${TAG}" >&2
       verification_failed=1
-      continue
-    fi
-    if [[ "${actual_tag}" != "${VERSION}" ]]; then
+    elif [[ "${actual_tag}" != "${VERSION}" ]]; then
       printf 'expected %s %s=%s, got %s\n' \
         "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
       verification_failed=1
@@ -209,7 +209,7 @@ For a bad RC:
 Example operator commands:
 
 ```bash
-VERSION=0.2.0-rc2
+VERSION="${VERSION:?export VERSION to the confirmed bad RC}"
 for package in \
   @midnight-ntwrk/credential-model \
   @midnight-ntwrk/credential-compact \
