@@ -224,14 +224,25 @@ rollback_rc() (
       printf 'unable to read %s rc tag\n' "$package" >&2
       exit 1
     fi
-    if [[ "$current_rc" != "$VERSION" ]]; then
-      printf 'refusing rollback: %s rc=%s, expected %s\n' \
+    if [[ -n "$current_rc" && "$current_rc" != "$VERSION" ]]; then
+      printf 'refusing rollback: %s rc=%s, expected %s or no tag\n' \
         "$package" "$current_rc" "$VERSION" >&2
       exit 1
     fi
   done
   for package in "${packages[@]}"; do
-    npm dist-tag rm --registry "$NPM_REGISTRY" "${package}" rc
+    if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
+      "$package" dist-tags.rc)"; then
+      printf 'unable to re-read %s rc tag\n' "$package" >&2
+      exit 1
+    fi
+    if [[ "$current_rc" == "$VERSION" ]]; then
+      npm dist-tag rm --registry "$NPM_REGISTRY" "${package}" rc
+    elif [[ -n "$current_rc" ]]; then
+      printf 'refusing rollback after tag changed: %s rc=%s, expected %s or no tag\n' \
+        "$package" "$current_rc" "$VERSION" >&2
+      exit 1
+    fi
     npm deprecate --registry "$NPM_REGISTRY" \
       "${package}@${VERSION}" "Use the replacement RC"
   done
@@ -239,6 +250,10 @@ rollback_rc() (
 
 rollback_rc 0.3.0-rcN
 ```
+
+The command is resumable after a partial failure: it accepts an already-absent
+`rc` tag, rechecks every tag before each mutation, and refuses any tag that has
+moved to a different version.
 
 Do not move `latest` during RC rollback.
 

@@ -86,7 +86,7 @@ install_rc_graph() (
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"
 )
 
-install_rc_graph 0.2.0-rc2
+install_rc_graph 0.3.0-rcN
 ```
 
 Use those install commands only when the reported `rc` versions are the exact

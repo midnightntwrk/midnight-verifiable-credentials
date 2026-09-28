@@ -78,10 +78,12 @@ The migration provenance MUST authenticate that the DID was not deactivated at
 the observed historical state. The migrated snapshot MUST still satisfy the
 on-chain subject, subject match, subject-owned method, relationship membership,
 `JsonWebKey`, native `EC`/`Jubjub`, and positive `uint64` `versionId`
-requirements above. A consumer SHOULD expose the canonical migrated snapshot
-through a `MidnightDIDResolutionSource` and invoke
-`resolveMidnightDIDMethodBinding` so those checks and canonical method-ID
-derivation are not bypassed.
+requirements above. A consumer MUST expose the canonical migrated snapshot
+through a `MidnightDIDResolutionSource` and MUST invoke
+`resolveMidnightDIDMethodBinding`; it MUST NOT construct a
+`MidnightDIDMethodBinding` directly. This preserves the adapter's subject,
+controller, relationship-membership, key-profile, state-version, and canonical
+method-ID checks.
 Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
 on that binding for authorization.
 
