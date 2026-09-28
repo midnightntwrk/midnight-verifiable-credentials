@@ -13,8 +13,10 @@ semantics without defining a second signature scheme or challenge domain.
 
 ## Resolution profile
 
-An implementation MUST resolve an on-chain `did:midnight` through a resolver
-compatible with `@midnight-ntwrk/midnight-did` `0.7.0`. It MUST reject:
+Except for the authenticated historical-snapshot migration defined under
+[Canonical mapping](#canonical-mapping), an implementation MUST resolve an
+on-chain `did:midnight` through a resolver compatible with
+`@midnight-ntwrk/midnight-did` `0.7.0`. The live-resolution path MUST reject:
 
 - an unresolved or deactivated DID;
 - a DID document whose subject differs from the requested DID;
@@ -70,7 +72,10 @@ After successful re-resolution or migration, consumers MUST discard or
 quarantine the old snapshot. Outside the authenticated, version-specific
 migration defined above, reinterpretation or byte reversal is forbidden. A
 migration MUST use the known 0.6 profile directly and MUST NOT trial both byte
-orders.
+orders. An offline migration reconstructs an authenticated historical binding;
+it does not prove that the DID remains active or that the method is current.
+Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
+on that binding for authorization.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not

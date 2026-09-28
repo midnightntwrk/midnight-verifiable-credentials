@@ -15,7 +15,7 @@ All notable changes to this project are documented here. The format follows
   supported circuits;
 - add a synthetic packed-package consumer proving a complete DID-backed VC/VP
   composition across the model, Compact, and DID packages with nonempty claims
-  and targeted substitution rejection;
+  and targeted substitution rejection.
 
 ### Changed
 

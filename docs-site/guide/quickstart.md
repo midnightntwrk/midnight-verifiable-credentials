@@ -21,8 +21,12 @@ install_stable_graph() (
     @midnight-ntwrk/credential-model \
     @midnight-ntwrk/credential-compact \
     @midnight-ntwrk/credential-did-midnight; do
-    actual_version="$(npm view --registry "$NPM_REGISTRY" \
-      "${package}@${EXPECTED_STABLE}" version)"
+    if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}@${EXPECTED_STABLE}" version)"; then
+      printf 'could not resolve %s@%s\n' \
+        "$package" "$EXPECTED_STABLE" >&2
+      exit 1
+    fi
     if [[ "$actual_version" != "$EXPECTED_STABLE" ]]; then
       printf 'expected %s version=%s, got %s\n' \
         "$package" "$EXPECTED_STABLE" "$actual_version" >&2
