@@ -16,7 +16,9 @@ pnpm add @midnight-ntwrk/credential-model@0.2.0
 
 The first public release line is pre-1.0. Pin an exact version when a
 credential-family repository requires reproducible builds. Use the `rc`
-dist-tag only when explicitly evaluating the next prerelease line.
+dist-tag only after `npm view @midnight-ntwrk/credential-model dist-tags --json`
+confirms that it identifies the exact prerelease you intend to evaluate; the
+moving tag may be older or newer than `latest`.
 
 ## Public API
 

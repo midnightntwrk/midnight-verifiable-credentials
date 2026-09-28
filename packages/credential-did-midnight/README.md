@@ -23,15 +23,16 @@ migrated; the adapter does not guess the byte order. Not every 0.6 snapshot is
 detectably invalid under the 0.7 decoder, so supplying one can silently bind a
 different native point rather than fail.
 
-### Migrating Midnight DID 0.6 snapshots
+## Migrating Midnight DID 0.6 snapshots
 
 1. Re-resolve the DID through a Midnight DID 0.7 resolver.
 2. Build a new binding from the returned 0.7 JWK and resolver `versionId`.
-3. Re-resolve rather than reinterpret any cached snapshot whose encoding
+3. Discard or quarantine the old 0.6 snapshot.
+4. Re-resolve rather than reinterpret any cached snapshot whose encoding
    provenance is unknown.
 
 Do not reverse cached coordinate bytes or try both byte orders. See the
-[normative canonical mapping](../../spec/midnight-did-binding.md#canonical-mapping)
+[normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
 for the required validation and migration boundary.
 
 > **Ledger 8 security boundary:** this package's binding circuits compare DID

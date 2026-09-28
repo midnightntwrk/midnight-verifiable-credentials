@@ -17,16 +17,22 @@ pnpm add @midnight-ntwrk/credential-did-midnight@0.2.0
 ```
 
 Keep the package graph on one exact version for reproducible credential-family
-builds. To evaluate the next prerelease line explicitly, opt in to the `rc`
-dist-tag for the complete graph:
+builds. The moving `rc` dist-tag may identify a prerelease older or newer than
+`latest`; inspect it before opting in:
 
 ```bash
+npm view @midnight-ntwrk/credential-model dist-tags --json
+npm view @midnight-ntwrk/credential-compact dist-tags --json
+npm view @midnight-ntwrk/credential-did-midnight dist-tags --json
+
 pnpm add @midnight-ntwrk/credential-model@rc
 pnpm add @midnight-ntwrk/credential-compact@rc
 pnpm add @midnight-ntwrk/credential-did-midnight@rc
 ```
 
-Prerelease adoption should not happen implicitly.
+Use those install commands only when the reported `rc` versions are the exact
+prerelease graph you intend to evaluate. Prerelease adoption should not happen
+implicitly.
 
 ## Define Metadata
 

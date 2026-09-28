@@ -96,29 +96,48 @@ Branch rules are fail closed:
 
 Automatic publication on pushes is intentionally disabled.
 
+## Stable publication
+
+Set the root and supported package manifests to the approved stable version,
+merge the release promotion to `main`, and dispatch `Publish npmjs Packages`
+from `main` with:
+
+```text
+channel: release
+rc_index: <empty>
+```
+
+The release channel publishes the exact manifest version under `latest`. It
+does not move `rc`. Stable publication from `develop` is rejected by the
+workflow.
+
 ## Verification
 
 The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-Set `VERSION` to the exact version reported by the workflow, then verify every
-package version and the moving tags:
+Set `VERSION` and `TAG` to the exact values reported by the workflow, then
+verify every package version and the moving tags. This stable example verifies
+the `0.2.0` release:
 
 ```bash
-VERSION=0.2.0-rc2
+VERSION=0.2.0
+TAG=latest
 for package in \
   @midnight-ntwrk/credential-model \
   @midnight-ntwrk/credential-compact \
   @midnight-ntwrk/credential-did-midnight; do
   npm view "${package}@${VERSION}" version
-  npm view "${package}" dist-tags --json
+  test "$(npm view "${package}" "dist-tags.${TAG}")" = "${VERSION}"
 done
 ```
 
-The `rc` tag must resolve to `${VERSION}` for all packages and `latest` must
-remain unchanged. Retain the workflow URL and release-evidence artifact with
-the release record.
+For an RC, set `VERSION` to the suffixed version and `TAG=rc`, require `rc` to
+resolve to `${VERSION}`, and separately confirm that `latest` remains unchanged.
+For a stable release, require `latest` to resolve to `${VERSION}` and confirm
+that `rc` remains unchanged. Retain the workflow URL and release-evidence
+artifact with the release record.
 
 ## Retry and rollback
 
