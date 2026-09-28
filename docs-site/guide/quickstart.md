@@ -33,7 +33,9 @@ install_stable_graph() (
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
 )
 
-install_stable_graph 0.2.0
+printf 'Approved stable version: '
+read -r EXPECTED_STABLE
+install_stable_graph "$EXPECTED_STABLE"
 ```
 
 If the consumer only needs protocol-neutral family and claim-schema metadata,

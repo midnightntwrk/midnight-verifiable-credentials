@@ -139,7 +139,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
     });
   });
 
-  it("maps the Midnight DID 0.7 vector without changing the native binding root", async () => {
+  it("preserves the native point across the documented 0.6 and 0.7 encodings", async () => {
     const binding = await resolveMidnightDIDMethodBinding({
       resolver: resolver({
         didDocument: documentWithMethod({
@@ -154,7 +154,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
       x: decodeJubjubJwkCoordinate(midnightDID07Vector.x),
       y: decodeJubjubJwkCoordinate(midnightDID07Vector.y),
     };
-    const explicitlyMigratedLegacyPoint = {
+    const legacyPointDecodedWith06Profile = {
       x: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.x)),
       y: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.y)),
     };
@@ -164,11 +164,11 @@ describe("resolveMidnightDIDMethodBinding", () => {
       y: 14156144929920967796411782896064901209526447247090983247242446280553821482461n,
     });
     expect(binding.publicKey).toEqual(canonicalPoint);
-    expect(explicitlyMigratedLegacyPoint).toEqual(canonicalPoint);
+    expect(legacyPointDecodedWith06Profile).toEqual(canonicalPoint);
     expect(pureCircuits.midnightDIDMethodBindingRoot(binding)).toEqual(
       pureCircuits.midnightDIDMethodBindingRoot({
         ...binding,
-        publicKey: explicitlyMigratedLegacyPoint,
+        publicKey: legacyPointDecodedWith06Profile,
       }),
     );
   });

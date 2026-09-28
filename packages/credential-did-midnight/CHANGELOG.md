@@ -17,9 +17,9 @@
 - Added an injected Midnight DID 0.7 resolver adapter for on-chain native
   Jubjub verification methods.
 - Decode canonical fixed-width big-endian Jubjub JWK coordinates with the
-  public Midnight DID domain codec; 0.6 little-endian snapshots require
-  re-resolution or an external, provenance-authenticated conversion of the
-  same native point and are never auto-detected by this package.
+  public Midnight DID domain codec; 0.6 little-endian snapshots must be
+  re-resolved through a 0.7-compatible resolver and are never auto-detected by
+  this package.
 - Added standalone and composition-safe Compact entrypoints for method, holder,
   proof, and signer-authorization binding.
 - Added credential-issuance and presentation signing helpers that interoperate

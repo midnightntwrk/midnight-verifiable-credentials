@@ -48,14 +48,13 @@ the extension does not claim live cross-contract DID resolution.
 
 The adapter accepts only the Midnight DID 0.7 canonical big-endian Jubjub JWK
 profile and delegates coordinate decoding and range validation to the public
-domain package codec. Historical 0.6 little-endian snapshots should be
-re-resolved through a 0.7-compatible resolver. When authenticated provenance
-requires an offline migration, a version-specific external tool may decode the
-0.6 coordinates and re-encode the same native point in the 0.7 profile;
-byte-order reinterpretation, auto-detection, and use of ledger `versionId` as
-an encoding marker are rejected. Because some legacy values remain in range
-under the new byte order, a mis-supplied 0.6 snapshot can silently bind the
-wrong point.
+domain package codec. Historical 0.6 little-endian snapshots must be
+re-resolved through a 0.7-compatible resolver. A version-specific conversion
+can preserve the native point but cannot establish the current resolver
+`versionId` required by the binding. Byte-order reinterpretation,
+auto-detection, and use of ledger `versionId` as an encoding marker are
+rejected. Because some legacy values remain in range under the new byte order,
+a mis-supplied 0.6 snapshot can silently bind the wrong point.
 
 The initial support profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
 `8.0.2`. Cross-contract DID validation is deferred until a later Ledger profile.

@@ -19,25 +19,25 @@ The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
 0.6 little-endian DID-document snapshots must be re-resolved through a 0.7
-resolver or converted by an external, version-specific migration with
-authenticated 0.6 provenance. The adapter does not auto-detect the byte order.
-Not every 0.6 snapshot is detectably invalid under the 0.7 decoder, so supplying
-one directly can silently bind a different native point rather than fail.
+resolver. The adapter does not auto-detect the byte order. Not every 0.6
+snapshot is detectably invalid under the 0.7 decoder, so supplying one directly
+can silently bind a different native point rather than fail.
 
 ## Migrating Midnight DID 0.6 snapshots
 
-Prefer re-resolution: resolve the DID through a Midnight DID 0.7 resolver, then
-call `resolveMidnightDIDMethodBinding` with that resolver, DID, method ID, and
+Resolve the DID through a Midnight DID 0.7 resolver, then call
+`resolveMidnightDIDMethodBinding` with that resolver, DID, method ID, and
 required verification relationship. This validates the current DID document
-and builds the binding.
+and captures its current resolver `versionId` in the binding. An offline
+coordinate conversion can preserve the native point but cannot supply that
+current state observation, so it is not a supported migration path.
 
-If re-resolution is unavailable and the snapshot's 0.6 provenance is
-authenticated, a version-specific external migration may decode the known 0.6
-little-endian coordinates and re-encode the same native point as canonical 0.7
-JWK coordinates before constructing the new binding. This package does not
-implement that migration. Never try both byte orders, treat `versionId` as an
-encoding marker, or reverse bytes when provenance is unknown. Discard or
-quarantine the old snapshot after either path. See the
+The exported TypeScript binding type is structural; downstream code can create
+an object literal, and the package cannot prove its coordinate provenance.
+Treat a hand-built binding from a cached 0.6 snapshot as invalid input. Never
+try both byte orders, use `versionId` as an encoding marker, or reverse cached
+coordinate bytes. Discard or quarantine the old snapshot after re-resolution.
+See the
 [normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
 for the required validation and migration boundary.
 
