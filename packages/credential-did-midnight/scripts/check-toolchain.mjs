@@ -11,6 +11,8 @@ const packageJson = JSON.parse(
 const expectedCompiler = packageJson.midnight.compactCompilerVersion;
 const expectedRuntime = packageJson.midnight.compactRuntimeVersion;
 const expectedLedger = packageJson.midnight.ledgerVersion;
+const declaredRuntime =
+  packageJson.dependencies?.["@midnight-ntwrk/compact-runtime"];
 const compilerOutput = execFileSync("compact", ["compile", "--version"], {
   encoding: "utf8",
 }).trim();
@@ -26,12 +28,13 @@ const runtimeVersion = require(
 ).version;
 
 if (
+  declaredRuntime !== expectedRuntime ||
   compilerVersion !== expectedCompiler ||
   runtimeVersion !== expectedRuntime ||
   ledgerVersion !== expectedLedger
 ) {
   throw new Error(
-    `Expected Compact ${expectedCompiler} / runtime ${expectedRuntime} / ${expectedLedger}; found ${compilerVersion ?? compilerOutput} / ${runtimeVersion} / ${ledgerVersion}`,
+    `Expected Compact ${expectedCompiler} / declared runtime ${expectedRuntime} / installed runtime ${expectedRuntime} / ${expectedLedger}; found ${compilerVersion ?? compilerOutput} / ${declaredRuntime ?? "missing"} / ${runtimeVersion} / ${ledgerVersion}`,
   );
 }
 

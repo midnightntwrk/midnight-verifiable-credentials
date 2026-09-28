@@ -86,6 +86,97 @@ const mod = (value) => {
   return reduced >= 0n ? reduced : reduced + subgroupOrder;
 };
 
+class ConformanceHarnessError extends Error {}
+
+const credentialProofOperations = new Set([
+  "verify-derived-root",
+  "verify-precomputed-root",
+]);
+const credentialProofMutations = new Set([
+  "body-root",
+  "issuer-controller",
+  "issuer-method",
+  "signature",
+]);
+const validateCredentialProofVector = (collection, vector) => {
+  if (!credentialProofOperations.has(vector.operation)) {
+    throw new ConformanceHarnessError(
+      `unknown credential-proof operation ${vector.operation}`,
+    );
+  }
+  if (collection === "positive") {
+    if (vector.mutation !== undefined) {
+      throw new ConformanceHarnessError(
+        `positive credential-proof vector ${vector.id} must not declare a mutation`,
+      );
+    }
+    return;
+  }
+  if (!credentialProofMutations.has(vector.mutation)) {
+    throw new ConformanceHarnessError(
+      `unknown credential-proof mutation ${vector.mutation}`,
+    );
+  }
+  if (
+    typeof vector.errorIncludes !== "string" ||
+    vector.errorIncludes.length === 0
+  ) {
+    throw new ConformanceHarnessError(
+      `negative credential-proof vector ${vector.id} must declare errorIncludes`,
+    );
+  }
+};
+const selectCredentialProofInvocation = (
+  operation,
+  verifyDerivedRoot,
+  verifyPrecomputedRoot,
+) => {
+  switch (operation) {
+    case "verify-derived-root":
+      return verifyDerivedRoot;
+    case "verify-precomputed-root":
+      return verifyPrecomputedRoot;
+    default:
+      throw new ConformanceHarnessError(
+        `unknown credential-proof operation ${operation}`,
+      );
+  }
+};
+
+test("rejects credential-proof harness dispatch defects before invocation", () => {
+  let invoked = false;
+  assert.throws(() => {
+    const vector = {
+      id: "unknown-operation",
+      operation: "unknown",
+      mutation: "signature",
+      errorIncludes: "irrelevant",
+    };
+    validateCredentialProofVector("negative", vector);
+    selectCredentialProofInvocation(
+      vector.operation,
+      () => {
+        invoked = true;
+      },
+      () => {
+        invoked = true;
+      },
+    )();
+  }, ConformanceHarnessError);
+  assert.equal(invoked, false);
+
+  assert.throws(
+    () =>
+      validateCredentialProofVector("negative", {
+        id: "unknown-mutation",
+        operation: "verify-derived-root",
+        mutation: "unknown",
+        errorIncludes: "irrelevant",
+      }),
+    ConformanceHarnessError,
+  );
+});
+
 test("matches deterministic outputs from generated Compact circuits", () => {
   const fixture = readJson("conformance/vectors/compact-generated.json");
   for (const vector of fixture.vectors) {
@@ -946,19 +1037,21 @@ test("validates and binds positive and negative signer authorizations", async ()
       [],
     );
     for (const vector of credentialProofVectors.positive) {
-      const invoke =
-        vector.operation === "verify-derived-root"
-          ? () =>
-              conformance.pureCircuits.assertValidCredentialProof(
-                credential,
-                proof,
-              )
-          : () =>
-              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-                credential,
-                proof,
-                bodyRoot,
-              );
+      validateCredentialProofVector("positive", vector);
+      const invoke = selectCredentialProofInvocation(
+        vector.operation,
+        () =>
+          conformance.pureCircuits.assertValidCredentialProof(
+            credential,
+            proof,
+          ),
+        () =>
+          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+            credential,
+            proof,
+            bodyRoot,
+          ),
+      );
       assert.deepEqual(
         withEvidence("positive", vector, invoke),
         [],
@@ -966,6 +1059,7 @@ test("validates and binds positive and negative signer authorizations", async ()
       );
     }
     for (const vector of credentialProofVectors.negative) {
+      validateCredentialProofVector("negative", vector);
       let candidateCredential = credential;
       let candidateProof = proof;
       let candidateBodyRoot = bodyRoot;
@@ -994,22 +1088,21 @@ test("validates and binds positive and negative signer authorizations", async ()
           ...proof,
           signature: { ...proof.signature, s: proof.signature.s + 1n },
         };
-      } else {
-        assert.fail(`unknown credential-proof mutation ${vector.mutation}`);
       }
-      const invoke =
-        vector.operation === "verify-derived-root"
-          ? () =>
-              conformance.pureCircuits.assertValidCredentialProof(
-                candidateCredential,
-                candidateProof,
-              )
-          : () =>
-              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-                candidateCredential,
-                candidateProof,
-                candidateBodyRoot,
-              );
+      const invoke = selectCredentialProofInvocation(
+        vector.operation,
+        () =>
+          conformance.pureCircuits.assertValidCredentialProof(
+            candidateCredential,
+            candidateProof,
+          ),
+        () =>
+          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+            candidateCredential,
+            candidateProof,
+            candidateBodyRoot,
+          ),
+      );
       withEvidence("negative", vector, () =>
         assert.throws(
           invoke,

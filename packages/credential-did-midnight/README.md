@@ -3,6 +3,8 @@
 Composable Midnight DID binding for the protocol-independent VC/VP primitives
 in `@midnight-ntwrk/credential-compact`.
 
+See [`CHANGELOG.md`](./CHANGELOG.md) for package release history.
+
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected `@midnight-ntwrk/midnight-did` resolver. It binds a subject-owned native
 Jubjub verification method to the core `VerificationMethodRef`, the observed DID

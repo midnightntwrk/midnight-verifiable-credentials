@@ -7,6 +7,7 @@ import {
   decodeJubjubJwkCoordinate,
   KeyType,
   MidnightNetwork,
+  parseDIDURL,
   parseMidnightDID,
   resolveDIDURLReference,
   VerificationMethodType,
@@ -88,6 +89,32 @@ const resolveMethodId = (
   }
 };
 
+const resolveDocumentMethodId = (
+  reference: string,
+  did: string,
+  label: string,
+): string | undefined => {
+  let absoluteMethodId: string;
+  try {
+    absoluteMethodId = resolveDIDURLReference(reference, did, {
+      allowExternalDID: true,
+    });
+    parseDIDURL(absoluteMethodId);
+  } catch (error) {
+    throw new Error(`${label} is not a valid DID URL`, { cause: error });
+  }
+  const belongsToSubject =
+    absoluteMethodId === did ||
+    absoluteMethodId.startsWith(`${did}#`) ||
+    absoluteMethodId.startsWith(`${did}/`) ||
+    absoluteMethodId.startsWith(`${did}?`);
+  if (!belongsToSubject) {
+    return undefined;
+  }
+  canonicalFragment(absoluteMethodId, did);
+  return absoluteMethodId;
+};
+
 const canonicalFragment = (absoluteMethodId: string, did: string): string => {
   const prefix = `${did}#`;
   if (!absoluteMethodId.startsWith(prefix)) {
@@ -102,17 +129,21 @@ const canonicalFragment = (absoluteMethodId: string, did: string): string => {
   return fragment;
 };
 
+const cloneVerificationMethodRef = (
+  reference: MidnightDIDMethodBinding["verificationMethodRef"],
+): MidnightDIDMethodBinding["verificationMethodRef"] => ({
+  controllerAddress: {
+    bytes: new Uint8Array(reference.controllerAddress.bytes),
+  },
+  methodId: new Uint8Array(reference.methodId),
+});
+
 const cloneMethodBinding = (
   binding: MidnightDIDMethodBinding,
 ): MidnightDIDMethodBinding => ({
-  verificationMethodRef: {
-    controllerAddress: {
-      bytes: new Uint8Array(
-        binding.verificationMethodRef.controllerAddress.bytes,
-      ),
-    },
-    methodId: new Uint8Array(binding.verificationMethodRef.methodId),
-  },
+  verificationMethodRef: cloneVerificationMethodRef(
+    binding.verificationMethodRef,
+  ),
   publicKey: { ...binding.publicKey },
   didStateVersion: binding.didStateVersion,
   verificationRelationship: binding.verificationRelationship,
@@ -163,8 +194,11 @@ export const resolveMidnightDIDMethodBinding = async ({
   const fragment = canonicalFragment(absoluteMethodId, did);
   const method = result.didDocument.verificationMethod?.find(
     (candidate) =>
-      resolveMethodId(String(candidate.id), did, "DID document method id") ===
-      absoluteMethodId,
+      resolveDocumentMethodId(
+        String(candidate.id),
+        did,
+        "DID document method id",
+      ) === absoluteMethodId,
   );
   if (method === undefined) {
     throw new Error(
@@ -190,8 +224,11 @@ export const resolveMidnightDIDMethodBinding = async ({
   const relationshipEntries = result.didDocument[relationship] ?? [];
   const relationshipContainsMethod = relationshipEntries.some(
     (candidate) =>
-      resolveMethodId(String(candidate), did, `${relationship} method id`) ===
-      absoluteMethodId,
+      resolveDocumentMethodId(
+        String(candidate),
+        did,
+        `${relationship} method id`,
+      ) === absoluteMethodId,
   );
   if (!relationshipContainsMethod) {
     throw new Error(
@@ -225,7 +262,9 @@ export const createMidnightDIDHolderBinding = (
   const method = cloneMethodBinding(methodBinding);
   return {
     explicitBinding: {
-      holderVerificationMethodRef: method.verificationMethodRef,
+      holderVerificationMethodRef: cloneVerificationMethodRef(
+        method.verificationMethodRef,
+      ),
     },
     methodBinding: method,
   };
