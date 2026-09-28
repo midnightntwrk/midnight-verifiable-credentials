@@ -143,12 +143,15 @@ proof-of-possession checks. For issuance use
 self-declared issuer. Authorization-aware issuance MUST use
 `VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is enforced
 independently. For
-presentation, use
-`ExplicitHolderPresentationProof<>::assertValidPresentationProof` with the
-credential's holder binding and `MidnightDIDHolderBinding.methodBinding.publicKey`,
-then apply `assertMidnightDIDHolderBinding` to validate the authentication
-relationship and accepted DID method snapshot. Authority and verifier
-decisions likewise require the core
+presentation, first use
+`CredentialPresentationRelations<>::assertMatchingCredentialPresentation` to
+bind the presentation to the credential's schema, claim root, issuer, and holder.
+Then use `ExplicitHolderPresentationProof<>::assertValidPresentationProof` with
+the credential's holder binding and
+`MidnightDIDHolderBinding.methodBinding.publicKey`, followed by
+`assertMidnightDIDHolderBinding` to validate the authentication relationship and
+accepted DID method snapshot. Authority and verifier decisions likewise require
+the core
 `assertValidSignerAuthorizationProof` or `assertAuthorizedVerifierProof`
 circuit.
 

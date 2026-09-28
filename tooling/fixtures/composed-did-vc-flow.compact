@@ -82,9 +82,5 @@ export pure circuit assertComposedDIDBackedFlow(
     presentation,
     presentationProof
   );
-  assertMatchingExplicitHolderBindings(
-    credential.holderBinding,
-    holderBinding.explicitBinding
-  );
   assertMidnightDIDHolderBinding(holderBinding, presentationProof);
 }

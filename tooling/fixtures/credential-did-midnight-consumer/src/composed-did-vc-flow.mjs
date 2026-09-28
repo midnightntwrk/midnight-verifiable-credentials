@@ -135,7 +135,7 @@ const family = defineCredentialFamily({
       {
         id: "subjectId",
         path: ["credentialSubject", "id"],
-        disclosure: "committed",
+        disclosure: "public",
         required: true,
         valueType: "bytes32",
       },
@@ -278,6 +278,28 @@ expectReject(
       attackerPresentation,
       attackerPresentationProof,
       attackerBinding,
+    ),
+);
+
+const foreignKeyHolderMethod = clone(holderMethod);
+foreignKeyHolderMethod.publicKey = attackerMethod.publicKey;
+const foreignKeyPresentationProof = signMidnightDIDPresentationProof({
+  methodBinding: foreignKeyHolderMethod,
+  secretScalar: actors.attacker.secret,
+  bodyRoot: presentationRoot,
+  createdAt: 105n,
+  challengeHash: digest("presentation:foreign-key"),
+});
+expectReject(
+  "presentation-key-substitution",
+  "Jubjub points do not match",
+  () =>
+    verify(
+      credential,
+      issuerProof,
+      issuerMethod,
+      presentation,
+      foreignKeyPresentationProof,
     ),
 );
 
