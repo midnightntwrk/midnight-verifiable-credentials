@@ -21,7 +21,6 @@ belong in independently versioned consumer repositories.
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [Midnight DID binding decision](./docs/decisions/0017-midnight-did-binding-extension.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
-- [Optional Pi development loop](./docs/guides/pi-development.md)
 
 ## Packages
 

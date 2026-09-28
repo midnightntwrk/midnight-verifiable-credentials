@@ -2,6 +2,11 @@
 
 Engineering guide for `midnight-verifiable-credentials`.
 
+This file is the repository's single agent-facing source of truth. Do not add
+tool-specific skills, prompts, autonomous-loop configuration, or checked-in
+agent runtime state. Human contributor guidance belongs in `CONTRIBUTING.md`;
+durable architecture decisions belong in ADRs.
+
 ## Scope
 
 This is a core-only VC/VP specification and implementation repository. Follow
@@ -116,9 +121,11 @@ product/use-case integration environments.
 - Keep no more than two active stack levels.
 - Commit with DCO and GPG:
   `git commit -S --signoff -m "<type>: <subject>"`.
-- Follow `.devloops` for the required current-head external review and CI state.
-- Follow the [Pi development guide](./docs/guides/pi-development.md) when using
-  the optional repository-local harness.
+- Obtain an independent current-head review for Compact, security, public API,
+  dependency-major, and release-workflow changes. Documentation-only and
+  dependency-patch PRs may rely on normal human review plus required CI.
+- Wait for every required CI check on the current head to reach a terminal
+  successful state before requesting merge.
 - This repository uses human-only merges. Agents may push and prepare PRs but
   must not merge them.
 - Treat findings against deleted or superseded surfaces as obsolete. Fix only
@@ -131,4 +138,3 @@ product/use-case integration environments.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
-- [Pi development loop](./docs/guides/pi-development.md)
