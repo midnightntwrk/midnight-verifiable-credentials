@@ -213,11 +213,28 @@ rollback_rc() (
   set -euo pipefail
   VERSION="${1:?usage: rollback_rc CONFIRMED_BAD_RC}"
   NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
-  packages=(
-    @midnight-ntwrk/credential-model
-    @midnight-ntwrk/credential-compact
-    @midnight-ntwrk/credential-did-midnight
-  )
+  if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc[1-9][0-9]*$ ]]; then
+    printf 'refusing rollback: %s is not an RC version\n' "$VERSION" >&2
+    exit 1
+  fi
+  if ! package_paths="$(node \
+    ./tooling/scripts/workspace-catalog.mjs --publishable-paths)"; then
+    printf 'unable to read the publishable package catalog\n' >&2
+    exit 1
+  fi
+  if [[ -z "$package_paths" ]]; then
+    printf 'publishable package catalog is empty\n' >&2
+    exit 1
+  fi
+  packages=()
+  while IFS= read -r package_path; do
+    if ! package="$(node -p \
+      "require('./${package_path}/package.json').name")"; then
+      printf 'unable to read package metadata for %s\n' "$package_path" >&2
+      exit 1
+    fi
+    packages+=("$package")
+  done <<< "$package_paths"
   for package in "${packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
       "$package" dist-tags.rc)"; then
