@@ -11,11 +11,12 @@ deployment, proof artifacts, or encoding.
 ## Install
 
 ```bash
-pnpm add @midnight-ntwrk/credential-model@rc
+pnpm add @midnight-ntwrk/credential-model@0.2.0
 ```
 
 The first public release line is pre-1.0. Pin an exact version when a
-credential-family repository requires reproducible builds.
+credential-family repository requires reproducible builds. Use the `rc`
+dist-tag only when explicitly evaluating the next prerelease line.
 
 ## Public API
 

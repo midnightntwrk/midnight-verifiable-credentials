@@ -4,7 +4,7 @@
 > Maturity: `core`
 > Package class: `dist`
 
-Supported prerelease package for reusable, family-neutral Compact VC/VP
+Supported pre-1.0 package for reusable, family-neutral Compact VC/VP
 semantics. This is a library include surface, not a deployable contract,
 credential family, proof artifact, or registry authority.
 

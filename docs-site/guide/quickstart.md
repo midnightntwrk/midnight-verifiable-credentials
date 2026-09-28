@@ -11,12 +11,22 @@
 Install only the package boundaries the consumer needs:
 
 ```bash
+pnpm add @midnight-ntwrk/credential-model@0.2.0
+pnpm add @midnight-ntwrk/credential-compact@0.2.0
+pnpm add @midnight-ntwrk/credential-did-midnight@0.2.0
+```
+
+Keep the package graph on one exact version for reproducible credential-family
+builds. To evaluate the next prerelease line explicitly, opt in to the `rc`
+dist-tag for the complete graph:
+
+```bash
 pnpm add @midnight-ntwrk/credential-model@rc
 pnpm add @midnight-ntwrk/credential-compact@rc
 pnpm add @midnight-ntwrk/credential-did-midnight@rc
 ```
 
-Pin exact prerelease versions for reproducible credential-family builds.
+Prerelease adoption should not happen implicitly.
 
 ## Define Metadata
 

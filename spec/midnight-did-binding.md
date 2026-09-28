@@ -61,6 +61,13 @@ NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
 also valid 0.7 coordinate encodings and will silently map to a different native
 point, so range validation alone is not a migration detector.
 
+Migration from a persisted 0.6 snapshot therefore requires this sequence:
+
+1. re-resolve the DID through a 0.7-compatible resolver;
+2. create a new binding from that resolved JWK and its positive `versionId`;
+3. discard or quarantine the old snapshot; and
+4. re-resolve whenever the snapshot's encoding provenance is unknown.
+
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
 a timestamp.
