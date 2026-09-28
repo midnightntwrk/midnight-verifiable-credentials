@@ -25,6 +25,19 @@ domain-separated challenges, and verify Schnorr signatures. Signed timestamps
 and challenge hashes still require application-defined time, freshness,
 audience, and replay policy.
 
+`ExplicitHolderPresentationProof<TPublicClaims, TClaimCommitments,
+TDisclosures, TStatusBinding>::assertValidPresentationProof` is the supported
+presentation-proof entrypoint. It accepts the credential, an independently
+accepted holder public key, the complete presentation, and its proof; derives
+the presentation root internally; validates generic VC-to-VP relations; rejects
+holder or proof-key mismatch; binds the proof signer reference and key; and
+verifies the presentation-context signature. The accepted key is a trust input:
+the circuit cannot distinguish a pinned or authorized method snapshot from an
+internally consistent attacker-supplied snapshot. Consumers still apply
+credential-proof verification, DID resolution or snapshot authentication,
+family-specific disclosure relations, status, freshness, and application policy
+separately.
+
 Signer authorization supports two composition modes. Applications may install
 an accepted descriptor through local governance, or verify a domain-separated
 authority proof before materializing the same descriptor. The authorization

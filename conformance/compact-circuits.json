@@ -380,6 +380,17 @@
       }
     },
     {
+      "id": "explicit-holder-presentation-proof-validation",
+      "source": "credentials/vp.compact",
+      "symbol": "assertValidPresentationProof",
+      "classification": "supported",
+      "operation": "verify-presentation-proof",
+      "evidence": {
+        "positive": ["positive/verify-presentation-proof-from-canonical-body"],
+        "negative": ["negative/reject-presentation-different-holder"]
+      }
+    },
+    {
       "id": "credential-presentation-matching",
       "source": "credentials/relations.compact",
       "symbol": "assertMatchingCredentialPresentation",

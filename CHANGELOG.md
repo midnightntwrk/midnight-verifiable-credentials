@@ -8,6 +8,14 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- add the canonical explicit-holder presentation-proof circuit with complete
+  holder equality, signer-reference, accepted-key, derived-root, and signature
+  composition;
+- add reverse conformance coverage from normative Compact operations to shipped
+  supported circuits;
+- add a synthetic packed-package consumer proving a complete DID-backed VC/VP
+  composition across the model, Compact, and DID packages with nonempty claims
+  and targeted substitution rejection;
 - restore `@midnight-ntwrk/credential-did-midnight` as a flat Midnight DID
   `0.7.0` binding extension with TypeScript resolution, composable Compact
   circuits, negative conformance vectors, and clean packed-consumer coverage.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add an executable packed-package consumer that resolves Midnight DID issuer
+  and holder methods, validates family metadata through the model package,
+  signs a nonempty typed VC/VP flow, verifies the published Compact composition,
+  and rejects targeted substitutions.
+
 ## 0.2.0
 
 - Reintroduced `@midnight-ntwrk/credential-did-midnight` as a flat,

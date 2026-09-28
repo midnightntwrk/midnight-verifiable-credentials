@@ -219,6 +219,15 @@ for (const releasePackage of releasePackages) {
   ) {
     fail(`${releasePackage.path} has invalid local release dependencies`);
   }
+  if (
+    releasePackage.consumerReleaseDependencies !== undefined &&
+    (!Array.isArray(releasePackage.consumerReleaseDependencies) ||
+      releasePackage.consumerReleaseDependencies.some(
+        (dependency) => !releasePackageByName.has(dependency),
+      ))
+  ) {
+    fail(`${releasePackage.path} has invalid consumer release dependencies`);
+  }
 
   const sourcePackageJson = JSON.parse(
     readFileSync(
@@ -297,8 +306,16 @@ for (const releasePackage of releasePackages) {
         tarballPath,
         path.join(consumerRoot, "vendor", "package.tgz"),
       );
-      for (const dependencyName of
-        releasePackage.localReleaseDependencies ?? []) {
+      const localReleaseDependencies = new Set(
+        releasePackage.localReleaseDependencies ?? [],
+      );
+      const consumerReleaseDependencies = new Set(
+        releasePackage.consumerReleaseDependencies ?? [],
+      );
+      for (const dependencyName of new Set([
+        ...localReleaseDependencies,
+        ...consumerReleaseDependencies,
+      ])) {
         const dependency = releasePackageByName.get(dependencyName);
         const dependencyTarballName = tarballName(dependency.packageJson);
         const dependencyTarball = path.join(
@@ -319,9 +336,14 @@ for (const releasePackage of releasePackages) {
           path.join(dependencyDirectory, dependencyTarballName),
         );
         const locator = `file:./vendor/dependencies/${dependencyTarballName}`;
-        fixturePackageJson.pnpm ??= {};
-        fixturePackageJson.pnpm.overrides ??= {};
-        fixturePackageJson.pnpm.overrides[dependencyName] = locator;
+        if (localReleaseDependencies.has(dependencyName)) {
+          fixturePackageJson.pnpm ??= {};
+          fixturePackageJson.pnpm.overrides ??= {};
+          fixturePackageJson.pnpm.overrides[dependencyName] = locator;
+        }
+        if (consumerReleaseDependencies.has(dependencyName)) {
+          fixturePackageJson.dependencies[dependencyName] = locator;
+        }
         allowedLocalLocators.add(locator);
         allowedLocalLocators.add(locator.replace("file:./", "file:"));
       }
@@ -331,6 +353,10 @@ for (const releasePackage of releasePackages) {
       );
     } else {
       fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
+      for (const dependencyName of
+        releasePackage.consumerReleaseDependencies ?? []) {
+        fixturePackageJson.dependencies[dependencyName] = expectedVersion;
+      }
       writeFileSync(
         path.join(consumerRoot, "package.json"),
         `${JSON.stringify(fixturePackageJson, null, 2)}\n`,
@@ -588,6 +614,33 @@ for (const releasePackage of releasePackages) {
             ),
             "utf8",
           ),
+        );
+      }
+      if (
+        sourcePackageJson.name ===
+        "@midnight-ntwrk/credential-did-midnight"
+      ) {
+        const composedFlowOutput = compileExternalSource(
+          "composed-did-vc-flow",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/composed-did-vc-flow.compact",
+            ),
+            "utf8",
+          ),
+        );
+        run(
+          "node",
+          [
+            path.join(
+              consumerRoot,
+              "src/composed-did-vc-flow.mjs",
+            ),
+            composedFlowOutput,
+          ],
+          consumerRoot,
+          `${sourcePackageJson.name}: composed DID-backed VC/VP flow`,
         );
       }
     }

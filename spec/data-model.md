@@ -63,7 +63,10 @@ relations, holder proof binding, disclosures, predicates, status, request
 scope, challenge freshness, and application policy are separate checks.
 The generic credential-to-presentation relation requires the exact schema
 reference, credential claim root, and issuer verification-method reference to
-match before family-specific disclosure or predicate checks run.
+match before family-specific disclosure or predicate checks run. For the
+explicit-holder profile, the presentation-proof composition additionally takes
+the credential's holder binding and verifier-resolved public key, and rejects a
+different holder or proof key in the presentation.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.
