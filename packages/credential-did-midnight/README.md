@@ -41,8 +41,10 @@ When re-resolution is unavailable, an external migration must authenticate the
 snapshot's DID, method, relationship, positive observed `versionId`, and 0.6
 encoding profile. It must decode the known little-endian coordinates and
 re-encode the same native point as canonical 0.7 JWK coordinates while
-preserving the authenticated binding fields. Expose that migrated document
-through a snapshot-backed `MidnightDIDResolutionSource`, then call
+preserving the authenticated binding fields. The provenance must also
+authenticate that the DID was not deactivated at that observed historical
+state. Expose the migrated document through a snapshot-backed
+`MidnightDIDResolutionSource`, then call
 `resolveMidnightDIDMethodBinding`; do not construct a
 `MidnightDIDMethodBinding` directly. The adapter will still enforce the on-chain
 subject, subject-owned method, relationship membership, native Jubjub profile,
@@ -54,6 +56,8 @@ try both byte orders or use `versionId` as an encoding marker. Discard or
 quarantine the old snapshot after either path. See the
 [normative canonical mapping](../../spec/midnight-did-binding.md#canonical-mapping)
 for the required validation and migration boundary.
+
+## Resolve a current method
 
 ```ts
 import {

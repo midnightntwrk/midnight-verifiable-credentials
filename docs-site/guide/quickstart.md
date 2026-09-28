@@ -33,7 +33,7 @@ install_stable_graph() (
       exit 1
     fi
   done
-  pnpm add -E \
+  pnpm add --registry "$NPM_REGISTRY" -E \
     "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" \
     "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" \
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
@@ -80,7 +80,7 @@ install_rc_graph() (
       "$EXPECTED_RC" "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
     exit 1
   fi
-  pnpm add -E \
+  pnpm add --registry "$NPM_REGISTRY" -E \
     "@midnight-ntwrk/credential-model@${EXPECTED_RC}" \
     "@midnight-ntwrk/credential-compact@${EXPECTED_RC}" \
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"

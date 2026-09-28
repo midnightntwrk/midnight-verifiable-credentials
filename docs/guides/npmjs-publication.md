@@ -210,10 +210,24 @@ Example operator commands:
 
 ```bash
 VERSION="${VERSION:?export VERSION to the confirmed bad RC}"
-for package in \
-  @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
+packages=(
+  @midnight-ntwrk/credential-model
+  @midnight-ntwrk/credential-compact
+  @midnight-ntwrk/credential-did-midnight
+)
+for package in "${packages[@]}"; do
+  if ! current_rc="$(npm view --registry https://registry.npmjs.org/ \
+    "$package" dist-tags.rc)"; then
+    printf 'unable to read %s rc tag\n' "$package" >&2
+    exit 1
+  fi
+  if [[ "$current_rc" != "$VERSION" ]]; then
+    printf 'refusing rollback: %s rc=%s, expected %s\n' \
+      "$package" "$current_rc" "$VERSION" >&2
+    exit 1
+  fi
+done
+for package in "${packages[@]}"; do
   npm dist-tag rm "${package}" rc
   npm deprecate "${package}@${VERSION}" "Use the replacement RC"
 done
