@@ -19,6 +19,7 @@ export const supportedPackages = [
     consumerFixture: "tooling/fixtures/credential-did-midnight-consumer",
     consumerChecks: ["node", "typescript"],
     localReleaseDependencies: ["@midnight-ntwrk/credential-compact"],
+    consumerReleaseDependencies: ["@midnight-ntwrk/credential-model"],
   },
 ];
 

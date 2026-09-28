@@ -143,11 +143,22 @@ proof-of-possession checks. For issuance use
 self-declared issuer. Authorization-aware issuance MUST use
 `VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is enforced
 independently. For
-presentation, validate the complete presentation, derive its body root, and
-invoke `assertValidPresentationContextProof` in addition to the DID holder
-binding. Authority and verifier decisions likewise require the core
+presentation, use
+`ExplicitHolderPresentationProof<>::assertValidPresentationProof` with the
+credential's holder binding, then apply `assertMidnightDIDHolderBinding` to bind
+that proof key to the accepted DID method snapshot. Authority and verifier
+decisions likewise require the core
 `assertValidSignerAuthorizationProof` or `assertAuthorizedVerifierProof`
 circuit.
+
+The packed-package release gate compiles and executes one synthetic composition
+using only public tarball surfaces. It resolves separate issuer and holder
+Midnight DID methods, validates nonempty family metadata with
+`@midnight-ntwrk/credential-model`, signs typed credential and presentation
+bodies, and rejects claim, body, issuer, holder, method, key, relationship,
+context, and signature substitution. This is package-composition evidence, not
+an issuance protocol, product credential family, wallet flow, or trust-policy
+implementation.
 
 ## Ledger 8 trust boundary
 

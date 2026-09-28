@@ -49,7 +49,13 @@ Compact Value codec operations are TypeScript-only and are tested separately.
 The conformance lane compiles a concrete generic `VC<>` instantiation and tests
 credential-derived issuer authorization. The release-package lane compiles the
 same fixture outside the repository against only the installed tarball's public
-Compact path.
+Compact path. It also executes a small synthetic DID-backed VC/VP composition
+from packed public packages with nonempty typed claims, deterministic schema
+identifiers derived from validated credential-family metadata, resolved
+assertion/authentication methods, real Jubjub signatures, and targeted claim,
+body, issuer, holder, method, key, relationship, context, and signature
+substitutions. The fixture is composition evidence rather than a protocol or
+product use case.
 
 Run:
 

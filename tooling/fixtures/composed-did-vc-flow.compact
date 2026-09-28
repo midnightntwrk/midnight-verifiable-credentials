@@ -1,0 +1,85 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "credentials/composable";
+include "did-midnight/composable";
+
+export struct SyntheticClaims {
+  subjectId: Bytes<32>,
+  assuranceLevel: Uint<16>,
+}
+
+export struct SyntheticDisclosures {
+  assuranceLevel: Uint<16>,
+}
+
+import VC<
+  SyntheticClaims,
+  NoClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix SyntheticVC_;
+import VP<SyntheticDisclosures, ExplicitHolderBinding> prefix SyntheticVP_;
+import CredentialPresentationRelations<
+  SyntheticClaims,
+  NoClaimCommitments,
+  SyntheticDisclosures,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix SyntheticRelations_;
+import ExplicitHolderPresentationProof<SyntheticDisclosures> prefix SyntheticPresentationProof_;
+
+export pure circuit syntheticClaimRoot(
+  claims: SyntheticClaims
+): Bytes<32> {
+  return persistentHash<SyntheticClaims>(claims);
+}
+
+export pure circuit credentialBodyRoot(
+  credential: SyntheticVC_Credential
+): Bytes<32> {
+  return SyntheticVC_credentialBodyRoot(credential);
+}
+
+export pure circuit presentationBodyRoot(
+  presentation: SyntheticVP_Presentation
+): Bytes<32> {
+  return SyntheticVP_presentationBodyRoot(presentation);
+}
+
+export pure circuit assertComposedDIDBackedFlow(
+  credential: SyntheticVC_Credential,
+  issuerProof: Proof,
+  issuerMethodBinding: MidnightDIDMethodBinding,
+  presentation: SyntheticVP_Presentation,
+  presentationProof: Proof,
+  holderBinding: MidnightDIDHolderBinding
+): [] {
+  SyntheticVC_assertValidCredentialEnvelope(
+    credential,
+    syntheticClaimRoot(credential.claims)
+  );
+  assert(
+    issuerMethodBinding.verificationRelationship
+      == VerificationRelationship.assertionMethod,
+    "Credential issuer Midnight DID method requires assertionMethod"
+  );
+  assertMidnightDIDProofMatchesMethod(issuerProof, issuerMethodBinding);
+  SyntheticVC_assertValidCredentialProof(credential, issuerProof);
+
+  SyntheticRelations_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  SyntheticPresentationProof_assertValidPresentationProof(
+    credential.holderBinding,
+    presentation,
+    presentationProof
+  );
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    holderBinding.explicitBinding
+  );
+  assertMidnightDIDHolderBinding(holderBinding, presentationProof);
+}
