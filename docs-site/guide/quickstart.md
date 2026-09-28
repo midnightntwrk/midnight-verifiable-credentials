@@ -8,12 +8,28 @@
 
 ## Install
 
-Install only the package boundaries the consumer needs:
+Install only the package boundaries the consumer needs. This guarded command
+requires the three stable tags to identify one release graph and records that
+resolved version exactly:
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-model@0.2.0
-pnpm add -E @midnight-ntwrk/credential-compact@0.2.0
-pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
+(
+  set -euo pipefail
+  NPM_REGISTRY=https://registry.npmjs.org/
+  MODEL_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.latest)"
+  COMPACT_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.latest)"
+  DID_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.latest)"
+  if [[ -z "$MODEL_STABLE" || "$MODEL_STABLE" != "$COMPACT_STABLE" || \
+    "$MODEL_STABLE" != "$DID_STABLE" ]]; then
+    printf 'refusing mismatched stable graph: model=%s compact=%s did=%s\n' \
+      "$MODEL_STABLE" "$COMPACT_STABLE" "$DID_STABLE" >&2
+    exit 1
+  fi
+  pnpm add -E \
+    "@midnight-ntwrk/credential-model@${MODEL_STABLE}" \
+    "@midnight-ntwrk/credential-compact@${MODEL_STABLE}" \
+    "@midnight-ntwrk/credential-did-midnight@${MODEL_STABLE}"
+)
 ```
 
 Keep the package graph on one exact version for reproducible credential-family

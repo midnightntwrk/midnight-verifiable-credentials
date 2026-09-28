@@ -11,10 +11,11 @@ deployment, proof artifacts, or encoding.
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-model@0.2.0
+pnpm add -E @midnight-ntwrk/credential-model@latest
 ```
 
-The first public release line is pre-1.0. Pin an exact version when a
+`-E` records the version currently selected by `latest` as an exact dependency.
+The release line is pre-1.0, so keep that resolved version pinned when a
 credential-family repository requires reproducible builds. Use the `rc`
 dist-tag only after `npm view @midnight-ntwrk/credential-model dist-tags --json`
 confirms that it identifies the exact prerelease you intend to evaluate; the

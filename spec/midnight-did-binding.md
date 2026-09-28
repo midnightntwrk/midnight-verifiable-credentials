@@ -54,14 +54,13 @@ public `decodeJubjubJwkCoordinate` codec from
 
 Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
 DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
-re-resolve the DID through a 0.7-compatible resolver and invoke
-`resolveMidnightDIDMethodBinding` against the current DID document. The binding
-MUST NOT guess the profile by trying both byte orders, and consumers MUST NOT
-hand-construct a binding from a cached 0.6 snapshot. Resolver `versionId`
-describes ledger state and MUST NOT be used as an encoding-version
-discriminator. Some 0.6 byte strings are also valid 0.7 coordinate encodings and
-will silently map to a different native point, so range validation alone is not
-a migration detector.
+re-resolve the DID through a 0.7-compatible resolver and create the binding only
+from the resulting current DID document. The binding MUST NOT guess the profile
+by trying both byte orders, and consumers MUST NOT hand-construct a binding from
+a cached 0.6 snapshot. Resolver `versionId` describes ledger state and MUST NOT
+be used as an encoding-version discriminator. Some 0.6 byte strings are also
+valid 0.7 coordinate encodings and will silently map to a different native
+point, so range validation alone is not a migration detector.
 
 After successful re-resolution, consumers MUST discard or quarantine the old
 snapshot. If encoding provenance is unknown, re-resolution remains mandatory;
