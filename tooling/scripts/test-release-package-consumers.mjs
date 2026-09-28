@@ -7,6 +7,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
@@ -184,6 +185,8 @@ const run = (command, commandArgs, cwd, label) => {
 };
 
 const releasePackages = supportedPackages;
+const midnightDIDBindingPackageName =
+  "@midnight-ntwrk/credential-did-midnight";
 if (releasePackages.length === 0) {
   fail("workspace catalog has no supported release packages");
 }
@@ -198,6 +201,9 @@ const releasePackageByName = new Map(
     return [packageJson.name, { ...releasePackage, packageJson }];
   }),
 );
+if (!releasePackageByName.has(midnightDIDBindingPackageName)) {
+  fail(`${midnightDIDBindingPackageName} is missing from the workspace catalog`);
+}
 
 for (const releasePackage of releasePackages) {
   if (
@@ -398,6 +404,14 @@ for (const releasePackage of releasePackages) {
     if (lockfile.includes(repoRoot)) {
       fail("consumer lockfile contains the repository path");
     }
+    if (
+      sourcePackageJson.name === midnightDIDBindingPackageName &&
+      lockfile.includes("@midnight-ntwrk/midnight-did@")
+    ) {
+      fail(
+        "credential-did-midnight must not install the full Midnight DID package",
+      );
+    }
 
     run(
       "pnpm",
@@ -425,6 +439,32 @@ for (const releasePackage of releasePackages) {
     const installedPackageJson = JSON.parse(
       readFileSync(path.join(installedPackageRoot, "package.json"), "utf8"),
     );
+    if (sourcePackageJson.name === midnightDIDBindingPackageName) {
+      const declarationRoot = path.join(installedPackageRoot, "dist");
+      if (!existsSync(declarationRoot)) {
+        fail("credential-did-midnight declaration directory is missing");
+      }
+      const declarationFiles = readdirSync(declarationRoot, {
+        recursive: true,
+      })
+        .filter((file) => file.endsWith(".d.ts"))
+        .sort();
+      if (declarationFiles.length === 0) {
+        fail("credential-did-midnight contains no TypeScript declarations");
+      }
+      const declarations = declarationFiles
+        .map((file) => readFileSync(path.join(declarationRoot, file), "utf8"))
+        .join("\n");
+      if (
+        /["']@midnight-ntwrk\/midnight-did(?:\/[^"']*)?["']/u.test(
+          declarations,
+        )
+      ) {
+        fail(
+          "credential-did-midnight declarations must not expose the full Midnight DID package",
+        );
+      }
+    }
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
       const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
       const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;

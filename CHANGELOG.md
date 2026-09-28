@@ -30,6 +30,12 @@ All notable changes to this project are documented here. The format follows
   the public domain codec while preserving the native Compact point and binding
   root; historical 0.6 snapshots require explicit migration.
 
+### Changed
+
+- narrow the Midnight DID binding's public resolver contract to the domain
+  values it consumes and remove the full resolver implementation from its
+  production dependency graph.
+
 ## [0.2.0] - 2026-09-18
 
 ### Changed

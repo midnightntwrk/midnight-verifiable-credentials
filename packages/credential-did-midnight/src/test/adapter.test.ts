@@ -25,6 +25,7 @@ import {
   createMidnightDIDHolderBinding,
   createMidnightDIDSignerDescriptor,
   midnightDIDMethodId,
+  type MidnightDIDResolutionSource,
   resolveMidnightDIDMethodBinding,
 } from "../index.js";
 import { pureCircuits } from "../managed/did-midnight/contract/index.js";
@@ -98,6 +99,9 @@ const resolver = (
     ...overrides,
   }),
 });
+
+const realResolverCompatibility: MidnightDIDResolutionSource = resolver();
+void realResolverCompatibility;
 
 const bytesToBigIntLE = (bytes: Uint8Array): bigint => {
   let value = 0n;
