@@ -11,9 +11,9 @@
 Install only the package boundaries the consumer needs:
 
 ```bash
-pnpm add @midnight-ntwrk/credential-model@0.2.0
-pnpm add @midnight-ntwrk/credential-compact@0.2.0
-pnpm add @midnight-ntwrk/credential-did-midnight@0.2.0
+pnpm add -E @midnight-ntwrk/credential-model@0.2.0
+pnpm add -E @midnight-ntwrk/credential-compact@0.2.0
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
 ```
 
 Keep the package graph on one exact version for reproducible credential-family
@@ -21,18 +21,21 @@ builds. The moving `rc` dist-tag may identify a prerelease older or newer than
 `latest`; inspect it before opting in:
 
 ```bash
-npm view @midnight-ntwrk/credential-model dist-tags --json
-npm view @midnight-ntwrk/credential-compact dist-tags --json
-npm view @midnight-ntwrk/credential-did-midnight dist-tags --json
+NPM_REGISTRY=https://registry.npmjs.org/
+MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
+COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
+DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
+printf 'model=%s compact=%s did=%s\n' "$MODEL_RC" "$COMPACT_RC" "$DID_RC"
 ```
 
 Only after confirming that all three `rc` tags identify the prerelease graph you
 intend to evaluate, install it explicitly:
 
 ```bash
-pnpm add @midnight-ntwrk/credential-model@rc
-pnpm add @midnight-ntwrk/credential-compact@rc
-pnpm add @midnight-ntwrk/credential-did-midnight@rc
+pnpm add -E \
+  "@midnight-ntwrk/credential-model@${MODEL_RC}" \
+  "@midnight-ntwrk/credential-compact@${COMPACT_RC}" \
+  "@midnight-ntwrk/credential-did-midnight@${DID_RC}"
 ```
 
 Use those install commands only when the reported `rc` versions are the exact

@@ -11,7 +11,7 @@ deployment, proof artifacts, or encoding.
 ## Install
 
 ```bash
-pnpm add @midnight-ntwrk/credential-model@0.2.0
+pnpm add -E @midnight-ntwrk/credential-model@0.2.0
 ```
 
 The first public release line is pre-1.0. Pin an exact version when a

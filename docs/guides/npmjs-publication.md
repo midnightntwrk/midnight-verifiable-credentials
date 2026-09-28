@@ -107,9 +107,11 @@ channel: release
 rc_index: <empty>
 ```
 
-The release channel publishes the exact manifest version under `latest`. It
-does not move `rc`. Stable publication from `develop` is rejected by the
-workflow.
+The release channel publishes the exact manifest version under `latest`; the
+publish command does not intentionally mutate `rc`. Stable publication from
+`develop` is rejected by the workflow. The workflow verifies the selected
+`latest` tag, while the operator must compare `rc` with the pre-dispatch
+snapshot in the release-evidence artifact.
 
 ## Verification
 
@@ -122,30 +124,33 @@ verify every package version and the moving tags. This stable example verifies
 the `0.2.0` release:
 
 ```bash
-set -euo pipefail
-VERSION=0.2.0
-TAG=latest
-for package in \
-  @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
-  npm view "${package}@${VERSION}" version
-  actual_tag="$(npm view "${package}" "dist-tags.${TAG}")"
-  if [[ "${actual_tag}" != "${VERSION}" ]]; then
-    printf 'expected %s %s=%s, got %s\n' \
-      "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
-    exit 1
-  fi
-  npm view "${package}" dist-tags --json
-done
+(
+  set -euo pipefail
+  NPM_REGISTRY=https://registry.npmjs.org/
+  VERSION=0.2.0
+  TAG=latest
+  for package in \
+    @midnight-ntwrk/credential-model \
+    @midnight-ntwrk/credential-compact \
+    @midnight-ntwrk/credential-did-midnight; do
+    npm view --registry "$NPM_REGISTRY" "${package}@${VERSION}" version
+    actual_tag="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}" "dist-tags.${TAG}")"
+    if [[ "${actual_tag}" != "${VERSION}" ]]; then
+      printf 'expected %s %s=%s, got %s\n' \
+        "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
+      exit 1
+    fi
+    npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json
+  done
+)
 ```
 
-For an RC, set `VERSION` to the suffixed version and `TAG=rc`, require `rc` to
-resolve to `${VERSION}`, and separately confirm that `latest` remains unchanged.
-For a stable release, require `latest` to resolve to `${VERSION}` and confirm
-that `rc` remains unchanged. Compare the JSON output with the pre-dispatch tag
-snapshot retained by the workflow. Retain the workflow URL and release-evidence
-artifact with the release record.
+For an RC, set `VERSION` to the suffixed version and `TAG=rc`; the workflow also
+fails if `latest` differs from its pre-dispatch snapshot. For a stable release,
+require `latest` to resolve to `${VERSION}` and manually compare `rc` in the JSON
+output with `release-state.json` from the release-evidence artifact. Retain the
+workflow URL and artifact with the release record.
 
 ## Retry and rollback
 

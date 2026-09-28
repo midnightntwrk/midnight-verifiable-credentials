@@ -71,7 +71,8 @@ sources for the new 0.7 JWK:
 
 Create a new binding from the resulting 0.7 JWK and its positive `versionId`,
 then discard or quarantine the old snapshot. If encoding provenance is unknown,
-re-resolution is mandatory; reinterpretation or byte reversal is forbidden.
+re-resolution is mandatory; heuristic reinterpretation or byte reversal is
+forbidden.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
