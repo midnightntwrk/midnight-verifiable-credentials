@@ -130,6 +130,7 @@ verify_release() (
   VERSION="${1:?usage: verify_release VERSION TAG}"
   TAG="${2:?usage: verify_release VERSION TAG}"
   NPM_REGISTRY=https://registry.npmjs.org/
+  status=0
   for package in \
     @midnight-ntwrk/credential-model \
     @midnight-ntwrk/credential-compact \
@@ -140,10 +141,11 @@ verify_release() (
     if [[ "${actual_tag}" != "${VERSION}" ]]; then
       printf 'expected %s %s=%s, got %s\n' \
         "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
-      exit 1
+      status=1
     fi
     npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json
   done
+  exit "$status"
 )
 
 verify_release 0.2.0 latest

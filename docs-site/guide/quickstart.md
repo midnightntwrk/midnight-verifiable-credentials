@@ -8,21 +8,23 @@
 
 ## Install
 
-Install only the package boundaries the consumer needs. This guarded command
-requires the three stable tags to identify one release graph and records that
-resolved version exactly:
+When a consumer needs the complete model, Compact, and Midnight DID graph, use
+this guarded function. It requires every stable tag to remain on the version
+the consumer explicitly approved and records that version exactly:
 
 ```bash
-(
+install_stable_graph() (
   set -euo pipefail
+  EXPECTED_STABLE="${1:?usage: install_stable_graph VERSION}"
   NPM_REGISTRY=https://registry.npmjs.org/
   MODEL_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.latest)"
   COMPACT_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.latest)"
   DID_STABLE="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.latest)"
-  if [[ -z "$MODEL_STABLE" || "$MODEL_STABLE" != "$COMPACT_STABLE" || \
-    "$MODEL_STABLE" != "$DID_STABLE" ]]; then
-    printf 'refusing mismatched stable graph: model=%s compact=%s did=%s\n' \
-      "$MODEL_STABLE" "$COMPACT_STABLE" "$DID_STABLE" >&2
+  if [[ "$MODEL_STABLE" != "$EXPECTED_STABLE" || \
+    "$COMPACT_STABLE" != "$EXPECTED_STABLE" || \
+    "$DID_STABLE" != "$EXPECTED_STABLE" ]]; then
+    printf 'refusing unapproved stable graph: expected=%s model=%s compact=%s did=%s\n' \
+      "$EXPECTED_STABLE" "$MODEL_STABLE" "$COMPACT_STABLE" "$DID_STABLE" >&2
     exit 1
   fi
   pnpm add -E \
@@ -30,6 +32,15 @@ resolved version exactly:
     "@midnight-ntwrk/credential-compact@${MODEL_STABLE}" \
     "@midnight-ntwrk/credential-did-midnight@${MODEL_STABLE}"
 )
+
+install_stable_graph 0.2.0
+```
+
+If the consumer only needs protocol-neutral family and claim-schema metadata,
+install only the model package:
+
+```bash
+pnpm add -E @midnight-ntwrk/credential-model@latest
 ```
 
 Keep the package graph on one exact version for reproducible credential-family
