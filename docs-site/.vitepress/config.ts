@@ -114,10 +114,6 @@ export default defineConfig({
               text: "npmjs Publication",
               link: "/development/npmjs-publication",
             },
-            {
-              text: "Pi Development Loop",
-              link: "/development/pi-development",
-            },
             { text: "Security", link: "/development/security" },
           ],
         },
