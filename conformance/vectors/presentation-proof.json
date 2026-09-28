@@ -70,17 +70,17 @@
     {
       "id": "reject-presentation-schema-substitution-in-proof",
       "mutation": "schema",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Schema reference mismatch"
     },
     {
       "id": "reject-presentation-claim-root-substitution-in-proof",
       "mutation": "claim-root",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Presentation must reference the credential claim root"
     },
     {
       "id": "reject-presentation-issuer-substitution-in-proof",
       "mutation": "issuer-method",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Presentation issuer method reference does not match credential issuer"
     },
     {
       "id": "reject-presentation-different-holder",

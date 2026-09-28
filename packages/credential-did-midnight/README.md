@@ -143,15 +143,16 @@ proof-of-possession checks. For issuance use
 self-declared issuer. Authorization-aware issuance MUST use
 `VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is enforced
 independently. For
-presentation, first use
-`CredentialPresentationRelations<>::assertMatchingCredentialPresentation` to
-bind the presentation to the credential's schema, claim root, issuer, and holder.
-Then use `ExplicitHolderPresentationProof<>::assertValidPresentationProof` with
-the credential's holder binding and
+presentation, use
+`ExplicitHolderPresentationProof<>::assertValidPresentationProof` with the
+credential and an independently accepted
 `MidnightDIDHolderBinding.methodBinding.publicKey`, followed by
 `assertMidnightDIDHolderBinding` to validate the authentication relationship and
-accepted DID method snapshot. Authority and verifier decisions likewise require
-the core
+accepted DID method snapshot. On Ledger 8 that snapshot must be pinned or
+authenticated outside the circuit; supplying a matching binding and key as an
+untrusted witness does not establish DID authorization. Family-specific
+disclosure relations remain separate. Authority and verifier decisions likewise
+require the core
 `assertValidSignerAuthorizationProof` or `assertAuthorizedVerifierProof`
 circuit.
 

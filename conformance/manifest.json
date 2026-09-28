@@ -207,7 +207,7 @@
     },
     {
       "path": "conformance/vectors/presentation-proof.json",
-      "sha256": "10f68ab1dbca25a2f380c6abb0e9d762d342a75851ff5a64fb3034db35032689"
+      "sha256": "173f5f1892de34490420edc099a8531776f7f89bbcee1b053237822f2745028a"
     },
     {
       "path": "conformance/vectors/schema-reference.json",

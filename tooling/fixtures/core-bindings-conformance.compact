@@ -11,7 +11,12 @@ import VC<
   NoStatusBinding
 > prefix ConformanceVC_;
 import VP<NoPublicClaims, ExplicitHolderBinding> prefix ConformanceVP_;
-import ExplicitHolderPresentationProof<NoPublicClaims> prefix ConformancePresentationProof_;
+import ExplicitHolderPresentationProof<
+  NoPublicClaims,
+  NoClaimCommitments,
+  NoPublicClaims,
+  NoStatusBinding
+> prefix ConformancePresentationProof_;
 import CredentialPresentationRelations<
   NoPublicClaims,
   NoClaimCommitments,
@@ -40,14 +45,14 @@ export pure circuit presentationBodyRoot(
 }
 
 export pure circuit assertValidPresentationProof(
-  credentialHolderBinding: ExplicitHolderBinding,
-  expectedHolderPublicKey: JubjubPoint,
+  credential: ConformanceVC_Credential,
+  acceptedHolderPublicKey: JubjubPoint,
   presentation: ConformanceVP_Presentation,
   proof: Proof
 ): [] {
   ConformancePresentationProof_assertValidPresentationProof(
-    credentialHolderBinding,
-    expectedHolderPublicKey,
+    credential,
+    acceptedHolderPublicKey,
     presentation,
     proof
   );

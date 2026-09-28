@@ -21,14 +21,12 @@ import VC<
   NoStatusBinding
 > prefix SyntheticVC_;
 import VP<SyntheticDisclosures, ExplicitHolderBinding> prefix SyntheticVP_;
-import CredentialPresentationRelations<
+import ExplicitHolderPresentationProof<
   SyntheticClaims,
   NoClaimCommitments,
   SyntheticDisclosures,
-  ExplicitHolderBinding,
   NoStatusBinding
-> prefix SyntheticRelations_;
-import ExplicitHolderPresentationProof<SyntheticDisclosures> prefix SyntheticPresentationProof_;
+> prefix SyntheticPresentationProof_;
 
 export pure circuit syntheticClaimRoot(
   claims: SyntheticClaims
@@ -68,16 +66,12 @@ export pure circuit assertComposedDIDBackedFlow(
   assertMidnightDIDProofMatchesMethod(issuerProof, issuerMethodBinding);
   SyntheticVC_assertValidCredentialProof(credential, issuerProof);
 
-  SyntheticRelations_assertMatchingCredentialPresentation(
-    credential,
-    presentation
-  );
   assert(
     presentation.disclosed.assuranceLevel == credential.claims.assuranceLevel,
     "Presentation assurance level does not match credential claim"
   );
   SyntheticPresentationProof_assertValidPresentationProof(
-    credential.holderBinding,
+    credential,
     holderBinding.methodBinding.publicKey,
     presentation,
     presentationProof

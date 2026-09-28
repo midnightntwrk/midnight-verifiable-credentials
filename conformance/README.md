@@ -53,9 +53,11 @@ Compact path. It also executes a small synthetic DID-backed VC/VP composition
 from packed public packages with nonempty typed claims, deterministic schema
 identifiers derived from validated credential-family metadata, resolved
 assertion/authentication methods, real Jubjub signatures, and targeted
-credential-claim, disclosure, body, issuer, holder, method, key, relationship,
-context, and signature substitutions. The fixture is composition evidence
-rather than a protocol or product use case.
+credential-claim, consumer-defined disclosure relation, body, issuer, holder,
+method, proof-key mismatch against the supplied method snapshot, relationship,
+context, and signature substitutions. The fixture does not authenticate that
+snapshot and is composition evidence rather than a protocol, trust decision, or
+product use case.
 
 Run:
 

@@ -73,15 +73,18 @@ over that derived root. A caller-supplied root, method-reference match, or valid
 signature alone is not an equivalent composition.
 
 For the supported explicit-holder profile,
-`ExplicitHolderPresentationProof<TDisclosures>::assertValidPresentationProof`
-is the canonical composition. Its first argument MUST be the holder binding
-from the credential being presented, and its second MUST be the accepted public
-key resolved for that binding. The circuit derives the presentation body root
-internally, validates the envelope, requires the credential and presentation
-holder bindings to match, binds the proof signer reference and key to that
-holder, and verifies the presentation-context signature. It does not replace
-credential-to-presentation relation checks, DID method resolution, challenge
-freshness, status validation, or application policy.
+`ExplicitHolderPresentationProof<TPublicClaims, TClaimCommitments,
+TDisclosures, TStatusBinding>::assertValidPresentationProof` is the canonical
+composition. Its first argument MUST be the credential being presented, and its
+second MUST be the independently accepted public key for that credential's
+holder binding. The circuit derives the presentation body root internally,
+validates the envelope and generic credential-to-presentation relations,
+requires the credential and presentation holder bindings to match, binds the
+proof signer reference and key to that holder, and verifies the
+presentation-context signature. It does not authenticate the accepted key or
+replace credential-proof verification, DID method resolution, challenge
+freshness, status validation, family-specific disclosure relations, or
+application policy.
 
 ## Trust boundary
 

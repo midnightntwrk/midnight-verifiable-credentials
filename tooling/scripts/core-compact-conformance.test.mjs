@@ -392,6 +392,22 @@ test("binds presentation proofs to their body, holder, and context", async () =>
     },
     disclosed: {},
   });
+  const makeCredential = () => {
+    const presentation = makePresentation();
+    return {
+      version: 1n,
+      schema: presentation.schema,
+      issuerVerificationMethodRef: presentation.issuerVerificationMethodRef,
+      holderBinding: presentation.holderBinding,
+      statusBinding: {},
+      issuedAt: 1n,
+      hasExpiration: false,
+      expiresAt: 0n,
+      claims: {},
+      claimCommitments: {},
+      claimRoot: presentation.credentialClaimRoot,
+    };
+  };
   const makeProof = () => ({
     signerVerificationMethodRef: {
       controllerAddress: {
@@ -409,7 +425,7 @@ test("binds presentation proofs to their body, holder, and context", async () =>
   });
   const conformance = await loadCoreBindingsConformance();
   try {
-    const credentialHolderBinding = makePresentation().holderBinding;
+    const credential = makeCredential();
     const expectedHolderPublicKey = point(proofFixture.publicKey);
     const presentation = makePresentation();
     const proof = makeProof();
@@ -423,7 +439,7 @@ test("binds presentation proofs to their body, holder, and context", async () =>
       assert.deepEqual(
         withEvidence("positive", vector, () =>
           conformance.pureCircuits.assertValidPresentationProof(
-            credentialHolderBinding,
+            credential,
             expectedHolderPublicKey,
             makePresentation(),
             makeProof(),
@@ -509,7 +525,7 @@ test("binds presentation proofs to their body, holder, and context", async () =>
         );
         assert.deepEqual(
           conformance.pureCircuits.assertProofMatchesExplicitHolderBinding(
-            credentialHolderBinding,
+            credential.holderBinding,
             candidateProof,
           ),
           [],
@@ -539,7 +555,7 @@ test("binds presentation proofs to their body, holder, and context", async () =>
                   candidateProof,
                 )
               : conformance.pureCircuits.assertValidPresentationProof(
-                  credentialHolderBinding,
+                  credential,
                   expectedHolderPublicKey,
                   candidatePresentation,
                   candidateProof,
