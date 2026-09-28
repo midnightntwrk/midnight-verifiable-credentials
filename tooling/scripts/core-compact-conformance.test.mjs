@@ -409,6 +409,7 @@ test("binds presentation proofs to their body, holder, and context", async () =>
   });
   const conformance = await loadCoreBindingsConformance();
   try {
+    const credentialHolderBinding = makePresentation().holderBinding;
     const presentation = makePresentation();
     const proof = makeProof();
     const bodyRoot = conformance.pureCircuits.presentationBodyRoot(presentation);
@@ -419,9 +420,12 @@ test("binds presentation proofs to their body, holder, and context", async () =>
     );
     for (const vector of vectors.positive) {
       assert.deepEqual(
-        conformance.pureCircuits.assertValidPresentationProof(
-          makePresentation(),
-          makeProof(),
+        withEvidence("positive", vector, () =>
+          conformance.pureCircuits.assertValidPresentationProof(
+            credentialHolderBinding,
+            makePresentation(),
+            makeProof(),
+          ),
         ),
         [],
         vector.id,
@@ -437,8 +441,52 @@ test("binds presentation proofs to their body, holder, and context", async () =>
         candidatePresentation.credentialClaimRoot = alternate;
       } else if (vector.mutation === "issuer-method") {
         candidatePresentation.issuerVerificationMethodRef.methodId = alternate;
-      } else if (vector.mutation === "holder-controller") {
-        candidatePresentation.holderBinding.holderVerificationMethodRef.controllerAddress = {
+      } else if (vector.mutation === "different-holder") {
+        const alternateHolder = fixture.alternateHolder;
+        const alternateHolderReference = {
+          controllerAddress: {
+            bytes: fromHex(alternateHolder.controllerAddressHex),
+          },
+          methodId: fromHex(alternateHolder.methodIdHex),
+        };
+        candidatePresentation.holderBinding = {
+          holderVerificationMethodRef: alternateHolderReference,
+        };
+        candidateProof.signerVerificationMethodRef = alternateHolderReference;
+        candidateProof.publicKey = point(alternateHolder.publicKey);
+        candidateProof.signature = {
+          r: point(alternateHolder.noncePoint),
+          s: 0n,
+        };
+        const substitutedBodyRoot =
+          conformance.pureCircuits.presentationBodyRoot(candidatePresentation);
+        const substitutedChallenge =
+          conformance.pureCircuits.presentationProofChallenge(
+            substitutedBodyRoot,
+            candidateProof,
+          );
+        candidateProof.signature.s = mod(
+          BigInt(alternateHolder.nonceScalar) +
+            substitutedChallenge * BigInt(alternateHolder.secretKey),
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertProofMatchesExplicitHolderBinding(
+            candidatePresentation.holderBinding,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-self-selected-holder-reference`,
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertValidPresentationContextProof(
+            substitutedBodyRoot,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-self-selected-holder-signature`,
+        );
+      } else if (vector.mutation === "proof-holder") {
+        candidateProof.signerVerificationMethodRef.controllerAddress = {
           bytes: alternate,
         };
       } else if (vector.mutation === "signature") {
@@ -448,19 +496,22 @@ test("binds presentation proofs to their body, holder, and context", async () =>
       } else if (vector.mutation !== "issuance-context") {
         assert.fail(`unknown presentation-proof mutation ${vector.mutation}`);
       }
-      assert.throws(
-        () =>
-          vector.mutation === "issuance-context"
-            ? conformance.pureCircuits.assertValidIssuanceContextProof(
-                bodyRoot,
-                candidateProof,
-              )
-            : conformance.pureCircuits.assertValidPresentationProof(
-                candidatePresentation,
-                candidateProof,
-              ),
-        (error) => String(error).includes(vector.errorIncludes),
-        vector.id,
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            vector.mutation === "issuance-context"
+              ? conformance.pureCircuits.assertValidIssuanceContextProof(
+                  bodyRoot,
+                  candidateProof,
+                )
+              : conformance.pureCircuits.assertValidPresentationProof(
+                  credentialHolderBinding,
+                  candidatePresentation,
+                  candidateProof,
+                ),
+          (error) => String(error).includes(vector.errorIncludes),
+          vector.id,
+        ),
       );
     }
   } finally {
@@ -751,6 +802,13 @@ test("rejects credential-to-presentation substitutions in Compact", async () => 
         };
       } else if (vector.mutation === "issuer-method") {
         presentation.issuerVerificationMethodRef.methodId = alternate;
+      } else if (vector.mutation === "holder-controller") {
+        presentation.holderBinding = {
+          holderVerificationMethodRef: {
+            ...holderBinding.holderVerificationMethodRef,
+            controllerAddress: { bytes: alternate },
+          },
+        };
       } else {
         assert.fail(`unknown credential-presentation mutation ${vector.mutation}`);
       }

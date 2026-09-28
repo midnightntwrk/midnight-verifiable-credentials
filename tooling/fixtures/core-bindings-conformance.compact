@@ -11,6 +11,7 @@ import VC<
   NoStatusBinding
 > prefix ConformanceVC_;
 import VP<NoPublicClaims, ExplicitHolderBinding> prefix ConformanceVP_;
+import ExplicitHolderPresentationProof<NoPublicClaims> prefix ConformancePresentationProof_;
 import CredentialPresentationRelations<
   NoPublicClaims,
   NoClaimCommitments,
@@ -39,13 +40,13 @@ export pure circuit presentationBodyRoot(
 }
 
 export pure circuit assertValidPresentationProof(
+  credentialHolderBinding: ExplicitHolderBinding,
   presentation: ConformanceVP_Presentation,
   proof: Proof
 ): [] {
-  ConformanceVP_assertValidPresentationEnvelope(presentation);
-  assertProofMatchesExplicitHolderBinding(presentation.holderBinding, proof);
-  assertValidPresentationContextProof(
-    ConformanceVP_presentationBodyRoot(presentation),
+  ConformancePresentationProof_assertValidPresentationProof(
+    credentialHolderBinding,
+    presentation,
     proof
   );
 }
@@ -57,5 +58,9 @@ export pure circuit assertMatchingCredentialPresentation(
   ConformanceRelations_assertMatchingCredentialPresentation(
     credential,
     presentation
+  );
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
   );
 }
