@@ -29,7 +29,10 @@ docs-site/packages/model.md
 docs-site/packages/model-changelog.md
 docs-site/packages/compact.md
 docs-site/packages/compact-changelog.md
+docs-site/packages/credential-did-midnight.md
+docs-site/packages/credential-did-midnight-changelog.md
 docs-site/architecture/core-only.md
+docs-site/architecture/midnight-did-binding.md
 docs-site/development/npmjs-publication.md
 docs-site/development/security.md
 

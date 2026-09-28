@@ -26,7 +26,7 @@
   "extensionCircuitInventories": [
     {
       "path": "conformance/credential-did-midnight-circuits.json",
-      "sha256": "0f84c7375669e906df01b46c6684855143f6db7b69837976a012ab023ab22029"
+      "sha256": "3cadb20d2db9746f6e1f688597378da82a717843d47c9fd35f349e71b03f58fc"
     }
   ],
   "operations": [
@@ -203,7 +203,7 @@
     },
     {
       "path": "conformance/vectors/midnight-did-binding.json",
-      "sha256": "b402caba8906afb33db2dff22b82f580dc74c4199e1f96ac0242188bca3e3074"
+      "sha256": "e4da0b1e58b9d88226bc6baa64f8d30196714d4ca1084ce675d359accad57ea1"
     },
     {
       "path": "conformance/vectors/presentation-proof.json",
