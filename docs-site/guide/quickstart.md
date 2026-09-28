@@ -16,7 +16,7 @@ and records that approved version exactly:
 install_stable_graph() (
   set -euo pipefail
   EXPECTED_STABLE="${1:?usage: install_stable_graph VERSION}"
-  NPM_REGISTRY=https://registry.npmjs.org/
+  NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
   for package in \
     @midnight-ntwrk/credential-model \
     @midnight-ntwrk/credential-compact \
@@ -54,7 +54,7 @@ builds. The moving `rc` dist-tag may identify a prerelease older or newer than
 `latest`; inspect it before opting in:
 
 ```bash
-NPM_REGISTRY=https://registry.npmjs.org/
+NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
 MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
 COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
 DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
@@ -70,7 +70,7 @@ immutable version:
 install_rc_graph() (
   set -euo pipefail
   EXPECTED_RC="${1:?usage: install_rc_graph VERSION}"
-  NPM_REGISTRY=https://registry.npmjs.org/
+  NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
   MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
   COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
   DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"

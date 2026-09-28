@@ -165,10 +165,17 @@ describe("resolveMidnightDIDMethodBinding", () => {
     });
     expect(binding.publicKey).toEqual(canonicalPoint);
     expect(legacyPointDecodedWith06Profile).toEqual(canonicalPoint);
-    expect(pureCircuits.midnightDIDMethodBindingRoot(binding)).toEqual(
+    const bindingRoot = pureCircuits.midnightDIDMethodBindingRoot(binding);
+    expect(bindingRoot).toEqual(
       pureCircuits.midnightDIDMethodBindingRoot({
         ...binding,
         publicKey: legacyPointDecodedWith06Profile,
+      }),
+    );
+    expect(bindingRoot).not.toEqual(
+      pureCircuits.midnightDIDMethodBindingRoot({
+        ...binding,
+        publicKey: ecMulGenerator(8n),
       }),
     );
   });
