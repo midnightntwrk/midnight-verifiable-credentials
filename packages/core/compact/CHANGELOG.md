@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Add the supported explicit-holder presentation-proof composition, including
+  credential-to-presentation holder equality, signer-reference binding,
+  internally derived body-root verification, and substitution-negative
+  conformance.
+- Require every normative non-codec operation to map back to a supported core
+  or extension Compact circuit.
+
 ## 0.2.0 - 2026-09-18
 
 - Classified every exported Compact circuit and added fail-closed coverage for

@@ -37,8 +37,14 @@ only structural binding; they are not current-status evidence.
 
 Envelope and verification-method vectors cover version, claim-root,
 expiration-order, controller, and method invariants. Presentation-proof vectors
-recompute the presentation body root and reject context, body, holder, and
-signature substitution.
+exercise the shipped explicit-holder composition, recompute the presentation
+body root, and reject context, body, credential-to-presentation holder, proof
+signer, and signature substitution. The fixture delegates to the package
+circuit instead of maintaining a second implementation.
+
+The conformance lane also checks the reverse mapping from every normative
+Compact operation to at least one supported core or extension circuit. The two
+Compact Value codec operations are TypeScript-only and are tested separately.
 
 The conformance lane compiles a concrete generic `VC<>` instantiation and tests
 credential-derived issuer authorization. The release-package lane compiles the

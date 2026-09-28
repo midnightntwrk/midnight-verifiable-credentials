@@ -71,6 +71,16 @@ reference to the selected holder binding, and verify the presentation-context
 proof over that derived root. A caller-supplied root, method-reference match,
 or valid signature alone is not an equivalent composition.
 
+For the supported explicit-holder profile,
+`ExplicitHolderPresentationProof<TDisclosures>::assertValidPresentationProof`
+is the canonical composition. Its first argument MUST be the holder binding
+from the credential being presented. The circuit derives the presentation body
+root internally, validates the envelope, requires the credential and
+presentation holder bindings to match, binds the proof signer reference to that
+holder, and verifies the presentation-context signature. It does not replace
+credential-to-presentation relation checks, DID method resolution, challenge
+freshness, status validation, or application policy.
+
 ## Trust boundary
 
 A valid proof establishes control of the proof public key for the signed body

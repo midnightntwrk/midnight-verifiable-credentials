@@ -25,6 +25,14 @@ domain-separated challenges, and verify Schnorr signatures. Signed timestamps
 and challenge hashes still require application-defined time, freshness,
 audience, and replay policy.
 
+`ExplicitHolderPresentationProof<TDisclosures>::assertValidPresentationProof`
+is the supported presentation-proof entrypoint. It accepts the credential's
+explicit holder binding, the complete presentation, and its proof; derives the
+presentation root internally; rejects holder substitution; binds the proof
+signer reference; and verifies the presentation-context signature. Consumers
+still apply credential-to-presentation relations, DID resolution, status,
+freshness, and application policy separately.
+
 Signer authorization supports two composition modes. Applications may install
 an accepted descriptor through local governance, or verify a domain-separated
 authority proof before materializing the same descriptor. The authorization
