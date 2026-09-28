@@ -29,24 +29,28 @@ printf 'model=%s compact=%s did=%s\n' "$MODEL_RC" "$COMPACT_RC" "$DID_RC"
 ```
 
 Only after confirming that all three `rc` tags identify the prerelease graph you
-intend to evaluate, install it explicitly:
+intend to evaluate, record that exact version as `EXPECTED_RC`. The guarded
+install rechecks every moving tag against that approved version before using the
+immutable version:
 
 ```bash
 (
   set -euo pipefail
   NPM_REGISTRY=https://registry.npmjs.org/
+  EXPECTED_RC=0.3.0-rc1 # Replace with the version inspected above.
   MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
   COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
   DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
-  if [[ -z "$MODEL_RC" || "$MODEL_RC" != "$COMPACT_RC" || "$MODEL_RC" != "$DID_RC" ]]; then
-    printf 'refusing mismatched RC graph: model=%s compact=%s did=%s\n' \
-      "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
+  if [[ -z "$EXPECTED_RC" || "$MODEL_RC" != "$EXPECTED_RC" || \
+    "$COMPACT_RC" != "$EXPECTED_RC" || "$DID_RC" != "$EXPECTED_RC" ]]; then
+    printf 'refusing unapproved RC graph: expected=%s model=%s compact=%s did=%s\n' \
+      "$EXPECTED_RC" "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
     exit 1
   fi
   pnpm add -E \
-    "@midnight-ntwrk/credential-model@${MODEL_RC}" \
-    "@midnight-ntwrk/credential-compact@${COMPACT_RC}" \
-    "@midnight-ntwrk/credential-did-midnight@${DID_RC}"
+    "@midnight-ntwrk/credential-model@${EXPECTED_RC}" \
+    "@midnight-ntwrk/credential-compact@${EXPECTED_RC}" \
+    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"
 )
 ```
 

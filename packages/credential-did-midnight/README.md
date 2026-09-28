@@ -18,10 +18,11 @@ or mutate a DID, select a trust policy, or call another contract.
 The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
-0.6 little-endian DID-document snapshots must be re-resolved or explicitly
-migrated; the adapter does not guess the byte order. Not every 0.6 snapshot is
-detectably invalid under the 0.7 decoder, so supplying one can silently bind a
-different native point rather than fail.
+0.6 little-endian DID-document snapshots must be re-resolved through a 0.7
+resolver; the adapter does not expose a snapshot migration constructor or guess
+the byte order. Not every 0.6 snapshot is detectably invalid under the 0.7
+decoder, so supplying one can silently bind a different native point rather
+than fail.
 
 ## Migrating Midnight DID 0.6 snapshots
 

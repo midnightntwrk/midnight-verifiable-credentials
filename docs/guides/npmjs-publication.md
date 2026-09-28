@@ -120,16 +120,16 @@ The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-Set `VERSION` and `TAG` to the exact values reported by the workflow, then
-verify every package version and the moving tags. This stable example verifies
+Pass `VERSION` and `TAG` as positional arguments to the verifier below so the
+selected values cannot be shadowed by defaults. This stable example verifies
 the `0.2.0` release:
 
 ```bash
-(
+verify_release() (
   set -euo pipefail
+  VERSION="${1:?usage: verify_release VERSION TAG}"
+  TAG="${2:?usage: verify_release VERSION TAG}"
   NPM_REGISTRY=https://registry.npmjs.org/
-  VERSION=0.2.0
-  TAG=latest
   for package in \
     @midnight-ntwrk/credential-model \
     @midnight-ntwrk/credential-compact \
@@ -145,13 +145,16 @@ the `0.2.0` release:
     npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json
   done
 )
+
+verify_release 0.2.0 latest
 ```
 
-For an RC, set `VERSION` to the suffixed version and `TAG=rc`; the workflow also
-fails if `latest` differs from its pre-dispatch snapshot. For a stable release,
-require `latest` to resolve to `${VERSION}` and manually compare `rc` in the JSON
-output with `release-state.json` from the release-evidence artifact. Retain the
-workflow URL and artifact with the release record.
+For an RC, call the function with the suffixed version and `rc`, for example
+`verify_release 0.3.0-rc1 rc`; the workflow also fails if `latest` differs from
+its pre-dispatch snapshot. For a stable release, require `latest` to resolve to
+the selected version and manually compare `rc` in the JSON output with
+`release-state.json` from the release-evidence artifact. Retain the workflow URL
+and artifact with the release record.
 
 ## Retry and rollback
 
