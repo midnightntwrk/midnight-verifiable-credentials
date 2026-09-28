@@ -32,10 +32,22 @@ Only after confirming that all three `rc` tags identify the prerelease graph you
 intend to evaluate, install it explicitly:
 
 ```bash
-pnpm add -E \
-  "@midnight-ntwrk/credential-model@${MODEL_RC}" \
-  "@midnight-ntwrk/credential-compact@${COMPACT_RC}" \
-  "@midnight-ntwrk/credential-did-midnight@${DID_RC}"
+(
+  set -euo pipefail
+  NPM_REGISTRY=https://registry.npmjs.org/
+  MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
+  COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
+  DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
+  if [[ -z "$MODEL_RC" || "$MODEL_RC" != "$COMPACT_RC" || "$MODEL_RC" != "$DID_RC" ]]; then
+    printf 'refusing mismatched RC graph: model=%s compact=%s did=%s\n' \
+      "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
+    exit 1
+  fi
+  pnpm add -E \
+    "@midnight-ntwrk/credential-model@${MODEL_RC}" \
+    "@midnight-ntwrk/credential-compact@${COMPACT_RC}" \
+    "@midnight-ntwrk/credential-did-midnight@${DID_RC}"
+)
 ```
 
 Use those install commands only when the reported `rc` versions are the exact

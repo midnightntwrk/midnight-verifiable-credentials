@@ -109,9 +109,10 @@ rc_index: <empty>
 
 The release channel publishes the exact manifest version under `latest`; the
 publish command does not intentionally mutate `rc`. Stable publication from
-`develop` is rejected by the workflow. The workflow verifies the selected
-`latest` tag, while the operator must compare `rc` with the pre-dispatch
-snapshot in the release-evidence artifact.
+`develop` causes the publish job to be skipped before evidence or packages are
+produced; operators MUST treat that skipped job as a failed release attempt.
+The workflow verifies the selected `latest` tag, while the operator must compare
+`rc` with the pre-dispatch snapshot in the release-evidence artifact.
 
 ## Verification
 

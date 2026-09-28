@@ -26,15 +26,15 @@ different native point rather than fail.
 ## Migrating Midnight DID 0.6 snapshots
 
 1. Re-resolve the DID through a Midnight DID 0.7 resolver.
-2. Build a new binding from the returned 0.7 JWK and resolver `versionId`.
+2. Call `resolveMidnightDIDMethodBinding` with that resolver, DID, method ID,
+   and required verification relationship so the adapter validates the current
+   DID document and builds the binding.
 3. Discard or quarantine the old 0.6 snapshot.
 4. Re-resolve rather than reinterpret any cached snapshot whose encoding
    provenance is unknown.
 
-Do not reverse bytes heuristically or try both byte orders. A version-bound
-migration may convert byte order only after authenticating the snapshot's 0.6
-provenance, decoding the 0.6 coordinate value, and re-encoding the same point in
-the 0.7 profile. See the
+Do not reverse cached coordinate bytes or try both byte orders. This package
+does not expose a constructor for migrating a stored 0.6 binding. See the
 [normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
 for the required validation and migration boundary.
 
