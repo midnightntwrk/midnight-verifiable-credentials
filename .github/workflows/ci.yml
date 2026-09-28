@@ -6,6 +6,7 @@ on:
     branches:
       - develop
       - main
+      - "milestone-*"
       - vc-core
   workflow_dispatch:
 
@@ -13,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: vc-ci-${{ github.event.pull_request.number || github.ref }}
+  group: vc-ci-${{ github.event.pull_request.number || (startsWith(github.ref, 'refs/heads/milestone-') && format('{0}-{1}-{2}', github.event_name, github.ref, github.sha)) || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -67,3 +68,6 @@ jobs:
 
       - name: Check documentation links
         run: pnpm run docs:links
+
+      - name: Build documentation site
+        run: pnpm run docs:build

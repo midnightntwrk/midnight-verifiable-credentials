@@ -3,14 +3,14 @@ permissions: {}
 
 on:
   push:
-    branches: [develop, main, "release/**"]
+    branches: [develop, main, "milestone-*", "release/**"]
   pull_request:
-    branches: [develop, main, "release/**"]
+    branches: [develop, main, "milestone-*", "release/**"]
   workflow_dispatch: {}   # so you can still run it manually
   schedule:
     - cron: '0 0 * * *'   # run daily at midnight UTC
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || (startsWith(github.ref, 'refs/heads/milestone-') && format('{0}-{1}-{2}', github.event_name, github.ref, github.sha)) || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
