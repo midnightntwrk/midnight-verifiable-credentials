@@ -24,7 +24,12 @@ builds. The moving `rc` dist-tag may identify a prerelease older or newer than
 npm view @midnight-ntwrk/credential-model dist-tags --json
 npm view @midnight-ntwrk/credential-compact dist-tags --json
 npm view @midnight-ntwrk/credential-did-midnight dist-tags --json
+```
 
+Only after confirming that all three `rc` tags identify the prerelease graph you
+intend to evaluate, install it explicitly:
+
+```bash
 pnpm add @midnight-ntwrk/credential-model@rc
 pnpm add @midnight-ntwrk/credential-compact@rc
 pnpm add @midnight-ntwrk/credential-did-midnight@rc

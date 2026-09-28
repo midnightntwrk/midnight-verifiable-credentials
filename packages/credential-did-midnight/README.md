@@ -31,7 +31,9 @@ different native point rather than fail.
 4. Re-resolve rather than reinterpret any cached snapshot whose encoding
    provenance is unknown.
 
-Do not reverse cached coordinate bytes or try both byte orders. See the
+Do not blindly reverse cached coordinate bytes or try both byte orders. An
+explicit migration must decode a snapshot with authenticated 0.6 provenance
+and re-encode the same point in the 0.7 profile. See the
 [normative canonical mapping](https://midnightntwrk.github.io/midnight-verifiable-credentials/spec/midnight-did-binding#canonical-mapping)
 for the required validation and migration boundary.
 

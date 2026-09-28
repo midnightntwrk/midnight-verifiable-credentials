@@ -122,6 +122,7 @@ verify every package version and the moving tags. This stable example verifies
 the `0.2.0` release:
 
 ```bash
+set -euo pipefail
 VERSION=0.2.0
 TAG=latest
 for package in \
@@ -129,14 +130,21 @@ for package in \
   @midnight-ntwrk/credential-compact \
   @midnight-ntwrk/credential-did-midnight; do
   npm view "${package}@${VERSION}" version
-  test "$(npm view "${package}" "dist-tags.${TAG}")" = "${VERSION}"
+  actual_tag="$(npm view "${package}" "dist-tags.${TAG}")"
+  if [[ "${actual_tag}" != "${VERSION}" ]]; then
+    printf 'expected %s %s=%s, got %s\n' \
+      "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
+    exit 1
+  fi
+  npm view "${package}" dist-tags --json
 done
 ```
 
 For an RC, set `VERSION` to the suffixed version and `TAG=rc`, require `rc` to
 resolve to `${VERSION}`, and separately confirm that `latest` remains unchanged.
 For a stable release, require `latest` to resolve to `${VERSION}` and confirm
-that `rc` remains unchanged. Retain the workflow URL and release-evidence
+that `rc` remains unchanged. Compare the JSON output with the pre-dispatch tag
+snapshot retained by the workflow. Retain the workflow URL and release-evidence
 artifact with the release record.
 
 ## Retry and rollback
@@ -176,6 +184,20 @@ done
 ```
 
 Do not move `latest` during RC rollback.
+
+For a bad stable release:
+
+1. Stop any pending promotion or dependent release.
+2. Deprecate the bad immutable version with a concrete impact and upgrade
+   message.
+3. Fix the source and publish a new patch version; that successful release moves
+   `latest` forward.
+4. If impact requires immediately removing the bad version from `latest`, an npm
+   owner must use a separately authorized, audited maintenance operation to move
+   `latest` back to the last known-good version while the patch is prepared.
+5. Record both tag states, affected versions, workflow runs, impact, and
+   corrective action. Do not unpublish the consumed stable version as a routine
+   rollback.
 
 ## Incident response
 
