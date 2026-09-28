@@ -7,8 +7,12 @@ import type {
   VerificationMethodRef,
   VerificationRelationship,
 } from "@midnight-ntwrk/credential-compact";
-import type { MidnightDIDResolverInterface } from "@midnight-ntwrk/midnight-did";
-import type { MidnightDIDString } from "@midnight-ntwrk/midnight-did/midnight";
+import type {
+  DIDDocumentMetadata,
+  DIDKeyID,
+  VerificationMethod,
+} from "@midnight-ntwrk/midnight-did-domain";
+import type { MidnightDIDString } from "@midnight-ntwrk/midnight-did-domain/midnight";
 
 export type MidnightDIDVerificationRelationship =
   | "assertionMethod"
@@ -27,8 +31,30 @@ export type MidnightDIDHolderBinding = {
   readonly methodBinding: MidnightDIDMethodBinding;
 };
 
+export type MidnightDIDResolutionDocument = {
+  readonly id: MidnightDIDString;
+  readonly verificationMethod?: readonly VerificationMethod[];
+  readonly authentication?: readonly DIDKeyID[];
+  readonly assertionMethod?: readonly DIDKeyID[];
+  readonly capabilityInvocation?: readonly DIDKeyID[];
+};
+
+export type MidnightDIDResolutionResult = {
+  readonly didDocument: MidnightDIDResolutionDocument;
+  readonly didDocumentMetadata: Pick<
+    DIDDocumentMetadata,
+    "deactivated" | "versionId"
+  >;
+};
+
+export interface MidnightDIDResolutionSource {
+  resolveResult(
+    did: MidnightDIDString,
+  ): Promise<MidnightDIDResolutionResult | null>;
+}
+
 export type ResolveMidnightDIDMethodBindingOptions = {
-  readonly resolver: Pick<MidnightDIDResolverInterface, "resolveResult">;
+  readonly resolver: MidnightDIDResolutionSource;
   readonly did: MidnightDIDString;
   readonly verificationMethodId: string;
   readonly relationship: MidnightDIDVerificationRelationship;

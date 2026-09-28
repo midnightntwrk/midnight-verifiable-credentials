@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Narrow the public resolver boundary to a structural interface backed by DID
+  domain types, keeping the full Midnight DID resolver as a development-only
+  compatibility dependency.
 - Add an executable packed-package consumer that resolves Midnight DID issuer
   and holder methods, validates family metadata through the model package,
   signs a nonempty typed VC/VP flow, verifies the published Compact composition,

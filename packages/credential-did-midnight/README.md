@@ -6,12 +6,14 @@ in `@midnight-ntwrk/credential-compact`.
 See [`CHANGELOG.md`](./CHANGELOG.md) for package release history.
 
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
-injected `@midnight-ntwrk/midnight-did` resolver. It binds a subject-owned native
-Jubjub verification method to the core `VerificationMethodRef`, the observed DID
-state version, and one supported verification relationship. Bounded software
-helpers can sign credential and presentation proofs with that method. The
-package does not store keys, deploy or mutate a DID, select a trust policy, or
-call another contract.
+injected structural `MidnightDIDResolutionSource`. The published
+`@midnight-ntwrk/midnight-did` 0.7 resolver satisfies that interface, but the
+full resolver implementation is not a runtime dependency of this package. The
+adapter binds a subject-owned native Jubjub verification method to the core
+`VerificationMethodRef`, the observed DID state version, and one supported
+verification relationship. Bounded software helpers can sign credential and
+presentation proofs with that method. The package does not store keys, deploy
+or mutate a DID, select a trust policy, or call another contract.
 
 The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
