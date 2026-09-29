@@ -57,17 +57,29 @@ a separately authorized maintenance operation is required. See the
 
 Before dispatch:
 
-1. Confirm the release PR is merged to the intended branch and CI is green.
-2. Confirm `workspace-catalog.mjs --publishable-paths` lists only approved
+1. After a stable release, advance the root and every publishable package
+   manifest to the next approved stable base before creating its first RC.
+2. Confirm the release PR is merged to the intended branch and CI is green.
+3. Confirm `workspace-catalog.mjs --publishable-paths` lists only approved
    reusable packages.
-3. Confirm the package changelog, support policy, and version are current.
-4. Confirm all packages have the exact npm trusted-publisher configuration
+4. Confirm the package changelog, support policy, and version are current.
+5. Confirm all packages have the exact npm trusted-publisher configuration
    above and the `npm-release` GitHub environment is protected.
-5. Confirm the requested version does not already contain different bytes.
+6. Confirm the requested version does not already contain different bytes.
 
 The workflow reruns `./run.sh --light`, validates the packed release contents,
 runs local clean-consumer tests, generates SBOMs, and publishes with provenance. It uploads
 the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
+Before an RC build starts, it also fails closed unless the manifest base is
+strictly newer than the current npm `latest` version of every catalog package.
+A stable build permits an equal base for an idempotent rerun, but rejects any
+base older than npm `latest`.
+Individual catalog packages without a published version are allowed so a new
+package can join an existing release train. The guard rejects a catalog where
+every package appears absent, because that result cannot be distinguished
+safely from a registry or configuration failure.
+An existing package without a `latest` tag also blocks publication until its
+registry state is triaged explicitly.
 
 ## Prerelease publication
 

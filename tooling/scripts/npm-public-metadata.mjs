@@ -41,3 +41,33 @@ export const readPublicRegistryMetadata = ({
       stdio: ["ignore", "pipe", "pipe"],
     },
   ).trim();
+
+export const publicPackageExists = ({
+  npmCommand,
+  packageName,
+  registry,
+}) => {
+  for (const selector of ["*", "rc", "snapshot"]) {
+    try {
+      readPublicRegistryMetadata({
+        args: ["view", `${packageName}@${selector}`, "version", "--json"],
+        npmCommand,
+        packageName,
+        registry,
+      });
+      return true;
+    } catch (error) {
+      if (error.stderr === undefined || error.stderr === null) {
+        throw error;
+      }
+      const stderr = String(error.stderr ?? "");
+      if (/(?:E404|404 Not Found)/u.test(stderr)) {
+        continue;
+      }
+      throw new Error(
+        `npm package lookup failed for ${packageName}: ${stderr.trim()}`,
+      );
+    }
+  }
+  return false;
+};

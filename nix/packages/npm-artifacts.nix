@@ -13,7 +13,7 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "midnight-vc-npm-artifacts";
-  version = "0.2.0";
+  version = "0.3.0";
 
   inherit src;
 
@@ -25,7 +25,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) pname version;
     inherit src;
     pnpm = pnpm_10;
-    hash = "sha256-Tu4JopQoSpCH9MIv4gZmWS4k4ZN4Sx9Ew+Dm8nUMwvE=";
+    hash = "sha256-2tCs7WnwP6ZDkmQ57V2X/1IhW7VqeNldhLFug+ul/fo=";
     fetcherVersion = 3;
   };
 

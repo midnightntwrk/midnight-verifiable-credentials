@@ -16,6 +16,7 @@ import {
   computeReleaseVersion,
   requireStableVersion,
 } from "./prepare-release-version.mjs";
+import { compareStableVersions } from "./validate-release-base.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -26,7 +27,7 @@ const supportedTarballNames = [
   "midnight-ntwrk-credential-compact",
   "midnight-ntwrk-credential-did-midnight",
 ];
-const writeSupportedTarballs = (directory, version = "0.2.0") => {
+const writeSupportedTarballs = (directory, version = "0.3.0") => {
   for (const packageName of supportedTarballNames) {
     writeFileSync(path.join(directory, `${packageName}-${version}.tgz`), "");
   }
@@ -35,24 +36,24 @@ const writeSupportedTarballs = (directory, version = "0.2.0") => {
 test("computes rc and stable release metadata", () => {
   assert.deepEqual(
     computeReleaseVersion({
-      baseVersion: "0.2.0",
+      baseVersion: "0.3.0",
       channel: "rc",
       rcIndex: "1",
     }),
     {
       channel: "rc",
-      version: "0.2.0-rc1",
+      version: "0.3.0-rc1",
       npmTag: "rc",
     },
   );
   assert.deepEqual(
     computeReleaseVersion({
-      baseVersion: "0.2.0",
+      baseVersion: "0.3.0",
       channel: "release",
     }),
     {
       channel: "release",
-      version: "0.2.0",
+      version: "0.3.0",
       npmTag: "latest",
     },
   );
@@ -80,6 +81,16 @@ test("rejects ambiguous versions and invalid rc indexes", () => {
   );
 });
 
+test("orders stable release bases numerically", () => {
+  assert.equal(compareStableVersions("0.3.0", "0.2.0"), 1);
+  assert.equal(compareStableVersions("0.3.0", "0.3.0"), 0);
+  assert.equal(compareStableVersions("0.3.0", "0.10.0"), -1);
+  assert.throws(
+    () => compareStableVersions("0.3.0-rc1", "0.2.0"),
+    /stable semantic/u,
+  );
+});
+
 test("configures npm publication for the protected OIDC environment", () => {
   const workflow = readFileSync(
     path.join(repoRoot, ".github/workflows/publish.yml"),
@@ -92,6 +103,189 @@ test("configures npm publication for the protected OIDC environment", () => {
   assert.doesNotMatch(workflow, /MIDNIGHTCI_NPMJS_TOKEN/u);
   assert.doesNotMatch(workflow, /NODE_AUTH_TOKEN/u);
   assert.doesNotMatch(workflow, /vc-npm-publish-\$\{\{ github\.ref \}\}/u);
+  assert.match(
+    workflow,
+    /- name: Validate release base[\s\S]*?--channel "\$CHANNEL"[\s\S]*?--registry "\$NPM_REGISTRY"/u,
+  );
+  assert.ok(
+    workflow.indexOf("- name: Validate release base") <
+      workflow.indexOf("- name: Set up Compact toolchain"),
+  );
+});
+
+test("validates RC and stable bases against every npm latest version", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-release-base-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1" == "view" && "$3" == "version" ]]; then
+  case "\${FAKE_NPM_LATEST}" in
+    absent|mixed|mixed-401)
+      echo 'npm error code E404' >&2
+      exit 1
+      ;;
+    no-latest)
+      if [[ "$2" == *@rc ]]; then
+        echo '"0.3.0-rc1"'
+        exit 0
+      fi
+      echo 'npm error code E404' >&2
+      exit 1
+      ;;
+    transient-404)
+      echo '"0.2.0"'
+      exit 0
+      ;;
+  esac
+fi
+if [[ "$1" != "view" ]]; then
+  echo "unexpected npm command: $*" >&2
+  exit 2
+fi
+case "\${FAKE_NPM_LATEST}" in
+  absent)
+    echo 'npm error code E404' >&2
+    exit 1
+    ;;
+  error)
+    echo 'npm error code E503' >&2
+    exit 1
+    ;;
+  mixed)
+    if [[ "$2" == "@midnight-ntwrk/credential-model" && "$3" == "dist-tags.latest" ]]; then
+      echo '0.2.0'
+    else
+      echo 'npm error code E404' >&2
+      exit 1
+    fi
+    ;;
+  mixed-401)
+    if [[ "$2" == "@midnight-ntwrk/credential-model" && "$3" == "dist-tags.latest" ]]; then
+      echo '0.2.0'
+    elif [[ "$3" == "dist-tags.latest" ]]; then
+      echo 'npm error code E401' >&2
+      exit 1
+    else
+      echo 'npm error code E404' >&2
+      exit 1
+    fi
+    ;;
+  no-latest)
+    exit 0
+    ;;
+  transient-404)
+    echo 'npm error code E404' >&2
+    exit 1
+    ;;
+  *)
+    if [[ "$3" != "dist-tags.latest" ]]; then
+      echo "unexpected npm command: $*" >&2
+      exit 2
+    fi
+    echo "\${FAKE_NPM_LATEST}"
+    ;;
+esac
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+
+  const runValidation = (
+    latest,
+    channel = "rc",
+    registry = "https://registry.npmjs.org/",
+    npmCommand = fakeNpm,
+  ) =>
+    spawnSync(
+      process.execPath,
+      [
+        "tooling/scripts/validate-release-base.mjs",
+        "--channel",
+        channel,
+        "--registry",
+        registry,
+      ],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FAKE_NPM_LATEST: latest,
+          NPM_COMMAND: npmCommand,
+        },
+      },
+    );
+
+  try {
+    const newer = runValidation("0.2.0");
+    assert.equal(newer.status, 0, newer.stderr);
+    assert.match(newer.stdout, /0\.3\.0 is valid/u);
+
+    const equal = runValidation("0.3.0");
+    assert.notEqual(equal.status, 0);
+    assert.match(equal.stderr, /must be newer than npm latest 0\.3\.0/u);
+
+    const older = runValidation("0.10.0");
+    assert.notEqual(older.status, 0);
+    assert.match(older.stderr, /must be newer than npm latest 0\.10\.0/u);
+
+    const absent = runValidation("absent");
+    assert.notEqual(absent.status, 0);
+    assert.match(absent.stderr, /no published latest versions/u);
+
+    const mixed = runValidation("mixed");
+    assert.equal(mixed.status, 0, mixed.stderr);
+
+    const mixed401 = runValidation("mixed-401");
+    assert.equal(mixed401.status, 0, mixed401.stderr);
+
+    const noLatest = runValidation("no-latest");
+    assert.notEqual(noLatest.status, 0);
+    assert.match(noLatest.stderr, /published without an npm latest tag/u);
+
+    const transient404 = runValidation("transient-404");
+    assert.notEqual(transient404.status, 0);
+    assert.match(transient404.stderr, /npm latest lookup failed/u);
+
+    const normalizedRegistry = runValidation(
+      "0.2.0",
+      "rc",
+      "https://registry.npmjs.org",
+    );
+    assert.equal(normalizedRegistry.status, 0, normalizedRegistry.stderr);
+
+    const stableEqual = runValidation("0.3.0", "release");
+    assert.equal(stableEqual.status, 0, stableEqual.stderr);
+
+    const stableOlder = runValidation("0.4.0", "release");
+    assert.notEqual(stableOlder.status, 0);
+    assert.match(stableOlder.stderr, /must be at least npm latest 0\.4\.0/u);
+
+    const invalidLatest = runValidation("0.3.0-rc1");
+    assert.notEqual(invalidLatest.status, 0);
+    assert.match(
+      invalidLatest.stderr,
+      /credential-model has invalid npm latest 0\.3\.0-rc1/u,
+    );
+
+    const registryError = runValidation("error");
+    assert.notEqual(registryError.status, 0);
+    assert.match(registryError.stderr, /npm latest lookup failed/u);
+
+    const missingCommand = runValidation(
+      "0.2.0",
+      "rc",
+      "https://registry.npmjs.org/",
+      path.join(temporaryRoot, "missing-npm"),
+    );
+    assert.notEqual(missingCommand.status, 0);
+    assert.match(missingCommand.stderr, /ENOENT/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
 });
 
 test("publishes tested tarballs through tokenless OIDC with provenance and the requested tag", () => {
@@ -105,7 +299,7 @@ test("publishes tested tarballs through tokenless OIDC with provenance and the r
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
   echo "npm error code E404" >&2
   exit 1
 fi
@@ -135,15 +329,15 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
     assert.equal(result.status, 0, result.stderr);
     const commands = readFileSync(npmLog, "utf8");
-    assert.match(commands, /publish .*credential-model-0\.2\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-compact-0\.2\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-did-midnight-0\.2\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-model-0\.3\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-compact-0\.3\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-did-midnight-0\.3\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
     assert.doesNotMatch(commands, /dist-tag add/u);
@@ -173,7 +367,7 @@ exit 0
   );
   chmodSync(fakeNpm, 0o755);
   writeFileSync(
-    path.join(temporaryRoot, `${supportedTarballNames[0]}-0.2.0.tgz`),
+    path.join(temporaryRoot, `${supportedTarballNames[0]}-0.3.0.tgz`),
     "",
   );
 
@@ -193,7 +387,7 @@ exit 0
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
           NODE_AUTH_TOKEN: "test-token",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
@@ -335,7 +529,7 @@ test("fails closed when npm cannot determine whether a version exists", () => {
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
   echo "npm error code E503" >&2
   exit 17
 fi
@@ -361,7 +555,7 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
@@ -382,8 +576,8 @@ test("fails closed when an existing version needs token-authorized tag repair", 
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
-  echo "0.2.0"
+if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
+  echo "0.3.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
   echo "0.0.9"
 fi
@@ -407,7 +601,7 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
@@ -431,10 +625,10 @@ test("treats an existing version with the requested tag as a tokenless no-op", (
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
-  echo "0.2.0"
+if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
+  echo "0.3.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
-  echo "0.2.0"
+  echo "0.3.0"
 fi
 `,
   );
@@ -456,7 +650,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
@@ -481,9 +675,9 @@ test("repairs incorrect tags without mixing npm notices into metadata", () => {
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.2.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
   echo "npm notice registry metadata is current" >&2
-  echo "0.2.0"
+  echo "0.3.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
   echo "0.0.9"
 elif [[ "$1" == "view" ]]; then
@@ -510,7 +704,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.2.0",
+          VERSION: "0.3.0",
         },
       },
     );
@@ -518,7 +712,7 @@ fi
     const commands = readFileSync(npmLog, "utf8");
     assert.match(
       commands,
-      /dist-tag add @midnight-ntwrk\/credential-model@0\.2\.0 rc/u,
+      /dist-tag add @midnight-ntwrk\/credential-model@0\.3\.0 rc/u,
     );
     assert.doesNotMatch(commands, /^publish /mu);
     assert.doesNotMatch(commands, /dist-tag rm/u);
@@ -732,7 +926,7 @@ esac
       "registry-probe-error",
     );
     assert.notEqual(registryProbeError.status, 0);
-    assert.match(registryProbeError.stderr, /npm view failed/u);
+    assert.match(registryProbeError.stderr, /npm package lookup failed/u);
 
     const distTagError = verify(
       "snapshot",
