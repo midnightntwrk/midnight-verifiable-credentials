@@ -1,10 +1,22 @@
+import { execFileSync } from "node:child_process";
+
 const fail = (message) => {
   throw new Error(`[pnpm-supply-policy] ${message}`);
 };
 
+const exactVersionPattern =
+  /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/u;
+
 const packageNameFromPolicy = (policy) => {
   const separator = policy.lastIndexOf("@");
-  return separator > 0 ? policy.slice(0, separator) : policy;
+  if (separator <= 0) {
+    fail(`policy selector must include an exact version: ${policy}`);
+  }
+  const versions = policy.slice(separator + 1).split(" || ");
+  if (versions.some((version) => !exactVersionPattern.test(version))) {
+    fail(`policy selector must use exact semantic versions: ${policy}`);
+  }
+  return policy.slice(0, separator);
 };
 
 const validatePolicies = (name, policies) => {
@@ -29,8 +41,11 @@ export const validateRootPnpmSupplyPolicy = (policy) => {
   if (policy.blockExoticSubdeps !== true) {
     fail("blockExoticSubdeps must be true");
   }
-  if (policy.minimumReleaseAge !== 10080) {
-    fail("minimumReleaseAge must enforce a seven-day cooldown");
+  if (
+    !Number.isInteger(policy.minimumReleaseAge) ||
+    policy.minimumReleaseAge < 10080
+  ) {
+    fail("minimumReleaseAge must enforce at least a seven-day cooldown");
   }
   if (policy.trustPolicy !== "no-downgrade") {
     fail('trustPolicy must be "no-downgrade"');
@@ -53,6 +68,37 @@ export const validateRootPnpmSupplyPolicy = (policy) => {
   };
 };
 
+const pnpmPolicyEnvironmentNames = [
+  "block_exotic_subdeps",
+  "minimum_release_age",
+  "minimum_release_age_exclude",
+  "trust_policy",
+  "trust_policy_exclude",
+  "trust_policy_ignore_after",
+];
+
+export const readProjectPnpmConfig = (
+  repoRoot,
+  name,
+  sourceEnvironment = process.env,
+) => {
+  const environment = { ...sourceEnvironment };
+  for (const configName of pnpmPolicyEnvironmentNames) {
+    delete environment[`npm_config_${configName}`];
+    delete environment[`NPM_CONFIG_${configName.toUpperCase()}`];
+  }
+  const output = execFileSync(
+    "pnpm",
+    ["config", "get", name, "--location", "project", "--json"],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: environment,
+    },
+  ).trim();
+  return output === "" ? undefined : JSON.parse(output);
+};
+
 export const createConsumerPnpmWorkspace = ({
   rootPolicy,
   publishedPackageNames = [],
@@ -61,6 +107,12 @@ export const createConsumerPnpmWorkspace = ({
   const minimumReleaseAgeExclude = [...rootPolicy.minimumReleaseAgeExclude];
   if (publishedPackageNames.length > 0 && typeof expectedVersion !== "string") {
     fail("registry verification requires an expected version");
+  }
+  if (
+    expectedVersion !== undefined &&
+    !exactVersionPattern.test(expectedVersion)
+  ) {
+    fail(`registry verification version is invalid: ${expectedVersion}`);
   }
   for (const packageName of publishedPackageNames) {
     const existingIndex = minimumReleaseAgeExclude.findIndex(

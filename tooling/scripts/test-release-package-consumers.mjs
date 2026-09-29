@@ -20,6 +20,7 @@ import { fileURLToPath } from "node:url";
 import { supportedPackages } from "./workspace-catalog.mjs";
 import {
   createConsumerPnpmWorkspace,
+  readProjectPnpmConfig,
   validateRootPnpmSupplyPolicy,
 } from "./pnpm-supply-policy.mjs";
 
@@ -206,24 +207,33 @@ const releasePackageByName = new Map(
   }),
 );
 
-const readPnpmConfig = (name) => {
-  const output = execFileSync("pnpm", ["config", "get", name, "--json"], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: environment,
-  }).trim();
-  return output === "" ? undefined : JSON.parse(output);
-};
 let cachedRootPnpmSupplyPolicy;
 const rootPnpmSupplyPolicy = () => {
   cachedRootPnpmSupplyPolicy ??= validateRootPnpmSupplyPolicy({
-    blockExoticSubdeps: readPnpmConfig("blockExoticSubdeps"),
-    minimumReleaseAge: readPnpmConfig("minimumReleaseAge"),
+    blockExoticSubdeps: readProjectPnpmConfig(
+      repoRoot,
+      "blockExoticSubdeps",
+      environment,
+    ),
+    minimumReleaseAge: readProjectPnpmConfig(
+      repoRoot,
+      "minimumReleaseAge",
+      environment,
+    ),
     minimumReleaseAgeExclude:
-      readPnpmConfig("minimumReleaseAgeExclude") ?? [],
-    trustPolicy: readPnpmConfig("trustPolicy"),
-    trustPolicyExclude: readPnpmConfig("trustPolicyExclude") ?? [],
-    trustPolicyIgnoreAfter: readPnpmConfig("trustPolicyIgnoreAfter"),
+      readProjectPnpmConfig(
+        repoRoot,
+        "minimumReleaseAgeExclude",
+        environment,
+      ) ?? [],
+    trustPolicy: readProjectPnpmConfig(repoRoot, "trustPolicy", environment),
+    trustPolicyExclude:
+      readProjectPnpmConfig(repoRoot, "trustPolicyExclude", environment) ?? [],
+    trustPolicyIgnoreAfter: readProjectPnpmConfig(
+      repoRoot,
+      "trustPolicyIgnoreAfter",
+      environment,
+    ),
   });
   return cachedRootPnpmSupplyPolicy;
 };

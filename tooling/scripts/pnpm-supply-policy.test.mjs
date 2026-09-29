@@ -1,18 +1,18 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import test from "node:test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
   createConsumerPnpmWorkspace,
+  readProjectPnpmConfig,
   validateRootPnpmSupplyPolicy,
 } from "./pnpm-supply-policy.mjs";
 
 const validPolicy = {
   blockExoticSubdeps: true,
   minimumReleaseAge: 10080,
-  minimumReleaseAgeExclude: ["turbo@2.11.5", "typescript"],
+  minimumReleaseAgeExclude: ["turbo@2.11.5", "typescript@5.9.3"],
   trustPolicy: "no-downgrade",
   trustPolicyExclude: [],
 };
@@ -21,14 +21,6 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
-const readPnpmConfig = (name) => {
-  const output = execFileSync("pnpm", ["config", "get", name, "--json"], {
-    cwd: repoRoot,
-    encoding: "utf8",
-  }).trim();
-  return output === "" ? undefined : JSON.parse(output);
-};
-
 test("requires every pnpm supply-chain control", () => {
   assert.throws(
     () => validateRootPnpmSupplyPolicy({ ...validPolicy, trustPolicy: undefined }),
@@ -48,7 +40,7 @@ test("requires every pnpm supply-chain control", () => {
         ...validPolicy,
         minimumReleaseAge: 1,
       }),
-    /must enforce a seven-day cooldown/,
+    /must enforce at least a seven-day cooldown/,
   );
   assert.throws(
     () =>
@@ -85,19 +77,53 @@ test("rejects broad and duplicate policy exceptions", () => {
       }),
     /more than one selector for turbo/,
   );
+  assert.throws(
+    () =>
+      validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        minimumReleaseAgeExclude: ["typescript"],
+      }),
+    /must include an exact version/,
+  );
+  assert.throws(
+    () =>
+      validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        minimumReleaseAgeExclude: ["typescript@^5.9.3"],
+      }),
+    /must use exact semantic versions/,
+  );
 });
 
 test("the real workspace enables the required supply-chain policy", () => {
   assert.doesNotThrow(() =>
     validateRootPnpmSupplyPolicy({
-      blockExoticSubdeps: readPnpmConfig("blockExoticSubdeps"),
-      minimumReleaseAge: readPnpmConfig("minimumReleaseAge"),
+      blockExoticSubdeps: readProjectPnpmConfig(
+        repoRoot,
+        "blockExoticSubdeps",
+      ),
+      minimumReleaseAge: readProjectPnpmConfig(repoRoot, "minimumReleaseAge"),
       minimumReleaseAgeExclude:
-        readPnpmConfig("minimumReleaseAgeExclude") ?? [],
-      trustPolicy: readPnpmConfig("trustPolicy"),
-      trustPolicyExclude: readPnpmConfig("trustPolicyExclude") ?? [],
-      trustPolicyIgnoreAfter: readPnpmConfig("trustPolicyIgnoreAfter"),
+        readProjectPnpmConfig(repoRoot, "minimumReleaseAgeExclude") ?? [],
+      trustPolicy: readProjectPnpmConfig(repoRoot, "trustPolicy"),
+      trustPolicyExclude:
+        readProjectPnpmConfig(repoRoot, "trustPolicyExclude") ?? [],
+      trustPolicyIgnoreAfter: readProjectPnpmConfig(
+        repoRoot,
+        "trustPolicyIgnoreAfter",
+      ),
     }),
+  );
+});
+
+test("project policy cannot be supplied by inherited npm environment", () => {
+  const environment = {
+    ...process.env,
+    NPM_CONFIG_MINIMUM_RELEASE_AGE: "1",
+  };
+  assert.equal(
+    readProjectPnpmConfig(repoRoot, "minimumReleaseAge", environment),
+    10080,
   );
 });
 
@@ -110,7 +136,7 @@ test("preserves root policy for local clean consumers", () => {
 
   assert.deepEqual(workspace.minimumReleaseAgeExclude, [
     "turbo@2.11.5",
-    "typescript",
+    "typescript@5.9.3",
   ]);
   assert.equal(workspace.blockExoticSubdeps, true);
   assert.equal(workspace.trustPolicy, "no-downgrade");
