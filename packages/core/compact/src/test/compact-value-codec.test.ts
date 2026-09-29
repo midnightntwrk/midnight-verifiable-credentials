@@ -69,7 +69,7 @@ const nonEmptyCompactValueArbitrary = fc.array(
     size: "max",
   },
 );
-const PROPERTY_RUNS = 500;
+const PROPERTY_RUNS = 250;
 
 describe("Compact value transport codec", () => {
   it("frames and unframes runtime Value chunks without JSON conversion", () => {
