@@ -161,13 +161,6 @@ delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
 delete environment.NPM_CONFIG_WORKSPACE;
-const consumerPnpmWorkspace = `packages:
-  - .
-
-blockExoticSubdeps: true
-minimumReleaseAge: 10080
-trustPolicy: no-downgrade
-`;
 const installLifecycleHooks = [
   "preinstall",
   "install",
@@ -208,6 +201,66 @@ const releasePackageByName = new Map(
     return [packageJson.name, { ...releasePackage, packageJson }];
   }),
 );
+
+const readPnpmConfig = (name) => {
+  const output = execFileSync("pnpm", ["config", "get", name, "--json"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    env: environment,
+  }).trim();
+  return output === "" ? undefined : JSON.parse(output);
+};
+const normalizeVersionPolicies = (policies) => {
+  const versionsByPackage = new Map();
+  for (const policy of policies) {
+    const separator = policy.lastIndexOf("@");
+    if (separator <= 0 || separator === policy.length - 1) {
+      fail(`invalid pnpm version policy ${policy}`);
+    }
+    const packageName = policy.slice(0, separator);
+    const version = policy.slice(separator + 1);
+    const versions = versionsByPackage.get(packageName) ?? [];
+    if (!versions.includes(version)) {
+      versions.push(version);
+    }
+    versionsByPackage.set(packageName, versions);
+  }
+  return [...versionsByPackage].map(
+    ([packageName, versions]) => `${packageName}@${versions.join(" || ")}`,
+  );
+};
+const rootMinimumReleaseAgeExclude =
+  readPnpmConfig("minimumReleaseAgeExclude") ?? [];
+const rootTrustPolicyExclude = readPnpmConfig("trustPolicyExclude") ?? [];
+const rootBlockExoticSubdeps = readPnpmConfig("blockExoticSubdeps");
+const rootMinimumReleaseAge = readPnpmConfig("minimumReleaseAge");
+const rootTrustPolicy = readPnpmConfig("trustPolicy");
+const consumerPnpmWorkspace = () => {
+  const publishedPackageExclusions = registryMode
+    ? [...releasePackageByName.keys()].map(
+        (packageName) => `${packageName}@${expectedVersion}`,
+      )
+    : [];
+  const minimumReleaseAgeExclude = normalizeVersionPolicies([
+    ...rootMinimumReleaseAgeExclude,
+    ...publishedPackageExclusions,
+  ]);
+  const trustPolicyExclude = normalizeVersionPolicies(rootTrustPolicyExclude);
+  return `${JSON.stringify(
+    {
+      packages: ["."],
+      blockExoticSubdeps: rootBlockExoticSubdeps,
+      minimumReleaseAge: rootMinimumReleaseAge,
+      ...(minimumReleaseAgeExclude.length === 0
+        ? {}
+        : { minimumReleaseAgeExclude }),
+      trustPolicy: rootTrustPolicy,
+      ...(trustPolicyExclude.length === 0 ? {} : { trustPolicyExclude }),
+    },
+    null,
+    2,
+  )}\n`;
+};
 if (!releasePackageByName.has(midnightDIDBindingPackageName)) {
   fail(`${midnightDIDBindingPackageName} is missing from the workspace catalog`);
 }
@@ -382,7 +435,7 @@ for (const releasePackage of releasePackages) {
 
     writeFileSync(
       path.join(consumerRoot, "pnpm-workspace.yaml"),
-      consumerPnpmWorkspace,
+      consumerPnpmWorkspace(),
     );
 
     run(

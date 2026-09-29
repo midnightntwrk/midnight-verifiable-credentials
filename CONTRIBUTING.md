@@ -97,6 +97,11 @@ package name must appear only once in the list; update an existing selector with
 pnpm's version-union syntax instead of appending another entry for the same
 package. Do not exempt an entire scope such as `@midnight-ntwrk/*`.
 
+The clean-consumer harness inherits these workspace policies. Registry-mode
+verification adds exact exemptions only for the VC package version that the
+current publish run is verifying, so a newly published release can be tested
+without weakening the policy for its other dependencies.
+
 Trust-policy exceptions must also identify one reviewed `name@version` entry.
 Confirm the package identity, registry metadata, lockfile integrity, and audit
 result in the pull request before adding it to `trustPolicyExclude`. Do not use
