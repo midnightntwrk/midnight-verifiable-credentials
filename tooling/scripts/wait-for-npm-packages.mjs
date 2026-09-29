@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { setTimeout } from "node:timers/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { readPublicRegistryMetadata } from "./npm-public-metadata.mjs";
 import { supportedWorkspacePaths } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
@@ -12,13 +12,6 @@ const repoRoot = path.resolve(
   "../..",
 );
 const npmCommand = process.env.NPM_COMMAND ?? "npm";
-const cleanProbeEnv = Object.fromEntries(
-  Object.entries(process.env).filter(
-    ([name]) =>
-      !/^(?:NODE_AUTH_TOKEN|NPM_TOKEN)$/iu.test(name) &&
-      !/^NPM_CONFIG_/iu.test(name),
-  ),
-);
 
 const parseArgs = (args) => {
   const options = {
@@ -100,24 +93,16 @@ const classifyViewError = (error, packageName) => {
 
 const probePackage = (packageName) => {
   try {
-    const publishedVersion = execFileSync(
-      npmCommand,
-      [
+    const publishedVersion = readPublicRegistryMetadata({
+      args: [
         "view",
         `${packageName}@${options.version}`,
         "version",
-        "--registry",
-        options.registry,
-        // Never load setup-node's auth-bearing user config for this public probe.
-        "--userconfig",
-        "/dev/null",
       ],
-      {
-        encoding: "utf8",
-        env: cleanProbeEnv,
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    ).trim();
+      npmCommand,
+      packageName,
+      registry: options.registry,
+    });
     if (publishedVersion === options.version) {
       return { kind: "visible", packageName };
     }

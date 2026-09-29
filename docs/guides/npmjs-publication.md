@@ -43,9 +43,12 @@ commands. The normal path therefore applies public access and the intended tag
 as options to `npm publish` and performs no separate authenticated mutation.
 By default, `--tag rc` applies `rc` and preserves `latest`. Only a stable
 release may move `latest`.
-The workflow snapshots and verifies the selected tag policy independently and
-fails closed when registry metadata cannot be read. A tokenless idempotent
-rerun is a no-op when the immutable version and requested tag already exist.
+The workflow snapshots every dist-tag, records absent `latest` and `rc` tags
+explicitly, verifies the selected tag independently, and fails if any
+non-selected tag changes. Registry metadata errors fail closed. A tokenless
+idempotent rerun is a no-op when the immutable version and requested tag already
+exist. Publication runs share one repository-wide concurrency group, so RC and
+stable jobs cannot mutate separate tags at the same time.
 If the version exists under the wrong tag, the workflow stops and reports that
 a separately authorized maintenance operation is required. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
@@ -177,11 +180,11 @@ verify_release 0.2.0 latest
 ```
 
 For an RC, call the function with the suffixed version and `rc`, for example
-`verify_release 0.3.0-rc1 rc`; the workflow also fails if `latest` differs from
-its pre-dispatch snapshot. For a stable release, require `latest` to resolve to
-the selected version and manually compare `rc` in the JSON output with
-`release-state.json` from the release-evidence artifact. Retain the workflow URL
-and artifact with the release record.
+`verify_release 0.3.0-rc1 rc`. The workflow verifies the selected tag and fails
+if any other recorded tag is added, removed, or changed relative to the
+pre-dispatch snapshot. Inspecting `release-state.json` from the release-evidence
+artifact remains useful secondary evidence, but it is not the only guard for
+stable channels. Retain the workflow URL and artifact with the release record.
 
 ## Retry and rollback
 
