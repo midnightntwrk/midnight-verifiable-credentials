@@ -30,14 +30,14 @@
     "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run docs:validate && pnpm run lint"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@types/node": "^26.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.33.1",
-    "@typescript-eslint/parser": "^8.33.1",
-    "eslint": "^9.28.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.2",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
+    "@typescript-eslint/parser": "^8.70.1",
+    "eslint": "^10.11.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-simple-import-sort": "^14.0.0",
-    "turbo": "^2.5.4",
+    "turbo": "^2.11.5",
     "typescript": "^5.8.3",
     "vitest": "^4.1.11"
   },
