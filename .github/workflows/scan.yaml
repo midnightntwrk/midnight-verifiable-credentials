@@ -34,8 +34,10 @@ jobs:
           skip_scorecard_scan: "true"
 
       - name: Verify required scanner reports
+        if: ${{ always() }}
         shell: bash
         run: |
+          # Keep this list aligned with the enabled skip_* inputs above.
           reports=(
             checkov.sarif
             gitleaks.sarif
@@ -50,6 +52,8 @@ jobs:
             fi
           done
           if (( ${#missing[@]} > 0 )); then
-            printf 'Missing required scanner report: %s\n' "${missing[@]}" >&2
+            for report in "${missing[@]}"; do
+              printf '::error title=Missing scanner report::%s\n' "${report}"
+            done
             exit 1
           fi
