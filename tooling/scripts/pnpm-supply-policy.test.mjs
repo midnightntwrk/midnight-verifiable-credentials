@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { mkdtempSync, rmSync } from "node:fs";
+import os from "node:os";
 import test from "node:test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -117,14 +119,20 @@ test("the real workspace enables the required supply-chain policy", () => {
 });
 
 test("project policy cannot be supplied by inherited npm environment", () => {
+  const emptyProject = mkdtempSync(path.join(os.tmpdir(), "pnpm-policy-test-"));
   const environment = {
     ...process.env,
     NPM_CONFIG_MINIMUM_RELEASE_AGE: "1",
+    npm_config_minimumReleaseAge: "1",
   };
-  assert.equal(
-    readProjectPnpmConfig(repoRoot, "minimumReleaseAge", environment),
-    10080,
-  );
+  try {
+    assert.equal(
+      readProjectPnpmConfig(emptyProject, "minimumReleaseAge", environment),
+      undefined,
+    );
+  } finally {
+    rmSync(emptyProject, { recursive: true, force: true });
+  }
 });
 
 test("preserves root policy for local clean consumers", () => {
@@ -162,5 +170,21 @@ test("exempts only the published package version in registry mode", () => {
   assert.deepEqual(workspace.minimumReleaseAgeExclude, [
     "@midnight-ntwrk/credential-model@0.2.0 || 0.3.0-rc.1",
     "@midnight-ntwrk/credential-compact@0.3.0-rc.1",
+  ]);
+
+  const unchangedWorkspace = JSON.parse(
+    createConsumerPnpmWorkspace({
+      rootPolicy: validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        minimumReleaseAgeExclude: [
+          "@midnight-ntwrk/credential-model@0.3.0-rc.1",
+        ],
+      }),
+      publishedPackageNames: ["@midnight-ntwrk/credential-model"],
+      expectedVersion: "0.3.0-rc.1",
+    }),
+  );
+  assert.deepEqual(unchangedWorkspace.minimumReleaseAgeExclude, [
+    "@midnight-ntwrk/credential-model@0.3.0-rc.1",
   ]);
 });

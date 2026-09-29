@@ -12,7 +12,10 @@ const packageNameFromPolicy = (policy) => {
   if (separator <= 0) {
     fail(`policy selector must include an exact version: ${policy}`);
   }
-  const versions = policy.slice(separator + 1).split(" || ");
+  const versions = policy
+    .slice(separator + 1)
+    .split("||")
+    .map((version) => version.trim());
   if (versions.some((version) => !exactVersionPattern.test(version))) {
     fail(`policy selector must use exact semantic versions: ${policy}`);
   }
@@ -68,14 +71,14 @@ export const validateRootPnpmSupplyPolicy = (policy) => {
   };
 };
 
-const pnpmPolicyEnvironmentNames = [
-  "block_exotic_subdeps",
-  "minimum_release_age",
-  "minimum_release_age_exclude",
-  "trust_policy",
-  "trust_policy_exclude",
-  "trust_policy_ignore_after",
-];
+const pnpmPolicyEnvironmentNames = new Set([
+  "npmconfigblockexoticsubdeps",
+  "npmconfigminimumreleaseage",
+  "npmconfigminimumreleaseageexclude",
+  "npmconfigtrustpolicy",
+  "npmconfigtrustpolicyexclude",
+  "npmconfigtrustpolicyignoreafter",
+]);
 
 export const readProjectPnpmConfig = (
   repoRoot,
@@ -83,9 +86,13 @@ export const readProjectPnpmConfig = (
   sourceEnvironment = process.env,
 ) => {
   const environment = { ...sourceEnvironment };
-  for (const configName of pnpmPolicyEnvironmentNames) {
-    delete environment[`npm_config_${configName}`];
-    delete environment[`NPM_CONFIG_${configName.toUpperCase()}`];
+  for (const environmentName of Object.keys(environment)) {
+    const normalizedName = environmentName
+      .toLowerCase()
+      .replaceAll(/[^a-z0-9]/gu, "");
+    if (pnpmPolicyEnvironmentNames.has(normalizedName)) {
+      delete environment[environmentName];
+    }
   }
   const output = execFileSync(
     "pnpm",
@@ -122,7 +129,11 @@ export const createConsumerPnpmWorkspace = ({
       minimumReleaseAgeExclude.push(`${packageName}@${expectedVersion}`);
       continue;
     }
-    if (minimumReleaseAgeExclude[existingIndex] !== packageName) {
+    const existingVersions = minimumReleaseAgeExclude[existingIndex]
+      .slice(minimumReleaseAgeExclude[existingIndex].lastIndexOf("@") + 1)
+      .split("||")
+      .map((version) => version.trim());
+    if (!existingVersions.includes(expectedVersion)) {
       minimumReleaseAgeExclude[existingIndex] =
         `${minimumReleaseAgeExclude[existingIndex]} || ${expectedVersion}`;
     }
