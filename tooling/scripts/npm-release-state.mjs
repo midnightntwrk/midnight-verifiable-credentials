@@ -7,7 +7,10 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { readPublicRegistryMetadata } from "./npm-public-metadata.mjs";
+import {
+  publicPackageExists,
+  readPublicRegistryMetadata,
+} from "./npm-public-metadata.mjs";
 import { supportedWorkspacePaths } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
@@ -81,31 +84,6 @@ const readRegistryMetadata = (args, packageName, registry) =>
     registry,
   });
 
-const packageExists = (packageName, registry) => {
-  try {
-    readRegistryMetadata(
-      [
-        "view",
-        packageName,
-        "dist-tags",
-        "--json",
-      ],
-      packageName,
-      registry,
-    );
-    return true;
-  } catch (error) {
-    if (error.stderr === undefined) {
-      throw error;
-    }
-    const stderr = String(error.stderr ?? "");
-    if (/(?:E404|404 Not Found)/u.test(stderr)) {
-      return false;
-    }
-    throw new Error(`npm view failed for ${packageName}: ${stderr.trim()}`);
-  }
-};
-
 const readDistTags = (packageName, registry) => {
   try {
     const output = readRegistryMetadata(
@@ -119,7 +97,7 @@ const readDistTags = (packageName, registry) => {
     );
     return parseDistTags(packageName, output);
   } catch (error) {
-    if (error.stderr === undefined) {
+    if (error.stderr === undefined || error.stderr === null) {
       throw error;
     }
     const stderr = String(error.stderr ?? "");
@@ -128,7 +106,7 @@ const readDistTags = (packageName, registry) => {
     }
     if (
       /(?:E401|E404|401 Unauthorized|404 Not Found)/u.test(stderr) &&
-      !packageExists(packageName, registry)
+      !publicPackageExists({ npmCommand, packageName, registry })
     ) {
       return {};
     }

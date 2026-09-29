@@ -24,7 +24,10 @@ All notable changes to this project are documented here. The format follows
   production dependency graph;
 - make npm release verification fail closed when any non-selected dist-tag is
   added, removed, or changed, with explicit absent states for tracked channel
-  tags.
+  tags;
+- advance the release base to `0.3.0`, reject RC publication unless that base
+  is newer than every catalog package's npm `latest` version, and reject stable
+  publication when the base is older than a published `latest` tag.
 
 ## [0.2.0] - 2026-09-25
 
