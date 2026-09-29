@@ -28,7 +28,32 @@ jobs:
           persist-credentials: false
 
       - name: Scan code
-        uses: midnightntwrk/upload-sarif-github-action@9da05ae8b0dc1b97a0a25f809deb586c06b7ad3e # includes caller-workspace scan fix
+        uses: midnightntwrk/upload-sarif-github-action@4e7a363e1fcd1be102b28485ad17bcb507deada6 # v1.0.4
         with:
           fail_severity: "high"
           skip_scorecard_scan: "true"
+
+      - name: Verify required scanner reports
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          # Keep this list aligned with the enabled skip_* inputs above.
+          reports=(
+            checkov.sarif
+            gitleaks.sarif
+            opengrep.sarif
+            trivy.sarif
+            zizmor.sarif
+          )
+          missing=()
+          for report in "${reports[@]}"; do
+            if [[ ! -s "scan_reports/${report}" ]]; then
+              missing+=("${report}")
+            fi
+          done
+          if (( ${#missing[@]} > 0 )); then
+            for report in "${missing[@]}"; do
+              printf '::error title=Missing scanner report::%s\n' "${report}"
+            done
+            exit 1
+          fi
