@@ -2,7 +2,11 @@
 
 All notable changes to this package are documented in this file.
 
-## 0.2.0 - 2026-09-18
+## Unreleased
+
+- Advance the package manifest to the `0.3.0` release base.
+
+## 0.2.0 - 2026-09-25
 
 - Accept untyped credential-family input through an assertion boundary and
   report field-specific `CredentialModelError` failures.

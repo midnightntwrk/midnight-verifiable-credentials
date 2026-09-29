@@ -75,9 +75,6 @@ importers:
       '@midnight-ntwrk/credential-compact':
         specifier: workspace:*
         version: link:../core/compact
-      '@midnight-ntwrk/midnight-did':
-        specifier: 0.7.0
-        version: 0.7.0
       '@midnight-ntwrk/midnight-did-domain':
         specifier: 0.7.0
         version: 0.7.0
@@ -87,6 +84,10 @@ importers:
       '@noble/hashes':
         specifier: ^2.2.0
         version: 2.4.0
+    devDependencies:
+      '@midnight-ntwrk/midnight-did':
+        specifier: 0.7.0
+        version: 0.7.0
 
 packages:
 

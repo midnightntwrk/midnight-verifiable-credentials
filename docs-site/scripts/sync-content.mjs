@@ -114,10 +114,15 @@ const rewriteLinks = (source, sourcePath) => {
       );
   }
   if (sourcePath === "packages/credential-did-midnight/README.md") {
-    return rewritten.replace(
-      "[`CHANGELOG.md`](./CHANGELOG.md)",
-      "[package changelog](/packages/credential-did-midnight-changelog)",
-    );
+    return rewritten
+      .replace(
+        "[`CHANGELOG.md`](./CHANGELOG.md)",
+        "[package changelog](/packages/credential-did-midnight-changelog)",
+      )
+      .replace(
+        "(../../spec/midnight-did-binding.md#canonical-mapping)",
+        "(/spec/midnight-did-binding#canonical-mapping)",
+      );
   }
   if (
     sourcePath ===

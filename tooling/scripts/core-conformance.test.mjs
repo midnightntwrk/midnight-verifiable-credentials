@@ -17,6 +17,9 @@ const manifest = readJson("conformance/manifest.json");
 const compactCircuitInventory = readJson(
   manifest.compactCircuitInventory.path,
 );
+const extensionCircuitInventories = (
+  manifest.extensionCircuitInventories ?? []
+).map(({ path }) => readJson(path));
 
 const fromHex = (value) => Uint8Array.from(Buffer.from(value, "hex"));
 const toHex = (value) => Buffer.from(value).toString("hex");
@@ -306,6 +309,33 @@ test("classifies every circuit exported by each Compact entrypoint", () => {
       `${entrypoint.export} exported circuits differ from the inventory`,
     );
   }
+});
+
+test("backs every normative Compact operation with a supported circuit", () => {
+  const supportedCircuitOperations = new Set(
+    [compactCircuitInventory, ...extensionCircuitInventories].flatMap(
+      ({ circuits }) =>
+        circuits
+          .filter(({ classification }) => classification === "supported")
+          .map(({ operation }) => operation),
+    ),
+  );
+  const typeScriptOnlyOperations = new Set([
+    "decode-compact-value",
+    "encode-compact-value",
+  ]);
+  const operationsWithoutSupportedCircuit = manifest.operations
+    .map(({ id }) => id)
+    .filter(
+      (operation) =>
+        !typeScriptOnlyOperations.has(operation) &&
+        !supportedCircuitOperations.has(operation),
+    );
+  assert.deepEqual(
+    operationsWithoutSupportedCircuit,
+    [],
+    "every non-codec operation must have a supported Compact circuit",
+  );
 });
 
 test("requires executable evidence for every supported Compact circuit", () => {

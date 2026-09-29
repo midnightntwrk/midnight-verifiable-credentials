@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
 import {
   mkdirSync,
   readFileSync,
@@ -8,6 +7,10 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  publicPackageExists,
+  readPublicRegistryMetadata,
+} from "./npm-public-metadata.mjs";
 import { supportedWorkspacePaths } from "./workspace-catalog.mjs";
 
 const repoRoot = path.resolve(
@@ -15,6 +18,7 @@ const repoRoot = path.resolve(
   "../..",
 );
 const npmCommand = process.env.NPM_COMMAND ?? "npm";
+const trackedChannelTags = ["latest", "rc"];
 
 const parseArgs = (args) => {
   const options = {
@@ -57,21 +61,81 @@ const packageNames = supportedWorkspacePaths.map((workspacePath) => {
   return packageJson.name;
 });
 
+const parseDistTags = (packageName, output) => {
+  if (output.length === 0) {
+    return {};
+  }
+  const distTags = Object.create(null);
+  for (const line of output.split("\n")) {
+    const match = /^([^:\s]+):\s+(\S+)$/u.exec(line);
+    if (match === null || Object.hasOwn(distTags, match[1])) {
+      throw new Error(`npm returned invalid dist-tags for ${packageName}`);
+    }
+    distTags[match[1]] = match[2];
+  }
+  return Object.fromEntries(Object.entries(distTags));
+};
+
+const readRegistryMetadata = (args, packageName, registry) =>
+  readPublicRegistryMetadata({
+    args,
+    npmCommand,
+    packageName,
+    registry,
+  });
+
 const readDistTags = (packageName, registry) => {
   try {
-    const output = execFileSync(
-      npmCommand,
-      ["view", packageName, "dist-tags", "--json", "--registry", registry],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    ).trim();
-    return output.length === 0 ? {} : JSON.parse(output);
+    const output = readRegistryMetadata(
+      [
+        "dist-tag",
+        "ls",
+        packageName,
+      ],
+      packageName,
+      registry,
+    );
+    return parseDistTags(packageName, output);
   } catch (error) {
+    if (error.stderr === undefined || error.stderr === null) {
+      throw error;
+    }
     const stderr = String(error.stderr ?? "");
-    if (/(?:E404|404 Not Found)/u.test(stderr)) {
+    if (/No dist-tags found for\s/u.test(stderr)) {
       return {};
     }
-    throw new Error(`npm view failed for ${packageName}: ${stderr.trim()}`);
+    if (
+      /(?:E401|E404|401 Unauthorized|404 Not Found)/u.test(stderr) &&
+      !publicPackageExists({ npmCommand, packageName, registry })
+    ) {
+      return {};
+    }
+    throw new Error(
+      `npm dist-tag ls failed for ${packageName}: ${stderr.trim()}`,
+    );
   }
+};
+
+const normalizeDistTags = (distTags) =>
+  Object.fromEntries(
+    [...new Set([...trackedChannelTags, ...Object.keys(distTags)])]
+      .sort()
+      .map((tag) => [tag, distTags[tag] ?? null]),
+  );
+
+const requireSnapshotDistTags = (packageName, value) => {
+  if (
+    value === null ||
+    Array.isArray(value) ||
+    typeof value !== "object" ||
+    trackedChannelTags.some((tag) => !Object.hasOwn(value, tag)) ||
+    Object.values(value).some(
+      (tagValue) => tagValue !== null && typeof tagValue !== "string",
+    )
+  ) {
+    throw new Error(`release-state input has invalid dist-tags for ${packageName}`);
+  }
+  return value;
 };
 
 const options = parseArgs(process.argv.slice(2));
@@ -89,12 +153,16 @@ if (options.mode === "snapshot") {
   const outputPath = path.resolve(repoRoot, options.output);
   mkdirSync(path.dirname(outputPath), { recursive: true });
   const state = {
-    schemaVersion: "midnight-vc-npm-release-state.v1",
+    schemaVersion: "midnight-vc-npm-release-state.v2",
     registry: options.registry,
     packages: Object.fromEntries(
       packageNames.map((packageName) => [
         packageName,
-        { distTags: readDistTags(packageName, options.registry) },
+        {
+          distTags: normalizeDistTags(
+            readDistTags(packageName, options.registry),
+          ),
+        },
       ]),
     ),
   };
@@ -114,7 +182,7 @@ if (options.mode === "snapshot") {
     readFileSync(path.resolve(repoRoot, options.input), "utf8"),
   );
   if (
-    state.schemaVersion !== "midnight-vc-npm-release-state.v1" ||
+    state.schemaVersion !== "midnight-vc-npm-release-state.v2" ||
     state.registry !== options.registry
   ) {
     throw new Error("release-state input has an incompatible schema or registry");
@@ -125,16 +193,26 @@ if (options.mode === "snapshot") {
     if (previous === undefined) {
       throw new Error(`release-state input is missing ${packageName}`);
     }
-    const current = readDistTags(packageName, options.registry);
+    requireSnapshotDistTags(packageName, previous);
+    const current = normalizeDistTags(
+      readDistTags(packageName, options.registry),
+    );
     if (current[options.tag] !== options.version) {
       throw new Error(
         `${packageName} tag ${options.tag} resolves to ${current[options.tag] ?? "<absent>"} instead of ${options.version}`,
       );
     }
-    if (options.tag !== "latest") {
-      if (current.latest !== previous.latest) {
+    const nonSelectedTags = new Set([
+      ...Object.keys(previous),
+      ...Object.keys(current),
+    ]);
+    nonSelectedTags.delete(options.tag);
+    for (const tag of [...nonSelectedTags].sort()) {
+      const previousValue = previous[tag] ?? null;
+      const currentValue = current[tag] ?? null;
+      if (currentValue !== previousValue) {
         throw new Error(
-          `${packageName} latest changed from ${previous.latest ?? "<absent>"} to ${current.latest ?? "<absent>"}`,
+          `${packageName} ${tag} changed from ${previousValue ?? "<absent>"} to ${currentValue ?? "<absent>"}`,
         );
       }
     }

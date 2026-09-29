@@ -13,8 +13,10 @@ semantics without defining a second signature scheme or challenge domain.
 
 ## Resolution profile
 
-An implementation MUST resolve an on-chain `did:midnight` through a resolver
-compatible with `@midnight-ntwrk/midnight-did` `0.7.0`. It MUST reject:
+Except for the authenticated historical-snapshot migration defined under
+[Canonical mapping](#canonical-mapping), an implementation MUST resolve an
+on-chain `did:midnight` through a resolver compatible with
+`@midnight-ntwrk/midnight-did` `0.7.0`. The live-resolution path MUST reject:
 
 - an unresolved or deactivated DID;
 - a DID document whose subject differs from the requested DID;
@@ -53,13 +55,37 @@ public `decodeJubjubJwkCoordinate` codec from
 `@midnight-ntwrk/midnight-did-domain`.
 
 Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
-DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
-re-resolve the DID through a 0.7 resolver or perform an explicit, version-bound
-migration before invoking this package. The binding MUST NOT guess the profile
-by trying both byte orders. Resolver `versionId` describes ledger state and MUST
-NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
-also valid 0.7 coordinate encodings and will silently map to a different native
-point, so range validation alone is not a migration detector.
+DID-document snapshots MUST NOT be supplied directly to the 0.7 binding.
+Consumers MUST either re-resolve the DID through a 0.7-compatible resolver or
+perform an explicit migration whose authenticated provenance establishes the
+snapshot's DID, verification method, relationship, positive observed
+`versionId`, and 0.6 encoding profile. That migration MUST decode the known 0.6
+little-endian coordinates and re-encode the same native point in the canonical
+0.7 profile while preserving the authenticated binding fields. The binding
+MUST NOT guess the profile by trying both byte orders. Resolver `versionId`
+describes ledger state and MUST NOT be used as an encoding-version
+discriminator. Some 0.6 byte strings are also valid 0.7 coordinate encodings
+and will silently map to a different native point, so range validation alone is
+not a migration detector.
+
+After successful re-resolution or migration, consumers MUST discard or
+quarantine the old snapshot. Outside the authenticated, version-specific
+migration defined above, reinterpretation or byte reversal is forbidden. A
+migration MUST use the known 0.6 profile directly and MUST NOT trial both byte
+orders. An offline migration reconstructs an authenticated historical binding;
+it does not prove that the DID remains active or that the method is current.
+The migration provenance MUST authenticate that the DID was not deactivated at
+the observed historical state. The migrated snapshot MUST still satisfy the
+on-chain subject, subject match, subject-owned method, relationship membership,
+`JsonWebKey`, native `EC`/`Jubjub`, and positive `uint64` `versionId`
+requirements above. A consumer MUST expose the canonical migrated snapshot
+through a `MidnightDIDResolutionSource` and MUST invoke
+`resolveMidnightDIDMethodBinding`; it MUST NOT construct a
+`MidnightDIDMethodBinding` directly. This preserves the adapter's subject,
+controller, relationship-membership, key-profile, state-version, and canonical
+method-ID checks.
+Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
+on that binding for authorization.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not

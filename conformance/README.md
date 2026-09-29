@@ -37,13 +37,27 @@ only structural binding; they are not current-status evidence.
 
 Envelope and verification-method vectors cover version, claim-root,
 expiration-order, controller, and method invariants. Presentation-proof vectors
-recompute the presentation body root and reject context, body, holder, and
-signature substitution.
+exercise the shipped explicit-holder composition, recompute the presentation
+body root, and reject context, body, credential-to-presentation holder, proof
+signer, proof-key, and signature substitution. The fixture delegates to the package
+circuit instead of maintaining a second implementation.
+
+The conformance lane also checks the reverse mapping from every normative
+Compact operation to at least one supported core or extension circuit. The two
+Compact Value codec operations are TypeScript-only and are tested separately.
 
 The conformance lane compiles a concrete generic `VC<>` instantiation and tests
 credential-derived issuer authorization. The release-package lane compiles the
 same fixture outside the repository against only the installed tarball's public
-Compact path.
+Compact path. It also executes a small synthetic DID-backed VC/VP composition
+from packed public packages with nonempty typed claims, deterministic schema
+identifiers derived from validated credential-family metadata, resolved
+assertion/authentication methods, real Jubjub signatures, and targeted
+credential-claim, consumer-defined disclosure relation, body, issuer, holder,
+method, proof-key mismatch against the supplied method snapshot, relationship,
+context, and signature substitutions. The fixture does not authenticate that
+snapshot and is composition evidence rather than a protocol, trust decision, or
+product use case.
 
 Run:
 

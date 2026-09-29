@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.2.0 - 2026-09-18
+## Unreleased
+
+- Add the supported explicit-holder presentation-proof composition, including
+  credential-to-presentation holder equality, signer-reference and accepted-key
+  binding, internally derived body-root verification, and substitution-negative
+  conformance.
+- Require every normative non-codec operation to map back to a supported core
+  or extension Compact circuit.
+
+## 0.2.0 - 2026-09-25
 
 - Classified every exported Compact circuit and added fail-closed coverage for
   envelope invariants, verification-method references, proof contexts, and
@@ -14,7 +23,7 @@
   exact method/key/scope binding circuits, monotonic lifecycle validation, and
   domain-separated Jubjub authority and verifier-request proof contexts without
   introducing Trust Registry or datetime dependencies.
-- Documented `midnight-did` `0.6.0` as the current downstream adapter
+- Documented `midnight-did` `0.7.0` as the current downstream adapter
   compatibility baseline while keeping the Compact package DID-independent.
 - Bound authority decisions to an explicit consumer/network domain, made
   revocation terminal per authorization ID, validated Jubjub subgroup

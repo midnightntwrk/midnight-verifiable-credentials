@@ -17,7 +17,7 @@ on:
       - "pnpm-workspace.yaml"
       - "run.sh"
   pull_request:
-    branches: [develop, main]
+    branches: [develop, main, "milestone-*"]
     paths:
       - ".github/workflows/docs.yml"
       - "docs-site/**"

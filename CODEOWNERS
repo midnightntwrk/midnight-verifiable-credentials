@@ -11,9 +11,11 @@
 /packages/credential-did-midnight/ @midnightntwrk/ex-identus
 /docs/guides/npmjs-publication.md @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/generate-release-sbom.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/npm-public-metadata.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/npm-release-state.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/prepare-release-version.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/publish-npm-packages.sh @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/validate-release-base.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /tooling/scripts/wait-for-npm-packages.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 CODE_OF_CONDUCT.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CODEOWNERS @midnightntwrk/mn-security @midnightntwrk/mn-sre

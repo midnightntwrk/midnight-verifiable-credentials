@@ -25,6 +25,7 @@ import {
   createMidnightDIDHolderBinding,
   createMidnightDIDSignerDescriptor,
   midnightDIDMethodId,
+  type MidnightDIDResolutionSource,
   resolveMidnightDIDMethodBinding,
 } from "../index.js";
 import { pureCircuits } from "../managed/did-midnight/contract/index.js";
@@ -99,6 +100,9 @@ const resolver = (
   }),
 });
 
+const realResolverCompatibility: MidnightDIDResolutionSource = resolver();
+void realResolverCompatibility;
+
 const bytesToBigIntLE = (bytes: Uint8Array): bigint => {
   let value = 0n;
   for (let index = bytes.length - 1; index >= 0; index -= 1) {
@@ -135,7 +139,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
     });
   });
 
-  it("maps the Midnight DID 0.7 vector without changing the native binding root", async () => {
+  it("documents the 0.6 native point and commits the canonical 0.7 key", async () => {
     const binding = await resolveMidnightDIDMethodBinding({
       resolver: resolver({
         didDocument: documentWithMethod({
@@ -150,7 +154,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
       x: decodeJubjubJwkCoordinate(midnightDID07Vector.x),
       y: decodeJubjubJwkCoordinate(midnightDID07Vector.y),
     };
-    const explicitlyMigratedLegacyPoint = {
+    const legacyPointDecodedWith06Profile = {
       x: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.x)),
       y: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.y)),
     };
@@ -160,11 +164,12 @@ describe("resolveMidnightDIDMethodBinding", () => {
       y: 14156144929920967796411782896064901209526447247090983247242446280553821482461n,
     });
     expect(binding.publicKey).toEqual(canonicalPoint);
-    expect(explicitlyMigratedLegacyPoint).toEqual(canonicalPoint);
-    expect(pureCircuits.midnightDIDMethodBindingRoot(binding)).toEqual(
+    expect(legacyPointDecodedWith06Profile).toEqual(canonicalPoint);
+    const bindingRoot = pureCircuits.midnightDIDMethodBindingRoot(binding);
+    expect(bindingRoot).not.toEqual(
       pureCircuits.midnightDIDMethodBindingRoot({
         ...binding,
-        publicKey: explicitlyMigratedLegacyPoint,
+        publicKey: ecMulGenerator(8n),
       }),
     );
   });
