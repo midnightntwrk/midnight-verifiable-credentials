@@ -80,9 +80,7 @@ const pnpmPolicyEnvironmentNames = new Set([
   "npmconfigtrustpolicyignoreafter",
 ]);
 
-export const readProjectPnpmConfig = (
-  repoRoot,
-  name,
+export const sanitizePnpmPolicyEnvironment = (
   sourceEnvironment = process.env,
 ) => {
   const environment = { ...sourceEnvironment };
@@ -94,6 +92,15 @@ export const readProjectPnpmConfig = (
       delete environment[environmentName];
     }
   }
+  return environment;
+};
+
+export const readProjectPnpmConfig = (
+  repoRoot,
+  name,
+  sourceEnvironment = process.env,
+) => {
+  const environment = sanitizePnpmPolicyEnvironment(sourceEnvironment);
   const output = execFileSync(
     "pnpm",
     ["config", "get", name, "--location", "project", "--json"],

@@ -21,6 +21,7 @@ import { supportedPackages } from "./workspace-catalog.mjs";
 import {
   createConsumerPnpmWorkspace,
   readProjectPnpmConfig,
+  sanitizePnpmPolicyEnvironment,
   validateRootPnpmSupplyPolicy,
 } from "./pnpm-supply-policy.mjs";
 
@@ -161,7 +162,7 @@ if (
   fail("registry mode requires an HTTPS registry and semantic version");
 }
 
-const environment = { ...process.env };
+const environment = sanitizePnpmPolicyEnvironment(process.env);
 delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;

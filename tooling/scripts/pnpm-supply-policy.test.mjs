@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import {
   createConsumerPnpmWorkspace,
   readProjectPnpmConfig,
+  sanitizePnpmPolicyEnvironment,
   validateRootPnpmSupplyPolicy,
 } from "./pnpm-supply-policy.mjs";
 
@@ -133,6 +134,15 @@ test("project policy cannot be supplied by inherited npm environment", () => {
   } finally {
     rmSync(emptyProject, { recursive: true, force: true });
   }
+});
+
+test("consumer installs cannot inherit pnpm policy overrides", () => {
+  const environment = sanitizePnpmPolicyEnvironment({
+    PATH: process.env.PATH,
+    NPM_CONFIG_TRUST_POLICY_IGNORE_AFTER: "1",
+    npm_config_minimumReleaseAge: "1",
+  });
+  assert.deepEqual(environment, { PATH: process.env.PATH });
 });
 
 test("preserves root policy for local clean consumers", () => {
