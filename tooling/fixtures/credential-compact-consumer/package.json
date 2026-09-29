@@ -11,7 +11,7 @@
     "@midnight-ntwrk/credential-compact": "file:./vendor/package.tgz"
   },
   "devDependencies": {
-    "@types/node": "24.13.6",
+    "@types/node": "^24.13.6",
     "typescript": "^5.8.3"
   },
   "scripts": {

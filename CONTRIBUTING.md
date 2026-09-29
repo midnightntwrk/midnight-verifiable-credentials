@@ -84,15 +84,18 @@ body and include the closest successful focused validation.
 
 ## Dependency Intake
 
-The pnpm workspace rejects exotic transitive dependencies, package-integrity
-trust downgrades, and npm releases younger than seven days. These controls apply
-when dependency versions are resolved or the lockfile is refreshed.
+The pnpm workspace and clean tarball-consumer harness reject exotic transitive
+dependencies, package-integrity trust downgrades, and npm releases younger than
+seven days. These controls apply when dependency versions are resolved or the
+lockfile is refreshed.
 
-If a coordinated Midnight release must be consumed before the cooldown expires,
-add only the exact package name and version to `minimumReleaseAgeExclude` in
+If a required release must be consumed before the cooldown expires, add only the
+exact package name and version to `minimumReleaseAgeExclude` in
 `pnpm-workspace.yaml`. Explain the dependency and evidence in the pull request,
-then remove the exception after the seven-day window. Do not exempt an entire
-scope such as `@midnight-ntwrk/*`.
+record a removal date, then remove the exception after the seven-day window. A
+package name must appear only once in the list; update an existing selector with
+pnpm's version-union syntax instead of appending another entry for the same
+package. Do not exempt an entire scope such as `@midnight-ntwrk/*`.
 
 Trust-policy exceptions must also identify one reviewed `name@version` entry.
 Confirm the package identity, registry metadata, lockfile integrity, and audit

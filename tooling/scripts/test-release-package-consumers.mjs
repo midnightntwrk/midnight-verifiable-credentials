@@ -161,6 +161,13 @@ delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
 delete environment.NPM_CONFIG_WORKSPACE;
+const consumerPnpmWorkspace = `packages:
+  - .
+
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+`;
 const installLifecycleHooks = [
   "preinstall",
   "install",
@@ -372,6 +379,11 @@ for (const releasePackage of releasePackages) {
         `registry=${registry}\n`,
       );
     }
+
+    writeFileSync(
+      path.join(consumerRoot, "pnpm-workspace.yaml"),
+      consumerPnpmWorkspace,
+    );
 
     run(
       "pnpm",
