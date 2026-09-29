@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import test from "node:test";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import {
   createConsumerPnpmWorkspace,
@@ -12,6 +15,18 @@ const validPolicy = {
   minimumReleaseAgeExclude: ["turbo@2.11.5", "typescript"],
   trustPolicy: "no-downgrade",
   trustPolicyExclude: [],
+};
+
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
+const readPnpmConfig = (name) => {
+  const output = execFileSync("pnpm", ["config", "get", name, "--json"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  }).trim();
+  return output === "" ? undefined : JSON.parse(output);
 };
 
 test("requires every pnpm supply-chain control", () => {
@@ -27,6 +42,22 @@ test("requires every pnpm supply-chain control", () => {
       }),
     /blockExoticSubdeps must be true/,
   );
+  assert.throws(
+    () =>
+      validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        minimumReleaseAge: 1,
+      }),
+    /must enforce a seven-day cooldown/,
+  );
+  assert.throws(
+    () =>
+      validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        trustPolicyIgnoreAfter: 1,
+      }),
+    /must not weaken provenance enforcement/,
+  );
 });
 
 test("rejects broad and duplicate policy exceptions", () => {
@@ -36,7 +67,15 @@ test("rejects broad and duplicate policy exceptions", () => {
         ...validPolicy,
         minimumReleaseAgeExclude: ["@midnight-ntwrk/*"],
       }),
-    /must not contain wildcard selector/,
+    /must not contain broad selector/,
+  );
+  assert.throws(
+    () =>
+      validateRootPnpmSupplyPolicy({
+        ...validPolicy,
+        minimumReleaseAgeExclude: ["!nonexistent-package"],
+      }),
+    /must not contain broad selector/,
   );
   assert.throws(
     () =>
@@ -45,6 +84,20 @@ test("rejects broad and duplicate policy exceptions", () => {
         minimumReleaseAgeExclude: ["turbo@2.11.4", "turbo@2.11.5"],
       }),
     /more than one selector for turbo/,
+  );
+});
+
+test("the real workspace enables the required supply-chain policy", () => {
+  assert.doesNotThrow(() =>
+    validateRootPnpmSupplyPolicy({
+      blockExoticSubdeps: readPnpmConfig("blockExoticSubdeps"),
+      minimumReleaseAge: readPnpmConfig("minimumReleaseAge"),
+      minimumReleaseAgeExclude:
+        readPnpmConfig("minimumReleaseAgeExclude") ?? [],
+      trustPolicy: readPnpmConfig("trustPolicy"),
+      trustPolicyExclude: readPnpmConfig("trustPolicyExclude") ?? [],
+      trustPolicyIgnoreAfter: readPnpmConfig("trustPolicyIgnoreAfter"),
+    }),
   );
 });
 

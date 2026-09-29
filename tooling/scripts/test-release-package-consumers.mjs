@@ -223,6 +223,7 @@ const rootPnpmSupplyPolicy = () => {
       readPnpmConfig("minimumReleaseAgeExclude") ?? [],
     trustPolicy: readPnpmConfig("trustPolicy"),
     trustPolicyExclude: readPnpmConfig("trustPolicyExclude") ?? [],
+    trustPolicyIgnoreAfter: readPnpmConfig("trustPolicyIgnoreAfter"),
   });
   return cachedRootPnpmSupplyPolicy;
 };

@@ -13,8 +13,8 @@ const validatePolicies = (name, policies) => {
   }
   const packageNames = new Set();
   for (const policy of policies) {
-    if (policy.includes("*")) {
-      fail(`${name} must not contain wildcard selector ${policy}`);
+    if (policy.includes("*") || policy.startsWith("!")) {
+      fail(`${name} must not contain broad selector ${policy}`);
     }
     const packageName = packageNameFromPolicy(policy);
     if (packageNames.has(packageName)) {
@@ -29,14 +29,14 @@ export const validateRootPnpmSupplyPolicy = (policy) => {
   if (policy.blockExoticSubdeps !== true) {
     fail("blockExoticSubdeps must be true");
   }
-  if (
-    !Number.isInteger(policy.minimumReleaseAge) ||
-    policy.minimumReleaseAge <= 0
-  ) {
-    fail("minimumReleaseAge must be a positive integer");
+  if (policy.minimumReleaseAge !== 10080) {
+    fail("minimumReleaseAge must enforce a seven-day cooldown");
   }
   if (policy.trustPolicy !== "no-downgrade") {
     fail('trustPolicy must be "no-downgrade"');
+  }
+  if (policy.trustPolicyIgnoreAfter !== undefined) {
+    fail("trustPolicyIgnoreAfter must not weaken provenance enforcement");
   }
   return {
     blockExoticSubdeps: true,
