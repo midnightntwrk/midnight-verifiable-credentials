@@ -50,9 +50,25 @@ const exampleCredentialDescriptor: CompactType<ExampleCredential> = {
 const createBytes = (seed: number): Uint8Array =>
   Uint8Array.from({ length: 32 }, (_, index) => (seed + index) % 256);
 
-const compactValueArbitrary = fc.array(fc.uint8Array({ maxLength: 256 }), {
-  maxLength: 16,
-});
+const compactValueArbitrary = fc.oneof(
+  fc.array(fc.uint8Array({ maxLength: 512, size: "max" }), {
+    maxLength: 32,
+    size: "max",
+  }),
+  fc.array(fc.uint8Array({ maxLength: 4, size: "max" }), {
+    minLength: 256,
+    maxLength: 300,
+    size: "max",
+  }),
+);
+const nonEmptyCompactValueArbitrary = fc.array(
+  fc.uint8Array({ minLength: 1, maxLength: 512, size: "max" }),
+  {
+    minLength: 1,
+    maxLength: 16,
+    size: "max",
+  },
+);
 const PROPERTY_RUNS = 500;
 
 describe("Compact value transport codec", () => {
@@ -128,11 +144,13 @@ describe("Compact value transport codec", () => {
   it("rejects truncated and trailing bytes for arbitrary framed values", () => {
     fc.assert(
       fc.property(
-        compactValueArbitrary,
+        nonEmptyCompactValueArbitrary,
         fc.uint8Array({ minLength: 1, maxLength: 8 }),
         (value, trailingBytes) => {
           const encoded = compactValueToBytes(value);
-          expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow();
+          expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
+            /chunk exceeds payload length/,
+          );
 
           const withTrailingBytes = new Uint8Array(
             encoded.length + trailingBytes.length,
