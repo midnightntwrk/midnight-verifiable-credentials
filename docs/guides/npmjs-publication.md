@@ -238,13 +238,22 @@ rollback_rc() (
   published_packages=()
   for package in "${packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
-      "$package" dist-tags.rc)"; then
-      printf 'unable to read %s rc tag\n' "$package" >&2
-      exit 1
+      "$package" dist-tags.rc 2>&1)"; then
+      if grep -Eq '(E404|404 Not Found)' <<< "$current_rc"; then
+        current_rc=""
+      else
+        printf 'unable to read %s rc tag: %s\n' \
+          "$package" "$current_rc" >&2
+        exit 1
+      fi
     fi
     if ! versions_json="$(npm view --registry "$NPM_REGISTRY" \
-      "$package" versions --json)"; then
-      printf 'unable to read published versions for %s\n' "$package" >&2
+      "$package" versions --json 2>&1)"; then
+      if grep -Eq '(E404|404 Not Found)' <<< "$versions_json"; then
+        continue
+      fi
+      printf 'unable to read published versions for %s: %s\n' \
+        "$package" "$versions_json" >&2
       exit 1
     fi
     if node -e '

@@ -139,7 +139,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
     });
   });
 
-  it("preserves the native point across the documented 0.6 and 0.7 encodings", async () => {
+  it("documents the 0.6 native point and commits the canonical 0.7 key", async () => {
     const binding = await resolveMidnightDIDMethodBinding({
       resolver: resolver({
         didDocument: documentWithMethod({
@@ -166,12 +166,6 @@ describe("resolveMidnightDIDMethodBinding", () => {
     expect(binding.publicKey).toEqual(canonicalPoint);
     expect(legacyPointDecodedWith06Profile).toEqual(canonicalPoint);
     const bindingRoot = pureCircuits.midnightDIDMethodBindingRoot(binding);
-    expect(bindingRoot).toEqual(
-      pureCircuits.midnightDIDMethodBindingRoot({
-        ...binding,
-        publicKey: legacyPointDecodedWith06Profile,
-      }),
-    );
     expect(bindingRoot).not.toEqual(
       pureCircuits.midnightDIDMethodBindingRoot({
         ...binding,
