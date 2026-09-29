@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: vc-npm-publish-${{ github.ref }}
+  group: vc-npm-publish
   cancel-in-progress: false
 
 env:

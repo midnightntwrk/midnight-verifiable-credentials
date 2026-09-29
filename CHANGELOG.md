@@ -21,7 +21,10 @@ All notable changes to this project are documented here. The format follows
 
 - narrow the Midnight DID binding's public resolver contract to the domain
   values it consumes and remove the full resolver implementation from its
-  production dependency graph.
+  production dependency graph;
+- make npm release verification fail closed when any non-selected dist-tag is
+  added, removed, or changed, with explicit absent states for tracked channel
+  tags.
 
 ## [0.2.0] - 2026-09-25
 
