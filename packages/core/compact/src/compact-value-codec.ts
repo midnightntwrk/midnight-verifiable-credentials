@@ -172,5 +172,8 @@ export const decodeCompactPayload = <T>(
       "Compact value payload contains trailing chunks for descriptor",
     );
   }
+  if (encodeCompactPayload(descriptor, decoded).payload !== encoded.payload) {
+    throw new Error("Compact value payload is not canonical for descriptor");
+  }
   return decoded;
 };

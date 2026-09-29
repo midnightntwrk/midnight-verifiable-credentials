@@ -23,6 +23,24 @@ const extensionCircuitInventories = (
 
 const fromHex = (value) => Uint8Array.from(Buffer.from(value, "hex"));
 const toHex = (value) => Buffer.from(value).toString("hex");
+const bytes32Descriptor = {
+  fromValue: (value) => {
+    const chunk = value.shift();
+    assert.ok(chunk, "bytes32 descriptor requires one chunk");
+    assert.ok(chunk.length <= 32, "bytes32 chunk exceeds descriptor width");
+    const decoded = new Uint8Array(32);
+    decoded.set(chunk);
+    return decoded;
+  },
+  toValue: (value) => {
+    assert.equal(value.length, 32, "bytes32 value has an invalid width");
+    let canonicalLength = value.length;
+    while (canonicalLength > 0 && value[canonicalLength - 1] === 0) {
+      canonicalLength -= 1;
+    }
+    return [value.slice(0, canonicalLength)];
+  },
+};
 const listJsonFiles = (directory) =>
   readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
@@ -487,18 +505,29 @@ test("matches Compact Value framing and rejects malformed encodings", () => {
       payload: vector.payload,
     });
     assert.deepEqual(decodeCompactValue(encoded).map(toHex), vector.chunksHex);
+    if (vector.decoder === "bytes32-descriptor") {
+      assert.equal(
+        toHex(decodeCompactPayload(bytes32Descriptor, encoded)),
+        vector.decodedHex,
+      );
+    }
   }
   for (const vector of fixture.negative) {
-    const decode =
-      vector.decoder === "single-chunk-descriptor"
-        ? () =>
-            decodeCompactPayload(
-              {
-                fromValue: (value) => value.shift(),
-              },
-              vector,
-            )
-        : () => decodeCompactValue(vector);
+    let decode;
+    if (vector.decoder === "single-chunk-descriptor") {
+      decode = () =>
+        decodeCompactPayload(
+          {
+            fromValue: (value) => value.shift(),
+            toValue: (value) => [value],
+          },
+          vector,
+        );
+    } else if (vector.decoder === "bytes32-descriptor") {
+      decode = () => decodeCompactPayload(bytes32Descriptor, vector);
+    } else {
+      decode = () => decodeCompactValue(vector);
+    }
     assert.throws(
       decode,
       (error) => String(error).includes(vector.errorIncludes),

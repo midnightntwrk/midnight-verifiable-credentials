@@ -4,6 +4,10 @@
 
 - Keep the repository's pnpm requirement development-only so published Compact
   consumers are not coupled to this monorepo's package manager.
+- BREAKING: Make typed Compact payload decoding fail closed unless descriptor
+  re-encoding reproduces the exact payload, rejecting alternate zero-padded
+  chunk widths and lossy descriptor round trips while preserving untyped chunk
+  framing.
 - Add the supported explicit-holder presentation-proof composition, including
   credential-to-presentation holder equality, signer-reference and accepted-key
   binding, internally derived body-root verification, and substitution-negative
