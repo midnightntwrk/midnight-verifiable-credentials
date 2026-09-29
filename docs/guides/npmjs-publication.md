@@ -213,6 +213,8 @@ rollback_rc() (
   set -euo pipefail
   VERSION="${1:?usage: rollback_rc CONFIRMED_BAD_RC}"
   NPM_REGISTRY=https://registry.npmjs.org/
+  view_stderr="$(mktemp)"
+  trap 'rm -f "$view_stderr"' EXIT
   if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc[1-9][0-9]*$ ]]; then
     printf 'refusing rollback: %s is not an RC version\n' "$VERSION" >&2
     exit 1
@@ -238,23 +240,31 @@ rollback_rc() (
   published_packages=()
   for package in "${packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
-      "$package" dist-tags.rc 2>&1)"; then
-      if grep -Eq '(E404|404 Not Found)' <<< "$current_rc"; then
+      "$package" dist-tags.rc 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      if grep -Eq '(E404|404 Not Found)' \
+        <<< "$current_rc"$'\n'"$view_error"; then
         current_rc=""
       else
         printf 'unable to read %s rc tag: %s\n' \
-          "$package" "$current_rc" >&2
+          "$package" "$current_rc$view_error" >&2
         exit 1
       fi
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
     fi
     if ! versions_json="$(npm view --registry "$NPM_REGISTRY" \
-      "$package" versions --json 2>&1)"; then
-      if grep -Eq '(E404|404 Not Found)' <<< "$versions_json"; then
+      "$package" versions --json 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      if grep -Eq '(E404|404 Not Found)' \
+        <<< "$versions_json"$'\n'"$view_error"; then
         continue
       fi
       printf 'unable to read published versions for %s: %s\n' \
-        "$package" "$versions_json" >&2
+        "$package" "$versions_json$view_error" >&2
       exit 1
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
     fi
     if node -e '
       const value = JSON.parse(process.argv[1]);
@@ -274,9 +284,13 @@ rollback_rc() (
   fi
   for package in "${published_packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
-      "$package" dist-tags.rc)"; then
-      printf 'unable to re-read %s rc tag\n' "$package" >&2
+      "$package" dist-tags.rc 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      printf 'unable to re-read %s rc tag: %s\n' \
+        "$package" "$current_rc$view_error" >&2
       exit 1
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
     fi
     if [[ "$current_rc" == "$VERSION" ]]; then
       npm dist-tag rm --registry "$NPM_REGISTRY" "${package}" rc
