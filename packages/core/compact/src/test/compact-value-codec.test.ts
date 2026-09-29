@@ -5,6 +5,7 @@ import {
   CompactTypeUnsignedInteger,
   type Value,
 } from "@midnight-ntwrk/compact-runtime";
+import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -48,6 +49,11 @@ const exampleCredentialDescriptor: CompactType<ExampleCredential> = {
 
 const createBytes = (seed: number): Uint8Array =>
   Uint8Array.from({ length: 32 }, (_, index) => (seed + index) % 256);
+
+const compactValueArbitrary = fc.array(fc.uint8Array({ maxLength: 256 }), {
+  maxLength: 16,
+});
+const PROPERTY_RUNS = 500;
 
 describe("Compact value transport codec", () => {
   it("frames and unframes runtime Value chunks without JSON conversion", () => {
@@ -105,5 +111,40 @@ describe("Compact value transport codec", () => {
         payload: "",
       }),
     ).toThrow("Compact value payload must not be empty");
+  });
+
+  it("round-trips bounded arbitrary runtime Value chunks", () => {
+    fc.assert(
+      fc.property(compactValueArbitrary, (value) => {
+        expect(compactValueFromBytes(compactValueToBytes(value))).toEqual(
+          value,
+        );
+        expect(decodeCompactValue(encodeCompactValue(value))).toEqual(value);
+      }),
+      { numRuns: PROPERTY_RUNS },
+    );
+  });
+
+  it("rejects truncated and trailing bytes for arbitrary framed values", () => {
+    fc.assert(
+      fc.property(
+        compactValueArbitrary,
+        fc.uint8Array({ minLength: 1, maxLength: 8 }),
+        (value, trailingBytes) => {
+          const encoded = compactValueToBytes(value);
+          expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow();
+
+          const withTrailingBytes = new Uint8Array(
+            encoded.length + trailingBytes.length,
+          );
+          withTrailingBytes.set(encoded);
+          withTrailingBytes.set(trailingBytes, encoded.length);
+          expect(() => compactValueFromBytes(withTrailingBytes)).toThrow(
+            /trailing bytes/,
+          );
+        },
+      ),
+      { numRuns: PROPERTY_RUNS },
+    );
   });
 });
