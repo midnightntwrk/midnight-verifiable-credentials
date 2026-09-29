@@ -18,6 +18,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { supportedPackages } from "./workspace-catalog.mjs";
+import {
+  createConsumerPnpmWorkspace,
+  validateRootPnpmSupplyPolicy,
+} from "./pnpm-supply-policy.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -210,57 +214,26 @@ const readPnpmConfig = (name) => {
   }).trim();
   return output === "" ? undefined : JSON.parse(output);
 };
-const normalizeVersionPolicies = (policies) => {
-  const versionsByPackage = new Map();
-  for (const policy of policies) {
-    const separator = policy.lastIndexOf("@");
-    if (separator <= 0 || separator === policy.length - 1) {
-      fail(`invalid pnpm version policy ${policy}`);
-    }
-    const packageName = policy.slice(0, separator);
-    const version = policy.slice(separator + 1);
-    const versions = versionsByPackage.get(packageName) ?? [];
-    if (!versions.includes(version)) {
-      versions.push(version);
-    }
-    versionsByPackage.set(packageName, versions);
-  }
-  return [...versionsByPackage].map(
-    ([packageName, versions]) => `${packageName}@${versions.join(" || ")}`,
-  );
+let cachedRootPnpmSupplyPolicy;
+const rootPnpmSupplyPolicy = () => {
+  cachedRootPnpmSupplyPolicy ??= validateRootPnpmSupplyPolicy({
+    blockExoticSubdeps: readPnpmConfig("blockExoticSubdeps"),
+    minimumReleaseAge: readPnpmConfig("minimumReleaseAge"),
+    minimumReleaseAgeExclude:
+      readPnpmConfig("minimumReleaseAgeExclude") ?? [],
+    trustPolicy: readPnpmConfig("trustPolicy"),
+    trustPolicyExclude: readPnpmConfig("trustPolicyExclude") ?? [],
+  });
+  return cachedRootPnpmSupplyPolicy;
 };
-const rootMinimumReleaseAgeExclude =
-  readPnpmConfig("minimumReleaseAgeExclude") ?? [];
-const rootTrustPolicyExclude = readPnpmConfig("trustPolicyExclude") ?? [];
-const rootBlockExoticSubdeps = readPnpmConfig("blockExoticSubdeps");
-const rootMinimumReleaseAge = readPnpmConfig("minimumReleaseAge");
-const rootTrustPolicy = readPnpmConfig("trustPolicy");
-const consumerPnpmWorkspace = () => {
-  const publishedPackageExclusions = registryMode
-    ? [...releasePackageByName.keys()].map(
-        (packageName) => `${packageName}@${expectedVersion}`,
-      )
-    : [];
-  const minimumReleaseAgeExclude = normalizeVersionPolicies([
-    ...rootMinimumReleaseAgeExclude,
-    ...publishedPackageExclusions,
-  ]);
-  const trustPolicyExclude = normalizeVersionPolicies(rootTrustPolicyExclude);
-  return `${JSON.stringify(
-    {
-      packages: ["."],
-      blockExoticSubdeps: rootBlockExoticSubdeps,
-      minimumReleaseAge: rootMinimumReleaseAge,
-      ...(minimumReleaseAgeExclude.length === 0
-        ? {}
-        : { minimumReleaseAgeExclude }),
-      trustPolicy: rootTrustPolicy,
-      ...(trustPolicyExclude.length === 0 ? {} : { trustPolicyExclude }),
-    },
-    null,
-    2,
-  )}\n`;
-};
+const consumerPnpmWorkspace = () =>
+  createConsumerPnpmWorkspace({
+    rootPolicy: rootPnpmSupplyPolicy(),
+    publishedPackageNames: registryMode
+      ? [...releasePackageByName.keys()]
+      : [],
+    expectedVersion,
+  });
 if (!releasePackageByName.has(midnightDIDBindingPackageName)) {
   fail(`${midnightDIDBindingPackageName} is missing from the workspace catalog`);
 }
