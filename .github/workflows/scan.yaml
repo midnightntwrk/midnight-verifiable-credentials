@@ -34,7 +34,7 @@ jobs:
           skip_scorecard_scan: "true"
 
       - name: Verify required scanner reports
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           # Keep this list aligned with the enabled skip_* inputs above.
