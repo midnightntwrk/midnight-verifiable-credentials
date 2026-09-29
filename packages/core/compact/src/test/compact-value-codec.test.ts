@@ -141,6 +141,14 @@ describe("Compact value transport codec", () => {
     );
   });
 
+  it("rejects a truncated frame whose final chunk is empty", () => {
+    const encoded = compactValueToBytes([new Uint8Array()]);
+
+    expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
+      /ended before uint32 field/,
+    );
+  });
+
   it("rejects truncated and trailing bytes for arbitrary framed values", () => {
     fc.assert(
       fc.property(
@@ -148,8 +156,12 @@ describe("Compact value transport codec", () => {
         fc.uint8Array({ minLength: 1, maxLength: 8 }),
         (value, trailingBytes) => {
           const encoded = compactValueToBytes(value);
+          const expectedTruncationError =
+            value.at(-1)!.length === 0
+              ? /ended before uint32 field/
+              : /chunk exceeds payload length/;
           expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
-            /chunk exceeds payload length|ended before uint32 field/,
+            expectedTruncationError,
           );
 
           const withTrailingBytes = new Uint8Array(
