@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import test from "node:test";
 import path from "node:path";
@@ -121,10 +121,17 @@ test("the real workspace enables the required supply-chain policy", () => {
 
 test("project policy cannot be supplied by inherited npm environment", () => {
   const emptyProject = mkdtempSync(path.join(os.tmpdir(), "pnpm-policy-test-"));
+  const hostileUserConfig = path.join(emptyProject, "hostile.npmrc");
+  writeFileSync(
+    hostileUserConfig,
+    "minimum-release-age=1\ntrust-policy-ignore-after=1\n",
+  );
   const environment = {
     ...process.env,
     NPM_CONFIG_MINIMUM_RELEASE_AGE: "1",
     npm_config_minimumReleaseAge: "1",
+    NPM_CONFIG_USERCONFIG: hostileUserConfig,
+    NPM_CONFIG_GLOBALCONFIG: hostileUserConfig,
   };
   try {
     assert.equal(
@@ -142,7 +149,11 @@ test("consumer installs cannot inherit pnpm policy overrides", () => {
     NPM_CONFIG_TRUST_POLICY_IGNORE_AFTER: "1",
     npm_config_minimumReleaseAge: "1",
   });
-  assert.deepEqual(environment, { PATH: process.env.PATH });
+  assert.equal(environment.PATH, process.env.PATH);
+  assert.equal(environment.NPM_CONFIG_USERCONFIG, os.devNull);
+  assert.equal(environment.NPM_CONFIG_GLOBALCONFIG, os.devNull);
+  assert.equal(environment.NPM_CONFIG_TRUST_POLICY_IGNORE_AFTER, undefined);
+  assert.equal(environment.npm_config_minimumReleaseAge, undefined);
 });
 
 test("preserves root policy for local clean consumers", () => {

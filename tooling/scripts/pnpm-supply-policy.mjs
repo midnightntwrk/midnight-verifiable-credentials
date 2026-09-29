@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import os from "node:os";
 
 const fail = (message) => {
   throw new Error(`[pnpm-supply-policy] ${message}`);
@@ -92,6 +93,8 @@ export const sanitizePnpmPolicyEnvironment = (
       delete environment[environmentName];
     }
   }
+  environment.NPM_CONFIG_USERCONFIG = os.devNull;
+  environment.NPM_CONFIG_GLOBALCONFIG = os.devNull;
   return environment;
 };
 
@@ -110,7 +113,7 @@ export const readProjectPnpmConfig = (
       env: environment,
     },
   ).trim();
-  return output === "" ? undefined : JSON.parse(output);
+  return output === "" || output === "null" ? undefined : JSON.parse(output);
 };
 
 export const createConsumerPnpmWorkspace = ({
