@@ -62,7 +62,7 @@ const compactValueArbitrary = fc.oneof(
   }),
 );
 const nonEmptyCompactValueArbitrary = fc.array(
-  fc.uint8Array({ minLength: 1, maxLength: 512, size: "max" }),
+  fc.uint8Array({ maxLength: 512, size: "max" }),
   {
     minLength: 1,
     maxLength: 16,
@@ -149,7 +149,7 @@ describe("Compact value transport codec", () => {
         (value, trailingBytes) => {
           const encoded = compactValueToBytes(value);
           expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
-            /chunk exceeds payload length/,
+            /chunk exceeds payload length|ended before uint32 field/,
           );
 
           const withTrailingBytes = new Uint8Array(
