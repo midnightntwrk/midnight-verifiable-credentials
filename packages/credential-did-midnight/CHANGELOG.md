@@ -10,15 +10,16 @@
   signs a nonempty typed VC/VP flow, verifies the published Compact composition,
   and rejects targeted substitutions.
 
-## 0.2.0
+## 0.2.0 - 2026-09-25
 
 - Reintroduced `@midnight-ntwrk/credential-did-midnight` as a flat,
   protocol-independent extension of `@midnight-ntwrk/credential-compact`.
 - Added an injected Midnight DID 0.7 resolver adapter for on-chain native
   Jubjub verification methods.
 - Decode canonical fixed-width big-endian Jubjub JWK coordinates with the
-  public Midnight DID domain codec; 0.6 little-endian snapshots are not
-  auto-detected and require explicit migration.
+  public Midnight DID domain codec; 0.6 little-endian snapshots require
+  re-resolution or an explicit, provenance-authenticated migration and are
+  never auto-detected by this package.
 - Added standalone and composition-safe Compact entrypoints for method, holder,
   proof, and signer-authorization binding.
 - Added credential-issuance and presentation signing helpers that interoperate

@@ -96,29 +96,92 @@ Branch rules are fail closed:
 
 Automatic publication on pushes is intentionally disabled.
 
+## Stable publication
+
+Set the root and supported package manifests to the approved stable version,
+merge the release promotion to `main`, and dispatch `Publish npmjs Packages`
+from `main` with:
+
+```text
+channel: release
+rc_index: <empty>
+```
+
+The release channel publishes the exact manifest version under `latest`; the
+publish command does not intentionally mutate `rc`. Stable publication from
+`develop` causes the publish job to be skipped before evidence or packages are
+produced; operators MUST treat that skipped job as a failed release attempt.
+The workflow verifies the selected `latest` tag, while the operator must compare
+`rc` with the pre-dispatch snapshot in the release-evidence artifact.
+
 ## Verification
 
 The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-Set `VERSION` to the exact version reported by the workflow, then verify every
-package version and the moving tags:
+Pass `VERSION` and `TAG` as positional arguments to the verifier below so the
+selected values cannot be shadowed by defaults. This stable example verifies
+the `0.2.0` release:
 
 ```bash
-VERSION=0.2.0-rc2
-for package in \
-  @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
-  npm view "${package}@${VERSION}" version
-  npm view "${package}" dist-tags --json
-done
+verify_release() (
+  set -euo pipefail
+  VERSION="${1:?usage: verify_release VERSION TAG}"
+  TAG="${2:?usage: verify_release VERSION TAG}"
+  NPM_REGISTRY=https://registry.npmjs.org/
+  verification_failed=0
+  if ! package_paths="$(node \
+    ./tooling/scripts/workspace-catalog.mjs --publishable-paths)"; then
+    printf 'unable to read the publishable package catalog\n' >&2
+    exit 1
+  fi
+  if [[ -z "$package_paths" ]]; then
+    printf 'publishable package catalog is empty\n' >&2
+    exit 1
+  fi
+  while IFS= read -r package_path; do
+    if ! package="$(node -p \
+      "require('./${package_path}/package.json').name")"; then
+      printf 'unable to read package metadata for %s\n' "$package_path" >&2
+      verification_failed=1
+      continue
+    fi
+    if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}@${VERSION}" version)"; then
+      printf 'unable to read %s@%s\n' "${package}" "${VERSION}" >&2
+      verification_failed=1
+    elif [[ "${actual_version}" != "${VERSION}" ]]; then
+      printf 'expected %s version=%s, got %s\n' \
+        "${package}" "${VERSION}" "${actual_version}" >&2
+      verification_failed=1
+    fi
+    if ! actual_tag="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}" "dist-tags.${TAG}")"; then
+      printf 'unable to read %s dist-tag %s\n' "${package}" "${TAG}" >&2
+      verification_failed=1
+    elif [[ "${actual_tag}" != "${VERSION}" ]]; then
+      printf 'expected %s %s=%s, got %s\n' \
+        "${package}" "${TAG}" "${VERSION}" "${actual_tag}" >&2
+      verification_failed=1
+    fi
+    if ! npm view --registry "$NPM_REGISTRY" "${package}" dist-tags --json; then
+      printf 'unable to read %s dist-tags\n' "${package}" >&2
+      verification_failed=1
+    fi
+  done <<< "$package_paths"
+  exit "$verification_failed"
+)
+
+verify_release 0.2.0 latest
 ```
 
-The `rc` tag must resolve to `${VERSION}` for all packages and `latest` must
-remain unchanged. Retain the workflow URL and release-evidence artifact with
-the release record.
+For an RC, call the function with the suffixed version and `rc`, for example
+`verify_release 0.3.0-rc1 rc`; the workflow also fails if `latest` differs from
+its pre-dispatch snapshot. For a stable release, require `latest` to resolve to
+the selected version and manually compare `rc` in the JSON output with
+`release-state.json` from the release-evidence artifact. Retain the workflow URL
+and artifact with the release record.
 
 ## Retry and rollback
 
@@ -146,17 +209,118 @@ For a bad RC:
 Example operator commands:
 
 ```bash
-VERSION=0.2.0-rc2
-for package in \
-  @midnight-ntwrk/credential-model \
-  @midnight-ntwrk/credential-compact \
-  @midnight-ntwrk/credential-did-midnight; do
-  npm dist-tag rm "${package}" rc
-  npm deprecate "${package}@${VERSION}" "Use the replacement RC"
-done
+rollback_rc() (
+  set -euo pipefail
+  VERSION="${1:?usage: rollback_rc CONFIRMED_BAD_RC}"
+  NPM_REGISTRY=https://registry.npmjs.org/
+  view_stderr="$(mktemp)"
+  trap 'rm -f "$view_stderr"' EXIT
+  if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc[1-9][0-9]*$ ]]; then
+    printf 'refusing rollback: %s is not an RC version\n' "$VERSION" >&2
+    exit 1
+  fi
+  if ! package_paths="$(node \
+    ./tooling/scripts/workspace-catalog.mjs --publishable-paths)"; then
+    printf 'unable to read the publishable package catalog\n' >&2
+    exit 1
+  fi
+  if [[ -z "$package_paths" ]]; then
+    printf 'publishable package catalog is empty\n' >&2
+    exit 1
+  fi
+  packages=()
+  while IFS= read -r package_path; do
+    if ! package="$(node -p \
+      "require('./${package_path}/package.json').name")"; then
+      printf 'unable to read package metadata for %s\n' "$package_path" >&2
+      exit 1
+    fi
+    packages+=("$package")
+  done <<< "$package_paths"
+  published_packages=()
+  for package in "${packages[@]}"; do
+    if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
+      "$package" dist-tags.rc 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      if grep -Eq '(E404|404 Not Found)' \
+        <<< "$current_rc"$'\n'"$view_error"; then
+        current_rc=""
+      else
+        printf 'unable to read %s rc tag: %s\n' \
+          "$package" "$current_rc$view_error" >&2
+        exit 1
+      fi
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
+    fi
+    if ! versions_json="$(npm view --registry "$NPM_REGISTRY" \
+      "$package" versions --json 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      if grep -Eq '(E404|404 Not Found)' \
+        <<< "$versions_json"$'\n'"$view_error"; then
+        continue
+      fi
+      printf 'unable to read published versions for %s: %s\n' \
+        "$package" "$versions_json$view_error" >&2
+      exit 1
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
+    fi
+    if node -e '
+      const value = JSON.parse(process.argv[1]);
+      const versions = Array.isArray(value) ? value : [value];
+      process.exit(versions.includes(process.argv[2]) ? 0 : 1);
+    ' "$versions_json" "$VERSION"; then
+      published_packages+=("$package")
+    elif [[ "$current_rc" == "$VERSION" ]]; then
+      printf 'refusing rollback: %s rc tag names an unpublished version\n' \
+        "$package" >&2
+      exit 1
+    fi
+  done
+  if [[ "${#published_packages[@]}" -eq 0 ]]; then
+    printf 'nothing to roll back: %s is not published\n' "$VERSION"
+    exit 0
+  fi
+  for package in "${published_packages[@]}"; do
+    if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
+      "$package" dist-tags.rc 2>"$view_stderr")"; then
+      view_error="$(<"$view_stderr")"
+      printf 'unable to re-read %s rc tag: %s\n' \
+        "$package" "$current_rc$view_error" >&2
+      exit 1
+    elif [[ -s "$view_stderr" ]]; then
+      cat "$view_stderr" >&2
+    fi
+    if [[ "$current_rc" == "$VERSION" ]]; then
+      npm dist-tag rm --registry "$NPM_REGISTRY" "${package}" rc
+    fi
+    npm deprecate --registry "$NPM_REGISTRY" \
+      "${package}@${VERSION}" "Use the replacement RC"
+  done
+)
 ```
 
+The command is resumable after a partial failure: it accepts an already-absent
+`rc` tag, preserves a tag that already points to a different version, and
+rechecks every tag before each mutation. From the repository root, invoke it
+with the confirmed bad RC, for example `rollback_rc 0.3.0-rc3`.
+
 Do not move `latest` during RC rollback.
+
+For a bad stable release:
+
+1. Stop any pending promotion or dependent release.
+2. Deprecate the bad immutable version with a concrete impact and upgrade
+   message.
+3. Fix the source and publish a new patch version; that successful release moves
+   `latest` forward.
+4. If impact requires immediately removing the bad version from `latest`, an npm
+   owner must use a separately authorized, audited maintenance operation to move
+   `latest` back to the last known-good version while the patch is prepared.
+5. Record both tag states, affected versions, workflow runs, impact, and
+   corrective action. Do not unpublish the consumed stable version as a routine
+   rollback.
 
 ## Incident response
 

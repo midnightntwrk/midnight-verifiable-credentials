@@ -18,9 +18,10 @@ or mutate a DID, select a trust policy, or call another contract.
 The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
-0.6 little-endian DID-document snapshots must be re-resolved or explicitly
-migrated; the adapter does not guess the byte order. Not every 0.6 snapshot is
-detectably invalid under the 0.7 decoder, so supplying one can silently bind a
+0.6 little-endian DID-document snapshots must be re-resolved through a 0.7
+resolver or explicitly migrated from authenticated 0.6 provenance. The adapter
+does not auto-detect the byte order. Not every 0.6 snapshot is detectably
+invalid under the 0.7 decoder, so supplying one directly can silently bind a
 different native point rather than fail.
 
 > **Ledger 8 security boundary:** this package's binding circuits compare DID
@@ -28,6 +29,35 @@ different native point rather than fail.
 > state is current. Always compose them with the matching core context-proof
 > circuit over a root recomputed from the complete VC/VP input, then pin the
 > accepted binding root or verify an authority-signed descriptor.
+
+## Migrating Midnight DID 0.6 snapshots
+
+Prefer re-resolution: resolve the DID through a Midnight DID 0.7 resolver, then call
+`resolveMidnightDIDMethodBinding` with that resolver, DID, method ID, and
+required verification relationship. This validates the current DID document
+and captures its observed resolver `versionId` in the binding.
+
+When re-resolution is unavailable, an external migration must authenticate the
+snapshot's DID, method, relationship, positive observed `versionId`, and 0.6
+encoding profile. It must decode the known little-endian coordinates and
+re-encode the same native point as canonical 0.7 JWK coordinates while
+preserving the authenticated binding fields. The provenance must also
+authenticate that the DID was not deactivated at that observed historical
+state. Expose the migrated document through a snapshot-backed
+`MidnightDIDResolutionSource`, then call
+`resolveMidnightDIDMethodBinding`; do not construct a
+`MidnightDIDMethodBinding` directly. The adapter will still enforce the on-chain
+subject, subject-owned method, relationship membership, native Jubjub profile,
+canonical method ID, and positive `uint64` state version. This package does not
+authenticate or migrate the snapshot itself.
+
+An offline snapshot cannot prove current DID activation or method state. Never
+try both byte orders or use `versionId` as an encoding marker. Discard or
+quarantine the old snapshot after either path. See the
+[normative canonical mapping](../../spec/midnight-did-binding.md#canonical-mapping)
+for the required validation and migration boundary.
+
+## Resolve a current method
 
 ```ts
 import {

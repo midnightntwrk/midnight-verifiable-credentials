@@ -32,7 +32,7 @@ belong in independently versioned consumer repositories.
 
 `supported` means the package is in the executable publication allowlist and
 its packed artifact passes build and clean-consumer checks.
-All packages are ESM-only prerelease APIs and follow semantic versioning.
+All packages are ESM-only pre-1.0 APIs and follow semantic versioning.
 
 Use the smallest package that owns the required boundary. A credential-family
 repository normally depends on both: `credential-model` describes its metadata,
