@@ -212,7 +212,7 @@ Example operator commands:
 rollback_rc() (
   set -euo pipefail
   VERSION="${1:?usage: rollback_rc CONFIRMED_BAD_RC}"
-  NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
+  NPM_REGISTRY=https://registry.npmjs.org/
   if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc[1-9][0-9]*$ ]]; then
     printf 'refusing rollback: %s is not an RC version\n' "$VERSION" >&2
     exit 1
@@ -235,6 +235,7 @@ rollback_rc() (
     fi
     packages+=("$package")
   done <<< "$package_paths"
+  published_packages=()
   for package in "${packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
       "$package" dist-tags.rc)"; then
@@ -246,8 +247,24 @@ rollback_rc() (
         "$package" "$current_rc" "$VERSION" >&2
       exit 1
     fi
+    if ! versions_json="$(npm view --registry "$NPM_REGISTRY" \
+      "$package" versions --json)"; then
+      printf 'unable to read published versions for %s\n' "$package" >&2
+      exit 1
+    fi
+    if node -e '
+      const value = JSON.parse(process.argv[1]);
+      const versions = Array.isArray(value) ? value : [value];
+      process.exit(versions.includes(process.argv[2]) ? 0 : 1);
+    ' "$versions_json" "$VERSION"; then
+      published_packages+=("$package")
+    elif [[ "$current_rc" == "$VERSION" ]]; then
+      printf 'refusing rollback: %s rc tag names an unpublished version\n' \
+        "$package" >&2
+      exit 1
+    fi
   done
-  for package in "${packages[@]}"; do
+  for package in "${published_packages[@]}"; do
     if ! current_rc="$(npm view --registry "$NPM_REGISTRY" \
       "$package" dist-tags.rc)"; then
       printf 'unable to re-read %s rc tag\n' "$package" >&2
@@ -264,13 +281,12 @@ rollback_rc() (
       "${package}@${VERSION}" "Use the replacement RC"
   done
 )
-
-rollback_rc 0.3.0-rcN
 ```
 
 The command is resumable after a partial failure: it accepts an already-absent
 `rc` tag, rechecks every tag before each mutation, and refuses any tag that has
-moved to a different version.
+moved to a different version. From the repository root, invoke it with the
+confirmed bad RC, for example `rollback_rc 0.3.0-rc3`.
 
 Do not move `latest` during RC rollback.
 

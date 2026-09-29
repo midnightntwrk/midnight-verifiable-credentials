@@ -85,13 +85,12 @@ install_rc_graph() (
     "@midnight-ntwrk/credential-compact@${EXPECTED_RC}" \
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"
 )
-
-install_rc_graph 0.3.0-rcN
 ```
 
 Use those install commands only when the reported `rc` versions are the exact
-prerelease graph you intend to evaluate. Prerelease adoption should not happen
-implicitly.
+prerelease graph you intend to evaluate. After recording that version, invoke
+the function explicitly, for example `install_rc_graph 0.3.0-rc1`.
+Prerelease adoption should not happen implicitly.
 
 ## Define Metadata
 
