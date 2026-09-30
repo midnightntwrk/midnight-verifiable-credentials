@@ -18,6 +18,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { supportedPackages } from "./workspace-catalog.mjs";
+import {
+  createConsumerPnpmWorkspace,
+  readProjectPnpmConfig,
+  sanitizePnpmPolicyEnvironment,
+  validateRootPnpmSupplyPolicy,
+} from "./pnpm-supply-policy.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -156,7 +162,7 @@ if (
   fail("registry mode requires an HTTPS registry and semantic version");
 }
 
-const environment = { ...process.env };
+const environment = sanitizePnpmPolicyEnvironment(process.env);
 delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
@@ -201,6 +207,45 @@ const releasePackageByName = new Map(
     return [packageJson.name, { ...releasePackage, packageJson }];
   }),
 );
+
+let cachedRootPnpmSupplyPolicy;
+const rootPnpmSupplyPolicy = () => {
+  cachedRootPnpmSupplyPolicy ??= validateRootPnpmSupplyPolicy({
+    blockExoticSubdeps: readProjectPnpmConfig(
+      repoRoot,
+      "blockExoticSubdeps",
+      environment,
+    ),
+    minimumReleaseAge: readProjectPnpmConfig(
+      repoRoot,
+      "minimumReleaseAge",
+      environment,
+    ),
+    minimumReleaseAgeExclude:
+      readProjectPnpmConfig(
+        repoRoot,
+        "minimumReleaseAgeExclude",
+        environment,
+      ) ?? [],
+    trustPolicy: readProjectPnpmConfig(repoRoot, "trustPolicy", environment),
+    trustPolicyExclude:
+      readProjectPnpmConfig(repoRoot, "trustPolicyExclude", environment) ?? [],
+    trustPolicyIgnoreAfter: readProjectPnpmConfig(
+      repoRoot,
+      "trustPolicyIgnoreAfter",
+      environment,
+    ),
+  });
+  return cachedRootPnpmSupplyPolicy;
+};
+const consumerPnpmWorkspace = () =>
+  createConsumerPnpmWorkspace({
+    rootPolicy: rootPnpmSupplyPolicy(),
+    publishedPackageNames: registryMode
+      ? [...releasePackageByName.keys()]
+      : [],
+    expectedVersion,
+  });
 if (!releasePackageByName.has(midnightDIDBindingPackageName)) {
   fail(`${midnightDIDBindingPackageName} is missing from the workspace catalog`);
 }
@@ -372,6 +417,11 @@ for (const releasePackage of releasePackages) {
         `registry=${registry}\n`,
       );
     }
+
+    writeFileSync(
+      path.join(consumerRoot, "pnpm-workspace.yaml"),
+      consumerPnpmWorkspace(),
+    );
 
     run(
       "pnpm",

@@ -82,6 +82,31 @@ first and the broader lane required by
 If you cannot run a required command locally, explain why in the pull request
 body and include the closest successful focused validation.
 
+## Dependency Intake
+
+The pnpm workspace and clean tarball-consumer harness reject exotic transitive
+dependencies, package-integrity trust downgrades, and npm releases younger than
+seven days. These controls apply when dependency versions are resolved or the
+lockfile is refreshed.
+
+If a required release must be consumed before the cooldown expires, add only the
+exact package name and version to `minimumReleaseAgeExclude` in
+`pnpm-workspace.yaml`. Explain the dependency and evidence in the pull request,
+record a removal date, then remove the exception after the seven-day window. A
+package name must appear only once in the list; update an existing selector with
+pnpm's version-union syntax instead of appending another entry for the same
+package. Do not exempt an entire scope such as `@midnight-ntwrk/*`.
+
+The clean-consumer harness inherits these workspace policies. Registry-mode
+verification adds exact exemptions only for the VC package version that the
+current publish run is verifying, so a newly published release can be tested
+without weakening the policy for its other dependencies.
+
+Trust-policy exceptions must also identify one reviewed `name@version` entry.
+Confirm the package identity, registry metadata, lockfile integrity, and audit
+result in the pull request before adding it to `trustPolicyExclude`. Do not use
+unversioned or scope-wide trust exceptions.
+
 ## Pull Request Description
 
 Describe what changed, why it is needed, the issue and acceptance criteria, the

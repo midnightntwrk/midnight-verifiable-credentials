@@ -3,3 +3,18 @@ packages:
   - packages/core/compact
   - packages/credential-did-midnight
   - docs-site
+
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  # Remove after 2026-10-03; develop already locked this before the cooldown.
+  - "@types/node@26.6.3"
+  # Remove after 2026-10-05, once this release train is at least seven days old.
+  - "@turbo/darwin-64@2.11.5"
+  - "@turbo/darwin-arm64@2.11.5"
+  - "@turbo/linux-64@2.11.5"
+  - "@turbo/linux-arm64@2.11.5"
+  - "@turbo/windows-64@2.11.5"
+  - "@turbo/windows-arm64@2.11.5"
+  - turbo@2.11.5
+trustPolicy: no-downgrade

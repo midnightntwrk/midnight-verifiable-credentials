@@ -1,0 +1,168 @@
+import { execFileSync } from "node:child_process";
+import os from "node:os";
+
+const fail = (message) => {
+  throw new Error(`[pnpm-supply-policy] ${message}`);
+};
+
+const exactVersionPattern =
+  /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/u;
+
+const packageNameFromPolicy = (policy) => {
+  const separator = policy.lastIndexOf("@");
+  if (separator <= 0) {
+    fail(`policy selector must include an exact version: ${policy}`);
+  }
+  const versions = policy
+    .slice(separator + 1)
+    .split("||")
+    .map((version) => version.trim());
+  if (versions.some((version) => !exactVersionPattern.test(version))) {
+    fail(`policy selector must use exact semantic versions: ${policy}`);
+  }
+  return policy.slice(0, separator);
+};
+
+const validatePolicies = (name, policies) => {
+  if (!Array.isArray(policies) || policies.some((value) => typeof value !== "string")) {
+    fail(`${name} must be an array of package selectors`);
+  }
+  const packageNames = new Set();
+  for (const policy of policies) {
+    if (policy.includes("*") || policy.startsWith("!")) {
+      fail(`${name} must not contain broad selector ${policy}`);
+    }
+    const packageName = packageNameFromPolicy(policy);
+    if (packageNames.has(packageName)) {
+      fail(`${name} contains more than one selector for ${packageName}`);
+    }
+    packageNames.add(packageName);
+  }
+  return [...policies];
+};
+
+export const validateRootPnpmSupplyPolicy = (policy) => {
+  if (policy.blockExoticSubdeps !== true) {
+    fail("blockExoticSubdeps must be true");
+  }
+  if (
+    !Number.isInteger(policy.minimumReleaseAge) ||
+    policy.minimumReleaseAge < 10080
+  ) {
+    fail("minimumReleaseAge must enforce at least a seven-day cooldown");
+  }
+  if (policy.trustPolicy !== "no-downgrade") {
+    fail('trustPolicy must be "no-downgrade"');
+  }
+  if (policy.trustPolicyIgnoreAfter !== undefined) {
+    fail("trustPolicyIgnoreAfter must not weaken provenance enforcement");
+  }
+  return {
+    blockExoticSubdeps: true,
+    minimumReleaseAge: policy.minimumReleaseAge,
+    minimumReleaseAgeExclude: validatePolicies(
+      "minimumReleaseAgeExclude",
+      policy.minimumReleaseAgeExclude ?? [],
+    ),
+    trustPolicy: "no-downgrade",
+    trustPolicyExclude: validatePolicies(
+      "trustPolicyExclude",
+      policy.trustPolicyExclude ?? [],
+    ),
+  };
+};
+
+const pnpmPolicyEnvironmentNames = new Set([
+  "npmconfigblockexoticsubdeps",
+  "npmconfigminimumreleaseage",
+  "npmconfigminimumreleaseageexclude",
+  "npmconfigtrustpolicy",
+  "npmconfigtrustpolicyexclude",
+  "npmconfigtrustpolicyignoreafter",
+]);
+
+export const sanitizePnpmPolicyEnvironment = (
+  sourceEnvironment = process.env,
+) => {
+  const environment = { ...sourceEnvironment };
+  for (const environmentName of Object.keys(environment)) {
+    const normalizedName = environmentName
+      .toLowerCase()
+      .replaceAll(/[^a-z0-9]/gu, "");
+    if (pnpmPolicyEnvironmentNames.has(normalizedName)) {
+      delete environment[environmentName];
+    }
+  }
+  environment.NPM_CONFIG_USERCONFIG = os.devNull;
+  environment.NPM_CONFIG_GLOBALCONFIG = os.devNull;
+  return environment;
+};
+
+export const readProjectPnpmConfig = (
+  repoRoot,
+  name,
+  sourceEnvironment = process.env,
+) => {
+  const environment = sanitizePnpmPolicyEnvironment(sourceEnvironment);
+  const output = execFileSync(
+    "pnpm",
+    ["config", "get", name, "--location", "project", "--json"],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: environment,
+    },
+  ).trim();
+  return output === "" || output === "null" ? undefined : JSON.parse(output);
+};
+
+export const createConsumerPnpmWorkspace = ({
+  rootPolicy,
+  publishedPackageNames = [],
+  expectedVersion,
+}) => {
+  const minimumReleaseAgeExclude = [...rootPolicy.minimumReleaseAgeExclude];
+  if (publishedPackageNames.length > 0 && typeof expectedVersion !== "string") {
+    fail("registry verification requires an expected version");
+  }
+  if (
+    expectedVersion !== undefined &&
+    !exactVersionPattern.test(expectedVersion)
+  ) {
+    fail(`registry verification version is invalid: ${expectedVersion}`);
+  }
+  for (const packageName of publishedPackageNames) {
+    const existingIndex = minimumReleaseAgeExclude.findIndex(
+      (policy) => packageNameFromPolicy(policy) === packageName,
+    );
+    if (existingIndex === -1) {
+      minimumReleaseAgeExclude.push(`${packageName}@${expectedVersion}`);
+      continue;
+    }
+    const existingVersions = minimumReleaseAgeExclude[existingIndex]
+      .slice(minimumReleaseAgeExclude[existingIndex].lastIndexOf("@") + 1)
+      .split("||")
+      .map((version) => version.trim());
+    if (!existingVersions.includes(expectedVersion)) {
+      minimumReleaseAgeExclude[existingIndex] =
+        `${minimumReleaseAgeExclude[existingIndex]} || ${expectedVersion}`;
+    }
+  }
+
+  return `${JSON.stringify(
+    {
+      packages: ["."],
+      blockExoticSubdeps: rootPolicy.blockExoticSubdeps,
+      minimumReleaseAge: rootPolicy.minimumReleaseAge,
+      ...(minimumReleaseAgeExclude.length === 0
+        ? {}
+        : { minimumReleaseAgeExclude }),
+      trustPolicy: rootPolicy.trustPolicy,
+      ...(rootPolicy.trustPolicyExclude.length === 0
+        ? {}
+        : { trustPolicyExclude: rootPolicy.trustPolicyExclude }),
+    },
+    null,
+    2,
+  )}\n`;
+};
