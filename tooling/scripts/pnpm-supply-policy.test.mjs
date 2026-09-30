@@ -8,7 +8,6 @@ import { fileURLToPath } from "node:url";
 
 import {
   createConsumerPnpmWorkspace,
-  readProjectPnpmConfig,
   readRootPnpmSupplyPolicy,
   sanitizePnpmPolicyEnvironment,
   validateRootPnpmSupplyPolicy,
@@ -45,6 +44,20 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
+const writePolicyProject = (project, policy = validPolicy) => {
+  writeFileSync(
+    path.join(project, "package.json"),
+    `${JSON.stringify({
+      name: "pnpm-policy-fixture",
+      private: true,
+      packageManager: "pnpm@11.25.0",
+    })}\n`,
+  );
+  writeFileSync(
+    path.join(project, "pnpm-workspace.yaml"),
+    `${JSON.stringify({ packages: ["."], ...policy })}\n`,
+  );
+};
 test("requires every pnpm supply-chain control", () => {
   assert.throws(
     () =>
@@ -209,10 +222,41 @@ test("the real workspace enables the required supply-chain policy", () => {
   assert.doesNotThrow(() => readRootPnpmSupplyPolicy(repoRoot));
 });
 
+test("project policy must define pmOnFail instead of inheriting it", () => {
+  const project = mkdtempSync(path.join(os.tmpdir(), "pnpm-pm-on-fail-policy-"));
+  writePolicyProject(project, { ...validPolicy, pmOnFail: undefined });
+  try {
+    assert.throws(
+      () =>
+        readRootPnpmSupplyPolicy(project, {
+          ...process.env,
+          PNPM_CONFIG_PM_ON_FAIL: "error",
+        }),
+      /pmOnFail must be "error" in pnpm-workspace.yaml/,
+    );
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("workspace policy must contain a mapping", () => {
+  const project = mkdtempSync(path.join(os.tmpdir(), "pnpm-empty-policy-"));
+  writeFileSync(path.join(project, "pnpm-workspace.yaml"), "# empty\n");
+  try {
+    assert.throws(
+      () => readRootPnpmSupplyPolicy(project),
+      /pnpm-workspace.yaml must contain a mapping/,
+    );
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
 test("project policy cannot be supplied by inherited package-manager environment", () => {
-  const emptyProject = mkdtempSync(path.join(os.tmpdir(), "pnpm-policy-test-"));
-  const hostileUserConfig = path.join(emptyProject, "hostile.npmrc");
-  const hostileConfigHome = path.join(emptyProject, "config-home");
+  const project = mkdtempSync(path.join(os.tmpdir(), "pnpm-policy-test-"));
+  const hostileUserConfig = path.join(project, "hostile.npmrc");
+  const hostileConfigHome = path.join(project, "config-home");
+  writePolicyProject(project);
   mkdirSync(path.join(hostileConfigHome, "pnpm"), { recursive: true });
   writeFileSync(
     hostileUserConfig,
@@ -228,17 +272,34 @@ test("project policy cannot be supplied by inherited package-manager environment
     npm_config_minimumReleaseAge: "1",
     PNPM_CONFIG_MINIMUM_RELEASE_AGE: "1",
     pnpm_config_trustPolicyIgnoreAfter: "1",
-    NPM_CONFIG_USERCONFIG: hostileUserConfig,
-    NPM_CONFIG_GLOBALCONFIG: hostileUserConfig,
+    npm_config_userconfig: hostileUserConfig,
+    npm_config_globalconfig: hostileUserConfig,
     XDG_CONFIG_HOME: hostileConfigHome,
   };
   try {
-    assert.equal(
-      readProjectPnpmConfig(emptyProject, "minimumReleaseAge", environment),
-      undefined,
+    assert.deepEqual(
+      readRootPnpmSupplyPolicy(project, environment),
+      validateRootPnpmSupplyPolicy(validPolicy),
     );
   } finally {
-    rmSync(emptyProject, { recursive: true, force: true });
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("project npmrc cannot add a weakening policy key", () => {
+  const project = mkdtempSync(path.join(os.tmpdir(), "pnpm-npmrc-policy-"));
+  writePolicyProject(project);
+  writeFileSync(
+    path.join(project, ".npmrc"),
+    "trust-policy-ignore-after=1\n",
+  );
+  try {
+    assert.throws(
+      () => readRootPnpmSupplyPolicy(project),
+      /root \.npmrc is not allowed/,
+    );
+  } finally {
+    rmSync(project, { recursive: true, force: true });
   }
 });
 
@@ -334,6 +395,8 @@ test("consumer installs cannot inherit pnpm policy overrides", () => {
     PNPM_CONFIG_OVERRIDES: '{"vite":"0.0.0"}',
     PNPM_CONFIG_PM_ON_FAIL: "ignore",
     PNPM_CONFIG_REGISTRY: "https://registry.invalid/",
+    npm_config_userconfig: "/hostile/lower-user.npmrc",
+    pnpm_config_globalconfig: "/hostile/lower-global.npmrc",
     pnpm_config_strictDepBuilds: "false",
     PNPM_CONFIG_VERIFY_STORE_INTEGRITY: "false",
     XDG_CONFIG_HOME: "/hostile/config",
@@ -343,6 +406,8 @@ test("consumer installs cannot inherit pnpm policy overrides", () => {
   assert.equal(environment.PATH, process.env.PATH);
   assert.equal(environment.NPM_CONFIG_USERCONFIG, os.devNull);
   assert.equal(environment.NPM_CONFIG_GLOBALCONFIG, os.devNull);
+  assert.equal(environment.npm_config_userconfig, undefined);
+  assert.equal(environment.pnpm_config_globalconfig, undefined);
   assert.equal(environment.NPM_CONFIG_TRUST_POLICY_IGNORE_AFTER, undefined);
   assert.equal(environment.npm_config_minimumReleaseAge, undefined);
   assert.equal(environment.PNPM_CONFIG_TRUST_LOCKFILE, undefined);
