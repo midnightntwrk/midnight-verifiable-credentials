@@ -52,6 +52,9 @@
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "0.16.0"
   },
+  "devDependencies": {
+    "fast-check": "^4.10.2"
+  },
   "files": [
     "dist/**",
     "README.md",
