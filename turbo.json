@@ -2,10 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "agentGuidance": false,
   "globalDependencies": [".nvmrc"],
-  "globalPassThroughEnv": [
-    "COMPACT_DIRECTORY",
-    "NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS"
-  ],
+  "globalPassThroughEnv": ["COMPACT_DIRECTORY"],
   "tasks": {
     "clean": {
       "cache": false

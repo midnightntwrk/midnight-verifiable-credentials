@@ -58,7 +58,7 @@ docs/                        Core-only decision and release runbook
 
 ## Development
 
-Use Node.js 24, pnpm 10.34.5 or newer, and the pinned Compact toolchain.
+Use Node.js 24, pnpm 11.25.0, and the pinned Compact toolchain.
 
 ```bash
 pnpm install --frozen-lockfile
