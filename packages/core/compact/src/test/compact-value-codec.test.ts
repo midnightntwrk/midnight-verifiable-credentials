@@ -5,6 +5,7 @@ import {
   CompactTypeUnsignedInteger,
   type Value,
 } from "@midnight-ntwrk/compact-runtime";
+import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -48,6 +49,27 @@ const exampleCredentialDescriptor: CompactType<ExampleCredential> = {
 
 const createBytes = (seed: number): Uint8Array =>
   Uint8Array.from({ length: 32 }, (_, index) => (seed + index) % 256);
+
+const compactValueArbitrary = fc.oneof(
+  fc.array(fc.uint8Array({ maxLength: 512, size: "max" }), {
+    maxLength: 32,
+    size: "max",
+  }),
+  fc.array(fc.uint8Array({ maxLength: 4, size: "max" }), {
+    minLength: 256,
+    maxLength: 300,
+    size: "max",
+  }),
+);
+const nonEmptyCompactValueArbitrary = fc.array(
+  fc.uint8Array({ maxLength: 512, size: "max" }),
+  {
+    minLength: 1,
+    maxLength: 16,
+    size: "max",
+  },
+);
+const PROPERTY_RUNS = 250;
 
 describe("Compact value transport codec", () => {
   it("frames and unframes runtime Value chunks without JSON conversion", () => {
@@ -105,5 +127,54 @@ describe("Compact value transport codec", () => {
         payload: "",
       }),
     ).toThrow("Compact value payload must not be empty");
+  });
+
+  it("round-trips bounded arbitrary runtime Value chunks", () => {
+    fc.assert(
+      fc.property(compactValueArbitrary, (value) => {
+        expect(compactValueFromBytes(compactValueToBytes(value))).toEqual(
+          value,
+        );
+        expect(decodeCompactValue(encodeCompactValue(value))).toEqual(value);
+      }),
+      { numRuns: PROPERTY_RUNS },
+    );
+  });
+
+  it("rejects a truncated frame whose final chunk is empty", () => {
+    const encoded = compactValueToBytes([new Uint8Array()]);
+
+    expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
+      /ended before uint32 field/,
+    );
+  });
+
+  it("rejects truncated and trailing bytes for arbitrary framed values", () => {
+    fc.assert(
+      fc.property(
+        nonEmptyCompactValueArbitrary,
+        fc.uint8Array({ minLength: 1, maxLength: 8 }),
+        (value, trailingBytes) => {
+          const encoded = compactValueToBytes(value);
+          const expectedTruncationError =
+            value.at(-1)!.length === 0
+              ? /ended before uint32 field/
+              : /chunk exceeds payload length/;
+          expect(() => compactValueFromBytes(encoded.slice(0, -1))).toThrow(
+            expectedTruncationError,
+          );
+
+          const withTrailingBytes = new Uint8Array(
+            encoded.length + trailingBytes.length,
+          );
+          withTrailingBytes.set(encoded);
+          withTrailingBytes.set(trailingBytes, encoded.length);
+          expect(() => compactValueFromBytes(withTrailingBytes)).toThrow(
+            /trailing bytes/,
+          );
+        },
+      ),
+      { numRuns: PROPERTY_RUNS },
+    );
   });
 });
