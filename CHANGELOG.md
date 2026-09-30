@@ -19,6 +19,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- BREAKING: make typed Compact payload decoding fail closed unless descriptor
+  re-encoding reproduces the exact payload, rejecting alternate zero-padded
+  chunk widths and lossy descriptor round trips while preserving untyped chunk
+  framing;
 - narrow the Midnight DID binding's public resolver contract to the domain
   values it consumes and remove the full resolver implementation from its
   production dependency graph;

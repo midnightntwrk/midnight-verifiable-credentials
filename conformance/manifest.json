@@ -183,7 +183,7 @@
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",
-      "sha256": "744f1e8671a36d3feb988f7fc538535f862b53ea37458eb501b4f01fabf88366"
+      "sha256": "39e6853bef5fd2cf19976c0eb0e439fb5db97b0b946dfc77594a977bf0662953"
     },
     {
       "path": "conformance/vectors/credential-proof.json",
