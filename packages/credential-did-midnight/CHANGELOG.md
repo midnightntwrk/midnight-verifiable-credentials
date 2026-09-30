@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep the repository's pnpm requirement development-only so published binding
+  consumers are not coupled to this monorepo's package manager.
 - Narrow the public resolver boundary to a structural interface backed by DID
   domain types, keeping the full Midnight DID resolver as a development-only
   compatibility dependency.

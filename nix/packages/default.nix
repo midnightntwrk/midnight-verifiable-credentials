@@ -33,14 +33,14 @@
           pkgs.gh
           pkgs.just
           pkgs.nodejs_24
-          pkgs.pnpm_10
+          pkgs.pnpm_11
         ];
 
         COMPACT_DIRECTORY = compact-toolchain;
 
         shellHook = ''
           # Keep the pinned Nix toolchain ahead of user-local installs.
-          export PATH="${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_10}/bin:$PATH"
+          export PATH="${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_11}/bin:$PATH"
 
           mkdir -p "$HOME/.cache/midnight/zk-params"
           cp -Rn ${midnight-circuit-params}/. "$HOME/.cache/midnight/zk-params/" 2>/dev/null || true

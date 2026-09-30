@@ -4,6 +4,8 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased
 
+- Keep the repository's pnpm requirement development-only so published model
+  consumers are not coupled to this monorepo's package manager.
 - Advance the package manifest to the `0.3.0` release base.
 
 ## 0.2.0 - 2026-09-25

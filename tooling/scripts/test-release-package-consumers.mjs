@@ -20,9 +20,8 @@ import { fileURLToPath } from "node:url";
 import { supportedPackages } from "./workspace-catalog.mjs";
 import {
   createConsumerPnpmWorkspace,
-  readProjectPnpmConfig,
+  readRootPnpmSupplyPolicy,
   sanitizePnpmPolicyEnvironment,
-  validateRootPnpmSupplyPolicy,
 } from "./pnpm-supply-policy.mjs";
 
 const repoRoot = path.resolve(
@@ -167,6 +166,8 @@ delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
 delete environment.NPM_CONFIG_WORKSPACE;
+delete environment.pnpm_config_workspace;
+delete environment.PNPM_CONFIG_WORKSPACE;
 const installLifecycleHooks = [
   "preinstall",
   "install",
@@ -210,37 +211,16 @@ const releasePackageByName = new Map(
 
 let cachedRootPnpmSupplyPolicy;
 const rootPnpmSupplyPolicy = () => {
-  cachedRootPnpmSupplyPolicy ??= validateRootPnpmSupplyPolicy({
-    blockExoticSubdeps: readProjectPnpmConfig(
-      repoRoot,
-      "blockExoticSubdeps",
-      environment,
-    ),
-    minimumReleaseAge: readProjectPnpmConfig(
-      repoRoot,
-      "minimumReleaseAge",
-      environment,
-    ),
-    minimumReleaseAgeExclude:
-      readProjectPnpmConfig(
-        repoRoot,
-        "minimumReleaseAgeExclude",
-        environment,
-      ) ?? [],
-    trustPolicy: readProjectPnpmConfig(repoRoot, "trustPolicy", environment),
-    trustPolicyExclude:
-      readProjectPnpmConfig(repoRoot, "trustPolicyExclude", environment) ?? [],
-    trustPolicyIgnoreAfter: readProjectPnpmConfig(
-      repoRoot,
-      "trustPolicyIgnoreAfter",
-      environment,
-    ),
-  });
+  cachedRootPnpmSupplyPolicy ??= readRootPnpmSupplyPolicy(
+    repoRoot,
+    environment,
+  );
   return cachedRootPnpmSupplyPolicy;
 };
-const consumerPnpmWorkspace = () =>
+const consumerPnpmWorkspace = (overrides = {}) =>
   createConsumerPnpmWorkspace({
     rootPolicy: rootPnpmSupplyPolicy(),
+    overrides,
     publishedPackageNames: registryMode
       ? [...releasePackageByName.keys()]
       : [],
@@ -351,6 +331,7 @@ for (const releasePackage of releasePackages) {
       "file:./vendor/package.tgz",
       "file:vendor/package.tgz",
     ]);
+    const consumerOverrides = {};
     if (tarballPath !== undefined) {
       mkdirSync(path.join(consumerRoot, "vendor"));
       copyFileSync(
@@ -388,9 +369,7 @@ for (const releasePackage of releasePackages) {
         );
         const locator = `file:./vendor/dependencies/${dependencyTarballName}`;
         if (localReleaseDependencies.has(dependencyName)) {
-          fixturePackageJson.pnpm ??= {};
-          fixturePackageJson.pnpm.overrides ??= {};
-          fixturePackageJson.pnpm.overrides[dependencyName] = locator;
+          consumerOverrides[dependencyName] = locator;
         }
         if (consumerReleaseDependencies.has(dependencyName)) {
           fixturePackageJson.dependencies[dependencyName] = locator;
@@ -420,7 +399,7 @@ for (const releasePackage of releasePackages) {
 
     writeFileSync(
       path.join(consumerRoot, "pnpm-workspace.yaml"),
-      consumerPnpmWorkspace(),
+      consumerPnpmWorkspace(consumerOverrides),
     );
 
     run(

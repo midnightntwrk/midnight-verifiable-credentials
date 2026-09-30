@@ -3,7 +3,8 @@
 ## Prerequisites
 
 - Node.js 24 or newer
-- pnpm 10.34.5 or newer
+- A pnpm version compatible with the consumer workspace; repository
+  contributors use pnpm 11.25.0
 - Compact `0.31.1` when consuming the Compact package
 
 ## Install

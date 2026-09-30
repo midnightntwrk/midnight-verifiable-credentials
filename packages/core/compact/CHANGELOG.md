@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep the repository's pnpm requirement development-only so published Compact
+  consumers are not coupled to this monorepo's package manager.
 - Add the supported explicit-holder presentation-proof composition, including
   credential-to-presentation holder equality, signer-reference and accepted-key
   binding, internally derived body-root verification, and substitution-negative
