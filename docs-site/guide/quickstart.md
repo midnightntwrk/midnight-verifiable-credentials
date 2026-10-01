@@ -9,9 +9,29 @@
 
 ## Install
 
-When a consumer needs the complete model, Compact, and Midnight DID graph, use
-this guarded function. It verifies that every immutable package version exists
-and records that approved version exactly:
+Install only the boundaries the consumer needs. The current stable graph is
+`0.2.0`:
+
+```bash
+# Metadata only
+pnpm add -E @midnight-ntwrk/credential-model@0.2.0
+
+# Metadata plus family-neutral Compact primitives
+pnpm add -E \
+  @midnight-ntwrk/credential-model@0.2.0 \
+  @midnight-ntwrk/credential-compact@0.2.0
+
+# Add only for did:midnight method binding
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
+```
+
+The packages do not provide a credential family, wallet flow, exchange
+protocol, DID resolver, status authority, or issuer trust policy. A consumer
+repository owns those choices.
+
+For release-sensitive automation that needs the complete graph, use this
+guarded function. It verifies that every immutable package version exists and
+records the approved version exactly:
 
 ```bash
 install_stable_graph() (
@@ -41,13 +61,6 @@ install_stable_graph() (
 )
 
 install_stable_graph 0.2.0
-```
-
-If the consumer only needs protocol-neutral family and claim-schema metadata,
-install only the model package:
-
-```bash
-pnpm add -E @midnight-ntwrk/credential-model@latest
 ```
 
 Keep the package graph on one exact version for reproducible credential-family
