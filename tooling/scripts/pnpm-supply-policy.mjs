@@ -1,7 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+
+import { parse } from "yaml";
 
 let isolatedPnpmConfigHome;
 const getIsolatedPnpmConfigHome = () => {
@@ -171,6 +174,7 @@ const pnpmPolicyNames = [
   "blockexoticsubdeps",
   "dangerouslyallowallbuilds",
   "enginestrict",
+  "globalconfig",
   "minimumreleaseage",
   "minimumreleaseageexclude",
   "minimumreleaseageexcludeprune",
@@ -184,6 +188,7 @@ const pnpmPolicyNames = [
   "trustpolicy",
   "trustpolicyexclude",
   "trustpolicyignoreafter",
+  "userconfig",
   "verifystoreintegrity",
 ];
 const pnpmPolicyEnvironmentNames = new Set(
@@ -213,24 +218,6 @@ export const sanitizePnpmPolicyEnvironment = (
   return environment;
 };
 
-export const readProjectPnpmConfig = (
-  repoRoot,
-  name,
-  sourceEnvironment = process.env,
-) => {
-  const environment = sanitizePnpmPolicyEnvironment(sourceEnvironment);
-  const output = execFileSync(
-    "pnpm",
-    ["config", "get", name, "--location", "project", "--json"],
-    {
-      cwd: repoRoot,
-      encoding: "utf8",
-      env: environment,
-    },
-  ).trim();
-  return output === "" || output === "null" ? undefined : JSON.parse(output);
-};
-
 const readProjectPnpmConfigList = (
   repoRoot,
   sourceEnvironment = process.env,
@@ -245,7 +232,7 @@ const readProjectPnpmConfigList = (
         encoding: "utf8",
         env: environment,
       },
-    ),
+    ).trim(),
   );
 };
 
@@ -253,6 +240,28 @@ export const readRootPnpmSupplyPolicy = (
   repoRoot,
   sourceEnvironment = process.env,
 ) => {
+  if (existsSync(path.join(repoRoot, ".npmrc"))) {
+    fail("root .npmrc is not allowed; define project policy in pnpm-workspace.yaml");
+  }
+  const workspacePath = path.join(repoRoot, "pnpm-workspace.yaml");
+  let declaredConfig;
+  try {
+    declaredConfig = parse(readFileSync(workspacePath, "utf8"));
+  } catch (error) {
+    fail(
+      `cannot read pnpm-workspace.yaml: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  if (
+    declaredConfig === null ||
+    typeof declaredConfig !== "object" ||
+    Array.isArray(declaredConfig)
+  ) {
+    fail("pnpm-workspace.yaml must contain a mapping");
+  }
+  if (declaredConfig.pmOnFail !== "error") {
+    fail('pmOnFail must be "error" in pnpm-workspace.yaml');
+  }
   const config = readProjectPnpmConfigList(repoRoot, sourceEnvironment);
   return validateRootPnpmSupplyPolicy({
     allowBuilds: config.allowBuilds,
@@ -266,7 +275,7 @@ export const readRootPnpmSupplyPolicy = (
     minimumReleaseAgeStrict: config.minimumReleaseAgeStrict,
     minimumReleaseAgeExclude: config.minimumReleaseAgeExclude ?? [],
     overrides: config.overrides,
-    pmOnFail: config.pmOnFail,
+    pmOnFail: declaredConfig.pmOnFail,
     trustPolicy: config.trustPolicy,
     trustPolicyExclude: config.trustPolicyExclude ?? [],
     trustPolicyIgnoreAfter: config.trustPolicyIgnoreAfter,
