@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 - 2026-10-01
+
 - Keep the repository's pnpm requirement development-only so published Compact
   consumers are not coupled to this monorepo's package manager.
 - BREAKING: Make typed Compact payload decoding fail closed unless descriptor

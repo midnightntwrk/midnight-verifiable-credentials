@@ -11,15 +11,20 @@ deployment, proof artifacts, or encoding.
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-model@latest
+pnpm add -E @midnight-ntwrk/credential-model@0.2.0
 ```
 
-`-E` records the version currently selected by `latest` as an exact dependency.
-The release line is pre-1.0, so keep that resolved version pinned when a
-credential-family repository requires reproducible builds. Use the `rc`
-dist-tag only after `npm view @midnight-ntwrk/credential-model dist-tags --json`
-confirms that it identifies the exact prerelease you intend to evaluate; the
-moving tag may be older or newer than `latest`.
+`0.2.0` is the current stable release. The release line is pre-1.0, so keep the
+resolved version pinned when a credential-family repository requires
+reproducible builds. To evaluate the current 0.3 release candidate explicitly:
+
+```bash
+pnpm add -E @midnight-ntwrk/credential-model@0.3.0-rc1
+```
+
+Before adopting an RC, confirm the moving tag still names that immutable
+version with
+`npm view @midnight-ntwrk/credential-model dist-tags --json`.
 
 ## Public API
 

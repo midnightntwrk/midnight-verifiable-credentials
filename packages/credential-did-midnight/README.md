@@ -1,9 +1,25 @@
 # @midnight-ntwrk/credential-did-midnight
 
+> Release stage: `supported`
+> Maturity: `core extension`
+> Package class: `dist`
+
 Composable Midnight DID binding for the protocol-independent VC/VP primitives
 in `@midnight-ntwrk/credential-compact`.
 
 See [`CHANGELOG.md`](./CHANGELOG.md) for package release history.
+
+## Install
+
+```bash
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
+```
+
+`0.2.0` is the current stable release. It installs the matching Compact core
+dependency. To evaluate the current 0.3 release candidate explicitly, install
+`@midnight-ntwrk/credential-did-midnight@0.3.0-rc1` and keep the model and
+Compact packages on that same version. Confirm the moving `rc` tags before
+adopting the prerelease graph.
 
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected structural `MidnightDIDResolutionSource`. The published
@@ -210,3 +226,19 @@ Trust Registry policy stays outside this package.
 
 The supported build profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
 `8.0.2`. Ledger 9 cross-contract validation is future work.
+
+## Compatibility and support
+
+- The TypeScript surface is ESM-only and supports Node.js 24 or newer.
+- The adapter profile is Midnight DID `0.7.0`; it is not compatible with raw
+  0.6 little-endian DID-document snapshots.
+- The Compact profile is compiler `0.31.1`, runtime `0.16.0`, and Ledger
+  `8.0.2`.
+- During `0.x`, breaking API changes may ship in a minor release. Keep exact
+  versions pinned and read [`CHANGELOG.md`](./CHANGELOG.md) before upgrading.
+- Release candidates are supported only until a newer candidate or stable
+  release in the same minor line is published.
+
+Technical ownership belongs to `@midnightntwrk/ex-identus`. Release operations
+belong to `@midnightntwrk/mn-sre`. Security reports follow the repository
+[`SECURITY.md`](../../SECURITY.md) process.
