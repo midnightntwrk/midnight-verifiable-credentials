@@ -8,6 +8,21 @@ Supported pre-1.0 package for reusable, family-neutral Compact VC/VP
 semantics. This is a library include surface, not a deployable contract,
 credential family, proof artifact, or registry authority.
 
+## Install
+
+```bash
+pnpm add -E @midnight-ntwrk/credential-compact@0.2.0
+```
+
+`0.2.0` is the current stable release. To evaluate the current 0.3 release
+candidate explicitly, install
+`@midnight-ntwrk/credential-compact@0.3.0-rc1` and keep every package in the
+VC graph on that same version. Confirm the moving `rc` tag before adopting it:
+
+```bash
+npm view @midnight-ntwrk/credential-compact dist-tags --json
+```
+
 ## Scope
 
 The package contains generic VC/VP envelopes, schema references, issuer and
@@ -95,3 +110,34 @@ the repository's npm publication runbook.
 Consumers must use the package name and explicit exports, never repository
 relative includes or `src`/`managed` paths. Candidate tarball and clean-consumer
 checks compile every advertised Compact entrypoint outside this repository.
+
+## TypeScript value framing
+
+The TypeScript export encodes and decodes canonical Compact runtime values for
+transport or storage. Typed application payloads should use
+`encodeCompactPayload` and `decodeCompactPayload` with the generated descriptor
+for that type.
+
+```ts
+import {
+  decodeCompactValue,
+  encodeCompactValue,
+} from "@midnight-ntwrk/credential-compact";
+
+const encoded = encodeCompactValue([Uint8Array.of(1, 2, 3)]);
+const decoded = decodeCompactValue(encoded);
+```
+
+## Compatibility and support
+
+- The TypeScript surface is ESM-only and supports Node.js 24 or newer.
+- Compact consumers use compiler `0.31.1`, runtime `0.16.0`, and Ledger
+  `8.0.2`.
+- During `0.x`, breaking API changes may ship in a minor release. Keep exact
+  versions pinned and read [`CHANGELOG.md`](./CHANGELOG.md) before upgrading.
+- Release candidates are supported only until a newer candidate or stable
+  release in the same minor line is published.
+
+Technical ownership belongs to `@midnightntwrk/ex-identus`. Release operations
+belong to `@midnightntwrk/mn-sre`. Security reports follow the repository
+[`SECURITY.md`](../../../SECURITY.md) process.

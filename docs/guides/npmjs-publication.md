@@ -83,6 +83,17 @@ registry state is triaged explicitly.
 
 ## Prerelease publication
 
+Current release-preparation baseline:
+
+| Channel | Version | Meaning |
+| --- | --- | --- |
+| `latest` | `0.2.0` | Stable consumer release |
+| `rc` | `0.3.0-rc1` | Explicit 0.3 evaluation release |
+
+Update this table and all guarded install examples only after registry
+verification succeeds. Cutting a changelog section or merging a release PR does
+not make a version installable.
+
 Set the root and supported package manifests to the version approved by the
 release PR, then dispatch `Publish npmjs Packages` from `develop`. For example:
 

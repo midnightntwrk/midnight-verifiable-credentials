@@ -93,20 +93,24 @@ const rewriteLinks = (source, sourcePath) => {
   }
   if (sourcePath === "packages/core/model/README.md") {
     return rewritten
-      .replace(
+      .replaceAll(
         "[`CHANGELOG.md`](./CHANGELOG.md)",
         "[package changelog](/packages/model-changelog)",
       )
-      .replace(
+      .replaceAll(
         "[`SECURITY.md`](../../../SECURITY.md)",
         "[security policy](/development/security)",
       );
   }
   if (sourcePath === "packages/core/compact/README.md") {
     return rewritten
-      .replace(
+      .replaceAll(
         "[`CHANGELOG.md`](./CHANGELOG.md)",
         "[package changelog](/packages/compact-changelog)",
+      )
+      .replaceAll(
+        "[`SECURITY.md`](../../../SECURITY.md)",
+        "[security policy](/development/security)",
       )
       .replace(
         "(../../../conformance/compact-circuits.json)",
@@ -115,9 +119,13 @@ const rewriteLinks = (source, sourcePath) => {
   }
   if (sourcePath === "packages/credential-did-midnight/README.md") {
     return rewritten
-      .replace(
+      .replaceAll(
         "[`CHANGELOG.md`](./CHANGELOG.md)",
         "[package changelog](/packages/credential-did-midnight-changelog)",
+      )
+      .replaceAll(
+        "[`SECURITY.md`](../../SECURITY.md)",
+        "[security policy](/development/security)",
       )
       .replace(
         "(../../spec/midnight-did-binding.md#canonical-mapping)",

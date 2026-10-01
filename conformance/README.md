@@ -6,6 +6,13 @@ normative section and vector category. Files under
 [`manifest.sha256`](./manifest.sha256) identifies the exact manifest bytes used
 for a conformance claim.
 
+[`vectors/credential-family-definition.json`](./vectors/credential-family-definition.json)
+defines the model package's structural validation contract for identifiers,
+SemVer, credential types, claims, paths, disclosure modes, and required flags.
+The conformance lane executes those vectors through the package's public model
+entrypoint. The release-package lane independently exercises the same public
+API from an installed tarball.
+
 [`compact-circuits.json`](./compact-circuits.json) inventories every circuit
 exported by both published Compact entrypoints. A `supported` circuit maps to a
 normative operation and executable vectors. A `low-level` circuit is available
@@ -16,8 +23,11 @@ fails when an entrypoint and this inventory differ.
 
 [`credential-did-midnight-circuits.json`](./credential-did-midnight-circuits.json)
 classifies the circuits owned by the optional Midnight DID composition
-extension. Its executable vectors cover controller, method, key, state-version,
-relationship, holder, proof, and signer-authorization substitution.
+extension. It binds both published entrypoints: the composition root must expose
+exactly the extension circuits, while the standalone root must expose the exact
+core-plus-extension union. Its executable vectors cover controller, method,
+key, state-version, relationship, holder, proof, and signer-authorization
+substitution.
 
 Signer-authorization vectors include fixed known-answer roots, challenges, and
 signature scalars so challenge derivation and signature verification cannot
