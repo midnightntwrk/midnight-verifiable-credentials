@@ -51,5 +51,52 @@ assert.throws(
     error.code === "INVALID_VERSION" &&
     error.path === "version",
 );
+assert.throws(
+  () =>
+    assertCredentialFamilyDefinition({
+      ...accessFamily,
+      schema: {
+        ...accessFamily.schema,
+        claims: [
+          accessFamily.schema.claims[0],
+          accessFamily.schema.claims[0],
+        ],
+      },
+    }),
+  (error) =>
+    error instanceof CredentialModelError &&
+    error.code === "DUPLICATE_ID" &&
+    error.path === "schema.claims[1].id",
+);
+for (const [field, value, code, path] of [
+  ["path", [], "INVALID_DESCRIPTOR", "schema.claims[0].path"],
+  [
+    "disclosure",
+    "private",
+    "INVALID_DESCRIPTOR",
+    "schema.claims[0].disclosure",
+  ],
+  ["required", "true", "INVALID_DESCRIPTOR", "schema.claims[0].required"],
+]) {
+  assert.throws(
+    () =>
+      assertCredentialFamilyDefinition({
+        ...accessFamily,
+        schema: {
+          ...accessFamily.schema,
+          claims: [
+            {
+              ...accessFamily.schema.claims[0],
+              [field]: value,
+            },
+          ],
+        },
+      }),
+    (error) =>
+      error instanceof CredentialModelError &&
+      error.code === code &&
+      error.path === path,
+  );
+}
 
 console.log("Node ESM consumed the credential metadata model tarball.");

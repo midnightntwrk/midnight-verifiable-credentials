@@ -98,9 +98,22 @@ reference, native Jubjub key, observed DID state version, and verification
 relationship. Its root is the canonical Compact persistent hash of the complete
 structure.
 
-The extension circuits MUST reject any substitution of the controller, method
-ID, key, state version, or relationship when binding a proof, explicit holder,
-or authorized signer descriptor.
+Each extension operation owns a different part of that binding:
+
+| Operation | Checks | Does not establish |
+| --- | --- | --- |
+| `assertValidMidnightDIDMethodBinding` | non-empty method reference, usable native Jubjub key, and positive state version | current DID state, a role-specific relationship, or proof of possession |
+| `midnightDIDMethodBindingRoot` | validates and commits the complete method reference, key, state version, and relationship | who accepted or pinned that root |
+| `assertMidnightDIDProofMatchesMethod` | proof signer reference and key equal the supplied method binding | signature validity, an independently accepted state version, or relationship policy |
+| `assertMidnightDIDHolderBinding` | authentication relationship, holder reference, proof reference, and proof key equal the supplied method binding | signature validity or independent acceptance of the supplied state version |
+| `assertMidnightDIDSignerAuthorization` | descriptor method reference, key, state version, and relationship equal the supplied method binding | the authority signature or governance policy that authorized the descriptor |
+
+The core `Proof` and `ExplicitHolderBinding` values do not carry a separate DID
+state version. Their equality checks therefore cannot compare one. A consumer
+binds state-version acceptance by pinning the complete method-binding root or
+by matching the binding against an authenticated signer descriptor. The holder
+helper additionally requires the `authentication` relationship; the proof
+helper does not apply relationship policy.
 
 The binding circuits establish reference and key equality only. They do not
 verify a signature or authenticate a credential, presentation, authorization
@@ -124,22 +137,27 @@ Calling `assertMidnightDIDProofMatchesMethod`,
 of possession or an authenticated VC/VP decision.
 
 An implementation MAY provide software signing helpers for the issuance and
-presentation contexts. Such a helper MUST derive the challenge with the
-matching core challenge circuit, MUST require the signing public key to equal
-the resolved method binding, and MUST use a fresh nonzero nonce. It MUST return
-a proof accepted by both the matching core context verifier and the Midnight
-DID method-binding circuit. Its body root MUST be derived from the complete VC
-or VP with the matching core circuit. The Midnight DID contract payload-signing
-challenge is not an equivalent VC/VP challenge.
+presentation contexts. The caller MUST derive the body root from the complete
+VC or VP with the matching core circuit and supply that root to the signing
+helper. The helper does not receive a complete VC or VP and cannot derive or
+validate that envelope itself. It MUST derive the challenge with the matching
+core challenge circuit, MUST require the signing public key to equal the
+resolved method binding, and MUST use a fresh nonzero nonce. It MUST return a
+proof accepted by both the matching core context verifier and the Midnight DID
+method-binding circuit. The Midnight DID contract payload-signing challenge is
+not an equivalent VC/VP challenge.
 
 A software helper that accepts raw key material MUST derive its nonce from the
 secret, operation domain, complete signed inputs, and fresh cryptographic
 entropy. A wallet or hardware-backed implementation SHOULD retain the scalar
 inside its signing boundary and perform the same nonce/challenge/response flow.
 
-The standalone Compact entrypoint includes the VC core. The composition
-entrypoint contains only Midnight DID-owned declarations and requires a
-consumer to include the VC core composition root exactly once before it.
+The standalone `did-midnight.compact` entrypoint exports the exact union of the
+core and Midnight DID extension circuits. The
+`did-midnight/composable.compact` entrypoint exports only the Midnight DID
+extension circuits and requires a consumer to include the VC core composition
+root exactly once before it. Both published surfaces are bound by the
+conformance circuit inventories.
 
 ## Ledger 8 trust boundary
 
