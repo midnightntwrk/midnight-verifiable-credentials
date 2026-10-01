@@ -9,6 +9,15 @@ import {
   decodeCompactValue,
   encodeCompactValue,
 } from "../../packages/core/compact/src/compact-value-codec.ts";
+import {
+  assertCredentialFamilyDefinition,
+  CredentialModelError,
+} from "../../packages/core/model/dist/index.js";
+import {
+  collectExportedCircuitSymbols,
+  compactCircuitKey,
+  stripCompactComments,
+} from "./compact-source-inventory.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
@@ -47,65 +56,43 @@ const listJsonFiles = (directory) =>
     if (entry.isDirectory()) return listJsonFiles(path);
     return entry.isFile() && entry.name.endsWith(".json") ? [path] : [];
   });
+const applyVectorPatches = (fixture, patches) => {
+  const value = structuredClone(fixture);
+  for (const patch of patches) {
+    assert.deepEqual(Object.keys(patch).sort(), ["path", "value"]);
+    assert.match(
+      patch.path,
+      /^\/(?:[A-Za-z][A-Za-z0-9]*|\d+)(?:\/(?:[A-Za-z][A-Za-z0-9]*|\d+))*$/u,
+    );
+    const segments = patch.path.slice(1).split("/");
+    const property = segments.pop();
+    let target = value;
+    for (const segment of segments) {
+      assert.ok(target !== null && typeof target === "object");
+      assert.ok(
+        Object.hasOwn(target, segment),
+        `unknown vector path ${patch.path}`,
+      );
+      target = target[segment];
+    }
+    assert.ok(target !== null && typeof target === "object");
+    assert.ok(
+      Object.hasOwn(target, property),
+      `unknown vector path ${patch.path}`,
+    );
+    target[property] = structuredClone(patch.value);
+  }
+  return value;
+};
+const modelVectorInput = (fixture, vector) =>
+  Object.hasOwn(vector, "input")
+    ? structuredClone(vector.input)
+    : applyVectorPatches(fixture, vector.patches);
 const extractImportSpecifiers = (source) => [
   ...source.matchAll(
     /\b(?:import|export)\s+(?:[^"'`;]*?\s+from\s+)?["']([^"']+)["']/gu,
   ),
   ...source.matchAll(/\bimport\s*\(\s*["']([^"']+)["']\s*\)/gu),
-].map((match) => match[1]);
-const compactCircuitKey = ({ source, symbol }) => `${source}#${symbol}`;
-const stripCompactComments = (source) => {
-  let output = "";
-  let state = "code";
-  for (let index = 0; index < source.length; index += 1) {
-    const character = source[index];
-    const next = source[index + 1];
-    if (state === "line-comment") {
-      if (character === "\n") {
-        state = "code";
-        output += character;
-      } else {
-        output += " ";
-      }
-    } else if (state === "block-comment") {
-      if (character === "*" && next === "/") {
-        output += "  ";
-        index += 1;
-        state = "code";
-      } else {
-        output += character === "\n" ? character : " ";
-      }
-    } else if (state === "string") {
-      output += character;
-      if (character === "\\" && next !== undefined) {
-        output += next;
-        index += 1;
-      } else if (character === '"') {
-        state = "code";
-      }
-    } else if (character === "/" && next === "/") {
-      output += "  ";
-      index += 1;
-      state = "line-comment";
-    } else if (character === "/" && next === "*") {
-      output += "  ";
-      index += 1;
-      state = "block-comment";
-    } else {
-      output += character;
-      if (character === '"') state = "string";
-    }
-  }
-  return output;
-};
-const stripCompactStrings = (source) =>
-  source.replace(/"(?:\\.|[^"\\])*"/gsu, (value) =>
-    value.replace(/[^\n]/gu, " "),
-  );
-const collectExportedCircuitSymbols = (source) => [
-  ...stripCompactStrings(stripCompactComments(source)).matchAll(
-    /^\s*export\s+(?:pure\s+)?circuit\s+([A-Za-z][A-Za-z0-9_]*)\s*\(/gmu,
-  ),
 ].map((match) => match[1]);
 const collectExportedCompactCircuits = (sourceRoot, entrypointSource) => {
   const visited = new Set();
@@ -341,6 +328,7 @@ test("backs every normative Compact operation with a supported circuit", () => {
   const typeScriptOnlyOperations = new Set([
     "decode-compact-value",
     "encode-compact-value",
+    "validate-credential-family-definition",
   ]);
   const operationsWithoutSupportedCircuit = manifest.operations
     .map(({ id }) => id)
@@ -472,18 +460,22 @@ test("matches the recorded conformance manifest and vector digests", () => {
 });
 
 test("keeps conformance code independent from non-core workspaces", () => {
-  const testFiles = readdirSync(import.meta.dirname)
+  const conformanceFiles = readdirSync(import.meta.dirname)
     .filter((name) => /^core-.*conformance\.test\.mjs$/u.test(name))
     .sort();
-  assert.ok(testFiles.length >= 2);
+  conformanceFiles.push("compact-source-inventory.mjs");
+  assert.ok(conformanceFiles.length >= 3);
   const importedCoreSpecifiers = new Set();
-  for (const testFile of testFiles) {
-    const source = readFileSync(resolve(import.meta.dirname, testFile), "utf8");
+  for (const conformanceFile of conformanceFiles) {
+    const source = readFileSync(
+      resolve(import.meta.dirname, conformanceFile),
+      "utf8",
+    );
     for (const specifier of extractImportSpecifiers(source)) {
       if (specifier.startsWith("node:")) continue;
       assert.ok(
         manifest.allowedCoreImports.includes(specifier),
-        `${testFile} imports non-allowlisted module ${specifier}`,
+        `${conformanceFile} imports non-allowlisted module ${specifier}`,
       );
       importedCoreSpecifiers.add(specifier);
     }
@@ -531,6 +523,46 @@ test("matches Compact Value framing and rejects malformed encodings", () => {
     assert.throws(
       decode,
       (error) => String(error).includes(vector.errorIncludes),
+      vector.id,
+    );
+  }
+});
+
+test("validates credential-family definitions through the public model API", () => {
+  const vectors = readJson(
+    "conformance/vectors/credential-family-definition.json",
+  );
+  assert.equal(vectors.formatVersion, 1);
+  assert.equal(vectors.category, "credential-family-definition");
+  assert.ok(vectors.positive.length > 0, "model vectors need positive cases");
+  assert.ok(vectors.negative.length > 0, "model vectors need negative cases");
+  const expectedEvidence = [...vectors.positive, ...vectors.negative].map(
+    ({ id }) => id,
+  );
+  assert.equal(
+    new Set(expectedEvidence).size,
+    expectedEvidence.length,
+    "model vector IDs must be unique",
+  );
+  for (const vector of vectors.positive) {
+    assert.doesNotThrow(
+      () =>
+        assertCredentialFamilyDefinition(
+          modelVectorInput(vectors.fixture, vector),
+        ),
+      vector.id,
+    );
+  }
+  for (const vector of vectors.negative) {
+    assert.throws(
+      () =>
+        assertCredentialFamilyDefinition(
+          modelVectorInput(vectors.fixture, vector),
+        ),
+      (error) =>
+        error instanceof CredentialModelError &&
+        error.code === vector.error.code &&
+        error.path === vector.error.path,
       vector.id,
     );
   }

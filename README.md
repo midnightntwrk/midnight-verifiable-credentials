@@ -24,11 +24,11 @@ belong in independently versioned consumer repositories.
 
 ## Packages
 
-| Package                                   | Stage     | Purpose                                          |
-| ----------------------------------------- | --------- | ------------------------------------------------ |
-| `@midnight-ntwrk/credential-model`        | supported | Family and claim-schema metadata with validation |
-| `@midnight-ntwrk/credential-compact`      | supported | Family-neutral Compact VC/VP primitives          |
-| `@midnight-ntwrk/credential-did-midnight` | supported | Midnight DID resolver and Compact binding        |
+| Package                                   | Stage     | Purpose                                           |
+| ----------------------------------------- | --------- | ------------------------------------------------- |
+| `@midnight-ntwrk/credential-model`        | supported | Family and claim-schema metadata with validation  |
+| `@midnight-ntwrk/credential-compact`      | supported | Family-neutral Compact VC/VP primitives           |
+| `@midnight-ntwrk/credential-did-midnight` | supported | Midnight DID resolver adapter and Compact binding |
 
 `supported` means the package is in the executable publication allowlist and
 its packed artifact passes build and clean-consumer checks.

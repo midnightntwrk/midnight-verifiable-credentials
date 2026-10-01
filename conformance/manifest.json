@@ -26,10 +26,15 @@
   "extensionCircuitInventories": [
     {
       "path": "conformance/credential-did-midnight-circuits.json",
-      "sha256": "3cadb20d2db9746f6e1f688597378da82a717843d47c9fd35f349e71b03f58fc"
+      "sha256": "a878a8f23411712edef27fc657377eb996b1934b56ceaf0d593df8a7f35a47e2"
     }
   ],
   "operations": [
+    {
+      "id": "validate-credential-family-definition",
+      "section": "spec/data-model.md",
+      "vectorCategory": "credential-family-definition"
+    },
     {
       "id": "validate-schema-reference",
       "section": "spec/data-model.md",
@@ -186,6 +191,10 @@
       "sha256": "39e6853bef5fd2cf19976c0eb0e439fb5db97b0b946dfc77594a977bf0662953"
     },
     {
+      "path": "conformance/vectors/credential-family-definition.json",
+      "sha256": "101d6d6fedbec083e85adc60e780d366c4639555f2bdf4ac29c2744d4e643f23"
+    },
+    {
       "path": "conformance/vectors/credential-proof.json",
       "sha256": "7b1fa6f3313e313a8dfd2cac062f43224de243d36974b55f09b0b3f0a49ef8bd"
     },
@@ -228,6 +237,8 @@
   ],
   "allowedCoreImports": [
     "../../packages/core/compact/src/compact-value-codec.ts",
-    "../../packages/core/compact/src/managed/credentials/contract/index.js"
+    "../../packages/core/compact/src/managed/credentials/contract/index.js",
+    "../../packages/core/model/dist/index.js",
+    "./compact-source-inventory.mjs"
   ]
 }

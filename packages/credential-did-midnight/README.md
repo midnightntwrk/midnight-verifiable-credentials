@@ -180,7 +180,9 @@ presentation, use
 credential and an independently accepted
 `MidnightDIDHolderBinding.methodBinding.publicKey`, followed by
 `assertMidnightDIDHolderBinding` to validate the authentication relationship and
-accepted DID method snapshot. On Ledger 8 that snapshot must be pinned or
+the proof and holder references against the supplied DID method snapshot. The
+holder helper does not independently accept the snapshot's state version. On
+Ledger 8 the complete method-binding root must be pinned or
 authenticated outside the circuit; supplying a matching binding and key as an
 untrusted witness does not establish DID authorization. Family-specific
 disclosure relations remain separate. Authority and verifier decisions likewise

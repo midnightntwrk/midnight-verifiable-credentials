@@ -30,9 +30,12 @@ Every exported circuit MUST be classified as:
   MUST NOT depend on.
 
 Every published Compact entrypoint MUST expose exactly the classified circuit
-set recorded by the inventory. Adding or removing an exported circuit requires
-an inventory update. A `supported` circuit without an implemented operation is
-invalid.
+set assigned to that entrypoint by its inventory. A core entrypoint can expose
+its package inventory directly. An extension composition entrypoint can expose
+only its extension inventory, while its standalone entrypoint can expose the
+exact union of the dependency and extension inventories. Adding or removing an
+exported circuit, entrypoint, or declared surface requires an inventory update.
+A `supported` circuit without an implemented operation is invalid.
 
 Normative test entrypoints MUST import only the exact retained core surfaces in
 the manifest allowlist. Protocol, credential-family, use-case, application, and

@@ -1,9 +1,14 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, relative, resolve } from "node:path";
 import test from "node:test";
 
 import { pureCircuits } from "../../packages/credential-did-midnight/src/managed/did-midnight/contract/index.js";
+import {
+  collectExportedCircuitSymbols,
+  compactCircuitKey,
+  stripCompactComments,
+} from "./compact-source-inventory.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
@@ -11,6 +16,7 @@ const readJson = (path) =>
 const inventory = readJson(
   "conformance/credential-did-midnight-circuits.json",
 );
+const coreInventory = readJson("conformance/compact-circuits.json");
 const vectors = readJson("conformance/vectors/midnight-did-binding.json");
 const circuitIdBySymbol = new Map(
   inventory.circuits.map(({ id, symbol }) => [symbol, id]),
@@ -49,6 +55,53 @@ const rootSubstitutionMutations = new Set([
 
 class ConformanceHarnessError extends Error {}
 
+const sourceRoots = [inventory, coreInventory].map((sourceInventory) => ({
+  path: resolve(root, sourceInventory.sourceRoot),
+}));
+const sourceOwner = (absoluteSource) => {
+  const owners = sourceRoots.filter(({ path }) => {
+    const sourceRelative = relative(path, absoluteSource);
+    return sourceRelative !== ".." && !sourceRelative.startsWith("../");
+  });
+  assert.equal(owners.length, 1, `${absoluteSource} has no unique source owner`);
+  return owners[0];
+};
+const resolveInclude = (absoluteSource, include) => {
+  const candidates = include.startsWith(".")
+    ? [resolve(dirname(absoluteSource), `${include}.compact`)]
+    : sourceRoots.map(({ path }) => resolve(path, `${include}.compact`));
+  const matches = candidates.filter(existsSync);
+  assert.equal(matches.length, 1, `${include} has no unique Compact source`);
+  return matches[0];
+};
+const collectEntrypointCircuits = (entrypoint) => {
+  const entrypointSource = resolve(
+    root,
+    inventory.sourceRoot,
+    entrypoint.source,
+  );
+  const visited = new Set();
+  const circuits = [];
+  const visit = (absoluteSource) => {
+    if (visited.has(absoluteSource)) return;
+    visited.add(absoluteSource);
+    const owner = sourceOwner(absoluteSource);
+    const source = readFileSync(absoluteSource, "utf8");
+    for (const symbol of collectExportedCircuitSymbols(source)) {
+      circuits.push({
+        source: relative(owner.path, absoluteSource),
+        symbol,
+      });
+    }
+    for (const match of stripCompactComments(source).matchAll(
+      /^\s*include\s+"([^"]+)"\s*;/gmu,
+    )) {
+      visit(resolveInclude(absoluteSource, match[1]));
+    }
+  };
+  visit(entrypointSource);
+  return circuits;
+};
 const validateVector = (collection, vector) => {
   const symbol = dispatchByOperation.get(vector.operation);
   if (symbol === undefined) {
@@ -291,20 +344,77 @@ const invoke = (vector) => {
   }
 };
 
-test("classifies every exported Midnight DID extension circuit", () => {
-  const source = readFileSync(
-    resolve(root, inventory.sourceRoot, "did-midnight/bindings.compact"),
-    "utf8",
+test("classifies both published Midnight DID Compact entrypoints", () => {
+  assert.equal(inventory.formatVersion, 2);
+  const packageManifest = readJson(
+    "packages/credential-did-midnight/package.json",
   );
-  const exported = [
-    ...source.matchAll(
-      /^export\s+pure\s+circuit\s+([A-Za-z][A-Za-z0-9_]*)\s*\(/gmu,
-    ),
-  ].map((match) => match[1]);
+  const compactExports = Object.entries(packageManifest.exports)
+    .filter(
+      ([packageExport, target]) =>
+        packageExport.endsWith(".compact") ||
+        (typeof target === "string" && target.endsWith(".compact")),
+    )
+    .map(([packageExport, target]) => {
+      assert.match(packageExport, /^\.\/[a-z0-9/-]+\.compact$/u);
+      assert.equal(typeof target, "string");
+      assert.match(target, /^\.\/dist\/[a-z0-9/-]+\.compact$/u);
+      return {
+        export: packageExport,
+        source: target.slice("./dist/".length),
+      };
+    });
+  const compactExportBySubpath = new Map(
+    compactExports.map((entrypoint) => [entrypoint.export, entrypoint]),
+  );
+  const packageEntrypoints = Object.entries(
+    packageManifest.midnight.compactEntrypoints,
+  ).flatMap(([surface, exports]) =>
+    exports.map((packageExport) => {
+      const entrypoint = compactExportBySubpath.get(packageExport);
+      assert.ok(entrypoint, `${packageExport} has no published Compact export`);
+      return { ...entrypoint, surface };
+    }),
+  );
+  const advertisedEntrypoints = Object.values(
+    packageManifest.midnight.compactEntrypoints,
+  )
+    .flat()
+    .sort();
   assert.deepEqual(
-    exported.sort(),
-    inventory.circuits.map(({ symbol }) => symbol).sort(),
+    compactExports.map(({ export: packageExport }) => packageExport).sort(),
+    advertisedEntrypoints,
+    "Compact entrypoint metadata must cover every published Compact export",
   );
+  const byExport = (left, right) => left.export.localeCompare(right.export);
+  assert.deepEqual(
+    [...inventory.entrypoints].sort(byExport),
+    [...packageEntrypoints].sort(byExport),
+  );
+
+  const extensionCircuitKeys = inventory.circuits
+    .map(compactCircuitKey)
+    .sort();
+  const standaloneCircuitKeys = [
+    ...coreInventory.circuits,
+    ...inventory.circuits,
+  ]
+    .map(compactCircuitKey)
+    .sort();
+  for (const entrypoint of inventory.entrypoints) {
+    const actual = collectEntrypointCircuits(entrypoint)
+      .map(compactCircuitKey)
+      .sort();
+    const expected =
+      entrypoint.surface === "standalone"
+        ? standaloneCircuitKeys
+        : extensionCircuitKeys;
+    assert.deepEqual(
+      actual,
+      expected,
+      `${entrypoint.export} exported circuits differ from its declared ${entrypoint.surface} surface`,
+    );
+  }
 });
 
 test("rejects harness dispatch defects before invoking a circuit", () => {

@@ -8,6 +8,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- add normative credential-family validation vectors executed through the
+  public model API and packed-consumer boundary;
+- bind both published Midnight DID Compact entrypoints to their exact extension
+  or core-plus-extension circuit sets;
 - add the canonical explicit-holder presentation-proof circuit with complete
   holder equality, signer-reference, accepted-key, derived-root, and signature
   composition;
