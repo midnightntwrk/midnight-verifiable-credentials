@@ -143,7 +143,7 @@
     { "id": "reject-substituted-proof-controller", "operation": "issuer", "mutation": "proof-controller", "errorIncludes": "Proof signer controller does not match authorization" },
     { "id": "reject-substituted-proof-method", "operation": "issuer", "mutation": "proof-method", "errorIncludes": "Proof signer method does not match authorization" },
     { "id": "reject-substituted-proof-key", "operation": "issuer", "mutation": "proof-key", "errorIncludes": "Jubjub points do not match" },
-    { "id": "reject-invalid-issuer-signature", "operation": "issuer", "mutation": "issuer-signature", "errorIncludes": "Signature verification failed" },
+    { "id": "reject-invalid-issuer-signature", "operation": "issuer", "mutation": "issuer-signature", "errorIncludes": "Signature verification failed", "bareDescriptorAccepts": true },
     { "id": "reject-empty-proof-controller", "operation": "issuance-proof", "mutation": "empty-proof-controller", "errorIncludes": "controller address must be set" },
     { "id": "reject-empty-proof-method", "operation": "issuance-proof", "mutation": "empty-proof-method", "errorIncludes": "method reference must be set" },
     { "id": "reject-identity-proof-key", "operation": "issuance-proof", "mutation": "identity-proof-key", "errorIncludes": "point must not be the identity point" },

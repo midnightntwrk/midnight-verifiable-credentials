@@ -13,6 +13,14 @@
       "chunksHex": ["000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"],
       "encoding": "compact-value-v1.base64url",
       "payload": "TUNWMQAAAAEAAAAgAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8"
+    },
+    {
+      "id": "typed-bytes32-trailing-zero-canonical-v1",
+      "decoder": "bytes32-descriptor",
+      "chunksHex": ["0102"],
+      "decodedHex": "0102000000000000000000000000000000000000000000000000000000000000",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAEAAAACAQI"
     }
   ],
   "negative": [
@@ -64,6 +72,27 @@
       "encoding": "compact-value-v1.base64url",
       "payload": "TUNWMQAAAAIAAAABqgAAAAG7",
       "errorIncludes": "trailing chunks for descriptor"
+    },
+    {
+      "id": "reject-typed-bytes32-zero-padding",
+      "decoder": "bytes32-descriptor",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAEAAAACAQA",
+      "errorIncludes": "not canonical for descriptor"
+    },
+    {
+      "id": "reject-typed-bytes32-full-width-padding",
+      "decoder": "bytes32-descriptor",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAEAAAAgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "errorIncludes": "not canonical for descriptor"
+    },
+    {
+      "id": "reject-typed-bytes32-non-empty-zero",
+      "decoder": "bytes32-descriptor",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAEAAAABAA",
+      "errorIncludes": "not canonical for descriptor"
     }
   ]
 }

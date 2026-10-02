@@ -6,30 +6,35 @@
     {
       "manifest": "packages/core/model/package.json",
       "name": "@midnight-ntwrk/credential-model",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     {
       "manifest": "packages/core/compact/package.json",
       "name": "@midnight-ntwrk/credential-compact",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     {
       "manifest": "packages/credential-did-midnight/package.json",
       "name": "@midnight-ntwrk/credential-did-midnight",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ],
   "compactCircuitInventory": {
     "path": "conformance/compact-circuits.json",
-    "sha256": "ae78d2fc13524598d4668978d3f89332ff64b8259b806b55427cafad843fc8c9"
+    "sha256": "41ffcabf103cfebfd51e4ebdb31cd7b88c5c156422d8e466c5bcd556749dde4a"
   },
   "extensionCircuitInventories": [
     {
       "path": "conformance/credential-did-midnight-circuits.json",
-      "sha256": "0f84c7375669e906df01b46c6684855143f6db7b69837976a012ab023ab22029"
+      "sha256": "a878a8f23411712edef27fc657377eb996b1934b56ceaf0d593df8a7f35a47e2"
     }
   ],
   "operations": [
+    {
+      "id": "validate-credential-family-definition",
+      "section": "spec/data-model.md",
+      "vectorCategory": "credential-family-definition"
+    },
     {
       "id": "validate-schema-reference",
       "section": "spec/data-model.md",
@@ -183,7 +188,11 @@
     },
     {
       "path": "conformance/vectors/compact-value-encoding.json",
-      "sha256": "744f1e8671a36d3feb988f7fc538535f862b53ea37458eb501b4f01fabf88366"
+      "sha256": "39e6853bef5fd2cf19976c0eb0e439fb5db97b0b946dfc77594a977bf0662953"
+    },
+    {
+      "path": "conformance/vectors/credential-family-definition.json",
+      "sha256": "ae4c22e5c1083777ce2467d9f6d0103eab3887eec10508a6a4040dae807f2b08"
     },
     {
       "path": "conformance/vectors/credential-proof.json",
@@ -203,11 +212,11 @@
     },
     {
       "path": "conformance/vectors/midnight-did-binding.json",
-      "sha256": "b402caba8906afb33db2dff22b82f580dc74c4199e1f96ac0242188bca3e3074"
+      "sha256": "e4da0b1e58b9d88226bc6baa64f8d30196714d4ca1084ce675d359accad57ea1"
     },
     {
       "path": "conformance/vectors/presentation-proof.json",
-      "sha256": "171883daa252d34c72d96ff019782ce04c7305daef1d4326deabe105e467a5e5"
+      "sha256": "173f5f1892de34490420edc099a8531776f7f89bbcee1b053237822f2745028a"
     },
     {
       "path": "conformance/vectors/schema-reference.json",
@@ -215,7 +224,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "4b9904ee1c5edbe738e8ae4a8b384111bd8b76f5b231d3b3382f2b9df5503492"
+      "sha256": "012b07e49d3c47855b5fc9fb7ae982e0a2694296d8a07fea4208145326bb9e66"
     },
     {
       "path": "conformance/vectors/status-binding.json",
@@ -228,6 +237,9 @@
   ],
   "allowedCoreImports": [
     "../../packages/core/compact/src/compact-value-codec.ts",
-    "../../packages/core/compact/src/managed/credentials/contract/index.js"
+    "../../packages/core/compact/src/managed/credentials/contract/index.js",
+    "../../packages/core/model/dist/index.js",
+    "../index.js",
+    "./compact-source-inventory.mjs"
   ]
 }

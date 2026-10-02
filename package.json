@@ -1,20 +1,20 @@
 {
   "name": "midnight-verifiable-credentials",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=24",
-    "pnpm": ">=10.34.5"
+    "pnpm": "11.25.0"
   },
   "scripts": {
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh",
     "clean:artifacts": "pnpm run clean && rm -rf .turbo tooling/artifacts/npm",
-    "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
-    "test:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs ./tooling/scripts/credential-did-midnight-conformance.test.mjs",
+    "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs ./tooling/scripts/pnpm-supply-policy.test.mjs",
+    "test:core-conformance": "pnpm run build && pnpm --filter @midnight-ntwrk/credential-model --fail-if-no-match test:conformance && node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs ./tooling/scripts/credential-did-midnight-conformance.test.mjs",
     "audit": "pnpm audit --audit-level high",
-    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github .codex/skills .claude/skills docs spec conformance packages tooling",
+    "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md AGENT.md CONTRIBUTING.md .github docs spec conformance packages tooling",
     "docs:prepare": "pnpm --filter docs-site docs:prepare",
     "docs:validate": "pnpm run docs:links && pnpm --filter docs-site docs:validate",
     "docs:dev": "pnpm --filter docs-site docs:dev",
@@ -30,29 +30,16 @@
     "ci:lint": "pnpm run check:package-boundaries && pnpm run test:release-tooling && pnpm run docs:validate && pnpm run lint"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@types/node": "^26.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.33.1",
-    "@typescript-eslint/parser": "^8.33.1",
-    "eslint": "^9.28.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.2",
+    "@typescript-eslint/eslint-plugin": "8.70.1",
+    "@typescript-eslint/parser": "8.70.1",
+    "eslint": "^10.11.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-simple-import-sort": "^14.0.0",
-    "turbo": "^2.5.4",
+    "turbo": "^2.11.5",
     "typescript": "^5.8.3",
-    "vitest": "^4.1.11"
-  },
-  "pnpm": {
-    "overrides": {
-      "algoliasearch": "5.52.1",
-      "brace-expansion@1": "5.0.9",
-      "brace-expansion@2": "5.0.9",
-      "brace-expansion@5": "5.0.9",
-      "js-yaml": "4.3.2",
-      "postcss": "8.5.23",
-      "vite": "7.3.6"
-    },
-    "patchedDependencies": {
-      "brace-expansion@5.0.9": "patches/brace-expansion@5.0.9.patch"
-    }
+    "vitest": "^4.1.11",
+    "yaml": "2.9.0"
   }
 }

@@ -33,6 +33,20 @@
         "s": "462977629003601477388962348327205376600384140598201963528941314869893392786"
       }
     },
+    "alternateHolder": {
+      "controllerAddressHex": "5555555555555555555555555555555555555555555555555555555555555555",
+      "methodIdHex": "8aef18ed330492d7511b4c5924e6a0a7e32e5ec277220860c88b6f75fbb8ef96",
+      "secretKey": "5",
+      "publicKey": {
+        "x": "46037580203438066765405229507649644425780970512522822336637661968249826130047",
+        "y": "26189429486186784039799689203850934078756791903368248146476421754146336352630"
+      },
+      "nonceScalar": "11",
+      "noncePoint": {
+        "x": "16827724475775646817464036582159000260353701469526893325788649359360731655092",
+        "y": "44031289517654383275236023968950953006749154478578562892906183459209162884018"
+      }
+    },
     "canonicalBodyRootHex": "0465fcdecc846d7b3db18fa074e17c20de9c09f9f931525f5ac51f5f4871973e",
     "presentationChallenge": "154325876334533825796320782775735125533461380199400654509647104956631130925",
     "alternateHex": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
@@ -56,22 +70,32 @@
     {
       "id": "reject-presentation-schema-substitution-in-proof",
       "mutation": "schema",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Schema reference mismatch"
     },
     {
       "id": "reject-presentation-claim-root-substitution-in-proof",
       "mutation": "claim-root",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Presentation must reference the credential claim root"
     },
     {
       "id": "reject-presentation-issuer-substitution-in-proof",
       "mutation": "issuer-method",
-      "errorIncludes": "Signature verification failed"
+      "errorIncludes": "Presentation issuer method reference does not match credential issuer"
     },
     {
-      "id": "reject-presentation-holder-substitution-in-proof",
-      "mutation": "holder-controller",
+      "id": "reject-presentation-different-holder",
+      "mutation": "different-holder",
+      "errorIncludes": "Presentation holder controller does not match credential holder binding"
+    },
+    {
+      "id": "reject-presentation-proof-signer-substitution",
+      "mutation": "proof-holder",
       "errorIncludes": "Presentation proof signer must match holder binding"
+    },
+    {
+      "id": "reject-presentation-proof-key-substitution",
+      "mutation": "proof-key",
+      "errorIncludes": "Jubjub points do not match"
     },
     {
       "id": "reject-invalid-presentation-proof-signature",

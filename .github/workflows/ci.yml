@@ -6,6 +6,7 @@ on:
     branches:
       - develop
       - main
+      - "milestone-*"
       - vc-core
   workflow_dispatch:
 
@@ -13,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: vc-ci-${{ github.event.pull_request.number || github.ref }}
+  group: vc-ci-${{ github.event.pull_request.number || (startsWith(github.ref, 'refs/heads/milestone-') && format('{0}-{1}-{2}', github.event_name, github.ref, github.sha)) || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -31,9 +32,9 @@ jobs:
           persist-credentials: false
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 10.34.5
+          version: 11.25.0
           run_install: false
 
       - name: Set up Node.js
@@ -67,3 +68,6 @@ jobs:
 
       - name: Check documentation links
         run: pnpm run docs:links
+
+      - name: Build documentation site
+        run: pnpm run docs:build

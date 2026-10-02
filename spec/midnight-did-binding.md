@@ -13,8 +13,10 @@ semantics without defining a second signature scheme or challenge domain.
 
 ## Resolution profile
 
-An implementation MUST resolve an on-chain `did:midnight` through a resolver
-compatible with `@midnight-ntwrk/midnight-did` `0.7.0`. It MUST reject:
+Except for the authenticated historical-snapshot migration defined under
+[Canonical mapping](#canonical-mapping), an implementation MUST resolve an
+on-chain `did:midnight` through a resolver compatible with
+`@midnight-ntwrk/midnight-did` `0.7.0`. The live-resolution path MUST reject:
 
 - an unresolved or deactivated DID;
 - a DID document whose subject differs from the requested DID;
@@ -53,13 +55,37 @@ public `decodeJubjubJwkCoordinate` codec from
 `@midnight-ntwrk/midnight-did-domain`.
 
 Midnight DID 0.6 used fixed-width little-endian coordinate bytes. Persisted 0.6
-DID-document snapshots MUST NOT be supplied to the 0.7 binding. Consumers MUST
-re-resolve the DID through a 0.7 resolver or perform an explicit, version-bound
-migration before invoking this package. The binding MUST NOT guess the profile
-by trying both byte orders. Resolver `versionId` describes ledger state and MUST
-NOT be used as an encoding-version discriminator. Some 0.6 byte strings are
-also valid 0.7 coordinate encodings and will silently map to a different native
-point, so range validation alone is not a migration detector.
+DID-document snapshots MUST NOT be supplied directly to the 0.7 binding.
+Consumers MUST either re-resolve the DID through a 0.7-compatible resolver or
+perform an explicit migration whose authenticated provenance establishes the
+snapshot's DID, verification method, relationship, positive observed
+`versionId`, and 0.6 encoding profile. That migration MUST decode the known 0.6
+little-endian coordinates and re-encode the same native point in the canonical
+0.7 profile while preserving the authenticated binding fields. The binding
+MUST NOT guess the profile by trying both byte orders. Resolver `versionId`
+describes ledger state and MUST NOT be used as an encoding-version
+discriminator. Some 0.6 byte strings are also valid 0.7 coordinate encodings
+and will silently map to a different native point, so range validation alone is
+not a migration detector.
+
+After successful re-resolution or migration, consumers MUST discard or
+quarantine the old snapshot. Outside the authenticated, version-specific
+migration defined above, reinterpretation or byte reversal is forbidden. A
+migration MUST use the known 0.6 profile directly and MUST NOT trial both byte
+orders. An offline migration reconstructs an authenticated historical binding;
+it does not prove that the DID remains active or that the method is current.
+The migration provenance MUST authenticate that the DID was not deactivated at
+the observed historical state. The migrated snapshot MUST still satisfy the
+on-chain subject, subject match, subject-owned method, relationship membership,
+`JsonWebKey`, native `EC`/`Jubjub`, and positive `uint64` `versionId`
+requirements above. A consumer MUST expose the canonical migrated snapshot
+through a `MidnightDIDResolutionSource` and MUST invoke
+`resolveMidnightDIDMethodBinding`; it MUST NOT construct a
+`MidnightDIDMethodBinding` directly. This preserves the adapter's subject,
+controller, relationship-membership, key-profile, state-version, and canonical
+method-ID checks.
+Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
+on that binding for authorization.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
 document used to create the binding. It is a logical ledger state version, not
@@ -72,17 +98,32 @@ reference, native Jubjub key, observed DID state version, and verification
 relationship. Its root is the canonical Compact persistent hash of the complete
 structure.
 
-The extension circuits MUST reject any substitution of the controller, method
-ID, key, state version, or relationship when binding a proof, explicit holder,
-or authorized signer descriptor.
+Each extension operation owns a different part of that binding:
+
+| Operation | Checks | Does not establish |
+| --- | --- | --- |
+| `assertValidMidnightDIDMethodBinding` | non-empty method reference, usable native Jubjub key, and positive state version | current DID state, a role-specific relationship, or proof of possession |
+| `midnightDIDMethodBindingRoot` | validates and commits the complete method reference, key, state version, and relationship | who accepted or pinned that root |
+| `assertMidnightDIDProofMatchesMethod` | proof signer reference and key equal the supplied method binding | signature validity, an independently accepted state version, or relationship policy |
+| `assertMidnightDIDHolderBinding` | authentication relationship, holder reference, proof reference, and proof key equal the supplied method binding | signature validity or independent acceptance of the supplied state version |
+| `assertMidnightDIDSignerAuthorization` | descriptor method reference, key, state version, and relationship equal the supplied method binding | the authority signature or governance policy that authorized the descriptor |
+
+The core `Proof` and `ExplicitHolderBinding` values do not carry a separate DID
+state version. Their equality checks therefore cannot compare one. A consumer
+binds state-version acceptance by pinning the complete method-binding root or
+by matching the binding against an authenticated signer descriptor. The holder
+helper additionally requires the `authentication` relationship; the proof
+helper does not apply relationship policy.
 
 The binding circuits establish reference and key equality only. They do not
 verify a signature or authenticate a credential, presentation, authorization
 decision, or verifier request. A consumer MUST also invoke the matching core
 context proof circuit over a body root derived from the complete input:
 
-- issuance uses `VC<>::assertValidCredentialProof` or
-  `VC<>::assertAuthorizedIssuerProof`;
+- cryptographic-only issuance proof validation uses
+  `VC<>::assertValidCredentialProof`; authorization-aware issuance MUST use
+  `VC<>::assertAuthorizedIssuerProof` unless equivalent authorization is
+  enforced independently;
 - presentation validates the complete presentation envelope, matches its
   holder binding, derives `VP<>::presentationBodyRoot`, and invokes
   `assertValidPresentationContextProof`; and
@@ -96,22 +137,27 @@ Calling `assertMidnightDIDProofMatchesMethod`,
 of possession or an authenticated VC/VP decision.
 
 An implementation MAY provide software signing helpers for the issuance and
-presentation contexts. Such a helper MUST derive the challenge with the
-matching core challenge circuit, MUST require the signing public key to equal
-the resolved method binding, and MUST use a fresh nonzero nonce. It MUST return
-a proof accepted by both the matching core context verifier and the Midnight
-DID method-binding circuit. Its body root MUST be derived from the complete VC
-or VP with the matching core circuit. The Midnight DID contract payload-signing
-challenge is not an equivalent VC/VP challenge.
+presentation contexts. The caller MUST derive the body root from the complete
+VC or VP with the matching core circuit and supply that root to the signing
+helper. The helper does not receive a complete VC or VP and cannot derive or
+validate that envelope itself. It MUST derive the challenge with the matching
+core challenge circuit, MUST require the signing public key to equal the
+resolved method binding, and MUST use a fresh nonzero nonce. It MUST return a
+proof accepted by both the matching core context verifier and the Midnight DID
+method-binding circuit. The Midnight DID contract payload-signing challenge is
+not an equivalent VC/VP challenge.
 
 A software helper that accepts raw key material MUST derive its nonce from the
 secret, operation domain, complete signed inputs, and fresh cryptographic
 entropy. A wallet or hardware-backed implementation SHOULD retain the scalar
 inside its signing boundary and perform the same nonce/challenge/response flow.
 
-The standalone Compact entrypoint includes the VC core. The composition
-entrypoint contains only Midnight DID-owned declarations and requires a
-consumer to include the VC core composition root exactly once before it.
+The standalone `did-midnight.compact` entrypoint exports the exact union of the
+core and Midnight DID extension circuits. The
+`did-midnight/composable.compact` entrypoint exports only the Midnight DID
+extension circuits and requires a consumer to include the VC core composition
+root exactly once before it. Both published surfaces are bound by the
+conformance circuit inventories.
 
 ## Ledger 8 trust boundary
 

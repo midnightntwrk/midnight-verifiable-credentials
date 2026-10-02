@@ -139,7 +139,10 @@ its schema, issuer reference, and body root internally before verifying both the
 normal issuance-context signature and the authorization binding. Consumers MUST
 use this composed helper when making an authorization-aware credential decision.
 `assertAuthorizedIssuerDescriptor` is a lower-level signer-and-scope primitive;
-it does not verify that a credential carries those fields.
+it does not verify that a credential carries those fields and does not inspect
+or verify `Proof.signature`. A proof with a forged signature can satisfy this
+primitive when its method/key metadata matches the descriptor. It MUST NOT be
+used as an authorization decision without the composed credential proof check.
 
 A verifier authorization check verifies a proof over the request scope with
 the `midnight:vc:verifier-req:v1` context and applies the same exact method/key

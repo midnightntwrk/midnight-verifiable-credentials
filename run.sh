@@ -73,7 +73,6 @@ case "$target" in
     pnpm run test
     ;;
   conformance)
-    pnpm run build
     pnpm run test:core-conformance
     ;;
   package)
