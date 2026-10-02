@@ -192,7 +192,7 @@
     },
     {
       "path": "conformance/vectors/credential-family-definition.json",
-      "sha256": "101d6d6fedbec083e85adc60e780d366c4639555f2bdf4ac29c2744d4e643f23"
+      "sha256": "ae4c22e5c1083777ce2467d9f6d0103eab3887eec10508a6a4040dae807f2b08"
     },
     {
       "path": "conformance/vectors/credential-proof.json",
@@ -239,6 +239,7 @@
     "../../packages/core/compact/src/compact-value-codec.ts",
     "../../packages/core/compact/src/managed/credentials/contract/index.js",
     "../../packages/core/model/dist/index.js",
+    "../index.js",
     "./compact-source-inventory.mjs"
   ]
 }

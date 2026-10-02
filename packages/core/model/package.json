@@ -40,6 +40,7 @@
     "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
     "prepack": "pnpm run build",
     "test": "vitest run",
+    "test:conformance": "vitest run src/test/conformance.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",

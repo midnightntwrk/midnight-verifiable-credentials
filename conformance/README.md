@@ -9,9 +9,16 @@ for a conformance claim.
 [`vectors/credential-family-definition.json`](./vectors/credential-family-definition.json)
 defines the model package's structural validation contract for identifiers,
 SemVer, credential types, claims, paths, disclosure modes, and required flags.
-The conformance lane executes those vectors through the package's public model
-entrypoint. The release-package lane independently exercises the same public
-API from an installed tarball.
+It also proves that family and schema display metadata may be omitted, while
+present metadata must be non-empty, trimmed strings. Format version 2 vector
+patches replace existing values by default and use
+`{ "op": "remove", "path": "..." }` when the absence of an optional property
+is significant. The conformance lane executes those vectors against both the
+model package's TypeScript source entrypoint and freshly built package output.
+The release-package lane independently exercises omitted, valid, and invalid
+optional metadata through the same public API from an installed tarball. The
+three layers distinguish source semantics, build output, and package-export
+regressions.
 
 [`compact-circuits.json`](./compact-circuits.json) inventories every circuit
 exported by both published Compact entrypoints. A `supported` circuit maps to a
@@ -74,6 +81,10 @@ Run:
 ```bash
 ./run.sh conformance
 ```
+
+The target performs its required workspace build once through
+`test:core-conformance` before running the source model vectors and generated
+Compact conformance suites.
 
 The check imports only retained package source/generated surfaces. It remains
 independent from protocols, concrete credential families, use cases,

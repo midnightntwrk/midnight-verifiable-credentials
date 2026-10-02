@@ -59,7 +59,6 @@ const listJsonFiles = (directory) =>
 const applyVectorPatches = (fixture, patches) => {
   const value = structuredClone(fixture);
   for (const patch of patches) {
-    assert.deepEqual(Object.keys(patch).sort(), ["path", "value"]);
     assert.match(
       patch.path,
       /^\/(?:[A-Za-z][A-Za-z0-9]*|\d+)(?:\/(?:[A-Za-z][A-Za-z0-9]*|\d+))*$/u,
@@ -80,14 +79,30 @@ const applyVectorPatches = (fixture, patches) => {
       Object.hasOwn(target, property),
       `unknown vector path ${patch.path}`,
     );
-    target[property] = structuredClone(patch.value);
+    if (Object.hasOwn(patch, "op")) {
+      assert.deepEqual(Object.keys(patch).sort(), ["op", "path"]);
+      assert.equal(patch.op, "remove");
+      assert.ok(!Array.isArray(target), "remove patches target object fields");
+      delete target[property];
+    } else {
+      assert.deepEqual(Object.keys(patch).sort(), ["path", "value"]);
+      target[property] = structuredClone(patch.value);
+    }
   }
   return value;
 };
-const modelVectorInput = (fixture, vector) =>
-  Object.hasOwn(vector, "input")
-    ? structuredClone(vector.input)
-    : applyVectorPatches(fixture, vector.patches);
+const modelVectorInput = (fixture, vector) => {
+  const hasInput = Object.hasOwn(vector, "input");
+  const hasPatches = Object.hasOwn(vector, "patches");
+  assert.equal(
+    Number(hasInput) + Number(hasPatches),
+    1,
+    `${vector.id} must define exactly one input source`,
+  );
+  if (hasInput) return structuredClone(vector.input);
+  assert.ok(Array.isArray(vector.patches), `${vector.id} has no patches`);
+  return applyVectorPatches(fixture, vector.patches);
+};
 const extractImportSpecifiers = (source) => [
   ...source.matchAll(
     /\b(?:import|export)\s+(?:[^"'`;]*?\s+from\s+)?["']([^"']+)["']/gu,
@@ -463,8 +478,11 @@ test("keeps conformance code independent from non-core workspaces", () => {
   const conformanceFiles = readdirSync(import.meta.dirname)
     .filter((name) => /^core-.*conformance\.test\.mjs$/u.test(name))
     .sort();
-  conformanceFiles.push("compact-source-inventory.mjs");
-  assert.ok(conformanceFiles.length >= 3);
+  conformanceFiles.push(
+    "compact-source-inventory.mjs",
+    "../../packages/core/model/src/test/conformance.test.ts",
+  );
+  assert.ok(conformanceFiles.length >= 4);
   const importedCoreSpecifiers = new Set();
   for (const conformanceFile of conformanceFiles) {
     const source = readFileSync(
@@ -472,7 +490,7 @@ test("keeps conformance code independent from non-core workspaces", () => {
       "utf8",
     );
     for (const specifier of extractImportSpecifiers(source)) {
-      if (specifier.startsWith("node:")) continue;
+      if (specifier.startsWith("node:") || specifier === "vitest") continue;
       assert.ok(
         manifest.allowedCoreImports.includes(specifier),
         `${conformanceFile} imports non-allowlisted module ${specifier}`,
@@ -528,20 +546,20 @@ test("matches Compact Value framing and rejects malformed encodings", () => {
   }
 });
 
-test("validates credential-family definitions through the public model API", () => {
+test("validates credential-family definitions through fresh build output", () => {
   const vectors = readJson(
     "conformance/vectors/credential-family-definition.json",
   );
-  assert.equal(vectors.formatVersion, 1);
+  assert.equal(vectors.formatVersion, 2);
   assert.equal(vectors.category, "credential-family-definition");
   assert.ok(vectors.positive.length > 0, "model vectors need positive cases");
   assert.ok(vectors.negative.length > 0, "model vectors need negative cases");
-  const expectedEvidence = [...vectors.positive, ...vectors.negative].map(
+  const vectorIds = [...vectors.positive, ...vectors.negative].map(
     ({ id }) => id,
   );
   assert.equal(
-    new Set(expectedEvidence).size,
-    expectedEvidence.length,
+    new Set(vectorIds).size,
+    vectorIds.length,
     "model vector IDs must be unique",
   );
   for (const vector of vectors.positive) {
