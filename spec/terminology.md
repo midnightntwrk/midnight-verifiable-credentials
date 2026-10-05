@@ -43,6 +43,3 @@ These definitions are normative where the specification uses the term.
 | Relying party | Application that acts on a verifier's decision. |
 | Canonical object | Protocol-independent object whose meaning is defined by this specification. |
 | Adapter | Transport, wallet, DID-method, or application integration outside the core. |
-
-An adapter MUST NOT reinterpret a canonical object or omit verification required
-by its owning credential family.
