@@ -114,10 +114,13 @@ A consumer that constructs Compact `SchemaRef` values keeps package identity
 separate from the schema definition: `packageId` comes from an explicit stable
 package identifier, while `schemaId` may be mapped from the validated stable
 schema `id` under the consumer's documented policy. A schema version is not
-folded into `schemaId`; the Compact reference carries version components in
-`majorVersion` and `minorVersion`. The packed DID/VC composition fixture must
-demonstrate that separation. The core still does not prescribe a
-TypeScript-to-Compact identifier derivation or a general SemVer mapping.
+folded into `schemaId`. The Compact reference carries a profile-selected
+compatibility version in `majorVersion` and `minorVersion`; that version MUST
+satisfy the Compact invariant that `majorVersion` is non-zero and need not be a
+literal copy of the TypeScript definition's SemVer components. The packed
+DID/VC composition fixture must demonstrate that separation. The core still
+does not prescribe a TypeScript-to-Compact identifier derivation or a general
+SemVer mapping.
 
 The active public API will not retain family-named aliases. Historical ADRs and
 changelogs may use the old term when describing earlier releases. This is a
@@ -129,7 +132,8 @@ Conformance changes atomically with the implementation:
 - operation `validate-credential-schema-definition`;
 - vector category `credential-schema-definition`;
 - vector file `conformance/vectors/credential-schema-definition.json`;
-- conformance documentation links to the renamed vector;
+- conformance and fixture documentation links and prose affected by the
+  renamed vector and identifier policy;
 - every normative specification section that names the model or operation,
   including the data model, terminology, and security considerations;
 - public validation through `assertCredentialSchemaDefinition`;
