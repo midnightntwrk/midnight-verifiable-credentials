@@ -109,6 +109,13 @@ The old outer `family.id`, `family.version`, `family.name`, and
 product, or catalog metadata keep it in their owning repository or package
 manifest.
 
+A consumer that constructs Compact `SchemaRef` values keeps package identity
+separate from the schema definition: `packageId` comes from explicit package
+metadata, while `schemaId` may be derived from the validated schema ID and
+version under the consumer's documented policy. The packed DID/VC composition
+fixture must demonstrate that separation. The core still does not prescribe a
+TypeScript-to-Compact identifier derivation.
+
 The active public API will not retain family-named aliases. Historical ADRs and
 changelogs may use the old term when describing earlier releases. This is a
 pre-1.0 minor breaking change targeted at `0.4.0` and requires explicit
@@ -117,10 +124,12 @@ migration notes.
 Conformance changes atomically with the implementation:
 
 - operation `validate-credential-schema-definition`;
-- vector category `credential-schema-definition`; and
+- vector category `credential-schema-definition`;
 - vector file `conformance/vectors/credential-schema-definition.json`;
 - public validation through `assertCredentialSchemaDefinition`;
 - the published `@midnight-ntwrk/credential-model` package description;
+- the TypeScript-only operation allowlist and packed consumer fixtures;
+- the synchronized `0.4.0` package-graph release base;
 - manifest vector path and content digest, followed by regeneration of
   `conformance/manifest.sha256`; and
 - package and repository conformance tests that load the renamed vector.
