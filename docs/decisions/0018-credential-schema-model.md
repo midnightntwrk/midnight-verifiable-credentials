@@ -126,8 +126,10 @@ Conformance changes atomically with the implementation:
 - operation `validate-credential-schema-definition`;
 - vector category `credential-schema-definition`;
 - vector file `conformance/vectors/credential-schema-definition.json`;
+- conformance documentation links to the renamed vector;
 - public validation through `assertCredentialSchemaDefinition`;
 - the published `@midnight-ntwrk/credential-model` package description;
+- hand-authored package and guide examples that use the public API;
 - the TypeScript-only operation allowlist and packed consumer fixtures;
 - the synchronized `0.4.0` package-graph release base;
 - manifest vector path and content digest, followed by regeneration of
