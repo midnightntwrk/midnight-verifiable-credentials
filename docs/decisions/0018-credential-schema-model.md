@@ -81,9 +81,9 @@ The old nested schema is the source of the new definition:
 
 Public symbols migrate as follows:
 
-| Old symbol | New symbol |
+| Old symbol | Migration |
 | --- | --- |
-| `CredentialFamilyDefinition` | `CredentialSchemaDefinition` |
+| `CredentialFamilyDefinition` | Remove the wrapper and use `CredentialSchemaDefinition` for its flattened `schema` value |
 | `CredentialSchemaDescriptor` | `CredentialSchemaDefinition` |
 | `defineCredentialFamily` | `defineCredentialSchema` |
 | `assertCredentialFamilyDefinition` | `assertCredentialSchemaDefinition` |
@@ -130,8 +130,8 @@ Conformance changes atomically with the implementation:
 - vector category `credential-schema-definition`;
 - vector file `conformance/vectors/credential-schema-definition.json`;
 - conformance documentation links to the renamed vector;
-- normative data-model and terminology sections that name the model and
-  operation;
+- every normative specification section that names the model or operation,
+  including the data model, terminology, and security considerations;
 - public validation through `assertCredentialSchemaDefinition`;
 - the published `@midnight-ntwrk/credential-model` package description;
 - repository and agent reference lists that point readers to this decision;
