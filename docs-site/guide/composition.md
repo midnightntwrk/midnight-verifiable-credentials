@@ -22,6 +22,20 @@ protocol.
 - challenge freshness, replay prevention, audience, and trusted time
 - proving artifacts, deployment, transport, wallet, and application behavior
 
+## Adapter Responsibilities
+
+An adapter translates an external representation into inputs accepted by one
+or more core operations. Its public contract documents:
+
+- which core operations it invokes;
+- which validation it performs before and after those operations; and
+- which checks remain the consumer's responsibility.
+
+Canonical encoding and verification requirements remain with the specification
+section that defines the corresponding operation. Successfully translating an
+object does not by itself establish proof validity, signer authorization,
+credential status, trusted time, or application policy.
+
 ## Package Direction
 
 Credential-family and application repositories depend on released core
