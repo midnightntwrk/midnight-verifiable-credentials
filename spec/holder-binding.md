@@ -35,11 +35,11 @@ proof key.
 The conformance vectors verify explicit-binding structure, equality between
 credential and presentation bindings, equality between the presentation proof
 signer reference and the binding, equality with the accepted proof key, and the
-complete explicit-holder proof composition. Credential-family repositories own
-family claims, request
+complete explicit-holder proof composition. Credential-schema repositories own
+schema-specific claims, request
 freshness, status, and protocol negative vectors.
 
 Hidden-holder, pseudonym, and same-holder designs are not provided by this core.
-Credential-family repositories that implement them own their threat model,
+Credential-schema repositories that implement them own their threat model,
 protocol binding, and negative vectors and MUST NOT silently substitute an
 explicit or unbound credential.

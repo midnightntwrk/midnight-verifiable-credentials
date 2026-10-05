@@ -17,7 +17,7 @@ guides contributors through signing from the pull request when required.
   before adding or moving reusable code.
 - Open or confirm an issue for substantial behavior, architecture, security, or
   public API changes.
-- Keep credential families, product use cases, applications, exchange
+- Keep concrete credential schemas, product use cases, applications, exchange
   protocols, and deployment environments in their owning repositories.
 
 ## Contribution Workflow

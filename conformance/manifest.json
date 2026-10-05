@@ -6,17 +6,17 @@
     {
       "manifest": "packages/core/model/package.json",
       "name": "@midnight-ntwrk/credential-model",
-      "version": "0.3.0"
+      "version": "0.4.0"
     },
     {
       "manifest": "packages/core/compact/package.json",
       "name": "@midnight-ntwrk/credential-compact",
-      "version": "0.3.0"
+      "version": "0.4.0"
     },
     {
       "manifest": "packages/credential-did-midnight/package.json",
       "name": "@midnight-ntwrk/credential-did-midnight",
-      "version": "0.3.0"
+      "version": "0.4.0"
     }
   ],
   "compactCircuitInventory": {
@@ -31,9 +31,9 @@
   ],
   "operations": [
     {
-      "id": "validate-credential-family-definition",
+      "id": "validate-credential-schema-definition",
       "section": "spec/data-model.md",
-      "vectorCategory": "credential-family-definition"
+      "vectorCategory": "credential-schema-definition"
     },
     {
       "id": "validate-schema-reference",
@@ -191,8 +191,8 @@
       "sha256": "39e6853bef5fd2cf19976c0eb0e439fb5db97b0b946dfc77594a977bf0662953"
     },
     {
-      "path": "conformance/vectors/credential-family-definition.json",
-      "sha256": "ae4c22e5c1083777ce2467d9f6d0103eab3887eec10508a6a4040dae807f2b08"
+      "path": "conformance/vectors/credential-schema-definition.json",
+      "sha256": "fbe8a7154f46319a8ad093334e1e322a67457a3f5a4f00b4e699d416c6a462a0"
     },
     {
       "path": "conformance/vectors/credential-proof.json",

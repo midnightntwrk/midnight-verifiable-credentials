@@ -8,7 +8,7 @@ Conforming implementations MUST:
   points;
 - avoid treating a proof-carried public key as authorized without an independent
   application or authority decision;
-- validate schema and credential-family definitions before accepting proof results;
+- validate credential schema definitions before accepting proof results;
 - reject credential, presentation, holder, and status substitution;
 - keep holder secrets, claim openings, signing keys, and prover witnesses out of
   public objects and logs;

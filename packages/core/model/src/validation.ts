@@ -1,5 +1,5 @@
 import { CredentialModelError } from "./errors.js";
-import type { CredentialFamilyDefinition } from "./types.js";
+import type { CredentialSchemaDefinition } from "./types.js";
 
 const numericIdentifier = String.raw`(?:0|[1-9]\d*)`;
 const nonNumericIdentifier = String.raw`(?:\d*[A-Za-z-][0-9A-Za-z-]*)`;
@@ -75,44 +75,40 @@ function assertOptionalText(
   }
 }
 
-export function assertCredentialFamilyDefinition(
+export function assertCredentialSchemaDefinition(
   definition: unknown,
-): asserts definition is CredentialFamilyDefinition {
+): asserts definition is CredentialSchemaDefinition {
   assertRecord(definition, "definition");
   assertIdentifier(definition.id, "id");
   assertVersion(definition.version, "version");
   assertOptionalText(definition.name, "name");
   assertOptionalText(definition.description, "description");
 
-  assertRecord(definition.schema, "schema", "must declare a credential schema");
-  const schema = definition.schema;
-  assertIdentifier(schema.id, "schema.id");
-  assertVersion(schema.version, "schema.version");
-  assertOptionalText(schema.name, "schema.name");
-  assertOptionalText(schema.description, "schema.description");
-
-  if (!Array.isArray(schema.credentialTypes) || schema.credentialTypes.length === 0) {
+  if (
+    !Array.isArray(definition.credentialTypes) ||
+    definition.credentialTypes.length === 0
+  ) {
     throw new CredentialModelError(
       "INVALID_DESCRIPTOR",
-      "schema.credentialTypes",
+      "credentialTypes",
       "must contain at least one credential type",
     );
   }
-  for (const [index, credentialType] of schema.credentialTypes.entries()) {
-    assertIdentifier(credentialType, `schema.credentialTypes[${index}]`);
+  for (const [index, credentialType] of definition.credentialTypes.entries()) {
+    assertIdentifier(credentialType, `credentialTypes[${index}]`);
   }
 
-  if (!Array.isArray(schema.claims)) {
+  if (!Array.isArray(definition.claims)) {
     throw new CredentialModelError(
       "INVALID_DESCRIPTOR",
-      "schema.claims",
+      "claims",
       "must be an array",
     );
   }
 
   const claimIds = new Set<string>();
-  for (const [index, claim] of schema.claims.entries()) {
-    const claimPath = `schema.claims[${index}]`;
+  for (const [index, claim] of definition.claims.entries()) {
+    const claimPath = `claims[${index}]`;
     assertRecord(claim, claimPath);
     assertIdentifier(claim.id, `${claimPath}.id`);
     if (claimIds.has(claim.id)) {
@@ -154,11 +150,11 @@ export function assertCredentialFamilyDefinition(
   }
 }
 
-export const defineCredentialFamily = <
-  const Definition extends CredentialFamilyDefinition,
+export const defineCredentialSchema = <
+  const Definition extends CredentialSchemaDefinition,
 >(
   definition: Definition,
 ): Definition => {
-  assertCredentialFamilyDefinition(definition);
+  assertCredentialSchemaDefinition(definition);
   return definition;
 };

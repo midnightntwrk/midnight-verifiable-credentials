@@ -4,20 +4,19 @@
 > Maturity: `core`
 > Package class: `dist`
 
-Supported pre-1.0 package for reusable, family-neutral Compact VC/VP
+Supported pre-1.0 package for reusable, schema-neutral Compact VC/VP
 semantics. This is a library include surface, not a deployable contract,
-credential family, proof artifact, or registry authority.
+credential schema implementation, proof artifact, or registry authority.
 
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-compact@0.2.0
+pnpm add -E @midnight-ntwrk/credential-compact@0.4.0
 ```
 
-`0.2.0` is the current stable release. To evaluate the current 0.3 release
-candidate explicitly, install
-`@midnight-ntwrk/credential-compact@0.3.0-rc1` and keep every package in the
-VC graph on that same version. Confirm the moving `rc` tag before adopting it:
+This source tree targets `0.4.0`. Install it only after that immutable version
+is published, and keep every package in the VC graph on the same version.
+Inspect registry tags before selecting a stable or release-candidate version:
 
 ```bash
 npm view @midnight-ntwrk/credential-compact dist-tags --json
@@ -50,7 +49,7 @@ verifies the presentation-context signature. The accepted key is a trust input:
 the circuit cannot distinguish a pinned or authorized method snapshot from an
 internally consistent attacker-supplied snapshot. Consumers still apply
 credential-proof verification, DID resolution or snapshot authentication,
-family-specific disclosure relations, status, freshness, and application policy
+schema-specific disclosure relations, status, freshness, and application policy
 separately.
 
 Signer authorization supports two composition modes. Applications may install
@@ -68,7 +67,7 @@ package does not resolve
 `midnight-did`, evaluate Trust Registry policy, synchronize registry state, or
 provide trusted wall-clock time.
 
-`verification-v1`, issuance/presentation protocol choreography, family claims
+`verification-v1`, issuance/presentation protocol choreography, schema-specific claims
 and predicates, status-registry authority, proving/deployment artifacts,
 wallets, signing keys, witnesses, secrets, and use-case code are deliberately
 excluded.
@@ -83,14 +82,14 @@ and generated-artifact digest.
 
 `./credentials.compact` is the only standalone root.
 `./credentials/composable.compact` is the only composition-safe root: include it
-exactly once before dependency-free family composition entrypoints. The other
+exactly once before dependency-free schema composition entrypoints. The other
 credential leaf modules remain packaged for internal composition but are not
 advertised as standalone exports because they rely on declarations supplied by
 the shared root.
 
 The external consumer gate compiles both canonical roots from the packed
 tarball. Hidden-holder, pseudonym, and same-holder semantics require a dedicated
-threat model and belong in independently versioned credential-family packages.
+threat model and belong in independently versioned credential schema packages.
 The repository's
 [`compact-circuits.json`](../../../conformance/compact-circuits.json) inventory
 classifies the complete exported circuit surface and distinguishes supported

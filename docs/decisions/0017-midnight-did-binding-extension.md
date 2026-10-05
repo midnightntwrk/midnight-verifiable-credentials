@@ -10,7 +10,7 @@
 
 The core uses fixed-width Compact verification-method references, while
 `midnight-did` exposes canonical DID fragments, native Jubjub JWKs, and logical
-DID state versions. Requiring every credential-family repository to reproduce
+DID state versions. Requiring every credential implementation repository to reproduce
 that mapping would create incompatible method identifiers and key encodings.
 
 The removed adapter hierarchy mixed this mapping with protocols and product
@@ -30,7 +30,7 @@ The package owns deterministic DID-to-core mapping, structural binding
 circuits, and bounded software helpers that assemble core issuance and
 presentation proofs for a supplied Jubjub secret scalar. DID lifecycle,
 long-lived key custody, trust decisions, registries, protocols, wallets,
-applications, and credential families remain outside this repository.
+applications, and concrete credential schemas remain outside this repository.
 
 The helpers reuse Midnight DID key/scalar primitives but derive the challenge
 through the VC core's generated context-specific circuits. They do not call the

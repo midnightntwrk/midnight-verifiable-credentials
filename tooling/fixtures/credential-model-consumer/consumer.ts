@@ -1,15 +1,15 @@
 import {
-  assertCredentialFamilyDefinition,
-  type CredentialFamilyDefinition,
+  assertCredentialSchemaDefinition,
+  type CredentialSchemaDefinition,
 } from "@midnight-ntwrk/credential-model";
 
-import { accessFamily } from "./family.js";
+import { accessSchema } from "./schema.js";
 
-export const typedFamily: CredentialFamilyDefinition = accessFamily;
+export const typedSchema: CredentialSchemaDefinition = accessSchema;
 
-export const parseCredentialFamily = (
+export const parseCredentialSchema = (
   value: unknown,
-): CredentialFamilyDefinition => {
-  assertCredentialFamilyDefinition(value);
+): CredentialSchemaDefinition => {
+  assertCredentialSchemaDefinition(value);
   return value;
 };

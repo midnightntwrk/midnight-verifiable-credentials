@@ -13,7 +13,7 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "midnight-vc-npm-artifacts";
-  version = "0.3.0";
+  version = "0.4.0";
 
   inherit src;
 

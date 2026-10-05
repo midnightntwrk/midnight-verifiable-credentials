@@ -39,5 +39,5 @@ vectors in
 are produced by generated Compact circuits and verified by TypeScript.
 
 This draft does not define a portable external encoding for arbitrary generic
-VC/VP types. Credential families own any encoding beyond the Compact value
+VC/VP types. Concrete credential schemas own any encoding beyond the Compact value
 framing defined here.

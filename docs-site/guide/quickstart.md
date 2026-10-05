@@ -9,23 +9,23 @@
 
 ## Install
 
-Install only the boundaries the consumer needs. The current stable graph is
-`0.2.0`:
+This source tree documents the `0.4.0` release base. After that immutable graph
+is published, install only the boundaries the consumer needs:
 
 ```bash
 # Metadata only
-pnpm add -E @midnight-ntwrk/credential-model@0.2.0
+pnpm add -E @midnight-ntwrk/credential-model@0.4.0
 
-# Metadata plus family-neutral Compact primitives
+# Metadata plus schema-neutral Compact primitives
 pnpm add -E \
-  @midnight-ntwrk/credential-model@0.2.0 \
-  @midnight-ntwrk/credential-compact@0.2.0
+  @midnight-ntwrk/credential-model@0.4.0 \
+  @midnight-ntwrk/credential-compact@0.4.0
 
 # Add only for did:midnight method binding
-pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.4.0
 ```
 
-The packages do not provide a credential family, wallet flow, exchange
+The packages do not provide a concrete credential implementation, wallet flow, exchange
 protocol, DID resolver, status authority, or issuer trust policy. A consumer
 repository owns those choices.
 
@@ -60,10 +60,10 @@ install_stable_graph() (
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
 )
 
-install_stable_graph 0.2.0
+install_stable_graph 0.4.0
 ```
 
-Keep the package graph on one exact version for reproducible credential-family
+Keep the package graph on one exact version for reproducible consumer
 builds. The moving `rc` dist-tag may identify a prerelease older or newer than
 `latest`; inspect it before opting in:
 
@@ -103,32 +103,28 @@ install_rc_graph() (
 
 Use those install commands only when the reported `rc` versions are the exact
 prerelease graph you intend to evaluate. After recording that version, invoke
-the function explicitly, for example `install_rc_graph 0.3.0-rc1`.
+the function explicitly, for example `install_rc_graph 0.4.0-rc1`.
 Prerelease adoption should not happen implicitly.
 
 ## Define Metadata
 
-`credential-model` validates protocol-neutral family and claim-schema metadata:
+`credential-model` validates protocol-neutral credential schema metadata:
 
 ```ts
-import { defineCredentialFamily } from "@midnight-ntwrk/credential-model";
+import { defineCredentialSchema } from "@midnight-ntwrk/credential-model";
 
-export const membershipFamily = defineCredentialFamily({
-  id: "example.membership",
-  version: "0.1.0",
-  schema: {
-    id: "urn:example:membership",
-    version: "1.0.0",
-    credentialTypes: ["VerifiableCredential", "MembershipCredential"],
-    claims: [
-      {
-        id: "memberId",
-        path: ["memberId"],
-        disclosure: "selective",
-        required: true,
-      },
-    ],
-  },
+export const membershipSchema = defineCredentialSchema({
+  id: "urn:example:membership",
+  version: "1.0.0",
+  credentialTypes: ["VerifiableCredential", "MembershipCredential"],
+  claims: [
+    {
+      id: "memberId",
+      path: ["memberId"],
+      disclosure: "selective",
+      required: true,
+    },
+  ],
 });
 ```
 
@@ -139,7 +135,7 @@ export const membershipFamily = defineCredentialFamily({
 | Entrypoint                         | Use                                                        |
 | ---------------------------------- | ---------------------------------------------------------- |
 | `./credentials.compact`            | Standalone use of the complete core surface                |
-| `./credentials/composable.compact` | Include shared declarations once before family composition |
+| `./credentials/composable.compact` | Include shared declarations once before schema composition |
 
 Use only package exports. Do not import repository `src`, generated `managed`,
 or `dist` internals.

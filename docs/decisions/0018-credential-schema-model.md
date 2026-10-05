@@ -1,7 +1,6 @@
 # ADR-0018: Credential schema model terminology
 
 - Status: Accepted
-- Implementation: Pending [#715](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/715)
 - Date: 2026-10-05
 - Owners: VC maintainers
 - Amends: ADR-0016 TypeScript model terminology and public API

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
-  assertCredentialFamilyDefinition,
+  assertCredentialSchemaDefinition,
   CredentialModelError,
 } from "../index.js";
 
@@ -27,7 +27,7 @@ interface ModelVectors {
 }
 
 const vectorPath = new URL(
-  "../../../../../conformance/vectors/credential-family-definition.json",
+  "../../../../../conformance/vectors/credential-schema-definition.json",
   import.meta.url,
 );
 const vectors = JSON.parse(readFileSync(vectorPath, "utf8")) as ModelVectors;
@@ -82,10 +82,10 @@ const modelVectorInput = (vector: ModelVector): unknown => {
   return applyVectorPatches(vectors.fixture, vector.patches);
 };
 
-describe("credential-family definition conformance", () => {
+describe("credential schema definition conformance", () => {
   it("uses the expected vector document", () => {
     expect(vectors.formatVersion).toBe(2);
-    expect(vectors.category).toBe("credential-family-definition");
+    expect(vectors.category).toBe("credential-schema-definition");
     expect(vectors.positive.length).toBeGreaterThan(0);
     expect(vectors.negative.length).toBeGreaterThan(0);
     const vectorIds = [...vectors.positive, ...vectors.negative].map(
@@ -96,7 +96,7 @@ describe("credential-family definition conformance", () => {
 
   it.each(vectors.positive)("accepts $id", (vector) => {
     expect(() =>
-      assertCredentialFamilyDefinition(modelVectorInput(vector)),
+      assertCredentialSchemaDefinition(modelVectorInput(vector)),
     ).not.toThrow();
   });
 
@@ -107,7 +107,7 @@ describe("credential-family definition conformance", () => {
     }
     let validationError: unknown;
     try {
-      assertCredentialFamilyDefinition(modelVectorInput(vector));
+      assertCredentialSchemaDefinition(modelVectorInput(vector));
     } catch (error) {
       validationError = error;
     }

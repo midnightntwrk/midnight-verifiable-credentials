@@ -1,92 +1,82 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  assertCredentialFamilyDefinition,
-  type CredentialFamilyDefinition,
+  assertCredentialSchemaDefinition,
   type CredentialModelError,
-  defineCredentialFamily,
+  type CredentialSchemaDefinition,
+  defineCredentialSchema,
 } from "../index.js";
 
-const family = (): CredentialFamilyDefinition => ({
-  id: "example.employee",
-  version: "0.1.0",
-  name: "Employee credential",
-  description: "Describes an employee identifier.",
-  schema: {
-    id: "urn:example:employee",
-    version: "1.0.0",
-    name: "Employee credential schema",
-    description: "Employee schema metadata.",
-    credentialTypes: ["VerifiableCredential", "EmployeeCredential"],
-    claims: [
-      {
-        id: "subject",
-        path: ["credentialSubject", "id"],
-        disclosure: "selective",
-        required: true,
-        valueType: "string",
-      },
-    ],
-  },
+const schema = (): CredentialSchemaDefinition => ({
+  id: "urn:example:employee",
+  version: "1.0.0",
+  name: "Employee credential schema",
+  description: "Employee schema metadata.",
+  credentialTypes: ["VerifiableCredential", "EmployeeCredential"],
+  claims: [
+    {
+      id: "subject",
+      path: ["credentialSubject", "id"],
+      disclosure: "selective",
+      required: true,
+      valueType: "string",
+    },
+  ],
 });
 
 const schemaWith = (overrides: Readonly<Record<string, unknown>>): unknown => ({
-  ...family(),
-  schema: { ...family().schema, ...overrides },
+  ...schema(),
+  ...overrides,
 });
 const claimWith = (overrides: Readonly<Record<string, unknown>>): unknown =>
   schemaWith({
-    claims: [{ ...family().schema.claims[0], ...overrides }],
+    claims: [{ ...schema().claims[0], ...overrides }],
   });
 const expectedModelError = (
   code: CredentialModelError["code"],
   path: string,
 ) => expect.objectContaining<Partial<CredentialModelError>>({ code, path });
 
-describe("defineCredentialFamily", () => {
+describe("defineCredentialSchema", () => {
   it("accepts metadata and preserves source literal types", () => {
-    const definition = defineCredentialFamily({
-      id: "example.employee",
-      version: "0.1.0",
-      schema: {
-        id: "urn:example:employee",
-        version: "1.0.0",
-        credentialTypes: ["VerifiableCredential"],
-        claims: [
-          {
-            id: "subject",
-            path: ["credentialSubject", "id"],
-            disclosure: "selective",
-            required: true,
-          },
-        ],
-      },
+    const definition = defineCredentialSchema({
+      id: "urn:example:employee",
+      version: "1.0.0",
+      credentialTypes: ["VerifiableCredential"],
+      claims: [
+        {
+          id: "subject",
+          path: ["credentialSubject", "id"],
+          disclosure: "selective",
+          required: true,
+        },
+      ],
     });
-    const disclosure: "selective" = definition.schema.claims[0].disclosure;
+    const disclosure: "selective" = definition.claims[0].disclosure;
 
     expect(disclosure).toBe("selective");
-    expect(definition.id).toBe("example.employee");
+    expect(definition.id).toBe("urn:example:employee");
   });
 
   it("rejects duplicate claim identifiers", () => {
-    const definition = family();
+    const definition = schema();
     const duplicate = schemaWith({
-      claims: [...definition.schema.claims, definition.schema.claims[0]],
+      claims: [...definition.claims, definition.claims[0]],
     });
 
-    expect(() => assertCredentialFamilyDefinition(duplicate)).toThrowError(
-      expectedModelError("DUPLICATE_ID", "schema.claims[1].id"),
+    expect(() => assertCredentialSchemaDefinition(duplicate)).toThrowError(
+      expectedModelError("DUPLICATE_ID", "claims[1].id"),
     );
   });
 });
 
-describe("assertCredentialFamilyDefinition", () => {
+describe("assertCredentialSchemaDefinition", () => {
   it("narrows valid untyped input", () => {
-    const definition: unknown = family();
+    const definition: unknown = schema();
 
-    assertCredentialFamilyDefinition(definition);
+    assertCredentialSchemaDefinition(definition);
 
-    expect(definition.schema.claims[0].id).toBe("subject");
+    expect(definition.claims[0].id).toBe("subject");
   });
 
   type InvalidCase = readonly [
@@ -99,101 +89,70 @@ describe("assertCredentialFamilyDefinition", () => {
     ["non-object definition", null, "INVALID_DESCRIPTOR", "definition"],
     ["array definition", [], "INVALID_DESCRIPTOR", "definition"],
     [
-      "missing family identifier",
-      { ...family(), id: undefined },
+      "missing schema identifier",
+      schemaWith({ id: undefined }),
       "INVALID_IDENTIFIER",
       "id",
     ],
     [
-      "missing family version",
-      { ...family(), version: undefined },
-      "INVALID_VERSION",
-      "version",
-    ],
-    [
-      "family display metadata",
-      { ...family(), name: " Employee credential" },
-      "INVALID_DESCRIPTOR",
-      "name",
-    ],
-    [
-      "family description",
-      { ...family(), description: 7 },
-      "INVALID_DESCRIPTOR",
-      "description",
-    ],
-    [
-      "missing schema",
-      { ...family(), schema: undefined },
-      "INVALID_DESCRIPTOR",
-      "schema",
-    ],
-    [
-      "array schema",
-      { ...family(), schema: [] },
-      "INVALID_DESCRIPTOR",
-      "schema",
-    ],
-    ["schema identifier", schemaWith({ id: "" }), "INVALID_IDENTIFIER", "schema.id"],
-    [
       "missing schema version",
       schemaWith({ version: undefined }),
       "INVALID_VERSION",
-      "schema.version",
+      "version",
     ],
     [
       "schema display metadata",
       schemaWith({ name: false }),
       "INVALID_DESCRIPTOR",
-      "schema.name",
+      "name",
     ],
     [
       "schema description",
       schemaWith({ description: "schema " }),
       "INVALID_DESCRIPTOR",
-      "schema.description",
+      "description",
     ],
     [
       "missing credential types",
       schemaWith({ credentialTypes: undefined }),
       "INVALID_DESCRIPTOR",
-      "schema.credentialTypes",
+      "credentialTypes",
     ],
     [
       "empty credential types",
       schemaWith({ credentialTypes: [] }),
       "INVALID_DESCRIPTOR",
-      "schema.credentialTypes",
+      "credentialTypes",
     ],
     [
       "credential type",
       schemaWith({ credentialTypes: ["VerifiableCredential", 7] }),
       "INVALID_IDENTIFIER",
-      "schema.credentialTypes[1]",
+      "credentialTypes[1]",
     ],
     [
       "missing claims",
       schemaWith({ claims: undefined }),
       "INVALID_DESCRIPTOR",
-      "schema.claims",
+      "claims",
     ],
-    ["non-object claim", schemaWith({ claims: [null] }), "INVALID_DESCRIPTOR", "schema.claims[0]"],
-    ["claim identifier", claimWith({ id: 1 }), "INVALID_IDENTIFIER", "schema.claims[0].id"],
-    ["disclosure", claimWith({ disclosure: "sometimes" }), "INVALID_DESCRIPTOR", "schema.claims[0].disclosure"],
-    ["required flag", claimWith({ required: 1 }), "INVALID_DESCRIPTOR", "schema.claims[0].required"],
-    ["value type", claimWith({ valueType: "" }), "INVALID_IDENTIFIER", "schema.claims[0].valueType"],
-    ["empty claim path", claimWith({ path: [] }), "INVALID_DESCRIPTOR", "schema.claims[0].path"],
-    ["missing claim path", claimWith({ path: undefined }), "INVALID_DESCRIPTOR", "schema.claims[0].path"],
+    ["non-object claim", schemaWith({ claims: [null] }), "INVALID_DESCRIPTOR", "claims[0]"],
+    ["claim identifier", claimWith({ id: 1 }), "INVALID_IDENTIFIER", "claims[0].id"],
+    ["disclosure", claimWith({ disclosure: "sometimes" }), "INVALID_DESCRIPTOR", "claims[0].disclosure"],
+    ["required flag", claimWith({ required: 1 }), "INVALID_DESCRIPTOR", "claims[0].required"],
+    ["value type", claimWith({ valueType: "" }), "INVALID_IDENTIFIER", "claims[0].valueType"],
+    ["empty claim path", claimWith({ path: [] }), "INVALID_DESCRIPTOR", "claims[0].path"],
+    ["missing claim path", claimWith({ path: undefined }), "INVALID_DESCRIPTOR", "claims[0].path"],
     [
       "claim path segment",
       claimWith({ path: ["credentialSubject", false] }),
       "INVALID_IDENTIFIER",
-      "schema.claims[0].path[1]",
+      "claims[0].path[1]",
     ],
   ];
 
   it.each(invalidCases)("rejects %s", (_name, input, code, path) => {
-    expect(() => assertCredentialFamilyDefinition(input)).toThrowError(
+    expect(() => assertCredentialSchemaDefinition(input)).toThrowError(
       expectedModelError(code, path),
     );
   });
@@ -211,10 +170,7 @@ describe("assertCredentialFamilyDefinition", () => {
 
   it.each(validVersions)("accepts SemVer 2.0 version %s", (version) => {
     expect(() =>
-      assertCredentialFamilyDefinition({ ...family(), version }),
-    ).not.toThrow();
-    expect(() =>
-      assertCredentialFamilyDefinition(schemaWith({ version })),
+      assertCredentialSchemaDefinition(schemaWith({ version })),
     ).not.toThrow();
   });
 
@@ -238,10 +194,7 @@ describe("assertCredentialFamilyDefinition", () => {
 
   it.each(invalidVersions)("rejects malformed version %s", (version) => {
     expect(() =>
-      assertCredentialFamilyDefinition({ ...family(), version }),
+      assertCredentialSchemaDefinition(schemaWith({ version })),
     ).toThrowError(expectedModelError("INVALID_VERSION", "version"));
-    expect(() =>
-      assertCredentialFamilyDefinition(schemaWith({ version })),
-    ).toThrowError(expectedModelError("INVALID_VERSION", "schema.version"));
   });
 });

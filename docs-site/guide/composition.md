@@ -15,7 +15,7 @@ protocol.
 
 ## Consumer Responsibilities
 
-- concrete credential-family claims and predicates
+- concrete schema claims and predicates
 - DID resolver configuration and verification-method authorization policy
 - issuer and verifier trust policy
 - current status evidence and registry synchronization
@@ -38,8 +38,8 @@ credential status, trusted time, or application policy.
 
 ## Package Direction
 
-Credential-family and application repositories depend on released core
-packages. The core never depends on a family, protocol, application, or sibling
+Credential and application repositories depend on released core packages. The
+core never depends on a concrete schema, protocol, application, or sibling
 repository. This direction keeps releases independent and the dependency graph
 acyclic.
 
