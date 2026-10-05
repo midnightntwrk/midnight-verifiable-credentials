@@ -33,18 +33,16 @@
           pkgs.gh
           pkgs.just
           pkgs.nodejs_24
-          pkgs.pnpm_10
+          pkgs.pnpm_11
         ];
 
         COMPACT_DIRECTORY = compact-toolchain;
 
         shellHook = ''
-          # Keep the pinned Nix toolchain and repo-local Pi ahead of user-local installs.
-          export PI_REPO_NPM_PREFIX="$PWD/.pi/nix-global"
-          export NPM_CONFIG_PREFIX="$PI_REPO_NPM_PREFIX"
-          export PATH="$PI_REPO_NPM_PREFIX/bin:${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_10}/bin:$PATH"
+          # Keep the pinned Nix toolchain ahead of user-local installs.
+          export PATH="${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_11}/bin:$PATH"
 
-          mkdir -p "$HOME/.cache/midnight/zk-params" "$PI_REPO_NPM_PREFIX"
+          mkdir -p "$HOME/.cache/midnight/zk-params"
           cp -Rn ${midnight-circuit-params}/. "$HOME/.cache/midnight/zk-params/" 2>/dev/null || true
 
           if [ "''${MVVC_SKIP_BOOTSTRAP:-0}" != "1" ] && [ "''${MVVC_SKIP_BOOTSTRAP:-}" != "true" ]; then
@@ -54,8 +52,7 @@
           fi
 
           echo "Midnight VC dev shell: node $(node --version), pnpm $(pnpm --version), compact $(compact --version 2>/dev/null || echo available), just $(just --version | awk '{print $2}')"
-          echo "Pi: $(pi --version 2>/dev/null || echo bootstrap pending)"
-          echo "Run 'pi' to start Pi or 'just targets' to list repository validation targets."
+          echo "Run 'just targets' to list repository validation targets."
         '';
       };
     };

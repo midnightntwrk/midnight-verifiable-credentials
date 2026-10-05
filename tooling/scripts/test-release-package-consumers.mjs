@@ -7,6 +7,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
@@ -17,6 +18,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { supportedPackages } from "./workspace-catalog.mjs";
+import {
+  createConsumerPnpmWorkspace,
+  readRootPnpmSupplyPolicy,
+  sanitizePnpmPolicyEnvironment,
+} from "./pnpm-supply-policy.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -155,11 +161,13 @@ if (
   fail("registry mode requires an HTTPS registry and semantic version");
 }
 
-const environment = { ...process.env };
+const environment = sanitizePnpmPolicyEnvironment(process.env);
 delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
 delete environment.NPM_CONFIG_WORKSPACE;
+delete environment.pnpm_config_workspace;
+delete environment.PNPM_CONFIG_WORKSPACE;
 const installLifecycleHooks = [
   "preinstall",
   "install",
@@ -184,6 +192,8 @@ const run = (command, commandArgs, cwd, label) => {
 };
 
 const releasePackages = supportedPackages;
+const midnightDIDBindingPackageName =
+  "@midnight-ntwrk/credential-did-midnight";
 if (releasePackages.length === 0) {
   fail("workspace catalog has no supported release packages");
 }
@@ -198,6 +208,27 @@ const releasePackageByName = new Map(
     return [packageJson.name, { ...releasePackage, packageJson }];
   }),
 );
+
+let cachedRootPnpmSupplyPolicy;
+const rootPnpmSupplyPolicy = () => {
+  cachedRootPnpmSupplyPolicy ??= readRootPnpmSupplyPolicy(
+    repoRoot,
+    environment,
+  );
+  return cachedRootPnpmSupplyPolicy;
+};
+const consumerPnpmWorkspace = (overrides = {}) =>
+  createConsumerPnpmWorkspace({
+    rootPolicy: rootPnpmSupplyPolicy(),
+    overrides,
+    publishedPackageNames: registryMode
+      ? [...releasePackageByName.keys()]
+      : [],
+    expectedVersion,
+  });
+if (!releasePackageByName.has(midnightDIDBindingPackageName)) {
+  fail(`${midnightDIDBindingPackageName} is missing from the workspace catalog`);
+}
 
 for (const releasePackage of releasePackages) {
   if (
@@ -218,6 +249,15 @@ for (const releasePackage of releasePackages) {
       ))
   ) {
     fail(`${releasePackage.path} has invalid local release dependencies`);
+  }
+  if (
+    releasePackage.consumerReleaseDependencies !== undefined &&
+    (!Array.isArray(releasePackage.consumerReleaseDependencies) ||
+      releasePackage.consumerReleaseDependencies.some(
+        (dependency) => !releasePackageByName.has(dependency),
+      ))
+  ) {
+    fail(`${releasePackage.path} has invalid consumer release dependencies`);
   }
 
   const sourcePackageJson = JSON.parse(
@@ -291,14 +331,23 @@ for (const releasePackage of releasePackages) {
       "file:./vendor/package.tgz",
       "file:vendor/package.tgz",
     ]);
+    const consumerOverrides = {};
     if (tarballPath !== undefined) {
       mkdirSync(path.join(consumerRoot, "vendor"));
       copyFileSync(
         tarballPath,
         path.join(consumerRoot, "vendor", "package.tgz"),
       );
-      for (const dependencyName of
-        releasePackage.localReleaseDependencies ?? []) {
+      const localReleaseDependencies = new Set(
+        releasePackage.localReleaseDependencies ?? [],
+      );
+      const consumerReleaseDependencies = new Set(
+        releasePackage.consumerReleaseDependencies ?? [],
+      );
+      for (const dependencyName of new Set([
+        ...localReleaseDependencies,
+        ...consumerReleaseDependencies,
+      ])) {
         const dependency = releasePackageByName.get(dependencyName);
         const dependencyTarballName = tarballName(dependency.packageJson);
         const dependencyTarball = path.join(
@@ -319,9 +368,12 @@ for (const releasePackage of releasePackages) {
           path.join(dependencyDirectory, dependencyTarballName),
         );
         const locator = `file:./vendor/dependencies/${dependencyTarballName}`;
-        fixturePackageJson.pnpm ??= {};
-        fixturePackageJson.pnpm.overrides ??= {};
-        fixturePackageJson.pnpm.overrides[dependencyName] = locator;
+        if (localReleaseDependencies.has(dependencyName)) {
+          consumerOverrides[dependencyName] = locator;
+        }
+        if (consumerReleaseDependencies.has(dependencyName)) {
+          fixturePackageJson.dependencies[dependencyName] = locator;
+        }
         allowedLocalLocators.add(locator);
         allowedLocalLocators.add(locator.replace("file:./", "file:"));
       }
@@ -331,6 +383,10 @@ for (const releasePackage of releasePackages) {
       );
     } else {
       fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
+      for (const dependencyName of
+        releasePackage.consumerReleaseDependencies ?? []) {
+        fixturePackageJson.dependencies[dependencyName] = expectedVersion;
+      }
       writeFileSync(
         path.join(consumerRoot, "package.json"),
         `${JSON.stringify(fixturePackageJson, null, 2)}\n`,
@@ -340,6 +396,11 @@ for (const releasePackage of releasePackages) {
         `registry=${registry}\n`,
       );
     }
+
+    writeFileSync(
+      path.join(consumerRoot, "pnpm-workspace.yaml"),
+      consumerPnpmWorkspace(consumerOverrides),
+    );
 
     run(
       "pnpm",
@@ -372,6 +433,14 @@ for (const releasePackage of releasePackages) {
     if (lockfile.includes(repoRoot)) {
       fail("consumer lockfile contains the repository path");
     }
+    if (
+      sourcePackageJson.name === midnightDIDBindingPackageName &&
+      lockfile.includes("@midnight-ntwrk/midnight-did@")
+    ) {
+      fail(
+        "credential-did-midnight must not install the full Midnight DID package",
+      );
+    }
 
     run(
       "pnpm",
@@ -399,6 +468,32 @@ for (const releasePackage of releasePackages) {
     const installedPackageJson = JSON.parse(
       readFileSync(path.join(installedPackageRoot, "package.json"), "utf8"),
     );
+    if (sourcePackageJson.name === midnightDIDBindingPackageName) {
+      const declarationRoot = path.join(installedPackageRoot, "dist");
+      if (!existsSync(declarationRoot)) {
+        fail("credential-did-midnight declaration directory is missing");
+      }
+      const declarationFiles = readdirSync(declarationRoot, {
+        recursive: true,
+      })
+        .filter((file) => file.endsWith(".d.ts"))
+        .sort();
+      if (declarationFiles.length === 0) {
+        fail("credential-did-midnight contains no TypeScript declarations");
+      }
+      const declarations = declarationFiles
+        .map((file) => readFileSync(path.join(declarationRoot, file), "utf8"))
+        .join("\n");
+      if (
+        /["']@midnight-ntwrk\/midnight-did(?:\/[^"']*)?["']/u.test(
+          declarations,
+        )
+      ) {
+        fail(
+          "credential-did-midnight declarations must not expose the full Midnight DID package",
+        );
+      }
+    }
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
       const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
       const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
@@ -588,6 +683,33 @@ for (const releasePackage of releasePackages) {
             ),
             "utf8",
           ),
+        );
+      }
+      if (
+        sourcePackageJson.name ===
+        "@midnight-ntwrk/credential-did-midnight"
+      ) {
+        const composedFlowOutput = compileExternalSource(
+          "composed-did-vc-flow",
+          readFileSync(
+            path.join(
+              repoRoot,
+              "tooling/fixtures/composed-did-vc-flow.compact",
+            ),
+            "utf8",
+          ),
+        );
+        run(
+          "node",
+          [
+            path.join(
+              consumerRoot,
+              "src/composed-did-vc-flow.mjs",
+            ),
+            composedFlowOutput,
+          ],
+          consumerRoot,
+          `${sourcePackageJson.name}: composed DID-backed VC/VP flow`,
         );
       }
     }

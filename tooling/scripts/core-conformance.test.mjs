@@ -9,6 +9,15 @@ import {
   decodeCompactValue,
   encodeCompactValue,
 } from "../../packages/core/compact/src/compact-value-codec.ts";
+import {
+  assertCredentialFamilyDefinition,
+  CredentialModelError,
+} from "../../packages/core/model/dist/index.js";
+import {
+  collectExportedCircuitSymbols,
+  compactCircuitKey,
+  stripCompactComments,
+} from "./compact-source-inventory.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const readJson = (path) =>
@@ -17,74 +26,88 @@ const manifest = readJson("conformance/manifest.json");
 const compactCircuitInventory = readJson(
   manifest.compactCircuitInventory.path,
 );
+const extensionCircuitInventories = (
+  manifest.extensionCircuitInventories ?? []
+).map(({ path }) => readJson(path));
 
 const fromHex = (value) => Uint8Array.from(Buffer.from(value, "hex"));
 const toHex = (value) => Buffer.from(value).toString("hex");
+const bytes32Descriptor = {
+  fromValue: (value) => {
+    const chunk = value.shift();
+    assert.ok(chunk, "bytes32 descriptor requires one chunk");
+    assert.ok(chunk.length <= 32, "bytes32 chunk exceeds descriptor width");
+    const decoded = new Uint8Array(32);
+    decoded.set(chunk);
+    return decoded;
+  },
+  toValue: (value) => {
+    assert.equal(value.length, 32, "bytes32 value has an invalid width");
+    let canonicalLength = value.length;
+    while (canonicalLength > 0 && value[canonicalLength - 1] === 0) {
+      canonicalLength -= 1;
+    }
+    return [value.slice(0, canonicalLength)];
+  },
+};
 const listJsonFiles = (directory) =>
   readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
     if (entry.isDirectory()) return listJsonFiles(path);
     return entry.isFile() && entry.name.endsWith(".json") ? [path] : [];
   });
+const applyVectorPatches = (fixture, patches) => {
+  const value = structuredClone(fixture);
+  for (const patch of patches) {
+    assert.match(
+      patch.path,
+      /^\/(?:[A-Za-z][A-Za-z0-9]*|\d+)(?:\/(?:[A-Za-z][A-Za-z0-9]*|\d+))*$/u,
+    );
+    const segments = patch.path.slice(1).split("/");
+    const property = segments.pop();
+    let target = value;
+    for (const segment of segments) {
+      assert.ok(target !== null && typeof target === "object");
+      assert.ok(
+        Object.hasOwn(target, segment),
+        `unknown vector path ${patch.path}`,
+      );
+      target = target[segment];
+    }
+    assert.ok(target !== null && typeof target === "object");
+    assert.ok(
+      Object.hasOwn(target, property),
+      `unknown vector path ${patch.path}`,
+    );
+    if (Object.hasOwn(patch, "op")) {
+      assert.deepEqual(Object.keys(patch).sort(), ["op", "path"]);
+      assert.equal(patch.op, "remove");
+      assert.ok(!Array.isArray(target), "remove patches target object fields");
+      delete target[property];
+    } else {
+      assert.deepEqual(Object.keys(patch).sort(), ["path", "value"]);
+      target[property] = structuredClone(patch.value);
+    }
+  }
+  return value;
+};
+const modelVectorInput = (fixture, vector) => {
+  const hasInput = Object.hasOwn(vector, "input");
+  const hasPatches = Object.hasOwn(vector, "patches");
+  assert.equal(
+    Number(hasInput) + Number(hasPatches),
+    1,
+    `${vector.id} must define exactly one input source`,
+  );
+  if (hasInput) return structuredClone(vector.input);
+  assert.ok(Array.isArray(vector.patches), `${vector.id} has no patches`);
+  return applyVectorPatches(fixture, vector.patches);
+};
 const extractImportSpecifiers = (source) => [
   ...source.matchAll(
     /\b(?:import|export)\s+(?:[^"'`;]*?\s+from\s+)?["']([^"']+)["']/gu,
   ),
   ...source.matchAll(/\bimport\s*\(\s*["']([^"']+)["']\s*\)/gu),
-].map((match) => match[1]);
-const compactCircuitKey = ({ source, symbol }) => `${source}#${symbol}`;
-const stripCompactComments = (source) => {
-  let output = "";
-  let state = "code";
-  for (let index = 0; index < source.length; index += 1) {
-    const character = source[index];
-    const next = source[index + 1];
-    if (state === "line-comment") {
-      if (character === "\n") {
-        state = "code";
-        output += character;
-      } else {
-        output += " ";
-      }
-    } else if (state === "block-comment") {
-      if (character === "*" && next === "/") {
-        output += "  ";
-        index += 1;
-        state = "code";
-      } else {
-        output += character === "\n" ? character : " ";
-      }
-    } else if (state === "string") {
-      output += character;
-      if (character === "\\" && next !== undefined) {
-        output += next;
-        index += 1;
-      } else if (character === '"') {
-        state = "code";
-      }
-    } else if (character === "/" && next === "/") {
-      output += "  ";
-      index += 1;
-      state = "line-comment";
-    } else if (character === "/" && next === "*") {
-      output += "  ";
-      index += 1;
-      state = "block-comment";
-    } else {
-      output += character;
-      if (character === '"') state = "string";
-    }
-  }
-  return output;
-};
-const stripCompactStrings = (source) =>
-  source.replace(/"(?:\\.|[^"\\])*"/gsu, (value) =>
-    value.replace(/[^\n]/gu, " "),
-  );
-const collectExportedCircuitSymbols = (source) => [
-  ...stripCompactStrings(stripCompactComments(source)).matchAll(
-    /^\s*export\s+(?:pure\s+)?circuit\s+([A-Za-z][A-Za-z0-9_]*)\s*\(/gmu,
-  ),
 ].map((match) => match[1]);
 const collectExportedCompactCircuits = (sourceRoot, entrypointSource) => {
   const visited = new Set();
@@ -308,6 +331,34 @@ test("classifies every circuit exported by each Compact entrypoint", () => {
   }
 });
 
+test("backs every normative Compact operation with a supported circuit", () => {
+  const supportedCircuitOperations = new Set(
+    [compactCircuitInventory, ...extensionCircuitInventories].flatMap(
+      ({ circuits }) =>
+        circuits
+          .filter(({ classification }) => classification === "supported")
+          .map(({ operation }) => operation),
+    ),
+  );
+  const typeScriptOnlyOperations = new Set([
+    "decode-compact-value",
+    "encode-compact-value",
+    "validate-credential-family-definition",
+  ]);
+  const operationsWithoutSupportedCircuit = manifest.operations
+    .map(({ id }) => id)
+    .filter(
+      (operation) =>
+        !typeScriptOnlyOperations.has(operation) &&
+        !supportedCircuitOperations.has(operation),
+    );
+  assert.deepEqual(
+    operationsWithoutSupportedCircuit,
+    [],
+    "every non-codec operation must have a supported Compact circuit",
+  );
+});
+
 test("requires executable evidence for every supported Compact circuit", () => {
   const operations = new Map(
     manifest.operations.map((operation) => [operation.id, operation]),
@@ -424,18 +475,25 @@ test("matches the recorded conformance manifest and vector digests", () => {
 });
 
 test("keeps conformance code independent from non-core workspaces", () => {
-  const testFiles = readdirSync(import.meta.dirname)
+  const conformanceFiles = readdirSync(import.meta.dirname)
     .filter((name) => /^core-.*conformance\.test\.mjs$/u.test(name))
     .sort();
-  assert.ok(testFiles.length >= 2);
+  conformanceFiles.push(
+    "compact-source-inventory.mjs",
+    "../../packages/core/model/src/test/conformance.test.ts",
+  );
+  assert.ok(conformanceFiles.length >= 4);
   const importedCoreSpecifiers = new Set();
-  for (const testFile of testFiles) {
-    const source = readFileSync(resolve(import.meta.dirname, testFile), "utf8");
+  for (const conformanceFile of conformanceFiles) {
+    const source = readFileSync(
+      resolve(import.meta.dirname, conformanceFile),
+      "utf8",
+    );
     for (const specifier of extractImportSpecifiers(source)) {
-      if (specifier.startsWith("node:")) continue;
+      if (specifier.startsWith("node:") || specifier === "vitest") continue;
       assert.ok(
         manifest.allowedCoreImports.includes(specifier),
-        `${testFile} imports non-allowlisted module ${specifier}`,
+        `${conformanceFile} imports non-allowlisted module ${specifier}`,
       );
       importedCoreSpecifiers.add(specifier);
     }
@@ -457,21 +515,72 @@ test("matches Compact Value framing and rejects malformed encodings", () => {
       payload: vector.payload,
     });
     assert.deepEqual(decodeCompactValue(encoded).map(toHex), vector.chunksHex);
+    if (vector.decoder === "bytes32-descriptor") {
+      assert.equal(
+        toHex(decodeCompactPayload(bytes32Descriptor, encoded)),
+        vector.decodedHex,
+      );
+    }
   }
   for (const vector of fixture.negative) {
-    const decode =
-      vector.decoder === "single-chunk-descriptor"
-        ? () =>
-            decodeCompactPayload(
-              {
-                fromValue: (value) => value.shift(),
-              },
-              vector,
-            )
-        : () => decodeCompactValue(vector);
+    let decode;
+    if (vector.decoder === "single-chunk-descriptor") {
+      decode = () =>
+        decodeCompactPayload(
+          {
+            fromValue: (value) => value.shift(),
+            toValue: (value) => [value],
+          },
+          vector,
+        );
+    } else if (vector.decoder === "bytes32-descriptor") {
+      decode = () => decodeCompactPayload(bytes32Descriptor, vector);
+    } else {
+      decode = () => decodeCompactValue(vector);
+    }
     assert.throws(
       decode,
       (error) => String(error).includes(vector.errorIncludes),
+      vector.id,
+    );
+  }
+});
+
+test("validates credential-family definitions through fresh build output", () => {
+  const vectors = readJson(
+    "conformance/vectors/credential-family-definition.json",
+  );
+  assert.equal(vectors.formatVersion, 2);
+  assert.equal(vectors.category, "credential-family-definition");
+  assert.ok(vectors.positive.length > 0, "model vectors need positive cases");
+  assert.ok(vectors.negative.length > 0, "model vectors need negative cases");
+  const vectorIds = [...vectors.positive, ...vectors.negative].map(
+    ({ id }) => id,
+  );
+  assert.equal(
+    new Set(vectorIds).size,
+    vectorIds.length,
+    "model vector IDs must be unique",
+  );
+  for (const vector of vectors.positive) {
+    assert.doesNotThrow(
+      () =>
+        assertCredentialFamilyDefinition(
+          modelVectorInput(vectors.fixture, vector),
+        ),
+      vector.id,
+    );
+  }
+  for (const vector of vectors.negative) {
+    assert.throws(
+      () =>
+        assertCredentialFamilyDefinition(
+          modelVectorInput(vectors.fixture, vector),
+        ),
+      (error) =>
+        error instanceof CredentialModelError &&
+        error.code === vector.error.code &&
+        error.path === vector.error.path,
       vector.id,
     );
   }

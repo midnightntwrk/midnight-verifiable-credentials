@@ -3,3 +3,41 @@ packages:
   - packages/core/compact
   - packages/credential-did-midnight
   - docs-site
+
+allowBuilds:
+  # Root and clean-consumer fixtures intentionally use different esbuild
+  # versions; lockfile integrity and release-age policy govern the version.
+  esbuild: true
+dangerouslyAllowAllBuilds: false
+engineStrict: true
+pmOnFail: error
+strictDepBuilds: true
+verifyStoreIntegrity: true
+
+overrides:
+  algoliasearch: 5.52.1
+  brace-expansion@1: 5.0.12
+  brace-expansion@2: 5.0.12
+  brace-expansion@5: 5.0.12
+  js-yaml: 4.3.2
+  postcss: 8.5.23
+  vite: 7.3.6
+
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
+minimumReleaseAgeExcludePrune: false
+minimumReleaseAgeIgnoreMissingTime: false
+minimumReleaseAgeStrict: true
+minimumReleaseAgeExclude:
+  # Remove after 2026-10-03; develop already locked this before the cooldown.
+  - "@types/node@26.6.3"
+  # Remove after 2026-10-05, once this release train is at least seven days old.
+  - "@turbo/darwin-64@2.11.5"
+  - "@turbo/darwin-arm64@2.11.5"
+  - "@turbo/linux-64@2.11.5"
+  - "@turbo/linux-arm64@2.11.5"
+  - "@turbo/windows-64@2.11.5"
+  - "@turbo/windows-arm64@2.11.5"
+  - turbo@2.11.5
+trustPolicy: no-downgrade
+trustLockfile: false

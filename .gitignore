@@ -29,9 +29,11 @@ docs-site/packages/model.md
 docs-site/packages/model-changelog.md
 docs-site/packages/compact.md
 docs-site/packages/compact-changelog.md
+docs-site/packages/credential-did-midnight.md
+docs-site/packages/credential-did-midnight-changelog.md
 docs-site/architecture/core-only.md
+docs-site/architecture/midnight-did-binding.md
 docs-site/development/npmjs-publication.md
-docs-site/development/pi-development.md
 docs-site/development/security.md
 
 # Local runtime state and secrets
@@ -42,16 +44,11 @@ docs-site/development/security.md
 .midnight-test/
 midnight-level-db/
 
-# Local agent state
-.pi/*
-!.pi/settings.json
-!.pi/extensions/
-.pi/extensions/*
-!.pi/extensions/vc-current-head-ci-watch.ts
+# Local agent state and tool-specific configuration
+.pi/
 .pi-subagents/
-.claude/*
-!.claude/skills/
-!.claude/skills/**
+.claude/
+.codex/
 review/
 tmp/worktrees/
 

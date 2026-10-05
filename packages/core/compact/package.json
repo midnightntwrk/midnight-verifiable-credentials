@@ -1,6 +1,6 @@
 {
   "name": "@midnight-ntwrk/credential-compact",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Family-neutral Compact VC and VP semantics",
   "license": "Apache-2.0",
   "private": false,
@@ -24,8 +24,7 @@
   ],
   "sideEffects": [],
   "engines": {
-    "node": ">=24",
-    "pnpm": ">=10.34.5"
+    "node": ">=24"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -51,6 +50,9 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "0.16.0"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2"
   },
   "files": [
     "dist/**",

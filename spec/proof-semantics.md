@@ -67,9 +67,24 @@ signing representation.
 
 Presentation verification MUST derive the body root from the complete supplied
 presentation, validate the presentation envelope, match the proof signer
-reference to the selected holder binding, and verify the presentation-context
-proof over that derived root. A caller-supplied root, method-reference match,
-or valid signature alone is not an equivalent composition.
+reference to the selected holder binding, match `Proof.publicKey` to the accepted
+holder key resolved by the verifier, and verify the presentation-context proof
+over that derived root. A caller-supplied root, method-reference match, or valid
+signature alone is not an equivalent composition.
+
+For the supported explicit-holder profile,
+`ExplicitHolderPresentationProof<TPublicClaims, TClaimCommitments,
+TDisclosures, TStatusBinding>::assertValidPresentationProof` is the canonical
+composition. Its first argument MUST be the credential being presented, and its
+second MUST be the independently accepted public key for that credential's
+holder binding. The circuit derives the presentation body root internally,
+validates the envelope and generic credential-to-presentation relations,
+requires the credential and presentation holder bindings to match, binds the
+proof signer reference and key to that holder, and verifies the
+presentation-context signature. It does not authenticate the accepted key or
+replace credential-proof verification, DID method resolution, challenge
+freshness, status validation, family-specific disclosure relations, or
+application policy.
 
 ## Trust boundary
 
@@ -85,5 +100,9 @@ root does not authenticate the supplied credential.
 An application that does not use a Trust Registry MAY validate an issuer proof
 and make its own local trust decision. An application that requires signer
 authorization MUST additionally apply the descriptor checks in
-[`signer-authorization.md`](./signer-authorization.md). Presentation freshness,
-holder binding, status, and application policy remain separate checks.
+[`signer-authorization.md`](./signer-authorization.md). For credentials,
+`VC<>::assertAuthorizedIssuerProof` is the supported composed authorization
+decision. `VC<>::assertValidCredentialProof` and its precomputed-root sibling
+establish cryptographic validity for the credential's self-declared issuer only;
+they do not establish issuer authorization. Presentation freshness, holder
+binding, status, and application policy remain separate checks.

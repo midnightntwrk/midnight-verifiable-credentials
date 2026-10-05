@@ -2,6 +2,11 @@
 
 Engineering guide for `midnight-verifiable-credentials`.
 
+This file is the repository's single agent-facing source of truth. Do not add
+tool-specific skills, prompts, autonomous-loop configuration, or checked-in
+agent runtime state. Human contributor guidance belongs in `CONTRIBUTING.md`;
+durable architecture decisions belong in ADRs.
+
 ## Scope
 
 This is a core-only VC/VP specification and implementation repository. Follow
@@ -116,11 +121,46 @@ product/use-case integration environments.
 - Keep no more than two active stack levels.
 - Commit with DCO and GPG:
   `git commit -S --signoff -m "<type>: <subject>"`.
-- Follow `.devloops` for the required current-head external review and CI state.
-- Follow the [Pi development guide](./docs/guides/pi-development.md) when using
-  the optional repository-local harness.
-- This repository uses human-only merges. Agents may push and prepare PRs but
-  must not merge them.
+- Obtain an independent current-head review for Compact, security, public API,
+  dependency-major, and release-workflow changes. Documentation-only and
+  dependency-patch PRs may rely on normal human review plus required CI.
+- When the required independent current-head review runs through a CLI, allow
+  it up to 15 minutes to produce output. A silent timeout, authentication
+  failure, or unavailable reviewer is missing review evidence, not approval;
+  record that state in a PR comment naming the full head commit SHA.
+- Wait for every hosted check that GitHub reports on the current head and
+  current base to reach a terminal state, and require every branch-protection
+  check to conclude successfully, before requesting merge. On a milestone PR,
+  `Core Validation`, `Dependency Review`, `scan`, and `license/cla` must each be
+  present and succeed. For check runs, require `conclusion=SUCCESS`; for the
+  legacy CLA commit status, require `state=SUCCESS`. A missing or non-successful
+  minimum check blocks an autonomous merge. Other reported checks may be
+  successful, neutral, or skipped; failure, cancellation, timeout, staleness,
+  startup failure, or required action blocks the merge. If repository visibility
+  changes and dependency review can no longer run, pause the train and update
+  the gate instead of treating the skipped check as success.
+- Agents do not merge PRs by default. Merges into `develop`, `main`,
+  `release/**`, `vc-core`, feature branches, and stacked predecessor branches
+  are human-only.
+- The sole exception is a dedicated `milestone-*` delivery branch that the user
+  explicitly authorizes for an autonomous merge train. Its name must use the
+  no-slash form `milestone-<version>` covered by the hosted workflow filters.
+  An agent may merge into that branch only after the check gate above is
+  satisfied and an independent review is successful and recorded against the
+  full current head SHA. A failed, unavailable, or timed-out review does not
+  satisfy this gate. The documentation-only and dependency-patch exemption
+  applies only to human-mediated merges, not an autonomous milestone merge
+  train.
+- Immediately before each autonomous milestone merge, refresh the PR metadata
+  and branch-protection status. If the head branch does not contain the current
+  milestone tip, update or rebase it and require fresh successful checks against
+  the new head/base pair. If that update changes the head SHA, obtain a fresh
+  successful independent review for the new SHA as well. Do not merge while
+  GitHub reports the protected branch as stale or blocked.
+- After each autonomous milestone merge, wait for the milestone branch's
+  push-triggered `Core Validation` and `scan` checks to finish successfully
+  before merging the next PR. Promotion from the milestone branch to another
+  branch remains human-only.
 - Treat findings against deleted or superseded surfaces as obsolete. Fix only
   real defects in the retained core or in the change's validation path.
 
@@ -131,4 +171,3 @@ product/use-case integration environments.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
-- [Pi development loop](./docs/guides/pi-development.md)

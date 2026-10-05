@@ -2,7 +2,17 @@
 
 All notable changes to this package are documented in this file.
 
-## 0.2.0 - 2026-09-18
+## Unreleased
+
+## 0.3.0 - 2026-10-01
+
+- Add normative credential-family validation vectors and execute them through
+  the package's public assertion API and clean packed consumer.
+- Keep the repository's pnpm requirement development-only so published model
+  consumers are not coupled to this monorepo's package manager.
+- Advance the package manifest to the `0.3.0` release base.
+
+## 0.2.0 - 2026-09-25
 
 - Accept untyped credential-family input through an assertion boundary and
   report field-specific `CredentialModelError` failures.

@@ -25,6 +25,7 @@ import {
   createMidnightDIDHolderBinding,
   createMidnightDIDSignerDescriptor,
   midnightDIDMethodId,
+  type MidnightDIDResolutionSource,
   resolveMidnightDIDMethodBinding,
 } from "../index.js";
 import { pureCircuits } from "../managed/did-midnight/contract/index.js";
@@ -70,6 +71,11 @@ type ResolutionResult = NonNullable<
 type VerificationMethod = NonNullable<
   ResolutionResult["didDocument"]["verificationMethod"]
 >[number];
+type AssertionMethodEntry = NonNullable<
+  ResolutionResult["didDocument"]["assertionMethod"]
+>[number];
+const foreignAssertionMethod =
+  "did:example:external#issuer-key" as unknown as AssertionMethodEntry;
 
 const documentWith = (
   overrides: Partial<ResolutionResult["didDocument"]>,
@@ -93,6 +99,9 @@ const resolver = (
     ...overrides,
   }),
 });
+
+const realResolverCompatibility: MidnightDIDResolutionSource = resolver();
+void realResolverCompatibility;
 
 const bytesToBigIntLE = (bytes: Uint8Array): bigint => {
   let value = 0n;
@@ -130,7 +139,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
     });
   });
 
-  it("maps the Midnight DID 0.7 vector without changing the native binding root", async () => {
+  it("documents the 0.6 native point and commits the canonical 0.7 key", async () => {
     const binding = await resolveMidnightDIDMethodBinding({
       resolver: resolver({
         didDocument: documentWithMethod({
@@ -145,7 +154,7 @@ describe("resolveMidnightDIDMethodBinding", () => {
       x: decodeJubjubJwkCoordinate(midnightDID07Vector.x),
       y: decodeJubjubJwkCoordinate(midnightDID07Vector.y),
     };
-    const explicitlyMigratedLegacyPoint = {
+    const legacyPointDecodedWith06Profile = {
       x: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.x)),
       y: bytesToBigIntLE(decodeBase64UrlBytes32(midnightDID06LegacyVector.y)),
     };
@@ -155,11 +164,12 @@ describe("resolveMidnightDIDMethodBinding", () => {
       y: 14156144929920967796411782896064901209526447247090983247242446280553821482461n,
     });
     expect(binding.publicKey).toEqual(canonicalPoint);
-    expect(explicitlyMigratedLegacyPoint).toEqual(canonicalPoint);
-    expect(pureCircuits.midnightDIDMethodBindingRoot(binding)).toEqual(
+    expect(legacyPointDecodedWith06Profile).toEqual(canonicalPoint);
+    const bindingRoot = pureCircuits.midnightDIDMethodBindingRoot(binding);
+    expect(bindingRoot).not.toEqual(
       pureCircuits.midnightDIDMethodBindingRoot({
         ...binding,
-        publicKey: explicitlyMigratedLegacyPoint,
+        publicKey: ecMulGenerator(8n),
       }),
     );
   });
@@ -361,6 +371,111 @@ describe("resolveMidnightDIDMethodBinding", () => {
     ).rejects.toThrow("native EC/Jubjub");
   });
 
+  it("ignores well-formed foreign methods before the requested local method", async () => {
+    const foreignMethod = {
+      ...document.verificationMethod?.[0],
+      id: "did:example:external#issuer-key",
+      controller: "did:example:external",
+    } as VerificationMethod;
+    const localMethod = document.verificationMethod?.[0] as VerificationMethod;
+    const binding = await resolveMidnightDIDMethodBinding({
+      resolver: resolver({
+        didDocument: documentWith({
+          verificationMethod: [foreignMethod, localMethod],
+          assertionMethod: [
+            foreignAssertionMethod,
+            document.assertionMethod?.[0] as AssertionMethodEntry,
+          ],
+        }),
+      }),
+      did,
+      verificationMethodId: "#issuer-key",
+      relationship: "assertionMethod",
+    });
+
+    expect(binding.verificationMethodRef.methodId).toEqual(
+      midnightDIDMethodId("#issuer-key"),
+    );
+  });
+
+  it("treats foreign-only methods as absent or unauthorized", async () => {
+    const foreignMethod = {
+      ...document.verificationMethod?.[0],
+      id: "did:example:external#issuer-key",
+      controller: "did:example:external",
+    } as VerificationMethod;
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({ verificationMethod: [foreignMethod] }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("absent from the DID document");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({
+            assertionMethod: [foreignAssertionMethod],
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("not authorized for assertionMethod");
+  });
+
+  it("keeps caller and malformed local method identifiers fail-closed", async () => {
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver(),
+        did,
+        verificationMethodId: "did:example:external#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("not a valid subject-bound DID URL");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({
+            verificationMethod: [
+              {
+                ...document.verificationMethod?.[0],
+                id: `${did}/keys/issuer-key`,
+              } as VerificationMethod,
+              document.verificationMethod?.[0] as VerificationMethod,
+            ],
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("must be a fragment");
+
+    await expect(
+      resolveMidnightDIDMethodBinding({
+        resolver: resolver({
+          didDocument: documentWith({
+            assertionMethod: [
+              `${did}/keys/issuer-key` as unknown as AssertionMethodEntry,
+              document.assertionMethod?.[0] as AssertionMethodEntry,
+            ],
+          }),
+        }),
+        did,
+        verificationMethodId: "#issuer-key",
+        relationship: "assertionMethod",
+      }),
+    ).rejects.toThrow("must be a fragment");
+  });
+
   it("rejects malformed native coordinates and non-fragment method ids", async () => {
     await expect(
       resolveMidnightDIDMethodBinding({
@@ -412,6 +527,15 @@ describe("binding composition helpers", () => {
     expect(holder.explicitBinding.holderVerificationMethodRef).toEqual(
       authentication.verificationMethodRef,
     );
+    holder.explicitBinding.holderVerificationMethodRef.methodId[0] = 0xff;
+    holder.explicitBinding.holderVerificationMethodRef.controllerAddress.bytes[0] = 0xff;
+    expect(holder.methodBinding.verificationMethodRef).toEqual(
+      authentication.verificationMethodRef,
+    );
+    expect(authentication.verificationMethodRef.methodId[0]).not.toBe(0xff);
+    expect(
+      authentication.verificationMethodRef.controllerAddress.bytes[0],
+    ).toBe(0x11);
 
     const assertion = await resolveMidnightDIDMethodBinding({
       resolver: resolver(),

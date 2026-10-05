@@ -2,6 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-18
+- Updated: 2026-09-29
 - Owners: VC maintainers
 - Amends: ADR-0016 public package graph and DID-adapter boundary
 
@@ -48,12 +49,14 @@ the extension does not claim live cross-contract DID resolution.
 
 The adapter accepts only the Midnight DID 0.7 canonical big-endian Jubjub JWK
 profile and delegates coordinate decoding and range validation to the public
-domain package codec. Historical 0.6 little-endian snapshots require an
-explicit migration; byte-order auto-detection and use of ledger `versionId` as
-an encoding marker are rejected. Because some legacy values remain in range
-under the new byte order, a mis-supplied 0.6 snapshot can silently bind the
-wrong point. This transport change does not alter the native point or its
-Compact binding root when migration is explicit.
+domain package codec. Historical 0.6 little-endian snapshots should be
+re-resolved through a 0.7-compatible resolver. An offline migration is allowed
+only when the snapshot provenance authenticates its DID, method, relationship,
+positive observed `versionId`, and 0.6 encoding profile; it must decode the 0.6
+coordinates and re-encode the same native point in the canonical 0.7 profile.
+Profile auto-detection and use of ledger `versionId` as an encoding marker are
+rejected. Because some legacy values remain in range under the new byte order,
+a mis-supplied 0.6 snapshot can silently bind the wrong point.
 
 The initial support profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
 `8.0.2`. Cross-contract DID validation is deferred until a later Ledger profile.

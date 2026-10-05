@@ -12,6 +12,32 @@ The definition does not prescribe credential or presentation payload types,
 codecs, capabilities, proof artifacts, package composition, deployment, or
 protocol behavior. Credential-family repositories own those concerns.
 
+The `validate-credential-family-definition` operation applies the following
+structural rules through the public `assertCredentialFamilyDefinition` API:
+
+- the definition and its `schema` MUST be non-null objects and MUST NOT be
+  arrays;
+- family IDs, schema IDs, credential types, claim IDs, claim-path segments,
+  and optional value-type labels MUST be non-empty, trimmed strings;
+- family and schema versions MUST use SemVer 2.0 syntax, including its rules
+  for prerelease and build identifiers;
+- optional names and descriptions, when present, MUST be non-empty, trimmed
+  strings;
+- `credentialTypes` MUST be a non-empty array;
+- `claims` MUST be an array and MAY be empty;
+- every claim MUST be a non-null object and MUST NOT be an array;
+- claim IDs MUST be unique within the schema;
+- every claim path MUST contain at least one valid segment;
+- disclosure MUST be exactly `public`, `selective`, `committed`, or
+  `predicate-only`; and
+- `required` MUST be a boolean.
+
+Validation is structural. It does not assign meaning to identifiers or value
+types, validate claim values, enforce business policy, or establish that a
+family-specific Compact implementation matches the metadata. Invalid input
+MUST fail with the stable model error code and field path recorded by the
+credential-family conformance vectors.
+
 ## Schema reference
 
 An exact schema reference has these Compact fields:
@@ -63,7 +89,10 @@ relations, holder proof binding, disclosures, predicates, status, request
 scope, challenge freshness, and application policy are separate checks.
 The generic credential-to-presentation relation requires the exact schema
 reference, credential claim root, and issuer verification-method reference to
-match before family-specific disclosure or predicate checks run.
+match before family-specific disclosure or predicate checks run. For the
+explicit-holder profile, the presentation-proof composition additionally takes
+the credential's holder binding and verifier-resolved public key, and rejects a
+different holder or proof key in the presentation.
 
 Proofs are separate from semantic bodies. Verifiers MUST recompute body roots
 and MUST NOT trust roots supplied without the corresponding canonical value.

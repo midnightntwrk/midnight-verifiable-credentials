@@ -200,12 +200,7 @@
       "id": "authorized-issuer-descriptor-validation",
       "source": "credentials/signer-authorization.compact",
       "symbol": "assertAuthorizedIssuerDescriptor",
-      "classification": "supported",
-      "operation": "bind-authorized-issuer-proof",
-      "evidence": {
-        "positive": ["positive/active-issuer-assertion-method"],
-        "negative": ["negative/reject-verifier-role-for-issuer-proof"]
-      }
+      "classification": "low-level"
     },
     {
       "id": "authorized-verifier-proof-validation",
@@ -382,6 +377,17 @@
       "evidence": {
         "positive": ["positive/valid-presentation-envelope"],
         "negative": ["negative/reject-unsupported-presentation-version"]
+      }
+    },
+    {
+      "id": "explicit-holder-presentation-proof-validation",
+      "source": "credentials/vp.compact",
+      "symbol": "assertValidPresentationProof",
+      "classification": "supported",
+      "operation": "verify-presentation-proof",
+      "evidence": {
+        "positive": ["positive/verify-presentation-proof-from-canonical-body"],
+        "negative": ["negative/reject-presentation-different-holder"]
       }
     },
     {

@@ -3,20 +3,108 @@
 ## Prerequisites
 
 - Node.js 24 or newer
-- pnpm 10.34.5 or newer
+- A pnpm version compatible with the consumer workspace; repository
+  contributors use pnpm 11.25.0
 - Compact `0.31.1` when consuming the Compact package
 
 ## Install
 
-Install only the package boundaries the consumer needs:
+Install only the boundaries the consumer needs. The current stable graph is
+`0.2.0`:
 
 ```bash
-pnpm add @midnight-ntwrk/credential-model@rc
-pnpm add @midnight-ntwrk/credential-compact@rc
-pnpm add @midnight-ntwrk/credential-did-midnight@rc
+# Metadata only
+pnpm add -E @midnight-ntwrk/credential-model@0.2.0
+
+# Metadata plus family-neutral Compact primitives
+pnpm add -E \
+  @midnight-ntwrk/credential-model@0.2.0 \
+  @midnight-ntwrk/credential-compact@0.2.0
+
+# Add only for did:midnight method binding
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
 ```
 
-Pin exact prerelease versions for reproducible credential-family builds.
+The packages do not provide a credential family, wallet flow, exchange
+protocol, DID resolver, status authority, or issuer trust policy. A consumer
+repository owns those choices.
+
+For release-sensitive automation that needs the complete graph, use this
+guarded function. It verifies that every immutable package version exists and
+records the approved version exactly:
+
+```bash
+install_stable_graph() (
+  set -euo pipefail
+  EXPECTED_STABLE="${1:?usage: install_stable_graph VERSION}"
+  NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
+  for package in \
+    @midnight-ntwrk/credential-model \
+    @midnight-ntwrk/credential-compact \
+    @midnight-ntwrk/credential-did-midnight; do
+    if ! actual_version="$(npm view --registry "$NPM_REGISTRY" \
+      "${package}@${EXPECTED_STABLE}" version)"; then
+      printf 'could not resolve %s@%s\n' \
+        "$package" "$EXPECTED_STABLE" >&2
+      exit 1
+    fi
+    if [[ "$actual_version" != "$EXPECTED_STABLE" ]]; then
+      printf 'expected %s version=%s, got %s\n' \
+        "$package" "$EXPECTED_STABLE" "$actual_version" >&2
+      exit 1
+    fi
+  done
+  pnpm add --registry "$NPM_REGISTRY" -E \
+    "@midnight-ntwrk/credential-model@${EXPECTED_STABLE}" \
+    "@midnight-ntwrk/credential-compact@${EXPECTED_STABLE}" \
+    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
+)
+
+install_stable_graph 0.2.0
+```
+
+Keep the package graph on one exact version for reproducible credential-family
+builds. The moving `rc` dist-tag may identify a prerelease older or newer than
+`latest`; inspect it before opting in:
+
+```bash
+NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
+MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
+COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
+DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
+printf 'model=%s compact=%s did=%s\n' "$MODEL_RC" "$COMPACT_RC" "$DID_RC"
+```
+
+Only after confirming that all three `rc` tags identify the prerelease graph you
+intend to evaluate, record that exact version as `EXPECTED_RC`. The guarded
+install rechecks every moving tag against that approved version before using the
+immutable version:
+
+```bash
+install_rc_graph() (
+  set -euo pipefail
+  EXPECTED_RC="${1:?usage: install_rc_graph VERSION}"
+  NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmjs.org/}"
+  MODEL_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-model dist-tags.rc)"
+  COMPACT_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-compact dist-tags.rc)"
+  DID_RC="$(npm view --registry "$NPM_REGISTRY" @midnight-ntwrk/credential-did-midnight dist-tags.rc)"
+  if [[ "$MODEL_RC" != "$EXPECTED_RC" || \
+    "$COMPACT_RC" != "$EXPECTED_RC" || "$DID_RC" != "$EXPECTED_RC" ]]; then
+    printf 'refusing unapproved RC graph: expected=%s model=%s compact=%s did=%s\n' \
+      "$EXPECTED_RC" "$MODEL_RC" "$COMPACT_RC" "$DID_RC" >&2
+    exit 1
+  fi
+  pnpm add --registry "$NPM_REGISTRY" -E \
+    "@midnight-ntwrk/credential-model@${EXPECTED_RC}" \
+    "@midnight-ntwrk/credential-compact@${EXPECTED_RC}" \
+    "@midnight-ntwrk/credential-did-midnight@${EXPECTED_RC}"
+)
+```
+
+Use those install commands only when the reported `rc` versions are the exact
+prerelease graph you intend to evaluate. After recording that version, invoke
+the function explicitly, for example `install_rc_graph 0.3.0-rc1`.
+Prerelease adoption should not happen implicitly.
 
 ## Define Metadata
 

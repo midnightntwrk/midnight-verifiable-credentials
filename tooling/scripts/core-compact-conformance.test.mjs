@@ -86,6 +86,97 @@ const mod = (value) => {
   return reduced >= 0n ? reduced : reduced + subgroupOrder;
 };
 
+class ConformanceHarnessError extends Error {}
+
+const credentialProofOperations = new Set([
+  "verify-derived-root",
+  "verify-precomputed-root",
+]);
+const credentialProofMutations = new Set([
+  "body-root",
+  "issuer-controller",
+  "issuer-method",
+  "signature",
+]);
+const validateCredentialProofVector = (collection, vector) => {
+  if (!credentialProofOperations.has(vector.operation)) {
+    throw new ConformanceHarnessError(
+      `unknown credential-proof operation ${vector.operation}`,
+    );
+  }
+  if (collection === "positive") {
+    if (vector.mutation !== undefined) {
+      throw new ConformanceHarnessError(
+        `positive credential-proof vector ${vector.id} must not declare a mutation`,
+      );
+    }
+    return;
+  }
+  if (!credentialProofMutations.has(vector.mutation)) {
+    throw new ConformanceHarnessError(
+      `unknown credential-proof mutation ${vector.mutation}`,
+    );
+  }
+  if (
+    typeof vector.errorIncludes !== "string" ||
+    vector.errorIncludes.length === 0
+  ) {
+    throw new ConformanceHarnessError(
+      `negative credential-proof vector ${vector.id} must declare errorIncludes`,
+    );
+  }
+};
+const selectCredentialProofInvocation = (
+  operation,
+  verifyDerivedRoot,
+  verifyPrecomputedRoot,
+) => {
+  switch (operation) {
+    case "verify-derived-root":
+      return verifyDerivedRoot;
+    case "verify-precomputed-root":
+      return verifyPrecomputedRoot;
+    default:
+      throw new ConformanceHarnessError(
+        `unknown credential-proof operation ${operation}`,
+      );
+  }
+};
+
+test("rejects credential-proof harness dispatch defects before invocation", () => {
+  let invoked = false;
+  assert.throws(() => {
+    const vector = {
+      id: "unknown-operation",
+      operation: "unknown",
+      mutation: "signature",
+      errorIncludes: "irrelevant",
+    };
+    validateCredentialProofVector("negative", vector);
+    selectCredentialProofInvocation(
+      vector.operation,
+      () => {
+        invoked = true;
+      },
+      () => {
+        invoked = true;
+      },
+    )();
+  }, ConformanceHarnessError);
+  assert.equal(invoked, false);
+
+  assert.throws(
+    () =>
+      validateCredentialProofVector("negative", {
+        id: "unknown-mutation",
+        operation: "verify-derived-root",
+        mutation: "unknown",
+        errorIncludes: "irrelevant",
+      }),
+    ConformanceHarnessError,
+  );
+});
+
 test("matches deterministic outputs from generated Compact circuits", () => {
   const fixture = readJson("conformance/vectors/compact-generated.json");
   for (const vector of fixture.vectors) {
@@ -301,6 +392,22 @@ test("binds presentation proofs to their body, holder, and context", async () =>
     },
     disclosed: {},
   });
+  const makeCredential = () => {
+    const presentation = makePresentation();
+    return {
+      version: 1n,
+      schema: presentation.schema,
+      issuerVerificationMethodRef: presentation.issuerVerificationMethodRef,
+      holderBinding: presentation.holderBinding,
+      statusBinding: {},
+      issuedAt: 1n,
+      hasExpiration: false,
+      expiresAt: 0n,
+      claims: {},
+      claimCommitments: {},
+      claimRoot: presentation.credentialClaimRoot,
+    };
+  };
   const makeProof = () => ({
     signerVerificationMethodRef: {
       controllerAddress: {
@@ -318,6 +425,8 @@ test("binds presentation proofs to their body, holder, and context", async () =>
   });
   const conformance = await loadCoreBindingsConformance();
   try {
+    const credential = makeCredential();
+    const expectedHolderPublicKey = point(proofFixture.publicKey);
     const presentation = makePresentation();
     const proof = makeProof();
     const bodyRoot = conformance.pureCircuits.presentationBodyRoot(presentation);
@@ -328,9 +437,13 @@ test("binds presentation proofs to their body, holder, and context", async () =>
     );
     for (const vector of vectors.positive) {
       assert.deepEqual(
-        conformance.pureCircuits.assertValidPresentationProof(
-          makePresentation(),
-          makeProof(),
+        withEvidence("positive", vector, () =>
+          conformance.pureCircuits.assertValidPresentationProof(
+            credential,
+            expectedHolderPublicKey,
+            makePresentation(),
+            makeProof(),
+          ),
         ),
         [],
         vector.id,
@@ -346,10 +459,86 @@ test("binds presentation proofs to their body, holder, and context", async () =>
         candidatePresentation.credentialClaimRoot = alternate;
       } else if (vector.mutation === "issuer-method") {
         candidatePresentation.issuerVerificationMethodRef.methodId = alternate;
-      } else if (vector.mutation === "holder-controller") {
-        candidatePresentation.holderBinding.holderVerificationMethodRef.controllerAddress = {
+      } else if (vector.mutation === "different-holder") {
+        const alternateHolder = fixture.alternateHolder;
+        const alternateHolderReference = {
+          controllerAddress: {
+            bytes: fromHex(alternateHolder.controllerAddressHex),
+          },
+          methodId: fromHex(alternateHolder.methodIdHex),
+        };
+        candidatePresentation.holderBinding = {
+          holderVerificationMethodRef: alternateHolderReference,
+        };
+        candidateProof.signerVerificationMethodRef = alternateHolderReference;
+        candidateProof.publicKey = point(alternateHolder.publicKey);
+        candidateProof.signature = {
+          r: point(alternateHolder.noncePoint),
+          s: 0n,
+        };
+        const substitutedBodyRoot =
+          conformance.pureCircuits.presentationBodyRoot(candidatePresentation);
+        const substitutedChallenge =
+          conformance.pureCircuits.presentationProofChallenge(
+            substitutedBodyRoot,
+            candidateProof,
+          );
+        candidateProof.signature.s = mod(
+          BigInt(alternateHolder.nonceScalar) +
+            substitutedChallenge * BigInt(alternateHolder.secretKey),
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertProofMatchesExplicitHolderBinding(
+            candidatePresentation.holderBinding,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-self-selected-holder-reference`,
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertValidPresentationContextProof(
+            substitutedBodyRoot,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-self-selected-holder-signature`,
+        );
+      } else if (vector.mutation === "proof-holder") {
+        candidateProof.signerVerificationMethodRef.controllerAddress = {
           bytes: alternate,
         };
+      } else if (vector.mutation === "proof-key") {
+        const alternateHolder = fixture.alternateHolder;
+        candidateProof.publicKey = point(alternateHolder.publicKey);
+        candidateProof.signature = {
+          r: point(alternateHolder.noncePoint),
+          s: 0n,
+        };
+        const substitutedChallenge =
+          conformance.pureCircuits.presentationProofChallenge(
+            bodyRoot,
+            candidateProof,
+          );
+        candidateProof.signature.s = mod(
+          BigInt(alternateHolder.nonceScalar) +
+            substitutedChallenge * BigInt(alternateHolder.secretKey),
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertProofMatchesExplicitHolderBinding(
+            credential.holderBinding,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-matching-reference`,
+        );
+        assert.deepEqual(
+          conformance.pureCircuits.assertValidPresentationContextProof(
+            bodyRoot,
+            candidateProof,
+          ),
+          [],
+          `${vector.id}-foreign-key-signature`,
+        );
       } else if (vector.mutation === "signature") {
         candidateProof.signature.s += 1n;
       } else if (vector.mutation === "version") {
@@ -357,19 +546,23 @@ test("binds presentation proofs to their body, holder, and context", async () =>
       } else if (vector.mutation !== "issuance-context") {
         assert.fail(`unknown presentation-proof mutation ${vector.mutation}`);
       }
-      assert.throws(
-        () =>
-          vector.mutation === "issuance-context"
-            ? conformance.pureCircuits.assertValidIssuanceContextProof(
-                bodyRoot,
-                candidateProof,
-              )
-            : conformance.pureCircuits.assertValidPresentationProof(
-                candidatePresentation,
-                candidateProof,
-              ),
-        (error) => String(error).includes(vector.errorIncludes),
-        vector.id,
+      withEvidence("negative", vector, () =>
+        assert.throws(
+          () =>
+            vector.mutation === "issuance-context"
+              ? conformance.pureCircuits.assertValidIssuanceContextProof(
+                  bodyRoot,
+                  candidateProof,
+                )
+              : conformance.pureCircuits.assertValidPresentationProof(
+                  credential,
+                  expectedHolderPublicKey,
+                  candidatePresentation,
+                  candidateProof,
+                ),
+          (error) => String(error).includes(vector.errorIncludes),
+          vector.id,
+        ),
       );
     }
   } finally {
@@ -946,19 +1139,21 @@ test("validates and binds positive and negative signer authorizations", async ()
       [],
     );
     for (const vector of credentialProofVectors.positive) {
-      const invoke =
-        vector.operation === "verify-derived-root"
-          ? () =>
-              conformance.pureCircuits.assertValidCredentialProof(
-                credential,
-                proof,
-              )
-          : () =>
-              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-                credential,
-                proof,
-                bodyRoot,
-              );
+      validateCredentialProofVector("positive", vector);
+      const invoke = selectCredentialProofInvocation(
+        vector.operation,
+        () =>
+          conformance.pureCircuits.assertValidCredentialProof(
+            credential,
+            proof,
+          ),
+        () =>
+          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+            credential,
+            proof,
+            bodyRoot,
+          ),
+      );
       assert.deepEqual(
         withEvidence("positive", vector, invoke),
         [],
@@ -966,6 +1161,7 @@ test("validates and binds positive and negative signer authorizations", async ()
       );
     }
     for (const vector of credentialProofVectors.negative) {
+      validateCredentialProofVector("negative", vector);
       let candidateCredential = credential;
       let candidateProof = proof;
       let candidateBodyRoot = bodyRoot;
@@ -994,22 +1190,21 @@ test("validates and binds positive and negative signer authorizations", async ()
           ...proof,
           signature: { ...proof.signature, s: proof.signature.s + 1n },
         };
-      } else {
-        assert.fail(`unknown credential-proof mutation ${vector.mutation}`);
       }
-      const invoke =
-        vector.operation === "verify-derived-root"
-          ? () =>
-              conformance.pureCircuits.assertValidCredentialProof(
-                candidateCredential,
-                candidateProof,
-              )
-          : () =>
-              conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
-                candidateCredential,
-                candidateProof,
-                candidateBodyRoot,
-              );
+      const invoke = selectCredentialProofInvocation(
+        vector.operation,
+        () =>
+          conformance.pureCircuits.assertValidCredentialProof(
+            candidateCredential,
+            candidateProof,
+          ),
+        () =>
+          conformance.pureCircuits.assertValidCredentialProofForBodyRoot(
+            candidateCredential,
+            candidateProof,
+            candidateBodyRoot,
+          ),
+      );
       withEvidence("negative", vector, () =>
         assert.throws(
           invoke,
@@ -1497,6 +1692,17 @@ test("validates and binds positive and negative signer authorizations", async ()
         vector.id,
       ),
     );
+    if (vector.bareDescriptorAccepts === true) {
+      assert.deepEqual(
+        pureCircuits.assertAuthorizedIssuerDescriptor(
+          schema,
+          proof,
+          descriptor,
+        ),
+        [],
+        `${vector.id}-bare-descriptor-is-not-signature-verification`,
+      );
+    }
     if (vector.mutation === "verifier-signature") {
       withEvidence("negative", vector, () =>
         assert.throws(

@@ -1,6 +1,6 @@
 {
   "name": "@midnight-ntwrk/credential-model",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Protocol-neutral credential-family contracts for Midnight verifiable credentials",
   "license": "Apache-2.0",
   "private": false,
@@ -24,8 +24,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "engines": {
-    "node": ">=24",
-    "pnpm": ">=10.34.5"
+    "node": ">=24"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -41,6 +40,7 @@
     "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
     "prepack": "pnpm run build",
     "test": "vitest run",
+    "test:conformance": "vitest run src/test/conformance.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",

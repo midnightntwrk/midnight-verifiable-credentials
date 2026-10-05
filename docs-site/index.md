@@ -26,6 +26,10 @@ in independently versioned consumer repositories.
 The packages are intentionally small, composable building blocks. None defines
 an issuance or presentation protocol.
 
+The current stable graph is `0.2.0`. The `0.3.0-rc1` graph is available only
+for explicit prerelease evaluation. The [quickstart](/guide/quickstart) keeps
+stable and RC installation paths separate and pins exact versions.
+
 ## Trust Boundary
 
 A valid core proof establishes control of a supplied Jubjub key over an exact,

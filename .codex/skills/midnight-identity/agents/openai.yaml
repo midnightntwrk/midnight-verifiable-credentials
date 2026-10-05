@@ -1,4 +1,0 @@
-interface:
-  display_name: "Midnight Identity VC"
-  short_description: "Protocol-independent VC/VP core, Compact, status, conformance, and packaging"
-  default_prompt: "Use this for midnight-verifiable-credentials core VC/VP packages, Compact primitives, status, conformance, run.sh validation, and release artifacts."
