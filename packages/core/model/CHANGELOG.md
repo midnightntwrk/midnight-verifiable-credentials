@@ -4,6 +4,16 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased
 
+- Advance the package manifest to the `0.4.0` release base.
+- BREAKING: replace the nested `CredentialFamilyDefinition` and
+  `CredentialSchemaDescriptor` model with one flat
+  `CredentialSchemaDefinition`.
+- BREAKING: replace `defineCredentialFamily` and
+  `assertCredentialFamilyDefinition` with `defineCredentialSchema` and
+  `assertCredentialSchemaDefinition`.
+- Rename the model conformance operation and vector category to
+  `credential-schema-definition` and flatten validation error paths.
+
 ## 0.3.0 - 2026-10-01
 
 - Add normative credential-family validation vectors and execute them through

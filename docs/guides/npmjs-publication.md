@@ -1,7 +1,7 @@
 # npmjs Publication Runbook
 
 This runbook covers public releases of reusable packages from
-`midnight-verifiable-credentials`. Concrete credential families, prototypes,
+`midnight-verifiable-credentials`. Concrete credential schemas, prototypes,
 use cases, reporting packages, and integration infrastructure are never part
 of this release train.
 

@@ -20,21 +20,23 @@ The fixture demonstrates two source profiles:
 
 The consumer stores decisions because Ledger 8 cannot synchronously call a DID
 or Trust Registry contract. It deliberately does not implement policy
-evaluation, relaying, authority rotation, trusted time, or a concrete VC family.
+evaluation, relaying, authority rotation, trusted time, or a concrete VC schema.
 
 ## Composed DID-backed VC/VP flow
 
 `composed-did-vc-flow.compact` and the
 `credential-did-midnight-consumer` runtime driver are executable evidence for
 the packed public package graph. The fixture defines nonempty synthetic claims,
-validates their family descriptor through `@midnight-ntwrk/credential-model`,
-derives each Compact identifier as SHA-256 of `<id>@<version>`, resolves
-separate issuer and holder Midnight DID methods, signs credential and
-presentation bodies, and executes the core plus DID binding composition.
+validates its schema definition through `@midnight-ntwrk/credential-model`,
+derives the Compact package identifier from an explicit stable package name,
+derives the schema identifier from the validated stable schema ID, selects the
+Compact compatibility version separately, resolves issuer and holder Midnight
+DID methods, signs credential and presentation bodies, and executes the core
+plus DID binding composition.
 
 The driver requires exact rejection messages for credential-claim, disclosure,
 body-root, issuer, holder, verification-method, public-key, relationship,
-proof-context, and signature substitutions. It installs no repository source and runs outside the
-checkout. It deliberately contains no protocol, wallet, network service,
-product credential-family implementation, Trust Registry policy, or deployment
-code.
+proof-context, and signature substitutions. It installs no repository source
+and runs outside the checkout. It deliberately contains no protocol, wallet,
+network service, product credential implementation, Trust Registry policy, or
+deployment code.

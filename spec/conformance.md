@@ -38,10 +38,10 @@ exported circuit, entrypoint, or declared surface requires an inventory update.
 A `supported` circuit without an implemented operation is invalid.
 
 Normative test entrypoints MUST import only the exact retained core surfaces in
-the manifest allowlist. Protocol, credential-family, use-case, application, and
-sibling-repository source imports are forbidden. Repository package-boundary
+the manifest allowlist. Protocol, concrete credential schema, use-case,
+application, and sibling-repository source imports are forbidden. Repository package-boundary
 checks enforce the transitive dependency direction of retained core packages.
 
-External credential families MAY run the same vectors through released package
-versions or immutable prerelease artifacts. They own family-specific schema,
-predicate, artifact, and application tests.
+External credential schema implementations MAY run the same vectors through
+released package versions or immutable prerelease artifacts. They own schema,
+predicate, artifact, and application tests for their implementation.

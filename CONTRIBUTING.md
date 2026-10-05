@@ -17,7 +17,7 @@ guides contributors through signing from the pull request when required.
   before adding or moving reusable code.
 - Open or confirm an issue for substantial behavior, architecture, security, or
   public API changes.
-- Keep credential families, product use cases, applications, exchange
+- Keep concrete credential schemas, product use cases, applications, exchange
   protocols, and deployment environments in their owning repositories.
 
 ## Contribution Workflow
@@ -66,6 +66,24 @@ Treat these as public VC surfaces:
 
 For surface changes, update tests, package documentation, specifications, and
 conformance vectors in the same pull request.
+
+## Specification Changes
+
+A change to normative behavior includes the evidence needed to review and
+implement that behavior consistently:
+
+- update every affected specification section;
+- update the operation mapping in
+  [`conformance/manifest.json`](./conformance/manifest.json) when the supported
+  operation surface changes;
+- add or update applicable positive and negative conformance vectors; and
+- update the reference implementation and tests when it implements the changed
+  behavior.
+
+Request review from maintainers who own the affected specification,
+implementation, and conformance surfaces. Maintainer review is repository
+governance; the normative documents and conformance evidence define the
+implementation requirements.
 
 ## Validation
 

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Advance the package manifest to the `0.4.0` release base and update the
+  packed composition fixture for the flat credential schema model.
+
 ## 0.3.0 - 2026-10-01
 
 - Bind the exact circuit surfaces of both the standalone and composition

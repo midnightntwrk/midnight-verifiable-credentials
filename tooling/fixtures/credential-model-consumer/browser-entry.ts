@@ -1,6 +1,6 @@
-import { accessFamily } from "./family.js";
+import { accessSchema } from "./schema.js";
 
-if (accessFamily.schema.claims[0]?.id !== "accessLevel") {
+if (accessSchema.claims[0]?.id !== "accessLevel") {
   throw new Error("Bundled credential metadata is invalid");
 }
 

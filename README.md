@@ -4,10 +4,10 @@ Protocol-independent verifiable credential and presentation building blocks for
 Midnight.
 
 This repository contains the normative VC/VP core specification, conformance
-vectors, generic credential-family and claim-schema metadata, and reusable
+vectors, generic credential schema and claim metadata, and reusable
 Compact primitives. It also contains one bounded Midnight DID binding extension
 so consumers do not reproduce canonical method and key mapping. It does not
-contain concrete credential families, general adapter frameworks, product use
+contain concrete credential schemas, general adapter frameworks, product use
 cases, applications, exchange protocols, or deployment environments. Those
 belong in independently versioned consumer repositories.
 
@@ -21,36 +21,39 @@ belong in independently versioned consumer repositories.
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
 - [Midnight DID binding decision](./docs/decisions/0017-midnight-did-binding-extension.md)
+- [Credential schema model decision](./docs/decisions/0018-credential-schema-model.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
 
 ## Packages
 
 | Need | Package | Does not provide |
 | --- | --- | --- |
-| Describe and validate a credential family or claim schema | `@midnight-ntwrk/credential-model` | Credentials, proofs, protocols, or deployment |
-| Compose family-neutral VC/VP circuits and encode Compact values | `@midnight-ntwrk/credential-compact` | Issuer trust, status authority, trusted time, or a wallet flow |
+| Describe and validate a credential schema | `@midnight-ntwrk/credential-model` | Credentials, proofs, protocols, or deployment |
+| Compose schema-neutral VC/VP circuits and encode Compact values | `@midnight-ntwrk/credential-compact` | Issuer trust, status authority, trusted time, or a wallet flow |
 | Map a resolved `did:midnight` Jubjub method into the core types and circuits | `@midnight-ntwrk/credential-did-midnight` | A DID resolver, current-state proof, or trust policy |
 
 All three packages are in the executable publication allowlist, and their
 packed artifacts pass build and clean-consumer checks. They are ESM-only
 pre-1.0 APIs and follow semantic versioning.
 
-Use the smallest package that owns the required boundary. A credential-family
-repository normally depends on both: `credential-model` describes its metadata,
+Use the smallest package that owns the required boundary. A concrete credential
+repository normally depends on both: `credential-model` describes its schema,
 while `credential-compact` provides the generic circuit primitives. The
 optional `credential-did-midnight` package maps resolved Midnight DID methods
 into those primitives. The
 executable package catalog in `tooling/scripts/workspace-catalog.mjs` is the
 publication allowlist.
 
-Concrete families own their schema, policy, family-specific circuits, proving
+Concrete implementations own their schema, policy, schema-specific circuits, proving
 artifacts, integration, release train, and deployment. They consume released
 packages and must not import this repository's source or generated internals.
 
 ## Release channels
 
-The current stable package graph is `0.2.0`. Install exact versions so a
-credential-family build cannot change when an npm dist-tag moves:
+The source package graph is the next `0.4.0` release base. The current npm
+`latest` graph is `0.2.0`, and the current `rc` graph is `0.3.0-rc1`. Install
+exact published versions so a
+consumer build cannot change when an npm dist-tag moves:
 
 ```bash
 pnpm add -E \
@@ -58,7 +61,7 @@ pnpm add -E \
   @midnight-ntwrk/credential-compact@0.2.0
 ```
 
-Add `@midnight-ntwrk/credential-did-midnight@0.2.0` only when the family or
+Add `@midnight-ntwrk/credential-did-midnight@0.2.0` only when the schema implementation or
 consumer uses Midnight DID methods. The `0.3.0-rc1` graph is available under
 the `rc` tag for explicit prerelease evaluation; it is not the stable release.
 See the [quickstart](https://midnightntwrk.github.io/midnight-verifiable-credentials/guide/quickstart)
@@ -66,7 +69,7 @@ for guarded stable and RC installation.
 
 ## Read by task
 
-- Credential-family authors: start with the
+- Credential authors: start with the
   [quickstart](https://midnightntwrk.github.io/midnight-verifiable-credentials/guide/quickstart)
   and the [model package README](./packages/core/model/README.md).
 - Compact contract authors: read the

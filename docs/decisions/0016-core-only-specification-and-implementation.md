@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-08
-- Updated: 2026-09-18
+- Updated: 2026-10-05
 - Owners: VC maintainers
 - Supersedes: product, protocol, and multi-package architecture decisions archived in Git history
 
@@ -37,15 +37,18 @@ The original supported public release graph contained:
 protocol-independent `@midnight-ntwrk/credential-did-midnight` extension while
 preserving the exclusions below.
 
+[ADR-0018](./0018-credential-schema-model.md) replaces the credential-family
+wrapper with one credential schema definition in the TypeScript model.
+
 The core defines reusable data structures and cryptographic composition
 primitives. Complete issuer, holder, and verifier ceremonies belong to the
-credential-family or application repository that selects their policy and
+credential implementation or application repository that selects their policy and
 protocol. The core conformance manifest lists implemented, vectored operations;
 it is not a backlog of unsupported future protocols.
 
 The repository does not own:
 
-- concrete credential families, schemas, applications, or business contracts;
+- concrete credential schemas, applications, or business contracts;
 - OID4VC, DIDComm, HTTP, QR, DApp Connector, or wallet integrations;
 - general DID-adapter frameworks, trust registries, or status services;
 - deployment assembly, runtime discovery, or product proving artifacts; or
@@ -55,7 +58,7 @@ Package-local tests, conformance vectors, and clean packed consumers provide
 the executable evidence. Runnable examples and use cases belong in consumer
 repositories.
 
-Credential families and applications use published versions or immutable
+Credential implementations and applications use published versions or immutable
 package artifacts. Cross-repository source imports, workspace links, generated
 trees, and submodule dependencies are prohibited.
 

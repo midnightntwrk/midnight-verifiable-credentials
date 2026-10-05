@@ -10,7 +10,7 @@ import {
   encodeCompactValue,
 } from "../../packages/core/compact/src/compact-value-codec.ts";
 import {
-  assertCredentialFamilyDefinition,
+  assertCredentialSchemaDefinition,
   CredentialModelError,
 } from "../../packages/core/model/dist/index.js";
 import {
@@ -343,7 +343,7 @@ test("backs every normative Compact operation with a supported circuit", () => {
   const typeScriptOnlyOperations = new Set([
     "decode-compact-value",
     "encode-compact-value",
-    "validate-credential-family-definition",
+    "validate-credential-schema-definition",
   ]);
   const operationsWithoutSupportedCircuit = manifest.operations
     .map(({ id }) => id)
@@ -546,12 +546,12 @@ test("matches Compact Value framing and rejects malformed encodings", () => {
   }
 });
 
-test("validates credential-family definitions through fresh build output", () => {
+test("validates credential schema definitions through fresh build output", () => {
   const vectors = readJson(
-    "conformance/vectors/credential-family-definition.json",
+    "conformance/vectors/credential-schema-definition.json",
   );
   assert.equal(vectors.formatVersion, 2);
-  assert.equal(vectors.category, "credential-family-definition");
+  assert.equal(vectors.category, "credential-schema-definition");
   assert.ok(vectors.positive.length > 0, "model vectors need positive cases");
   assert.ok(vectors.negative.length > 0, "model vectors need negative cases");
   const vectorIds = [...vectors.positive, ...vectors.negative].map(
@@ -565,7 +565,7 @@ test("validates credential-family definitions through fresh build output", () =>
   for (const vector of vectors.positive) {
     assert.doesNotThrow(
       () =>
-        assertCredentialFamilyDefinition(
+        assertCredentialSchemaDefinition(
           modelVectorInput(vectors.fixture, vector),
         ),
       vector.id,
@@ -574,7 +574,7 @@ test("validates credential-family definitions through fresh build output", () =>
   for (const vector of vectors.negative) {
     assert.throws(
       () =>
-        assertCredentialFamilyDefinition(
+        assertCredentialSchemaDefinition(
           modelVectorInput(vectors.fixture, vector),
         ),
       (error) =>

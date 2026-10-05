@@ -5,8 +5,8 @@ Midnight.
 
 This site documents the normative core specification, conformance evidence, and
 the reusable packages published by this repository. Concrete credential
-families, protocols, wallets, applications, and deployment environments belong
-in independently versioned consumer repositories.
+implementations, protocols, wallets, applications, and deployment environments
+belong in independently versioned consumer repositories.
 
 ## Start Here
 
@@ -19,16 +19,16 @@ in independently versioned consumer repositories.
 
 | Package                                   | Responsibility                                               |
 | ----------------------------------------- | ------------------------------------------------------------ |
-| `@midnight-ntwrk/credential-model`        | Credential-family and claim-schema metadata with validation  |
-| `@midnight-ntwrk/credential-compact`      | Family-neutral Compact VC/VP structures and proof primitives |
+| `@midnight-ntwrk/credential-model`        | Credential schema and claim metadata with validation         |
+| `@midnight-ntwrk/credential-compact`      | Schema-neutral Compact VC/VP structures and proof primitives |
 | `@midnight-ntwrk/credential-did-midnight` | Optional Midnight DID-to-core binding and Compact extension  |
 
 The packages are intentionally small, composable building blocks. None defines
 an issuance or presentation protocol.
 
-The current stable graph is `0.2.0`. The `0.3.0-rc1` graph is available only
-for explicit prerelease evaluation. The [quickstart](/guide/quickstart) keeps
-stable and RC installation paths separate and pins exact versions.
+This source tree documents the `0.4.0` release base. The current npm `latest`
+graph is `0.2.0`, and `0.3.0-rc1` is available under `rc`. The
+[quickstart](/guide/quickstart) pins exact versions and guards moving tags.
 
 ## Trust Boundary
 

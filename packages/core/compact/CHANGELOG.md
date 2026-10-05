@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Advance the package manifest to the `0.4.0` release base; this package has no
+  breaking runtime change in the schema terminology migration.
+
 ## 0.3.0 - 2026-10-01
 
 - Keep the repository's pnpm requirement development-only so published Compact

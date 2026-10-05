@@ -4,8 +4,7 @@ These definitions are normative where the specification uses the term.
 
 | Term | Meaning |
 | --- | --- |
-| Credential family definition | Versioned metadata that identifies a credential family and its claim schema. |
-| Credential family | Independently released schema and family-specific circuits built on the core. |
+| Credential schema definition | Versioned metadata describing credential types, claims, disclosure modes, and validation structure. |
 | Claim | Typed statement made by an issuer about a credential subject. |
 | Canonical encoding | Deterministic byte representation used for hashing, signing, and conformance. |
 | Challenge | Application-defined value committed through `Proof.challengeHash`; only a presentation profile necessarily sources it from a verifier. |
@@ -21,7 +20,7 @@ These definitions are normative where the specification uses the term.
 | Status binding | Issuer-signed reference binding a credential to status evidence. |
 | Status authority | Entity authorized to make or attest credential-status transitions. |
 | Status registry | State and rules used to publish or evaluate credential status. |
-| Schema | Machine-readable definition of a credential family's claims and constraints. |
+| Schema | Machine-readable definition of a credential's claims and constraints. |
 | Issuer | Authority that creates and signs a credential. |
 | Holder | Entity that controls a credential and creates a presentation. |
 | Verifier | Entity that evaluates a credential or presentation under an explicit policy. |
@@ -43,6 +42,3 @@ These definitions are normative where the specification uses the term.
 | Relying party | Application that acts on a verifier's decision. |
 | Canonical object | Protocol-independent object whose meaning is defined by this specification. |
 | Adapter | Transport, wallet, DID-method, or application integration outside the core. |
-
-An adapter MUST NOT reinterpret a canonical object or omit verification required
-by its owning credential family.
