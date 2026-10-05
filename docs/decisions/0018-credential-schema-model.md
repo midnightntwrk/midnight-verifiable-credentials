@@ -72,12 +72,12 @@ The old nested schema is the source of the new definition:
 
 | Old field | New location |
 | --- | --- |
-| `family.schema.id` | `schema.id` |
-| `family.schema.version` | `schema.version` |
-| `family.schema.name` | `schema.name` |
-| `family.schema.description` | `schema.description` |
-| `family.schema.credentialTypes` | `schema.credentialTypes` |
-| `family.schema.claims` | `schema.claims` |
+| `family.schema.id` | `definition.id` |
+| `family.schema.version` | `definition.version` |
+| `family.schema.name` | `definition.name` |
+| `family.schema.description` | `definition.description` |
+| `family.schema.credentialTypes` | `definition.credentialTypes` |
+| `family.schema.claims` | `definition.claims` |
 
 Public symbols migrate as follows:
 
@@ -97,8 +97,10 @@ Error paths change where the removed wrapper currently contributes a
 `schema.claims[0].path` becomes `claims[0].path`. Consumers that compare
 `CredentialModelError.path` update those comparisons as part of the `0.4.0`
 migration. The null/array definition cases remain at path `definition`.
-Wrapper-only null/array schema cases have no successor, and duplicate outer
-family versus nested schema metadata cases collapse into one schema case.
+Wrapper-only null/array schema cases have no successor. Duplicate outer versus
+nested display-metadata cases collapse into one schema case. Distinct
+identifier and version cases remain, with their paths flattened, so untrimmed,
+empty, malformed, and leading-zero inputs retain explicit coverage.
 
 The old outer `family.id`, `family.version`, `family.name`, and
 `family.description` have no core replacement. Consumers that need package,
@@ -116,6 +118,7 @@ Conformance changes atomically with the implementation:
 - vector category `credential-schema-definition`; and
 - vector file `conformance/vectors/credential-schema-definition.json`;
 - public validation through `assertCredentialSchemaDefinition`;
+- the published `@midnight-ntwrk/credential-model` package description;
 - manifest vector path and content digest, followed by regeneration of
   `conformance/manifest.sha256`; and
 - package and repository conformance tests that load the renamed vector.
