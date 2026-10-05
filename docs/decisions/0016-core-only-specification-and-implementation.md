@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-08
-- Updated: 2026-09-18
+- Updated: 2026-10-05
 - Owners: VC maintainers
 - Supersedes: product, protocol, and multi-package architecture decisions archived in Git history
 
@@ -36,6 +36,10 @@ The original supported public release graph contained:
 [ADR-0017](./0017-midnight-did-binding-extension.md) adds the flat,
 protocol-independent `@midnight-ntwrk/credential-did-midnight` extension while
 preserving the exclusions below.
+
+[ADR-0018](./0018-credential-schema-model.md) defines the pending migration
+from the credential-family wrapper to one credential schema definition in the
+TypeScript model.
 
 The core defines reusable data structures and cryptographic composition
 primitives. Complete issuer, holder, and verifier ceremonies belong to the

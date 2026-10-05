@@ -93,6 +93,10 @@ export default defineConfig({
               text: "Midnight DID Extension",
               link: "/architecture/midnight-did-binding",
             },
+            {
+              text: "Credential Schema Model",
+              link: "/architecture/credential-schema-model",
+            },
           ],
         },
       ],

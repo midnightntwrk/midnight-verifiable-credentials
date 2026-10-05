@@ -21,6 +21,7 @@ const watchPaths = [
   ["packages/credential-did-midnight/CHANGELOG.md", false],
   ["docs/decisions/0016-core-only-specification-and-implementation.md", false],
   ["docs/decisions/0017-midnight-did-binding-extension.md", false],
+  ["docs/decisions/0018-credential-schema-model.md", false],
   ["docs/guides/npmjs-publication.md", false],
   ["SECURITY.md", false],
 ];
