@@ -8,8 +8,11 @@ This directory defines the protocol-independent Midnight VC/VP core. The
 TypeScript and Compact packages in this repository are the reference
 implementation. Conformance data lives in [`../conformance/`](../conformance/).
 
-The key words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` are
-normative requirements.
+Uppercase requirement terms such as `MUST`, `MUST NOT`, `SHOULD`, `SHOULD
+NOT`, and `MAY` are interpreted according to BCP 14
+([RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and
+[RFC 8174](https://www.rfc-editor.org/rfc/rfc8174)). Lowercase uses of the
+same words are descriptive.
 
 ## Documents
 
@@ -36,9 +39,3 @@ It does not define issuance, presentation, or verification protocols;
 transports; OIDC; DIDComm; DApp Connector APIs; wallets; persistence;
 credential-family schemas; UI rendering; deployment; or application policy.
 Consumer repositories compose those concerns around the core primitives.
-
-## Change rule
-
-A normative change MUST update the affected document, the operation mapping in
-[`../conformance/manifest.json`](../conformance/manifest.json), and applicable
-positive and negative vectors. It also requires explicit maintainer review.
