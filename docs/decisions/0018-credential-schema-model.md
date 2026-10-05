@@ -101,8 +101,9 @@ Wrapper-only null/array schema-object cases have no successor. Identifier and
 version cases from both former layers remain as distinct inputs against the
 flat `id` and `version` fields, preserving untrimmed, empty, malformed, and
 leading-zero coverage. Each duplicate outer/nested display-metadata pair
-becomes one flat case: empty, untrimmed, and non-string inputs for `name` and
-for `description`, with top-level error paths.
+becomes flat cases for empty and untrimmed values, plus both former non-string
+input representatives for `name` and for `description`, with top-level error
+paths.
 
 The old outer `family.id`, `family.version`, `family.name`, and
 `family.description` have no core replacement. Consumers that need package,
@@ -110,11 +111,13 @@ product, or catalog metadata keep it in their owning repository or package
 manifest.
 
 A consumer that constructs Compact `SchemaRef` values keeps package identity
-separate from the schema definition: `packageId` comes from explicit package
-metadata, while `schemaId` may be derived from the validated schema ID and
-version under the consumer's documented policy. The packed DID/VC composition
-fixture must demonstrate that separation. The core still does not prescribe a
-TypeScript-to-Compact identifier derivation.
+separate from the schema definition: `packageId` comes from an explicit stable
+package identifier, while `schemaId` may be mapped from the validated stable
+schema `id` under the consumer's documented policy. A schema version is not
+folded into `schemaId`; the Compact reference carries version components in
+`majorVersion` and `minorVersion`. The packed DID/VC composition fixture must
+demonstrate that separation. The core still does not prescribe a
+TypeScript-to-Compact identifier derivation or a general SemVer mapping.
 
 The active public API will not retain family-named aliases. Historical ADRs and
 changelogs may use the old term when describing earlier releases. This is a
@@ -127,8 +130,11 @@ Conformance changes atomically with the implementation:
 - vector category `credential-schema-definition`;
 - vector file `conformance/vectors/credential-schema-definition.json`;
 - conformance documentation links to the renamed vector;
+- normative data-model and terminology sections that name the model and
+  operation;
 - public validation through `assertCredentialSchemaDefinition`;
 - the published `@midnight-ntwrk/credential-model` package description;
+- repository and agent reference lists that point readers to this decision;
 - hand-authored package and guide examples that use the public API;
 - the TypeScript-only operation allowlist and packed consumer fixtures;
 - the synchronized `0.4.0` package-graph release base;
