@@ -48,6 +48,10 @@ const pages = [
     "docs-site/architecture/midnight-did-binding.md",
   ],
   [
+    "docs/decisions/0018-credential-schema-model.md",
+    "docs-site/architecture/credential-schema-model.md",
+  ],
+  [
     "docs/guides/npmjs-publication.md",
     "docs-site/development/npmjs-publication.md",
   ],
@@ -136,10 +140,15 @@ const rewriteLinks = (source, sourcePath) => {
     sourcePath ===
     "docs/decisions/0016-core-only-specification-and-implementation.md"
   ) {
-    return rewritten.replace(
-      "(./0017-midnight-did-binding-extension.md)",
-      "(/architecture/midnight-did-binding)",
-    );
+    return rewritten
+      .replaceAll(
+        "(./0017-midnight-did-binding-extension.md)",
+        "(/architecture/midnight-did-binding)",
+      )
+      .replaceAll(
+        "(./0018-credential-schema-model.md)",
+        "(/architecture/credential-schema-model)",
+      );
   }
   if (sourcePath === "docs/guides/npmjs-publication.md") {
     return rewritten.replace(

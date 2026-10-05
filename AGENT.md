@@ -170,4 +170,6 @@ product/use-case integration environments.
 - [Terminology and glossary](./spec/terminology.md)
 - [Conformance](./conformance/README.md)
 - [Core-only architecture decision](./docs/decisions/0016-core-only-specification-and-implementation.md)
+- [Midnight DID binding decision](./docs/decisions/0017-midnight-did-binding-extension.md)
+- [Credential schema model decision](./docs/decisions/0018-credential-schema-model.md)
 - [npm publication runbook](./docs/guides/npmjs-publication.md)
