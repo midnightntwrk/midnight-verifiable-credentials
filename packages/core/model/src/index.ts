@@ -5,10 +5,9 @@ export {
 export type {
   ClaimDisclosure,
   CredentialClaimDescriptor,
-  CredentialFamilyDefinition,
-  CredentialSchemaDescriptor,
+  CredentialSchemaDefinition,
 } from "./types.js";
 export {
-  assertCredentialFamilyDefinition,
-  defineCredentialFamily,
+  assertCredentialSchemaDefinition,
+  defineCredentialSchema,
 } from "./validation.js";

@@ -2,53 +2,46 @@ import assert from "node:assert/strict";
 
 import {
   CredentialModelError,
-  assertCredentialFamilyDefinition,
-  defineCredentialFamily,
+  assertCredentialSchemaDefinition,
+  defineCredentialSchema,
 } from "@midnight-ntwrk/credential-model";
 
-const accessFamily = defineCredentialFamily({
-  id: "fixture.access",
-  version: "0.1.0",
-  schema: {
-    id: "urn:fixture:access",
-    version: "1.0.0",
-    credentialTypes: ["VerifiableCredential", "AccessCredential"],
-    claims: [
-      {
-        id: "accessLevel",
-        path: ["accessLevel"],
-        disclosure: "selective",
-        required: true,
-      },
-    ],
-  },
+const accessSchema = defineCredentialSchema({
+  id: "urn:fixture:access",
+  version: "1.0.0",
+  credentialTypes: ["VerifiableCredential", "AccessCredential"],
+  claims: [
+    {
+      id: "accessLevel",
+      path: ["accessLevel"],
+      disclosure: "selective",
+      required: true,
+    },
+  ],
 });
 
-assertCredentialFamilyDefinition(accessFamily);
-assert.equal(accessFamily.id, "fixture.access");
-assert.equal(accessFamily.schema.claims[0].id, "accessLevel");
-const parsedFamily = JSON.parse(JSON.stringify(accessFamily));
-assertCredentialFamilyDefinition(parsedFamily);
-assert.equal(parsedFamily.schema.id, "urn:fixture:access");
-const namedFamily = defineCredentialFamily({
-  ...accessFamily,
-  name: "Access credential",
-  description: "Describes access granted to one subject.",
-  schema: {
-    ...accessFamily.schema,
-    name: "Access credential schema",
-    description: "Claims used by the access credential.",
-  },
+assertCredentialSchemaDefinition(accessSchema);
+assert.equal(accessSchema.id, "urn:fixture:access");
+assert.equal(accessSchema.claims[0].id, "accessLevel");
+const parsedSchema = JSON.parse(JSON.stringify(accessSchema));
+assertCredentialSchemaDefinition(parsedSchema);
+assert.equal(parsedSchema.id, "urn:fixture:access");
+
+const namedSchema = defineCredentialSchema({
+  ...accessSchema,
+  name: "Access credential schema",
+  description: "Claims used by the access credential.",
 });
-assert.equal(namedFamily.name, "Access credential");
+assert.equal(namedSchema.name, "Access credential schema");
+
 for (const [field, value, path] of [
-  ["name", "", "name"],
-  ["description", 7, "description"],
+  ["name", " Schema", "name"],
+  ["description", false, "description"],
 ]) {
   assert.throws(
     () =>
-      assertCredentialFamilyDefinition({
-        ...namedFamily,
+      assertCredentialSchemaDefinition({
+        ...namedSchema,
         [field]: value,
       }),
     (error) =>
@@ -57,29 +50,11 @@ for (const [field, value, path] of [
       error.path === path,
   );
 }
-for (const [field, value, path] of [
-  ["name", " Schema", "schema.name"],
-  ["description", false, "schema.description"],
-]) {
-  assert.throws(
-    () =>
-      assertCredentialFamilyDefinition({
-        ...namedFamily,
-        schema: {
-          ...namedFamily.schema,
-          [field]: value,
-        },
-      }),
-    (error) =>
-      error instanceof CredentialModelError &&
-      error.code === "INVALID_DESCRIPTOR" &&
-      error.path === path,
-  );
-}
+
 assert.throws(
   () =>
-    defineCredentialFamily({
-      ...accessFamily,
+    defineCredentialSchema({
+      ...accessSchema,
       version: "latest",
     }),
   (error) =>
@@ -88,8 +63,8 @@ assert.throws(
 );
 assert.throws(
   () =>
-    assertCredentialFamilyDefinition({
-      ...accessFamily,
+    assertCredentialSchemaDefinition({
+      ...accessSchema,
       version: "1.0.0-alpha..1",
     }),
   (error) =>
@@ -99,44 +74,25 @@ assert.throws(
 );
 assert.throws(
   () =>
-    assertCredentialFamilyDefinition({
-      ...accessFamily,
-      schema: {
-        ...accessFamily.schema,
-        claims: [
-          accessFamily.schema.claims[0],
-          accessFamily.schema.claims[0],
-        ],
-      },
+    assertCredentialSchemaDefinition({
+      ...accessSchema,
+      claims: [accessSchema.claims[0], accessSchema.claims[0]],
     }),
   (error) =>
     error instanceof CredentialModelError &&
     error.code === "DUPLICATE_ID" &&
-    error.path === "schema.claims[1].id",
+    error.path === "claims[1].id",
 );
 for (const [field, value, code, path] of [
-  ["path", [], "INVALID_DESCRIPTOR", "schema.claims[0].path"],
-  [
-    "disclosure",
-    "private",
-    "INVALID_DESCRIPTOR",
-    "schema.claims[0].disclosure",
-  ],
-  ["required", "true", "INVALID_DESCRIPTOR", "schema.claims[0].required"],
+  ["path", [], "INVALID_DESCRIPTOR", "claims[0].path"],
+  ["disclosure", "private", "INVALID_DESCRIPTOR", "claims[0].disclosure"],
+  ["required", "true", "INVALID_DESCRIPTOR", "claims[0].required"],
 ]) {
   assert.throws(
     () =>
-      assertCredentialFamilyDefinition({
-        ...accessFamily,
-        schema: {
-          ...accessFamily.schema,
-          claims: [
-            {
-              ...accessFamily.schema.claims[0],
-              [field]: value,
-            },
-          ],
-        },
+      assertCredentialSchemaDefinition({
+        ...accessSchema,
+        claims: [{ ...accessSchema.claims[0], [field]: value }],
       }),
     (error) =>
       error instanceof CredentialModelError &&

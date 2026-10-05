@@ -83,7 +83,7 @@ requires the credential and presentation holder bindings to match, binds the
 proof signer reference and key to that holder, and verifies the
 presentation-context signature. It does not authenticate the accepted key or
 replace credential-proof verification, DID method resolution, challenge
-freshness, status validation, family-specific disclosure relations, or
+freshness, status validation, schema-specific disclosure relations, or
 application policy.
 
 ## Trust boundary

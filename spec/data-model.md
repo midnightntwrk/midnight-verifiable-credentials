@@ -1,25 +1,24 @@
 # Data Model
 
-## Credential family definition
+## Credential schema definition
 
-A TypeScript family definition records a stable identifier, semantic version,
-optional human-readable name and description, and one versioned claim schema.
-The schema may also carry a human-readable name and description and records its
-credential types and claim metadata, including claim paths, disclosure modes,
-required flags, and optional value-type labels.
+A TypeScript schema definition records a stable identifier, semantic version,
+optional human-readable name and description, credential types, and claim
+metadata including claim paths, disclosure modes, required flags, and optional
+value-type labels.
 
 The definition does not prescribe credential or presentation payload types,
 codecs, capabilities, proof artifacts, package composition, deployment, or
-protocol behavior. Credential-family repositories own those concerns.
+protocol behavior. Concrete credential implementation repositories own those
+concerns.
 
-The `validate-credential-family-definition` operation applies the following
-structural rules through the public `assertCredentialFamilyDefinition` API:
+The `validate-credential-schema-definition` operation applies the following
+structural rules through the public `assertCredentialSchemaDefinition` API:
 
-- the definition and its `schema` MUST be non-null objects and MUST NOT be
-  arrays;
-- family IDs, schema IDs, credential types, claim IDs, claim-path segments,
+- the definition MUST be a non-null object and MUST NOT be an array;
+- schema IDs, credential types, claim IDs, claim-path segments,
   and optional value-type labels MUST be non-empty, trimmed strings;
-- family and schema versions MUST use SemVer 2.0 syntax, including its rules
+- schema versions MUST use SemVer 2.0 syntax, including its rules
   for prerelease and build identifiers;
 - optional names and descriptions, when present, MUST be non-empty, trimmed
   strings;
@@ -34,16 +33,16 @@ structural rules through the public `assertCredentialFamilyDefinition` API:
 
 Validation is structural. It does not assign meaning to identifiers or value
 types, validate claim values, enforce business policy, or establish that a
-family-specific Compact implementation matches the metadata. Invalid input
+schema-specific Compact implementation matches the metadata. Invalid input
 MUST fail with the stable model error code and field path recorded by the
-credential-family conformance vectors.
+credential schema conformance vectors.
 
 ## Schema reference
 
 An exact schema reference has these Compact fields:
 
 - `packageId: Bytes<32>`, a non-zero identifier for the independently released
-  credential-family package;
+  credential schema package;
 - `schemaId: Bytes<32>`, a non-zero identifier for the schema within that
   package;
 - `majorVersion: Uint<16>`, which MUST be greater than zero; and
@@ -65,9 +64,9 @@ A canonical credential body contains:
 - typed claim commitments or the empty commitments type;
 - one holder-binding value;
 - one status-binding value; and
-- a claim root binding the family-defined claim representation.
+- a claim root binding the schema-defined claim representation.
 
-The claim and commitment layouts are fixed by the credential family. A core
+The claim and commitment layouts are fixed by the credential schema. A core
 implementation MUST NOT accept an unbounded runtime claim map as canonical
 Compact input. The issuer proof is a separate object over the complete
 credential body and issuance context; it is not a field of the credential
@@ -75,21 +74,21 @@ body. `issuedAt` and `expiresAt` are signed numeric assertions, not trusted
 wall-clock evidence.
 
 The generic envelope validator checks the version, a caller-supplied expected
-claim root, and expiration ordering when `hasExpiration` is true. Family code
-MUST validate its claim root, schema, holder binding, and selected status
+claim root, and expiration ordering when `hasExpiration` is true.
+Schema-specific code MUST validate its claim root, schema, holder binding, and selected status
 binding before accepting the credential.
 
 ## Presentation
 
 A Compact presentation body contains `version`, an exact schema reference, the
 credential claim-root binding, issuer verification-method reference, holder
-binding, and family-defined disclosures. Its proof is separate. The generic
+binding, and schema-defined disclosures. Its proof is separate. The generic
 presentation validator checks only the version; credential-to-presentation
 relations, holder proof binding, disclosures, predicates, status, request
 scope, challenge freshness, and application policy are separate checks.
 The generic credential-to-presentation relation requires the exact schema
 reference, credential claim root, and issuer verification-method reference to
-match before family-specific disclosure or predicate checks run. For the
+match before schema-specific disclosure or predicate checks run. For the
 explicit-holder profile, the presentation-proof composition additionally takes
 the credential's holder binding and verifier-resolved public key, and rejects a
 different holder or proof key in the presentation.

@@ -27,14 +27,14 @@ normative requirements.
 
 ## Scope
 
-The specification owns generic family-definition metadata, VC/VP envelopes,
+The specification owns generic credential schema metadata, VC/VP envelopes,
 proof semantics, holder-binding and status-binding primitives, canonical
 Compact-value encoding, the optional Midnight DID-to-core binding, and
 conformance requirements for implemented operations.
 
 It does not define issuance, presentation, or verification protocols;
 transports; OIDC; DIDComm; DApp Connector APIs; wallets; persistence;
-credential-family schemas; UI rendering; deployment; or application policy.
+concrete credential schemas; UI rendering; deployment; or application policy.
 Consumer repositories compose those concerns around the core primitives.
 
 ## Change rule

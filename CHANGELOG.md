@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- BREAKING: replace credential-family metadata with one flat credential schema
+  definition and rename the public TypeScript validation API;
+- advance the package graph release base to `0.4.0`.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added

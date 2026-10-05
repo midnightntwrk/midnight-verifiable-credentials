@@ -8,7 +8,7 @@ import {
   signMidnightDIDCredentialProof,
   signMidnightDIDPresentationProof,
 } from "@midnight-ntwrk/credential-did-midnight";
-import { defineCredentialFamily } from "@midnight-ntwrk/credential-model";
+import { defineCredentialSchema } from "@midnight-ntwrk/credential-model";
 
 const [compiledOutput] = process.argv.slice(2);
 if (compiledOutput === undefined) {
@@ -120,38 +120,35 @@ const attackerMethod = await resolveActor(actors.attacker, "authentication");
 const holderBinding = createMidnightDIDHolderBinding(holderMethod);
 const attackerBinding = createMidnightDIDHolderBinding(attackerMethod);
 
-const family = defineCredentialFamily({
-  id: "example.synthetic-assurance",
+const schemaDefinition = defineCredentialSchema({
+  id: "urn:example:synthetic-assurance",
   version: "1.0.0",
   name: "Synthetic assurance credential",
-  schema: {
-    id: "urn:example:synthetic-assurance",
-    version: "1.0.0",
-    credentialTypes: [
-      "VerifiableCredential",
-      "SyntheticAssuranceCredential",
-    ],
-    claims: [
-      {
-        id: "subjectId",
-        path: ["credentialSubject", "id"],
-        disclosure: "public",
-        required: true,
-        valueType: "bytes32",
-      },
-      {
-        id: "assuranceLevel",
-        path: ["credentialSubject", "assuranceLevel"],
-        disclosure: "public",
-        required: true,
-        valueType: "uint16",
-      },
-    ],
-  },
+  credentialTypes: [
+    "VerifiableCredential",
+    "SyntheticAssuranceCredential",
+  ],
+  claims: [
+    {
+      id: "subjectId",
+      path: ["credentialSubject", "id"],
+      disclosure: "public",
+      required: true,
+      valueType: "bytes32",
+    },
+    {
+      id: "assuranceLevel",
+      path: ["credentialSubject", "assuranceLevel"],
+      disclosure: "public",
+      required: true,
+      valueType: "uint16",
+    },
+  ],
 });
+const packageIdentifier = "@example/synthetic-assurance";
 const schema = {
-  packageId: digest(`${family.id}@${family.version}`),
-  schemaId: digest(`${family.schema.id}@${family.schema.version}`),
+  packageId: digest(packageIdentifier),
+  schemaId: digest(schemaDefinition.id),
   majorVersion: 1n,
   minorVersion: 0n,
 };

@@ -6,10 +6,10 @@ normative section and vector category. Files under
 [`manifest.sha256`](./manifest.sha256) identifies the exact manifest bytes used
 for a conformance claim.
 
-[`vectors/credential-family-definition.json`](./vectors/credential-family-definition.json)
+[`vectors/credential-schema-definition.json`](./vectors/credential-schema-definition.json)
 defines the model package's structural validation contract for identifiers,
 SemVer, credential types, claims, paths, disclosure modes, and required flags.
-It also proves that family and schema display metadata may be omitted, while
+It also proves that schema display metadata may be omitted, while
 present metadata must be non-empty, trimmed strings. Format version 2 vector
 patches replace existing values by default and use
 `{ "op": "remove", "path": "..." }` when the absence of an optional property
@@ -67,8 +67,10 @@ The conformance lane compiles a concrete generic `VC<>` instantiation and tests
 credential-derived issuer authorization. The release-package lane compiles the
 same fixture outside the repository against only the installed tarball's public
 Compact path. It also executes a small synthetic DID-backed VC/VP composition
-from packed public packages with nonempty typed claims, deterministic schema
-identifiers derived from validated credential-family metadata, resolved
+from packed public packages with nonempty typed claims, a package identifier
+derived from an explicit stable package name, a schema identifier derived from
+the validated stable schema ID, separately selected Compact compatibility
+version components, resolved
 assertion/authentication methods, real Jubjub signatures, and targeted
 credential-claim, consumer-defined disclosure relation, body, issuer, holder,
 method, proof-key mismatch against the supplied method snapshot, relationship,
@@ -87,5 +89,5 @@ The target performs its required workspace build once through
 Compact conformance suites.
 
 The check imports only retained package source/generated surfaces. It remains
-independent from protocols, concrete credential families, use cases,
+independent from protocols, concrete credential schemas, use cases,
 applications, and sibling repositories.

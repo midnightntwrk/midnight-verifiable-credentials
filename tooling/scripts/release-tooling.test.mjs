@@ -27,7 +27,7 @@ const supportedTarballNames = [
   "midnight-ntwrk-credential-compact",
   "midnight-ntwrk-credential-did-midnight",
 ];
-const writeSupportedTarballs = (directory, version = "0.3.0") => {
+const writeSupportedTarballs = (directory, version = "0.4.0") => {
   for (const packageName of supportedTarballNames) {
     writeFileSync(path.join(directory, `${packageName}-${version}.tgz`), "");
   }
@@ -36,24 +36,24 @@ const writeSupportedTarballs = (directory, version = "0.3.0") => {
 test("computes rc and stable release metadata", () => {
   assert.deepEqual(
     computeReleaseVersion({
-      baseVersion: "0.3.0",
+      baseVersion: "0.4.0",
       channel: "rc",
       rcIndex: "1",
     }),
     {
       channel: "rc",
-      version: "0.3.0-rc1",
+      version: "0.4.0-rc1",
       npmTag: "rc",
     },
   );
   assert.deepEqual(
     computeReleaseVersion({
-      baseVersion: "0.3.0",
+      baseVersion: "0.4.0",
       channel: "release",
     }),
     {
       channel: "release",
-      version: "0.3.0",
+      version: "0.4.0",
       npmTag: "latest",
     },
   );
@@ -82,11 +82,11 @@ test("rejects ambiguous versions and invalid rc indexes", () => {
 });
 
 test("orders stable release bases numerically", () => {
-  assert.equal(compareStableVersions("0.3.0", "0.2.0"), 1);
-  assert.equal(compareStableVersions("0.3.0", "0.3.0"), 0);
-  assert.equal(compareStableVersions("0.3.0", "0.10.0"), -1);
+  assert.equal(compareStableVersions("0.4.0", "0.2.0"), 1);
+  assert.equal(compareStableVersions("0.4.0", "0.4.0"), 0);
+  assert.equal(compareStableVersions("0.4.0", "0.10.0"), -1);
   assert.throws(
-    () => compareStableVersions("0.3.0-rc1", "0.2.0"),
+    () => compareStableVersions("0.4.0-rc1", "0.2.0"),
     /stable semantic/u,
   );
 });
@@ -130,7 +130,7 @@ if [[ "$1" == "view" && "$3" == "version" ]]; then
       ;;
     no-latest)
       if [[ "$2" == *@rc ]]; then
-        echo '"0.3.0-rc1"'
+        echo '"0.4.0-rc1"'
         exit 0
       fi
       echo 'npm error code E404' >&2
@@ -222,11 +222,11 @@ esac
   try {
     const newer = runValidation("0.2.0");
     assert.equal(newer.status, 0, newer.stderr);
-    assert.match(newer.stdout, /0\.3\.0 is valid/u);
+    assert.match(newer.stdout, /0\.4\.0 is valid/u);
 
-    const equal = runValidation("0.3.0");
+    const equal = runValidation("0.4.0");
     assert.notEqual(equal.status, 0);
-    assert.match(equal.stderr, /must be newer than npm latest 0\.3\.0/u);
+    assert.match(equal.stderr, /must be newer than npm latest 0\.4\.0/u);
 
     const older = runValidation("0.10.0");
     assert.notEqual(older.status, 0);
@@ -257,18 +257,18 @@ esac
     );
     assert.equal(normalizedRegistry.status, 0, normalizedRegistry.stderr);
 
-    const stableEqual = runValidation("0.3.0", "release");
+    const stableEqual = runValidation("0.4.0", "release");
     assert.equal(stableEqual.status, 0, stableEqual.stderr);
 
-    const stableOlder = runValidation("0.4.0", "release");
+    const stableOlder = runValidation("0.5.0", "release");
     assert.notEqual(stableOlder.status, 0);
-    assert.match(stableOlder.stderr, /must be at least npm latest 0\.4\.0/u);
+    assert.match(stableOlder.stderr, /must be at least npm latest 0\.5\.0/u);
 
-    const invalidLatest = runValidation("0.3.0-rc1");
+    const invalidLatest = runValidation("0.4.0-rc1");
     assert.notEqual(invalidLatest.status, 0);
     assert.match(
       invalidLatest.stderr,
-      /credential-model has invalid npm latest 0\.3\.0-rc1/u,
+      /credential-model has invalid npm latest 0\.4\.0-rc1/u,
     );
 
     const registryError = runValidation("error");
@@ -299,7 +299,7 @@ test("publishes tested tarballs through tokenless OIDC with provenance and the r
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
   echo "npm error code E404" >&2
   exit 1
 fi
@@ -329,15 +329,15 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
     assert.equal(result.status, 0, result.stderr);
     const commands = readFileSync(npmLog, "utf8");
-    assert.match(commands, /publish .*credential-model-0\.3\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-compact-0\.3\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-did-midnight-0\.3\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-model-0\.4\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-compact-0\.4\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-did-midnight-0\.4\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
     assert.doesNotMatch(commands, /dist-tag add/u);
@@ -367,7 +367,7 @@ exit 0
   );
   chmodSync(fakeNpm, 0o755);
   writeFileSync(
-    path.join(temporaryRoot, `${supportedTarballNames[0]}-0.3.0.tgz`),
+    path.join(temporaryRoot, `${supportedTarballNames[0]}-0.4.0.tgz`),
     "",
   );
 
@@ -387,7 +387,7 @@ exit 0
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
           NODE_AUTH_TOKEN: "test-token",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
@@ -529,7 +529,7 @@ test("fails closed when npm cannot determine whether a version exists", () => {
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
   echo "npm error code E503" >&2
   exit 17
 fi
@@ -555,7 +555,7 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
@@ -576,8 +576,8 @@ test("fails closed when an existing version needs token-authorized tag repair", 
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
-  echo "0.3.0"
+if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
+  echo "0.4.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
   echo "0.0.9"
 fi
@@ -601,7 +601,7 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
@@ -625,10 +625,10 @@ test("treats an existing version with the requested tag as a tokenless no-op", (
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
-  echo "0.3.0"
+if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
+  echo "0.4.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
-  echo "0.3.0"
+  echo "0.4.0"
 fi
 `,
   );
@@ -650,7 +650,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
@@ -675,9 +675,9 @@ test("repairs incorrect tags without mixing npm notices into metadata", () => {
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.3.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
   echo "npm notice registry metadata is current" >&2
-  echo "0.3.0"
+  echo "0.4.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
   echo "0.0.9"
 elif [[ "$1" == "view" ]]; then
@@ -704,7 +704,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.3.0",
+          VERSION: "0.4.0",
         },
       },
     );
@@ -712,7 +712,7 @@ fi
     const commands = readFileSync(npmLog, "utf8");
     assert.match(
       commands,
-      /dist-tag add @midnight-ntwrk\/credential-model@0\.3\.0 rc/u,
+      /dist-tag add @midnight-ntwrk\/credential-model@0\.4\.0 rc/u,
     );
     assert.doesNotMatch(commands, /^publish /mu);
     assert.doesNotMatch(commands, /dist-tag rm/u);
@@ -767,16 +767,16 @@ case "\${FAKE_NPM_PHASE}" in
     printf 'latest: 0.2.0\nrc: 0.2.0-rc2\n'
     ;;
   stable-rc-drift)
-    printf 'latest: 0.2.0\nrc: 0.3.0-rc1\n'
+    printf 'latest: 0.2.0\nrc: 0.4.0-rc1\n'
     ;;
   stable-custom-drift)
     printf 'beta: 0.2.0\nlatest: 0.2.0\nrc: 0.2.0-rc2\n'
     ;;
   rc-after)
-    printf 'latest: 0.2.0\nrc: 0.3.0-rc1\n'
+    printf 'latest: 0.2.0\nrc: 0.4.0-rc1\n'
     ;;
   rc-latest-drift)
-    printf 'latest: 0.3.0-rc1\nrc: 0.3.0-rc1\n'
+    printf 'latest: 0.4.0-rc1\nrc: 0.4.0-rc1\n'
     ;;
   absent-before|registry-probe-error)
     echo 'npm error code E401' >&2
@@ -787,13 +787,13 @@ case "\${FAKE_NPM_PHASE}" in
     exit 1
     ;;
   first-rc-after)
-    echo 'rc: 0.3.0-rc1'
+    echo 'rc: 0.4.0-rc1'
     ;;
   snapshot-after)
-    echo 'snapshot: 0.3.0-snapshot.1'
+    echo 'snapshot: 0.4.0-snapshot.1'
     ;;
   snapshot-latest-drift)
-    printf 'latest: 0.2.0\nsnapshot: 0.3.0-snapshot.1\n'
+    printf 'latest: 0.2.0\nsnapshot: 0.4.0-snapshot.1\n'
     ;;
   dist-tag-error)
     echo 'npm error code E500' >&2
@@ -866,11 +866,11 @@ esac
 
     const rcSnapshot = snapshot("stable-after");
     assert.equal(rcSnapshot.status, 0, rcSnapshot.stderr);
-    const rc = verify("rc", "0.3.0-rc1", "rc-after");
+    const rc = verify("rc", "0.4.0-rc1", "rc-after");
     assert.equal(rc.status, 0, rc.stderr);
     const wrongLatestForRc = verify(
       "rc",
-      "0.3.0-rc1",
+      "0.4.0-rc1",
       "rc-latest-drift",
     );
     assert.notEqual(wrongLatestForRc.status, 0);
@@ -904,17 +904,17 @@ esac
       savedState.packages["@midnight-ntwrk/credential-model"].distTags,
       { latest: null, rc: null },
     );
-    const firstRc = verify("rc", "0.3.0-rc1", "first-rc-after");
+    const firstRc = verify("rc", "0.4.0-rc1", "first-rc-after");
     assert.equal(firstRc.status, 0, firstRc.stderr);
     const snapshotTag = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "snapshot-after",
     );
     assert.equal(snapshotTag.status, 0, snapshotTag.stderr);
     const wrongLatestForSnapshot = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "snapshot-latest-drift",
     );
     assert.notEqual(wrongLatestForSnapshot.status, 0);
@@ -922,7 +922,7 @@ esac
 
     const registryProbeError = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "registry-probe-error",
     );
     assert.notEqual(registryProbeError.status, 0);
@@ -930,7 +930,7 @@ esac
 
     const distTagError = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "dist-tag-error",
     );
     assert.notEqual(distTagError.status, 0);
@@ -947,7 +947,7 @@ esac
     writeFileSync(statePath, `${JSON.stringify(invalidSnapshot)}\n`);
     const missingAbsentState = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "snapshot-after",
     );
     assert.notEqual(missingAbsentState.status, 0);
@@ -957,7 +957,7 @@ esac
     writeFileSync(statePath, `${JSON.stringify(invalidSnapshot)}\n`);
     const oldSchema = verify(
       "snapshot",
-      "0.3.0-snapshot.1",
+      "0.4.0-snapshot.1",
       "snapshot-after",
     );
     assert.notEqual(oldSchema.status, 0);

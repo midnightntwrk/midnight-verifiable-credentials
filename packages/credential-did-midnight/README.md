@@ -12,14 +12,13 @@ See [`CHANGELOG.md`](./CHANGELOG.md) for package release history.
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-did-midnight@0.2.0
+pnpm add -E @midnight-ntwrk/credential-did-midnight@0.4.0
 ```
 
-`0.2.0` is the current stable release. It installs the matching Compact core
-dependency. To evaluate the current 0.3 release candidate explicitly, install
-`@midnight-ntwrk/credential-did-midnight@0.3.0-rc1` and keep the model and
-Compact packages on that same version. Confirm the moving `rc` tags before
-adopting the prerelease graph.
+This source tree targets `0.4.0`. Install it only after that immutable version
+is published. It installs the matching Compact core dependency; keep the model
+and Compact packages on that same version. Inspect the moving registry tags
+before selecting a stable or release-candidate graph.
 
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected structural `MidnightDIDResolutionSource`. The published
@@ -200,7 +199,7 @@ the proof and holder references against the supplied DID method snapshot. The
 holder helper does not independently accept the snapshot's state version. On
 Ledger 8 the complete method-binding root must be pinned or
 authenticated outside the circuit; supplying a matching binding and key as an
-untrusted witness does not establish DID authorization. Family-specific
+untrusted witness does not establish DID authorization. Schema-specific
 disclosure relations remain separate. Authority and verifier decisions likewise
 require the core
 `assertValidSignerAuthorizationProof` or `assertAuthorizedVerifierProof`
@@ -208,12 +207,12 @@ circuit.
 
 The packed-package release gate compiles and executes one synthetic composition
 using only public tarball surfaces. It resolves separate issuer and holder
-Midnight DID methods, validates nonempty family metadata with
+Midnight DID methods, validates nonempty schema metadata with
 `@midnight-ntwrk/credential-model`, signs typed credential and presentation
 bodies, and rejects credential-claim, disclosure, body, issuer, holder, method,
 key, relationship, context, and signature substitution. This is
 package-composition evidence, not
-an issuance protocol, product credential family, wallet flow, or trust-policy
+an issuance protocol, product credential schema, wallet flow, or trust-policy
 implementation.
 
 ## Ledger 8 trust boundary

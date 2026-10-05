@@ -12,19 +12,11 @@ export interface CredentialClaimDescriptor {
   readonly valueType?: string;
 }
 
-export interface CredentialSchemaDescriptor {
+export interface CredentialSchemaDefinition {
   readonly id: string;
   readonly version: string;
   readonly name?: string;
   readonly description?: string;
   readonly credentialTypes: readonly [string, ...string[]];
   readonly claims: readonly CredentialClaimDescriptor[];
-}
-
-export interface CredentialFamilyDefinition {
-  readonly id: string;
-  readonly version: string;
-  readonly name?: string;
-  readonly description?: string;
-  readonly schema: CredentialSchemaDescriptor;
 }
