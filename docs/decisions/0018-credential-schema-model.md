@@ -97,10 +97,12 @@ Error paths change where the removed wrapper currently contributes a
 `schema.claims[0].path` becomes `claims[0].path`. Consumers that compare
 `CredentialModelError.path` update those comparisons as part of the `0.4.0`
 migration. The null/array definition cases remain at path `definition`.
-Wrapper-only null/array schema cases have no successor. Duplicate outer versus
-nested display-metadata cases collapse into one schema case. Distinct
-identifier and version cases remain, with their paths flattened, so untrimmed,
-empty, malformed, and leading-zero inputs retain explicit coverage.
+Wrapper-only null/array schema-object cases have no successor. Identifier and
+version cases from both former layers remain as distinct inputs against the
+flat `id` and `version` fields, preserving untrimmed, empty, malformed, and
+leading-zero coverage. Each duplicate outer/nested display-metadata pair
+becomes one flat case: empty, untrimmed, and non-string inputs for `name` and
+for `description`, with top-level error paths.
 
 The old outer `family.id`, `family.version`, `family.name`, and
 `family.description` have no core replacement. Consumers that need package,
