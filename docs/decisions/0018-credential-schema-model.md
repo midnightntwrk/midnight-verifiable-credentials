@@ -100,7 +100,9 @@ migration. The null/array definition cases remain at path `definition`.
 Wrapper-only null/array schema-object cases have no successor. Identifier and
 version cases from both former layers remain as distinct inputs against the
 flat `id` and `version` fields, preserving untrimmed, empty, malformed, and
-leading-zero coverage. Each duplicate outer/nested display-metadata pair
+leading-zero coverage. The former positive prerelease-plus-build and build-only
+SemVer values remain separate flat cases. Each duplicate outer/nested
+display-metadata pair
 becomes flat cases for empty and untrimmed values, plus both former non-string
 input representatives for `name` and for `description`, with top-level error
 paths.
@@ -138,7 +140,8 @@ Conformance changes atomically with the implementation:
   including the data model, terminology, and security considerations;
 - public validation through `assertCredentialSchemaDefinition`;
 - the published `@midnight-ntwrk/credential-model` package description;
-- repository and agent reference lists that point readers to this decision;
+- repository and agent reference lists, entrypoint prose, and package tables
+  that describe the public model or point readers to this decision;
 - hand-authored package and guide examples that use the public API;
 - the TypeScript-only operation allowlist and packed consumer fixtures;
 - the synchronized `0.4.0` package-graph release base;
