@@ -67,6 +67,24 @@ Treat these as public VC surfaces:
 For surface changes, update tests, package documentation, specifications, and
 conformance vectors in the same pull request.
 
+## Specification Changes
+
+A change to normative behavior includes the evidence needed to review and
+implement that behavior consistently:
+
+- update every affected specification section;
+- update the operation mapping in
+  [`conformance/manifest.json`](./conformance/manifest.json) when the supported
+  operation surface changes;
+- add or update applicable positive and negative conformance vectors; and
+- update the reference implementation and tests when it implements the changed
+  behavior.
+
+Request review from maintainers who own the affected specification,
+implementation, and conformance surfaces. Maintainer review is repository
+governance; the normative documents and conformance evidence define the
+implementation requirements.
+
 ## Validation
 
 For most pull requests, run:
