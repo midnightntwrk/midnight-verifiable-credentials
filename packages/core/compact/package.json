@@ -49,7 +49,7 @@
     "clean": "rm -rf dist src/managed coverage reports .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "0.16.0"
+    "@midnight-ntwrk/compact-runtime": "0.20.0"
   },
   "devDependencies": {
     "fast-check": "^4.10.2"
