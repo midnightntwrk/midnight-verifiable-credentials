@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { createRequire } from "node:module";
 import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readToolchain } from "../../../tooling/scripts/compact-build-profile.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const filesUnder = (directory, predicate) => {
@@ -26,31 +25,7 @@ const digestFiles = (files) => {
   }
   return hash.digest("hex");
 };
-const packageJson = JSON.parse(
-  readFileSync(resolve(root, "package.json"), "utf8"),
-);
-const compiler = execFileSync("compact", ["compile", "--version"], {
-  encoding: "utf8",
-}).trim();
-const compilerVersion = compiler.match(
-  /(?:^|\s)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(?:\s|$)/u,
-)?.[1];
-const ledgerVersion = execFileSync("compact", ["compile", "--ledger-version"], {
-  encoding: "utf8",
-}).trim();
-const require = createRequire(import.meta.url);
-const runtimeVersion = require(
-  "@midnight-ntwrk/compact-runtime/package.json",
-).version;
-if (
-  compilerVersion !== packageJson.midnight.compactCompilerVersion ||
-  runtimeVersion !== packageJson.midnight.compactRuntimeVersion ||
-  ledgerVersion !== packageJson.midnight.ledgerVersion
-) {
-  throw new Error(
-    `Generated output toolchain drifted: compiler ${compilerVersion ?? compiler}, runtime ${runtimeVersion}, ledger ${ledgerVersion}`,
-  );
-}
+const profile = readToolchain(root);
 const sourceFiles = filesUnder(
   resolve(root, "src"),
   (file) => file.endsWith(".compact") && !file.includes("/managed/"),
@@ -63,13 +38,7 @@ writeFileSync(
   resolve(root, "dist/compact-build.json"),
   `${JSON.stringify(
     {
-      schema: 1,
-      compiler: compilerVersion,
-      ledger: ledgerVersion,
-      runtime: {
-        name: "@midnight-ntwrk/compact-runtime",
-        version: runtimeVersion,
-      },
+      ...profile,
       sourceDigest: digestFiles(sourceFiles),
       artifactDigest: digestFiles(artifactFiles),
       sourceFiles: sourceFiles.map((file) => file.slice(root.length + 1)),

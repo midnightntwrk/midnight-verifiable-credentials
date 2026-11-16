@@ -23,6 +23,7 @@ const watchPaths = [
   ["docs/decisions/0017-midnight-did-binding-extension.md", false],
   ["docs/decisions/0018-credential-schema-model.md", false],
   ["docs/guides/npmjs-publication.md", false],
+  ["docs/guides/ledger9-migration.md", false],
   ["SECURITY.md", false],
 ];
 

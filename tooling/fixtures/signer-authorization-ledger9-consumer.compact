@@ -11,7 +11,8 @@ import VC<
   NoStatusBinding
 > prefix ConsumerVC_;
 
-// Thin Ledger 8 composition fixture. The deployment transaction is the trust
+// Thin Ledger9 composition fixture; intentionally retains snapshot/relayer
+// authorization rather than adding synchronous calls. Deployment is the trust
 // boundary for the local descriptor; later external decisions require the
 // configured authority's domain-separated proof.
 export ledger signerAuthorizationAuthority: SignerAuthorizationAuthority;

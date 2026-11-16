@@ -26,7 +26,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) pnpmInstallFlags;
     inherit src;
     pnpm = pnpm_11;
-    hash = "sha256-SZYf5NQV5q5FbNszQ4/K7LJCnClVmOHER6t7sBK5d5c=";
+    hash = "sha256-695nLPIKfMCkRJYZqT2qCN/Rv3zAgggcZ2AxlACiG6o=";
     fetcherVersion = 4;
   };
 

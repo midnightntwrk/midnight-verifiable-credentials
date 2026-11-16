@@ -55,6 +55,13 @@ a separately authorized maintenance operation is required. See the
 
 ## Release gates
 
+For the selected Ledger9 migration, follow the
+[compiler/runtime/DID and schema-2 metadata contract](./ledger9-migration.md).
+Compiler/backend probes do not replace frozen-install, strict declaration,
+conformance/negative-vector, clean packed-consumer/installed-graph or proving
+parameter evidence. Do not publish a partial toolchain migration with an old
+lockfile or dependency hash. This guide does not authorize publication.
+
 Before dispatch:
 
 1. After a stable release, advance the root and every publishable package

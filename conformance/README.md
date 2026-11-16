@@ -38,7 +38,11 @@ substitution.
 
 Signer-authorization vectors include fixed known-answer roots, challenges, and
 signature scalars so challenge derivation and signature verification cannot
-drift together without detection.
+drift together without detection. The compiler0.36/runtime0.21 migration keeps
+these values unchanged. Only off-curve error text changes from the old WASM
+trap to the new EmbeddedGroupAffine decoder diagnostic; identity and torsion
+rejections remain separate. See the
+[compatibility and proving limits](../docs/guides/ledger9-migration.md).
 The invalid issuer-signature vector also records the low-level boundary: bare
 descriptor matching accepts matching method/key metadata, while the composed
 `VC<>::assertAuthorizedIssuerProof` circuit rejects the forged signature.

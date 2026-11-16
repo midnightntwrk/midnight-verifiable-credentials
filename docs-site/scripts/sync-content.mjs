@@ -55,6 +55,10 @@ const pages = [
     "docs/guides/npmjs-publication.md",
     "docs-site/development/npmjs-publication.md",
   ],
+  [
+    "docs/guides/ledger9-migration.md",
+    "docs-site/development/ledger9-migration.md",
+  ],
   ["SECURITY.md", "docs-site/development/security.md"],
 ];
 
@@ -67,6 +71,10 @@ for (const file of specFiles.filter((candidate) => candidate.endsWith(".md"))) {
 
 const rewriteLinks = (source, sourcePath) => {
   let rewritten = source
+    .replaceAll(
+      /\((?:\.\.?\/)+(?:(?:docs\/)?guides\/)?ledger9-migration\.md\)/gu,
+      "(/development/ledger9-migration)",
+    )
     .replaceAll("(../conformance/)", "(/conformance/)")
     .replaceAll(
       "(../conformance/manifest.json)",
@@ -149,6 +157,12 @@ const rewriteLinks = (source, sourcePath) => {
         "(./0018-credential-schema-model.md)",
         "(/architecture/credential-schema-model)",
       );
+  }
+  if (sourcePath === "docs/guides/ledger9-migration.md") {
+    return rewritten.replace(
+      "(../../nix/packages/compact-toolchain.nix)",
+      "(https://github.com/midnightntwrk/midnight-verifiable-credentials/blob/develop/nix/packages/compact-toolchain.nix)",
+    );
   }
   if (sourcePath === "docs/guides/npmjs-publication.md") {
     return rewritten.replace(

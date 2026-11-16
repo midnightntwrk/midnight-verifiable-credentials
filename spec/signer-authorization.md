@@ -22,9 +22,9 @@ authorization lifecycle. When an external authority supplies a descriptor,
 the consumer MUST verify a domain-separated authority proof against a locally
 configured verification method and public key before materializing it.
 
-Ledger 8 consumers cannot synchronously call DID or Trust Registry contracts.
-They therefore MUST keep the accepted descriptor or authority key in their own
-ledger state. Relayers MAY transport signed decisions but MUST NOT be treated
+This profile does not synchronously call DID or Trust Registry contracts,
+including on Ledger9. Consumers therefore MUST keep the accepted descriptor or
+authority key in their own ledger state. Relayers MAY transport signed decisions but MUST NOT be treated
 as authorities.
 
 ### Local flow without a Trust Registry
@@ -44,8 +44,7 @@ ordinary witness is not trusted merely because it is structurally valid.
    policy off chain or in its owning contract.
 2. It creates a descriptor with a newer logical decision sequence.
 3. It signs the domain-bound decision root with its configured Jubjub key.
-4. A relayer submits the descriptor and proof to the consuming Ledger 8
-   contract.
+4. A relayer submits the descriptor and proof to the consuming contract.
 5. The consumer verifies the authority anchor, domain, signature, and lifecycle
    transition before replacing local state.
 6. Later credential or verifier-request checks read only that materialized
@@ -76,8 +75,10 @@ Jubjub prime-subgroup points and MUST NOT be the identity point.
 
 ### Midnight DID method references
 
-The `0.4.0` implementation profile uses the published `midnight-did` `0.7.0`
-package release line as its adapter compatibility baseline. The optional
+The selected Ledger9 migration uses exact published `midnight-did` `1.0.0-rc1`
+packages as its adapter compatibility baseline, retaining canonical 0.7
+big-endian Jubjub coordinates. Full consumer validation is pending the
+[migration gates](../docs/guides/ledger9-migration.md). The optional
 `@midnight-ntwrk/credential-did-midnight` package owns the deterministic mapping
 and structural Compact binding. Consumers still own resolver configuration,
 DID-state acceptance, and trust policy.
@@ -101,7 +102,7 @@ entry and relationship before signing the descriptor. The conformance vectors
 publish canonical fragments and expected 32-byte values.
 
 This mapping is computed off chain. Compact cannot hash an
-`Opaque<"string">` into provable state, and Ledger 8 cannot call the DID
+`Opaque<"string">` into provable state, and this profile does not call the DID
 contract. The authority signature binds the resulting method reference, key,
 DID contract address, and observed DID state version for the consumer.
 
@@ -196,7 +197,7 @@ the newest authorization decision processed by the consumer. Consumers MUST
 reject an update whose sequence is not greater than the stored sequence for the
 same authorization. They MUST also reject an update whose observed DID state
 version is lower than the preceding descriptor. Registry-backed deployments
-require a relayer or monitor; revocation is not visible to a Ledger 8 consumer
+require a relayer or monitor; revocation is not visible to a consumer
 until the signed update is processed.
 
 Historical claims such as “trusted at issuance time” require an independently
@@ -227,6 +228,6 @@ authority proof defined above. Its profile MUST define a canonical
 `domainCommitment` preimage that includes the Midnight network, consuming
 contract, registry identifier, and authority or registry contract identity.
 The consumer pins the resulting commitment and authority verification method;
-it does not call the registry contract on Ledger 8. Trust Registry policy
+it does not call the registry contract, including on Ledger9. Trust Registry policy
 evaluation, governance, DID resolution, decision delivery, and key rotation
 remain outside the VC core.

@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  COMPACT_COMPILER_VERSION: 0.31.1
+  COMPACT_COMPILER_VERSION: 0.36.0
   NPM_REGISTRY: https://registry.npmjs.org/
 
 jobs:

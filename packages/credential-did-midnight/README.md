@@ -22,7 +22,7 @@ before selecting a stable or release-candidate graph.
 
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected structural `MidnightDIDResolutionSource`. The published
-`@midnight-ntwrk/midnight-did` 0.7 resolver satisfies that interface, but the
+`@midnight-ntwrk/midnight-did` RC1 resolver retains that interface, but the
 full resolver implementation is not a runtime dependency of this package. The
 adapter binds a subject-owned native Jubjub verification method to the core
 `VerificationMethodRef`, the observed DID state version, and one supported
@@ -30,7 +30,10 @@ verification relationship. Bounded software helpers can sign credential and
 presentation proofs with that method. The package does not store keys, deploy
 or mutate a DID, select a trust policy, or call another contract.
 
-The supported resolver profile is Midnight DID `0.7.0`. Jubjub JWK coordinates
+The selected migration profile is Midnight DID `1.0.0-rc1`, retaining the
+canonical 0.7 coordinate codec. Full RC1 consumer validation is pending; see the
+[Ledger9 migration guide](../../docs/guides/ledger9-migration.md).
+Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
 are decoded with `@midnight-ntwrk/midnight-did-domain`'s public codec. Persisted
 0.6 little-endian DID-document snapshots must be re-resolved through a 0.7
@@ -39,7 +42,7 @@ does not auto-detect the byte order. Not every 0.6 snapshot is detectably
 invalid under the 0.7 decoder, so supplying one directly can silently bind a
 different native point rather than fail.
 
-> **Ledger 8 security boundary:** this package's binding circuits compare DID
+> **Snapshot security boundary (also on Ledger9):** this package's binding circuits compare DID
 > references and keys; they do not verify signatures or prove that resolved DID
 > state is current. Always compose them with the matching core context-proof
 > circuit over a root recomputed from the complete VC/VP input, then pin the
@@ -196,8 +199,8 @@ credential and an independently accepted
 `MidnightDIDHolderBinding.methodBinding.publicKey`, followed by
 `assertMidnightDIDHolderBinding` to validate the authentication relationship and
 the proof and holder references against the supplied DID method snapshot. The
-holder helper does not independently accept the snapshot's state version. On
-Ledger 8 the complete method-binding root must be pinned or
+holder helper does not independently accept the snapshot's state version. The
+complete method-binding root must be pinned or
 authenticated outside the circuit; supplying a matching binding and key as an
 untrusted witness does not establish DID authorization. Schema-specific
 disclosure relations remain separate. Authority and verifier decisions likewise
@@ -215,24 +218,30 @@ package-composition evidence, not
 an issuance protocol, product credential schema, wallet flow, or trust-policy
 implementation.
 
-## Ledger 8 trust boundary
+## Snapshot trust boundary
 
 These circuits prove internal consistency between values already supplied to a
-consumer contract. They cannot query the DID contract on Ledger 8 and therefore
-do not prove that a method is current. The consumer must pin an accepted binding
+consumer contract. They do not query the DID contract, including on Ledger9,
+and therefore do not prove that a method is current. The consumer must pin an accepted binding
 root or verify an authority-signed descriptor before relying on it. DID and
 Trust Registry policy stays outside this package.
 
-The supported build profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
-`8.0.2`. Ledger 9 cross-contract validation is future work.
+The selected build profile is Compact `0.36.0`, runtime `0.21.0`, backend
+`zkir-3.2.0-rc.2`, and public npm cohort `@midnightntwrk/ledger-v9@1.0.0`.
+Schema-2 build manifests distinguish backend identity from Ledger support.
+Ledger9 cross-contract validation is outside this extension; capability does
+not imply live-resolution guarantees. Full profile validation remains pending.
 
 ## Compatibility and support
 
 - The TypeScript surface is ESM-only and supports Node.js 24 or newer.
-- The adapter profile is Midnight DID `0.7.0`; it is not compatible with raw
+- The selected adapter profile is Midnight DID `1.0.0-rc1`, with canonical
+  0.7-compatible coordinates; it is not compatible with raw
   0.6 little-endian DID-document snapshots.
-- The Compact profile is compiler `0.31.1`, runtime `0.16.0`, and Ledger
-  `8.0.2`.
+- Both Compact packages select compiler `0.36.0` / runtime `0.21.0` together.
+  Use exact published DID domain/Schnorr RC1 packages, never sibling sources.
+  Ledger8 DIDs require explicit application migration/rebinding, not a
+  transparent history-preserving upgrade. See the migration guide for limits.
 - During `0.x`, breaking API changes may ship in a minor release. Keep exact
   versions pinned and read [`CHANGELOG.md`](./CHANGELOG.md) before upgrading.
 - Release candidates are supported only until a newer candidate or stable

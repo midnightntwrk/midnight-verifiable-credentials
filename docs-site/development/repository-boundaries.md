@@ -21,8 +21,11 @@ This documentation site is built entirely from this repository. The
 
 ## DID compatibility baseline
 
-The `0.4.0` VC core source line is aligned with the public `midnight-did`
-`0.7.0` package release line for downstream signer-authorization adapters. This
-is a compatibility baseline, not a package dependency: an application or
-credential repository owns its DID dependency and translates a canonical DID
-verification method into the VC core's fixed-width `VerificationMethodRef`.
+The selected issue-754 migration aligns the optional binding with exact public
+`midnight-did` domain/Schnorr `1.0.0-rc1` packages and uses DID RC1 only as a
+development compatibility dependency. Full selected-runtime consumer validation
+is pending; see the [migration guide](/development/ledger9-migration).
+The core remains independent of DID packages. An application owns resolver
+configuration, DID lifecycle and snapshot trust; the thin binding maps canonical
+methods into the core's fixed-width `VerificationMethodRef`. Do not add DID-api,
+wallet or deployment infrastructure to consume this cohort.

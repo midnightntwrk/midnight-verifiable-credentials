@@ -212,7 +212,7 @@
     },
     {
       "path": "conformance/vectors/midnight-did-binding.json",
-      "sha256": "e4da0b1e58b9d88226bc6baa64f8d30196714d4ca1084ce675d359accad57ea1"
+      "sha256": "3e75d458dc1fe387e48ec3df1b79a8ab163358fc2da2fb7d169f12ac0fc899ae"
     },
     {
       "path": "conformance/vectors/presentation-proof.json",
@@ -224,7 +224,7 @@
     },
     {
       "path": "conformance/vectors/signer-authorization.json",
-      "sha256": "012b07e49d3c47855b5fc9fb7ae982e0a2694296d8a07fea4208145326bb9e66"
+      "sha256": "13d5bdb7da39e5b10a234bcc9d7c27e8ce4f6099ebd0ffa19262fd9336c3122a"
     },
     {
       "path": "conformance/vectors/status-binding.json",
