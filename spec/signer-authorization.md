@@ -77,7 +77,8 @@ Jubjub prime-subgroup points and MUST NOT be the identity point.
 
 The selected Ledger9 migration uses exact published `midnight-did` `1.0.0-rc1`
 packages as its adapter compatibility baseline, retaining canonical 0.7
-big-endian Jubjub coordinates. Full consumer validation is pending the
+big-endian Jubjub coordinates. Strict consumers and bounded native signer
+proof tests pass with the documented limits in the
 [migration gates](../docs/guides/ledger9-migration.md). The optional
 `@midnight-ntwrk/credential-did-midnight` package owns the deterministic mapping
 and structural Compact binding. Consumers still own resolver configuration,

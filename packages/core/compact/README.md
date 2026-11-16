@@ -136,8 +136,9 @@ const decoded = decodeCompactValue(encoded);
 - The TypeScript surface is ESM-only and supports Node.js 24 or newer.
 - The selected Ledger9 migration profile is compiler `0.36.0`, runtime
   `0.21.0`, backend `zkir-3.2.0-rc.2`, and public npm cohort
-  `@midnightntwrk/ledger-v9@1.0.0`. Full consumer compatibility remains pending
-  the migration guide's gates; version probes alone do not establish it.
+  `@midnightntwrk/ledger-v9@1.0.0`. Strict consumers and bounded native signer
+  proof validation pass. See the migration guide for exact scope and live
+  deployment limits; version probes alone do not establish compatibility.
 - During `0.x`, breaking API changes may ship in a minor release. Keep exact
   versions pinned and read [`CHANGELOG.md`](./CHANGELOG.md) before upgrading.
 - Release candidates are supported only until a newer candidate or stable

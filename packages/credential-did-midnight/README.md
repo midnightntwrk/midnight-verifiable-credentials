@@ -31,7 +31,8 @@ presentation proofs with that method. The package does not store keys, deploy
 or mutate a DID, select a trust policy, or call another contract.
 
 The selected migration profile is Midnight DID `1.0.0-rc1`, retaining the
-canonical 0.7 coordinate codec. Full RC1 consumer validation is pending; see the
+canonical 0.7 coordinate codec. Strict RC1 consumers and bounded native signer
+proof validation pass; see the
 [Ledger9 migration guide](../../docs/guides/ledger9-migration.md).
 Jubjub JWK coordinates
 are canonical unpadded base64url of exactly 32 unsigned big-endian bytes and
@@ -230,7 +231,8 @@ The selected build profile is Compact `0.36.0`, runtime `0.21.0`, backend
 `zkir-3.2.0-rc.2`, and public npm cohort `@midnightntwrk/ledger-v9@1.0.0`.
 Schema-2 build manifests distinguish backend identity from Ledger support.
 Ledger9 cross-contract validation is outside this extension; capability does
-not imply live-resolution guarantees. Full profile validation remains pending.
+not imply live-resolution guarantees. Bounded local proof validation does not
+establish live provider or deployment support.
 
 ## Compatibility and support
 

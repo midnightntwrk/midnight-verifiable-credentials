@@ -7,16 +7,17 @@
   unchanged; off-curve decoder diagnostics change in runtime0.21. Strict
   workspace/packed consumers pass. A private canonical x/y Field helper at the
   two transient point-hash sites preserves the existing preimage and fixes
-  actual signer-composition key generation. Actual local proof generation and
-  verification still require a compatible prover implementation; keygen and
-  skip-zk composition are not proving/deployment support.
+  actual signer-composition key generation. Separate pinned native tests prove
+  and cryptographically verify all three signer circuits, reject recomputed-
+  commitment bad responses in native preprocessing, and reject tampered proofs
+  and statements. These bounded tests are not live deployment support.
 
 - Prepare the issue-754 Ledger9 profile: Compact 0.36.0 / runtime 0.21.0,
   measured backend `zkir-3.2.0-rc.2`, and separate public npm Ledger9 identity.
   BREAKING: packed build metadata moves to schema 2, replacing ambiguous
   `ledger` with `backend` and `supportedLedger`. Rebuild downstream artifacts
-  and keys together. Full runtime/consumer compatibility is pending validation;
-  see the Ledger9 migration guide linked from the package README.
+  and keys together. Strict consumers and bounded native signer proof tests
+  pass; see the migration guide for exact evidence and live-support limits.
 
 - Advance the package manifest to the `0.4.0` release base and update the
   packed composition fixture for the flat credential schema model.

@@ -88,7 +88,7 @@ freshness remain external. Ledger9 capability does not turn these equality
 circuits into live DID calls. Network-binding hardening remains separate
 [issue 696](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/696).
 
-## Cryptographic compatibility and current proving limit
+## Cryptographic compatibility and bounded proof validation
 
 Compact 0.36 requires Field-typed identity coordinates and explicit
 `JubjubScalar` arguments for elliptic-curve multiplication. The public proof
@@ -153,14 +153,55 @@ replacement; subgroup, scalar, nonce and authorization rules are unchanged.
 
 Normal key generation now succeeds for **all three circuits in the existing
 signer-authorization composition**, with the fixed compiler/backend and no
-`--skip-zk` or disabled cost/proof checks. This is key-generation evidence, not
-an actual proof-generation/verification result. The current environment has no
-compatible local proving implementation: the installed Ledger API delegates to
-an external `ProvingProvider`, and the bundled ZKIR CLI only generates keys.
-Actual valid and negative/tampered signer proofs remain unverified until an
-approved compatible local prover/verifier is supplied. No wallet/application,
-Docker or deployment stack is added to make that claim. Full Ledger9 proving
-and deployment support remains unestablished.
+`--skip-zk` or disabled cost/proof checks. Key generation alone is not proof
+verification. A separate scratch-only native regression now also proves and
+cryptographically verifies the following actual composition circuits:
+
+| Circuit | Public transcript fields | Full public statement fields | Tagged proof bytes |
+| --- | ---: | ---: | ---: |
+| `syncSignerAuthorization` (authority-signed update) | 137 | 139 | 5765 |
+| `assertAuthorizedIssuer` (after the update) | 59 | 61 | 5765 |
+| `assertAuthorizedVerifierRequest` (materialized verifier) | 59 | 61 | 5765 |
+
+The native engine is exact ZKIR commit
+`eeb8a31620d07f74fd3f596ef8b20b9bd1cebec2` (3.2.0-rc.2), with its original
+Cargo manifest and lockfile unchanged, including ledger dependency commit
+`9a8777c4d035fc7f38ae286bcf5f8656668efd9f`. It consumes the existing `.bzkir`,
+prover and verifier keys, not regenerated keys or a different proof-server
+backend. Hash-checked existing Midnight parameters `bls_midnight_2p15` and
+`bls_midnight_2p16` are read locally in synchronous mode; no substitute or mock
+parameters are used. Native tooling is test-only scratch evidence, not a VC
+production Rust dependency, SDK, service or new public interface.
+
+Execution uses the generated `Contract.provableCircuits`, constructor-initialized
+synthetic authority/ledger state, an authority-signed update, then the issuer
+assertion; a separate valid materialized verifier supplies the verifier-request
+state. The public runtime's `proofDataIntoSerializedPreimage` converts the REAL
+call trace (including secret argument inputs despite zero witness callbacks).
+It is only a serialization bridge, not the prover. Its zero binding/randomness
+is a standalone test convention, not production randomness advice.
+
+`IrSource::prove` generates actual proofs; `VerifierKey::verify` verifies them.
+The expected statement is independently reconstructed from trace binding and
+communications commitment plus every IR Impact/skip in order, asserting exact
+length, full transcript consumption and equality to returned public inputs.
+All three serialized proofs roundtrip and verify again. Each circuit rejects:
+
+- a changed signature response with its original commitment;
+- that same invalid response with the communications commitment RECOMPUTED,
+  rejected by the native prover's direct-assertion preprocessing (not a claim
+  that an invalid proof was generated);
+- a byte flipped INSIDE the generated `Proof.0`, submitted to cryptographic
+  verification against the original complete statement;
+- the original valid proof against an altered public transcript statement.
+
+This is bounded standalone circuit proving/verification for the named synthetic
+flows, not a submitted transaction, live RC1 resolver, arbitrary state/lifecycle
+coverage, network deployment or end-to-end application test. The verifier's
+initial state is still an external trust input. Ordinary packed-consumer CI
+continues to use `--skip-zk`; native results must be identified separately, not
+inferred from that lane. No wallet/application, Docker or deployment stack is
+added.
 
 ## Validation required before support claims
 
@@ -183,4 +224,4 @@ with `--skip-zk` is composition evidence, not proving evidence. The composed
 DID VC/VP fixture injects synthetic DID documents and does not establish live
 RC1 provider resolution or deployment. Any live support claim needs separately
 identified, immutable upstream/downstream integration evidence and a supported
-network. Until those gates pass, full Ledger9 consumer compatibility is pending.
+network. The bounded local gates above do not establish live deployment support.

@@ -23,8 +23,8 @@ This documentation site is built entirely from this repository. The
 
 The selected issue-754 migration aligns the optional binding with exact public
 `midnight-did` domain/Schnorr `1.0.0-rc1` packages and uses DID RC1 only as a
-development compatibility dependency. Full selected-runtime consumer validation
-is pending; see the [migration guide](/development/ledger9-migration).
+development compatibility dependency. Strict selected-runtime consumers and
+bounded native signer proofs pass; see the [migration guide](/development/ledger9-migration).
 The core remains independent of DID packages. An application owns resolver
 configuration, DID lifecycle and snapshot trust; the thin binding maps canonical
 methods into the core's fixed-width `VerificationMethodRef`. Do not add DID-api,

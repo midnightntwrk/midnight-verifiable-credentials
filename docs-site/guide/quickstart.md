@@ -7,7 +7,7 @@
   contributors use pnpm 11.25.0
 - Selected Ledger9 migration: Compact `0.36.0` / runtime `0.21.0`, measured
   backend `zkir-3.2.0-rc.2`; DID domain/Schnorr dependencies exact `1.0.0-rc1`.
-  Full profile validation is pending; read the
+  Strict consumers and bounded native signer proofs pass; read the
   [migration guide](/development/ledger9-migration) before adopting it.
   Do not mix older generated keys/artifacts or interpret compiler backend
   identity as the public `@midnightntwrk/ledger-v9@1.0.0` npm version.
