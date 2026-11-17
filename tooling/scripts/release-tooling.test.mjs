@@ -27,7 +27,7 @@ const supportedTarballNames = [
   "midnight-ntwrk-credential-compact",
   "midnight-ntwrk-credential-did-midnight",
 ];
-const writeSupportedTarballs = (directory, version = "0.4.0") => {
+const writeSupportedTarballs = (directory, version = "1.0.0") => {
   for (const packageName of supportedTarballNames) {
     writeFileSync(path.join(directory, `${packageName}-${version}.tgz`), "");
   }
@@ -56,6 +56,17 @@ test("computes rc and stable release metadata", () => {
       version: "0.4.0",
       npmTag: "latest",
     },
+  );
+});
+
+test("prepares the 1.0.0 RC1 with the established undotted npm suffix", () => {
+  assert.deepEqual(
+    computeReleaseVersion({
+      baseVersion: "1.0.0",
+      channel: "rc",
+      rcIndex: "1",
+    }),
+    { channel: "rc", version: "1.0.0-rc1", npmTag: "rc" },
   );
 });
 
@@ -130,7 +141,7 @@ if [[ "$1" == "view" && "$3" == "version" ]]; then
       ;;
     no-latest)
       if [[ "$2" == *@rc ]]; then
-        echo '"0.4.0-rc1"'
+        echo '"1.0.0-rc1"'
         exit 0
       fi
       echo 'npm error code E404' >&2
@@ -222,15 +233,15 @@ esac
   try {
     const newer = runValidation("0.2.0");
     assert.equal(newer.status, 0, newer.stderr);
-    assert.match(newer.stdout, /0\.4\.0 is valid/u);
+    assert.match(newer.stdout, /1\.0\.0 is valid/u);
 
-    const equal = runValidation("0.4.0");
+    const equal = runValidation("1.0.0");
     assert.notEqual(equal.status, 0);
-    assert.match(equal.stderr, /must be newer than npm latest 0\.4\.0/u);
+    assert.match(equal.stderr, /must be newer than npm latest 1\.0\.0/u);
 
-    const older = runValidation("0.10.0");
+    const older = runValidation("2.0.0");
     assert.notEqual(older.status, 0);
-    assert.match(older.stderr, /must be newer than npm latest 0\.10\.0/u);
+    assert.match(older.stderr, /must be newer than npm latest 2\.0\.0/u);
 
     const absent = runValidation("absent");
     assert.notEqual(absent.status, 0);
@@ -257,18 +268,18 @@ esac
     );
     assert.equal(normalizedRegistry.status, 0, normalizedRegistry.stderr);
 
-    const stableEqual = runValidation("0.4.0", "release");
+    const stableEqual = runValidation("1.0.0", "release");
     assert.equal(stableEqual.status, 0, stableEqual.stderr);
 
-    const stableOlder = runValidation("0.5.0", "release");
+    const stableOlder = runValidation("1.1.0", "release");
     assert.notEqual(stableOlder.status, 0);
-    assert.match(stableOlder.stderr, /must be at least npm latest 0\.5\.0/u);
+    assert.match(stableOlder.stderr, /must be at least npm latest 1\.1\.0/u);
 
-    const invalidLatest = runValidation("0.4.0-rc1");
+    const invalidLatest = runValidation("1.0.0-rc1");
     assert.notEqual(invalidLatest.status, 0);
     assert.match(
       invalidLatest.stderr,
-      /credential-model has invalid npm latest 0\.4\.0-rc1/u,
+      /credential-model has invalid npm latest 1\.0\.0-rc1/u,
     );
 
     const registryError = runValidation("error");
@@ -299,7 +310,7 @@ test("publishes tested tarballs through tokenless OIDC with provenance and the r
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@1.0.0" && "$3" == "version" ]]; then
   echo "npm error code E404" >&2
   exit 1
 fi
@@ -329,15 +340,15 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
     assert.equal(result.status, 0, result.stderr);
     const commands = readFileSync(npmLog, "utf8");
-    assert.match(commands, /publish .*credential-model-0\.4\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-compact-0\.4\.0\.tgz/u);
-    assert.match(commands, /publish .*credential-did-midnight-0\.4\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-model-1\.0\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-compact-1\.0\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-did-midnight-1\.0\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
     assert.doesNotMatch(commands, /dist-tag add/u);
@@ -367,7 +378,7 @@ exit 0
   );
   chmodSync(fakeNpm, 0o755);
   writeFileSync(
-    path.join(temporaryRoot, `${supportedTarballNames[0]}-0.4.0.tgz`),
+    path.join(temporaryRoot, `${supportedTarballNames[0]}-1.0.0.tgz`),
     "",
   );
 
@@ -387,7 +398,7 @@ exit 0
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
           NODE_AUTH_TOKEN: "test-token",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
@@ -529,7 +540,7 @@ test("fails closed when npm cannot determine whether a version exists", () => {
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@1.0.0" && "$3" == "version" ]]; then
   echo "npm error code E503" >&2
   exit 17
 fi
@@ -555,7 +566,7 @@ exit 0
           NPM_TAG: "rc",
           NPM_TOKEN: "",
           NODE_AUTH_TOKEN: "",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
@@ -576,8 +587,8 @@ test("fails closed when an existing version needs token-authorized tag repair", 
     fakeNpm,
     `#!/usr/bin/env bash
 set -euo pipefail
-if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
-  echo "0.4.0"
+if [[ "$1" == "view" && "$2" == *"@1.0.0" && "$3" == "version" ]]; then
+  echo "1.0.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
   echo "0.0.9"
 fi
@@ -601,7 +612,7 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
@@ -625,10 +636,10 @@ test("treats an existing version with the requested tag as a tokenless no-op", (
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
-  echo "0.4.0"
+if [[ "$1" == "view" && "$2" == *"@1.0.0" && "$3" == "version" ]]; then
+  echo "1.0.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.rc" ]]; then
-  echo "0.4.0"
+  echo "1.0.0"
 fi
 `,
   );
@@ -650,7 +661,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
@@ -675,9 +686,9 @@ test("repairs incorrect tags without mixing npm notices into metadata", () => {
     `#!/usr/bin/env bash
 set -euo pipefail
 printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
-if [[ "$1" == "view" && "$2" == *"@0.4.0" && "$3" == "version" ]]; then
+if [[ "$1" == "view" && "$2" == *"@1.0.0" && "$3" == "version" ]]; then
   echo "npm notice registry metadata is current" >&2
-  echo "0.4.0"
+  echo "1.0.0"
 elif [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
   echo "0.0.9"
 elif [[ "$1" == "view" ]]; then
@@ -704,7 +715,7 @@ fi
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
-          VERSION: "0.4.0",
+          VERSION: "1.0.0",
         },
       },
     );
@@ -712,7 +723,7 @@ fi
     const commands = readFileSync(npmLog, "utf8");
     assert.match(
       commands,
-      /dist-tag add @midnight-ntwrk\/credential-model@0\.4\.0 rc/u,
+      /dist-tag add @midnight-ntwrk\/credential-model@1\.0\.0 rc/u,
     );
     assert.doesNotMatch(commands, /^publish /mu);
     assert.doesNotMatch(commands, /dist-tag rm/u);

@@ -34,7 +34,8 @@ belong in independently versioned consumer repositories.
 
 All three packages are in the executable publication allowlist, and their
 packed artifacts pass build and clean-consumer checks. They are ESM-only
-pre-1.0 APIs and follow semantic versioning.
+and follow semantic versioning; the planned 1.0 release candidate is still a
+prerelease, not a published stable release.
 
 Use the smallest package that owns the required boundary. A concrete credential
 repository normally depends on both: `credential-model` describes its schema,
@@ -50,18 +51,21 @@ packages and must not import this repository's source or generated internals.
 
 ## Release channels
 
-The source package graph is the next `0.4.0` release base. The current npm
-`latest` graph is `0.2.0`, and the current `rc` graph is `0.3.0-rc1`. Install
-exact published versions so a
-consumer build cannot change when an npm dist-tag moves:
+The source package graph is the `1.0.0` release base for the planned
+`1.0.0-rc1` candidate, which is **not published yet**. Source manifests keep the
+stable base; the protected publish workflow applies the RC suffix only in its
+release checkout. The current npm `latest` graph is `0.3.0`, and the current `rc`
+graph is `0.3.0-rc1` (registry verified 2026-11-17). These older releases predate
+the flat schema API and Ledger9 profile documented by this source tree. Install
+exact published versions so a consumer build cannot change when a dist-tag moves:
 
 ```bash
 pnpm add -E \
-  @midnight-ntwrk/credential-model@0.2.0 \
-  @midnight-ntwrk/credential-compact@0.2.0
+  @midnight-ntwrk/credential-model@0.3.0 \
+  @midnight-ntwrk/credential-compact@0.3.0
 ```
 
-Add `@midnight-ntwrk/credential-did-midnight@0.2.0` only when the schema implementation or
+Add `@midnight-ntwrk/credential-did-midnight@0.3.0` only when the schema implementation or
 consumer uses Midnight DID methods. The `0.3.0-rc1` graph is available under
 the `rc` tag for explicit prerelease evaluation; it is not the stable release.
 See the [quickstart](https://midnightntwrk.github.io/midnight-verifiable-credentials/guide/quickstart)

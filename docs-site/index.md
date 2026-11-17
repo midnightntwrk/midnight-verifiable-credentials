@@ -26,9 +26,12 @@ belong in independently versioned consumer repositories.
 The packages are intentionally small, composable building blocks. None defines
 an issuance or presentation protocol.
 
-This source tree documents the `0.4.0` release base. The current npm `latest`
-graph is `0.2.0`, and `0.3.0-rc1` is available under `rc`. The
-[quickstart](/guide/quickstart) pins exact versions and guards moving tags.
+This source tree documents the `1.0.0` release base and planned `1.0.0-rc1`
+candidate, which is **not published yet**. The current npm `latest` graph is
+`0.3.0`, and `0.3.0-rc1` is available under `rc` (registry verified 2026-11-17).
+Those older versions predate the flat schema API and Ledger9 profile shown here.
+The [quickstart](/guide/quickstart) distinguishes planned candidate examples from
+published versions and guards moving tags.
 
 ## Trust Boundary
 

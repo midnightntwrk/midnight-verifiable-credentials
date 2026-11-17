@@ -10,7 +10,14 @@ All notable changes to this project are documented here. The format follows
 
 - BREAKING: replace credential-family metadata with one flat credential schema
   definition and rename the public TypeScript validation API;
-- advance the package graph release base to `0.4.0`.
+- advance the package graph release base to `1.0.0` for the planned
+  `1.0.0-rc1` candidate, superseding the unpublished `0.4.0` target without
+  changing the credential schema migration; this is preparation, not publication;
+- select Compact `0.36.0`, runtime `0.21.0`, and Midnight DID `1.0.0-rc1`;
+  BREAKING: packed build metadata uses schema 2 with explicit backend and public
+  Ledger9 identities, so downstream artifacts and keys must be rebuilt together.
+  See the [Ledger9 migration guide](./docs/guides/ledger9-migration.md) for bounded
+  native signer proof evidence and live-integration limits.
 
 ## [0.3.0] - 2026-10-01
 

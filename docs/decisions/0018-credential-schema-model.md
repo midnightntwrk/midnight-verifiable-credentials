@@ -5,6 +5,14 @@
 - Owners: VC maintainers
 - Amends: ADR-0016 TypeScript model terminology and public API
 
+## Release scheduling update — 2026-11-17
+
+The original `0.4.0` target recorded below was not published and is superseded
+by the maintainer-selected `1.0.0` release base, with `1.0.0-rc1` as the planned
+first candidate. The schema/API migration and all conformance requirements in
+this decision are unchanged. This update records preparation, not publication;
+see the [npm publication runbook](https://github.com/midnightntwrk/midnight-verifiable-credentials/blob/develop/docs/guides/npmjs-publication.md).
+
 ## Context
 
 The TypeScript model currently wraps one `CredentialSchemaDescriptor` in a

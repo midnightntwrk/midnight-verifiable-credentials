@@ -12,13 +12,16 @@ See [`CHANGELOG.md`](./CHANGELOG.md) for package release history.
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-did-midnight@0.4.0
+# Planned candidate: run only after registry verification confirms publication.
+pnpm add -E @midnight-ntwrk/credential-did-midnight@1.0.0-rc1
 ```
 
-This source tree targets `0.4.0`. Install it only after that immutable version
-is published. It installs the matching Compact core dependency; keep the model
-and Compact packages on that same version. Inspect the moving registry tags
-before selecting a stable or release-candidate graph.
+This source tree uses the `1.0.0` release base and prepares `1.0.0-rc1`;
+that candidate is **not published yet**. Install it only after that immutable
+version is verified in the registry. It installs the matching Compact core
+dependency; keep the model and Compact packages on that same version. The RC is
+a prerelease. Inspect the moving registry tags before selecting a stable or
+release-candidate graph.
 
 The TypeScript adapter resolves an on-chain `did:midnight` document through an
 injected structural `MidnightDIDResolutionSource`. The published

@@ -4,19 +4,22 @@
 > Maturity: `core`
 > Package class: `dist`
 
-Supported pre-1.0 package for reusable, schema-neutral Compact VC/VP
+Supported library package for reusable, schema-neutral Compact VC/VP
 semantics. This is a library include surface, not a deployable contract,
 credential schema implementation, proof artifact, or registry authority.
 
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-compact@0.4.0
+# Planned candidate: run only after registry verification confirms publication.
+pnpm add -E @midnight-ntwrk/credential-compact@1.0.0-rc1
 ```
 
-This source tree targets `0.4.0`. Install it only after that immutable version
-is published, and keep every package in the VC graph on the same version.
-Inspect registry tags before selecting a stable or release-candidate version:
+This source tree uses the `1.0.0` release base and prepares `1.0.0-rc1`;
+that candidate is **not published yet**. Install it only after that immutable
+version is verified in the registry, and keep every package in the VC graph on
+the same version. The RC is a prerelease. Inspect registry tags before selecting
+a stable or release-candidate version:
 
 ```bash
 npm view @midnight-ntwrk/credential-compact dist-tags --json
