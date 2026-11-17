@@ -4,7 +4,8 @@ All notable changes to this package are documented in this file.
 
 ## Unreleased
 
-- Advance the package manifest to the `0.4.0` release base.
+- Advance the package manifest to the `1.0.0` release base for the planned
+  `1.0.0-rc1` candidate; no version is published by this preparation.
 - BREAKING: replace the nested `CredentialFamilyDefinition` and
   `CredentialSchemaDescriptor` model with one flat
   `CredentialSchemaDefinition`.

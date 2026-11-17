@@ -19,8 +19,9 @@
   and keys together. Strict consumers and bounded native signer proof tests
   pass; see the migration guide for exact evidence and live-support limits.
 
-- Advance the package manifest to the `0.4.0` release base; this package has no
-  breaking runtime change in the schema terminology migration.
+- Advance the package manifest to the `1.0.0` release base for the planned
+  `1.0.0-rc1` candidate; no version is published by this preparation. The schema
+  terminology migration itself does not change this package's runtime behavior.
 
 ## 0.3.0 - 2026-10-01
 

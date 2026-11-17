@@ -14,29 +14,35 @@
 
 ## Install
 
-This source tree documents the `0.4.0` release base. After that immutable graph
-is published, install only the boundaries the consumer needs:
+This source tree documents the `1.0.0` release base and planned `1.0.0-rc1`
+candidate, which is **not published yet**. The examples below target that
+candidate: run them only after registry verification confirms all three exact
+versions are published. Install only the boundaries the consumer needs:
 
 ```bash
 # Metadata only
-pnpm add -E @midnight-ntwrk/credential-model@0.4.0
+pnpm add -E @midnight-ntwrk/credential-model@1.0.0-rc1
 
 # Metadata plus schema-neutral Compact primitives
 pnpm add -E \
-  @midnight-ntwrk/credential-model@0.4.0 \
-  @midnight-ntwrk/credential-compact@0.4.0
+  @midnight-ntwrk/credential-model@1.0.0-rc1 \
+  @midnight-ntwrk/credential-compact@1.0.0-rc1
 
 # Add only for did:midnight method binding
-pnpm add -E @midnight-ntwrk/credential-did-midnight@0.4.0
+pnpm add -E @midnight-ntwrk/credential-did-midnight@1.0.0-rc1
 ```
 
 The packages do not provide a concrete credential implementation, wallet flow, exchange
 protocol, DID resolver, status authority, or issuer trust policy. A consumer
 repository owns those choices.
 
-For release-sensitive automation that needs the complete graph, use this
-guarded function. It verifies that every immutable package version exists and
-records the approved version exactly:
+The registry-verified channels on 2026-11-17 remain `latest: 0.3.0` and
+`rc: 0.3.0-rc1`. Those older versions predate the flat schema API and Ledger9
+profile in this source tree; do not use them with the candidate examples below.
+
+For release-sensitive automation, this guarded function demonstrates installing
+a published stable graph. It verifies every immutable version before recording
+it exactly; it does not publish or promote the planned candidate:
 
 ```bash
 install_stable_graph() (
@@ -65,7 +71,7 @@ install_stable_graph() (
     "@midnight-ntwrk/credential-did-midnight@${EXPECTED_STABLE}"
 )
 
-install_stable_graph 0.4.0
+install_stable_graph 0.3.0
 ```
 
 Keep the package graph on one exact version for reproducible consumer
@@ -108,8 +114,10 @@ install_rc_graph() (
 
 Use those install commands only when the reported `rc` versions are the exact
 prerelease graph you intend to evaluate. After recording that version, invoke
-the function explicitly, for example `install_rc_graph 0.4.0-rc1`.
-Prerelease adoption should not happen implicitly.
+the function explicitly. For the planned candidate, use
+`install_rc_graph 1.0.0-rc1` **only after publication and registry verification**;
+the guard must reject today's older `rc` tags. Keep all three packages on that
+same exact version. Prerelease adoption should not happen implicitly.
 
 ## Define Metadata
 

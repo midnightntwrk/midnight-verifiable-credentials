@@ -11,13 +11,15 @@ deployment, proof artifacts, or encoding.
 ## Install
 
 ```bash
-pnpm add -E @midnight-ntwrk/credential-model@0.4.0
+# Planned candidate: run only after registry verification confirms publication.
+pnpm add -E @midnight-ntwrk/credential-model@1.0.0-rc1
 ```
 
-This source tree targets `0.4.0`. Install it only after that immutable version
-is published. The release line is pre-1.0, so keep the resolved version pinned
-when a consumer repository requires reproducible builds. Inspect registry tags
-before selecting a stable or release-candidate version:
+This source tree uses the `1.0.0` release base and prepares `1.0.0-rc1`;
+that candidate is **not published yet**. Install it only after that immutable
+version is verified in the registry. The RC is a prerelease; pin exact versions
+for reproducible builds. Inspect registry tags before selecting a stable or
+release-candidate version:
 
 ```bash
 npm view @midnight-ntwrk/credential-model dist-tags --json

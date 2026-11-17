@@ -1,6 +1,6 @@
 {
   "name": "@midnight-ntwrk/credential-compact",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Schema-neutral Compact VC and VP semantics",
   "license": "Apache-2.0",
   "private": false,

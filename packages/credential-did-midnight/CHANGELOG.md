@@ -19,8 +19,9 @@
   and keys together. Strict consumers and bounded native signer proof tests
   pass; see the migration guide for exact evidence and live-support limits.
 
-- Advance the package manifest to the `0.4.0` release base and update the
-  packed composition fixture for the flat credential schema model.
+- Advance the package manifest to the `1.0.0` release base for the planned
+  `1.0.0-rc1` candidate and update the packed composition fixture for the flat
+  credential schema model; no version is published by this preparation.
 
 ## 0.3.0 - 2026-10-01
 

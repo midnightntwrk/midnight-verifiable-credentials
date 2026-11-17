@@ -90,23 +90,48 @@ registry state is triaged explicitly.
 
 ## Prerelease publication
 
-Current release-preparation baseline:
+Published channels (registry verified 2026-11-17; not the planned candidate):
 
 | Channel | Version | Meaning |
 | --- | --- | --- |
-| `latest` | `0.2.0` | Stable consumer release |
+| `latest` | `0.3.0` | Stable consumer release |
 | `rc` | `0.3.0-rc1` | Explicit 0.3 evaluation release |
 
 Update this table and all guarded install examples only after registry
 verification succeeds. Cutting a changelog section or merging a release PR does
 not make a version installable.
 
-Set the root and supported package manifests to the version approved by the
-release PR, then dispatch `Publish npmjs Packages` from `develop`. For example:
+### Planned 1.0.0 RC1
+
+The reviewed source base is prepared as `1.0.0` in the root and all three
+supported package manifests. The planned npm version is **`1.0.0-rc1`**, which
+is **not published yet**. This supersedes the unpublished `0.4.0` target; it does
+not change the schema migration or authorize a stable release.
+
+Use the existing undotted `-rcN` spelling, matching the
+[published Midnight DID RC1](https://github.com/midnightntwrk/midnight-did/releases/tag/v1.0.0-rc1)
+and this repository's earlier npm RCs. Both `-rc1` and `-rc.1` are valid
+[SemVer prereleases](https://semver.org/spec/v2.0.0.html#spec-item-9), but they
+are distinct versions. Do not rewrite the DID dependency versions or mix the
+suffixes within this release sequence. A separately authorized Git tag would
+be `v1.0.0-rc1`; the npm version has no `v` prefix.
+
+Keep committed manifests at the stable base, not the suffixed version. Check
+the exact candidate without changing any files:
+
+```bash
+node ./tooling/scripts/prepare-release-version.mjs \
+  --channel rc --rc-index 1 --dry-run --json
+```
+
+The result must name `1.0.0-rc1`, npm tag `rc`, and three packages. Only after the
+preparation PR is merged, its CI is green, publication is explicitly authorized,
+and all release gates above are satisfied, dispatch `Publish npmjs Packages`
+from `develop` with:
 
 ```text
 channel: rc
-rc_index: 2
+rc_index: 1
 ```
 
 The current release graph publishes three packages under the `rc` dist-tag:
@@ -155,7 +180,7 @@ cataloged Node, TypeScript, browser, and applicable Compact checks.
 
 Pass `VERSION` and `TAG` as positional arguments to the verifier below so the
 selected values cannot be shadowed by defaults. This stable example verifies
-the `0.2.0` release:
+the `0.3.0` release:
 
 ```bash
 verify_release() (
@@ -206,7 +231,7 @@ verify_release() (
   exit "$verification_failed"
 )
 
-verify_release 0.2.0 latest
+verify_release 0.3.0 latest
 ```
 
 For an RC, call the function with the suffixed version and `rc`, for example
