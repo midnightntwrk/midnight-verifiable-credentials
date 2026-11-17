@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  COMPACT_COMPILER_VERSION: 0.31.1
+  COMPACT_COMPILER_VERSION: 0.36.0
 
 jobs:
   core-validation:

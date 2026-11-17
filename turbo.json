@@ -1,16 +1,18 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "agentGuidance": false,
-  "globalDependencies": [".nvmrc"],
-  "globalPassThroughEnv": ["COMPACT_DIRECTORY"],
+  "globalDependencies": [
+    ".nvmrc",
+    "tooling/scripts/compact-build-profile.mjs",
+    "nix/packages/compact-toolchain.nix"
+  ],
+  "globalEnv": ["COMPACT_DIRECTORY"],
   "tasks": {
     "clean": {
       "cache": false
     },
     "lint": {
-      "env": [
-        "CI"
-      ],
+      "env": ["CI"],
       "outputs": []
     },
     "lint:fix": {
@@ -18,31 +20,17 @@
       "outputs": []
     },
     "typecheck": {
-      "dependsOn": [
-        "build"
-      ],
-      "env": [
-        "CI"
-      ],
+      "dependsOn": ["build"],
+      "env": ["CI"],
       "outputs": []
     },
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "src/managed/**",
-        "*.tsbuildinfo"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "src/managed/**", "*.tsbuildinfo"]
     },
     "test": {
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "CI"
-      ],
+      "dependsOn": ["^build"],
+      "env": ["CI"],
       "outputs": []
     }
   }

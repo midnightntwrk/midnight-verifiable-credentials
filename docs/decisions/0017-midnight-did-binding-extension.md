@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-18
-- Updated: 2026-09-29
+- Updated: 2026-11-16
 - Owners: VC maintainers
 - Amends: ADR-0016 public package graph and DID-adapter boundary
 
@@ -23,8 +23,9 @@ Publish one flat extension package:
 - `@midnight-ntwrk/credential-did-midnight`.
 
 It depends one-way on `@midnight-ntwrk/credential-compact` and the published
-Midnight DID `0.7.0` packages. It provides an injected TypeScript resolver
-adapter plus standalone and composition-safe Compact entrypoints.
+Midnight DID packages (selected migration: exact `1.0.0-rc1` domain/Schnorr,
+with DID RC1 as a development dependency). It provides an injected TypeScript
+resolver adapter plus standalone and composition-safe Compact entrypoints.
 
 The package owns deterministic DID-to-core mapping, structural binding
 circuits, and bounded software helpers that assemble core issuance and
@@ -44,12 +45,13 @@ the core context-specific proof circuit over a body root recomputed from the
 complete credential, presentation, authorization decision, or verifier request.
 This is a normative security boundary, not an optional integration pattern.
 
-Ledger 8 consumers must pin an accepted binding or verify an authority proof;
-the extension does not claim live cross-contract DID resolution.
+Consumers must pin an accepted binding or verify an authority proof on every
+supported Ledger profile; the extension does not claim live cross-contract DID
+resolution, including when targeting Ledger9.
 
-The adapter accepts only the Midnight DID 0.7 canonical big-endian Jubjub JWK
-profile and delegates coordinate decoding and range validation to the public
-domain package codec. Historical 0.6 little-endian snapshots should be
+The adapter accepts only the Midnight DID canonical big-endian Jubjub JWK
+profile introduced in 0.7 and retained by RC1. It delegates coordinate decoding
+and range validation to the public domain package codec. Historical 0.6 little-endian snapshots should be
 re-resolved through a 0.7-compatible resolver. An offline migration is allowed
 only when the snapshot provenance authenticates its DID, method, relationship,
 positive observed `versionId`, and 0.6 encoding profile; it must decode the 0.6
@@ -58,8 +60,15 @@ Profile auto-detection and use of ledger `versionId` as an encoding marker are
 rejected. Because some legacy values remain in range under the new byte order,
 a mis-supplied 0.6 snapshot can silently bind the wrong point.
 
-The initial support profile is Compact `0.31.1`, runtime `0.16.0`, and Ledger
-`8.0.2`. Cross-contract DID validation is deferred until a later Ledger profile.
+The initial support profile was Compact `0.31.1`, runtime `0.16.0`, and Ledger
+`8.0.2`. The selected migration profile is Compact `0.36.0` / runtime `0.21.0`,
+measured backend `zkir-3.2.0-rc.2`, and public npm cohort
+`@midnightntwrk/ledger-v9@1.0.0`. Backend and Ledger identities are distinct.
+Full profile support remains subject to the gates in the
+[Ledger9 migration guide](../guides/ledger9-migration.md). That migration does
+not add cross-contract calls, change snapshot trust, or restore application
+infrastructure. Downstream DID replacement/rebinding and rebuilt keys/artifacts
+are explicit migration obligations, not automatic history preservation.
 
 ## Consequences
 

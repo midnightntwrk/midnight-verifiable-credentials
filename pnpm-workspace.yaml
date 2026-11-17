@@ -21,7 +21,9 @@ overrides:
   brace-expansion@5: 5.0.12
   js-yaml: 4.3.2
   postcss: 8.5.23
-  vite: 7.3.6
+  # Patch-only high-advisory remediation; no intake-policy exception.
+  source-map-js: 1.2.2
+  vite: 7.3.7
 
 blockExoticSubdeps: true
 minimumReleaseAge: 10080
@@ -29,6 +31,12 @@ minimumReleaseAgeExcludePrune: false
 minimumReleaseAgeIgnoreMissingTime: false
 minimumReleaseAgeStrict: true
 minimumReleaseAgeExclude:
+  # Issue 754 maintainer-approved RC1 intake; remove 2026-11-22 UTC.
+  # https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/754#issuecomment-6912714331
+  - "@midnight-ntwrk/midnight-did@1.0.0-rc1"
+  - "@midnight-ntwrk/midnight-did-contract@1.0.0-rc1"
+  - "@midnight-ntwrk/midnight-did-domain@1.0.0-rc1"
+  - "@midnight-ntwrk/midnight-did-jubjub-schnorr@1.0.0-rc1"
   # Remove after 2026-10-03; develop already locked this before the cooldown.
   - "@types/node@26.6.3"
   # Remove after 2026-10-05, once this release train is at least seven days old.

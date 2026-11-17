@@ -74,11 +74,15 @@ excluded.
 
 ## Toolchain and generated output
 
-The package is compiled with the pinned Compact `0.31.1` compiler and exactly
-`@midnight-ntwrk/compact-runtime` `0.16.0`. Builds verify both versions, then
-regenerate `src/managed` and `dist`; neither directory is hand-edited.
-`dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
-and generated-artifact digest.
+The selected migration profile pins Compact `0.36.0`, backend
+`zkir-3.2.0-rc.2`, and exactly `@midnight-ntwrk/compact-runtime@0.21.0`.
+Builds verify all three identities, then regenerate `src/managed` and `dist`;
+neither directory is hand-edited. Schema 2 of `dist/compact-build.json` records
+compiler/runtime/backend separately from public npm Ledger support, plus source
+and generated-artifact digests. The old schema-1 `ledger` field is removed.
+See the [Ledger9 migration guide](../../../docs/guides/ledger9-migration.md)
+for the contract, key/artifact migration and validation still required before
+claiming full consumer compatibility.
 
 `./credentials.compact` is the only standalone root.
 `./credentials/composable.compact` is the only composition-safe root: include it
@@ -130,8 +134,11 @@ const decoded = decodeCompactValue(encoded);
 ## Compatibility and support
 
 - The TypeScript surface is ESM-only and supports Node.js 24 or newer.
-- Compact consumers use compiler `0.31.1`, runtime `0.16.0`, and Ledger
-  `8.0.2`.
+- The selected Ledger9 migration profile is compiler `0.36.0`, runtime
+  `0.21.0`, backend `zkir-3.2.0-rc.2`, and public npm cohort
+  `@midnightntwrk/ledger-v9@1.0.0`. Strict consumers and bounded native signer
+  proof validation pass. See the migration guide for exact scope and live
+  deployment limits; version probes alone do not establish compatibility.
 - During `0.x`, breaking API changes may ship in a minor release. Keep exact
   versions pinned and read [`CHANGELOG.md`](./CHANGELOG.md) before upgrading.
 - Release candidates are supported only until a newer candidate or stable

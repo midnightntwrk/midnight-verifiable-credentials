@@ -35,6 +35,7 @@ docs-site/architecture/core-only.md
 docs-site/architecture/midnight-did-binding.md
 docs-site/architecture/credential-schema-model.md
 docs-site/development/npmjs-publication.md
+docs-site/development/ledger9-migration.md
 docs-site/development/security.md
 
 # Local runtime state and secrets

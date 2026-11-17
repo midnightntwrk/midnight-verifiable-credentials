@@ -5,12 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
-    # Compact toolchain (compactc + compact devtool) is consumed from this
-    # reusable flake rather than from the midnight-did repository. It fetches
-    # the same official midnightntwrk/compact release binaries (verified by
-    # hash) and additionally fixes the compactc-via-symlink wrapper quirk.
-    # Mirrors midnight-did's toolchain sourcing after its compact 0.31.1
-    # adoption (midnightntwrk/midnight-did#409).
+    # The locked reusable flake supplies only compact devtool 0.5.1.
+    # Compiler 0.36.0 is owned by nix/packages/compact-toolchain.nix with
+    # official release-asset hashes and the devtool's absolute-symlink layout.
+    # Updating this input alone must not silently select a different compiler.
     flake-collection.url = "github:MediaNoxLabs/flake-collection";
     flake-collection.inputs.nixpkgs.follows = "nixpkgs";
   };

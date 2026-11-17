@@ -1,8 +1,8 @@
 # Release Consumer Fixtures
 
-## Ledger 8 signer authorization
+## Ledger9 signer authorization
 
-`signer-authorization-ledger8-consumer.compact` is compile-only evidence that a
+`signer-authorization-ledger9-consumer.compact` is compile-only evidence that a
 downstream contract can compose the packed `@midnight-ntwrk/credential-compact`
 public entrypoint. It is not a deployable application or a Trust Registry.
 The fixture instantiates the generic VC module with empty claims, explicit
@@ -18,9 +18,13 @@ The fixture demonstrates two source profiles:
    local state. The authority may be local application governance or a Trust
    Registry synchronization key.
 
-The consumer stores decisions because Ledger 8 cannot synchronously call a DID
-or Trust Registry contract. It deliberately does not implement policy
-evaluation, relaying, authority rotation, trusted time, or a concrete VC schema.
+The compiler0.36/runtime0.21 profile intentionally retains local decisions and
+relayed authority proofs; it does not adopt synchronous DID/Trust Registry calls
+just because Ledger9 provides that capability. The renamed fixture replaces
+the old Ledger8 name, not its snapshot trust model. The normal consumer gate
+uses `--skip-zk`: compilation is not proving or deployment evidence. It does not
+implement policy evaluation, relaying, authority rotation, trusted time, or a
+concrete VC schema.
 
 ## Composed DID-backed VC/VP flow
 

@@ -93,7 +93,7 @@
       "id": "reject-off-curve-midnight-did-key",
       "operation": "validate",
       "mutation": "off-curve-key",
-      "errorIncludes": "unreachable"
+      "errorIncludes": "failed to decode for built-in type EmbeddedGroupAffine"
     },
     {
       "id": "reject-torsion-midnight-did-key",

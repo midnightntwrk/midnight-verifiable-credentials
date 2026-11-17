@@ -5,7 +5,7 @@
     { pkgs, inputs', ... }:
     let
       compact-midnight = inputs'.flake-collection.packages.compact-midnight;
-      compact-toolchain = inputs'.flake-collection.packages.compact-toolchain;
+      compact-toolchain = pkgs.callPackage ./compact-toolchain.nix { };
       midnight-circuit-params = pkgs.callPackage ./midnight-circuit-params.nix { };
       npm-artifacts = pkgs.callPackage ./npm-artifacts.nix {
         inherit compact-toolchain compact-midnight midnight-circuit-params;

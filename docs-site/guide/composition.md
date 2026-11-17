@@ -47,7 +47,12 @@ acyclic.
 standalone root includes the core once; its composition root assumes the
 consumer has already included the core composition root.
 
-For Ledger 8, consuming contracts materialize trusted signer decisions locally
-because synchronous cross-contract calls are unavailable. See
+Consuming contracts materialize trusted signer decisions locally. The selected
+Ledger9 migration does not add synchronous DID or Trust Registry calls: Ledger
+capability does not authenticate a supplied snapshot. Rebuild complete
+compositions and keys with the coordinated compiler/runtime; do not reuse
+Ledger8 artifacts. The packed DID VC/VP fixture uses synthetic injected
+DID documents, and `--skip-zk` compilation is not proving or live-deployment
+evidence. See
 [Signer Authorization](/spec/signer-authorization) for the local and
 authority-backed flows.

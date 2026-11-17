@@ -5,7 +5,12 @@
 - Node.js 24 or newer
 - A pnpm version compatible with the consumer workspace; repository
   contributors use pnpm 11.25.0
-- Compact `0.31.1` when consuming the Compact package
+- Selected Ledger9 migration: Compact `0.36.0` / runtime `0.21.0`, measured
+  backend `zkir-3.2.0-rc.2`; DID domain/Schnorr dependencies exact `1.0.0-rc1`.
+  Strict consumers and bounded native signer proofs pass; read the
+  [migration guide](/development/ledger9-migration) before adopting it.
+  Do not mix older generated keys/artifacts or interpret compiler backend
+  identity as the public `@midnightntwrk/ledger-v9@1.0.0` npm version.
 
 ## Install
 

@@ -16,7 +16,11 @@ semantics without defining a second signature scheme or challenge domain.
 Except for the authenticated historical-snapshot migration defined under
 [Canonical mapping](#canonical-mapping), an implementation MUST resolve an
 on-chain `did:midnight` through a resolver compatible with
-`@midnight-ntwrk/midnight-did` `0.7.0`. The live-resolution path MUST reject:
+`@midnight-ntwrk/midnight-did` `1.0.0-rc1` for the selected Ledger9 migration
+profile. The canonical coordinate profile is retained from 0.7. Full consumer
+compatibility remains subject to the
+[migration validation gates](../docs/guides/ledger9-migration.md).
+The live-resolution path MUST reject:
 
 - an unresolved or deactivated DID;
 - a DID document whose subject differs from the requested DID;
@@ -84,7 +88,7 @@ through a `MidnightDIDResolutionSource` and MUST invoke
 `MidnightDIDMethodBinding` directly. This preserves the adapter's subject,
 controller, relationship-membership, key-profile, state-version, and canonical
 method-ID checks.
-Consumers MUST apply the Ledger 8 snapshot trust boundary below before relying
+Consumers MUST apply the snapshot trust boundary below before relying
 on that binding for authorization.
 
 `didStateVersion` MUST equal the positive resolver `versionId` observed for the
@@ -159,12 +163,12 @@ extension circuits and requires a consumer to include the VC core composition
 root exactly once before it. Both published surfaces are bound by the
 conformance circuit inventories.
 
-## Ledger 8 trust boundary
+## Snapshot trust boundary
 
 The binding establishes consistency between resolved off-chain input and values
-used by a consumer contract. On Ledger 8, the circuit cannot call the DID
-contract and therefore cannot independently establish that the supplied state
-is current.
+used by a consumer contract. This extension does not call the DID contract,
+even on Ledger9, and therefore cannot independently establish that the supplied
+state is current.
 
 A consumer that makes a trust decision MUST either pin an accepted method
 binding root through its own governance path or verify an authority-signed
@@ -172,5 +176,9 @@ binding root through its own governance path or verify an authority-signed
 structurally valid MUST NOT be represented as current DID or trust-registry
 evidence.
 
-This version targets Compact `0.31.1`, runtime `0.16.0`, and Ledger `8.0.2`.
-Ledger 9 cross-contract validation is outside this version.
+The selected migration targets Compact `0.36.0`, runtime `0.21.0`, backend
+`zkir-3.2.0-rc.2`, and public npm cohort `@midnightntwrk/ledger-v9@1.0.0`.
+Compiler backend identity is not the npm Ledger version. Cross-contract DID
+validation remains outside this extension. Ledger8 DID replacement changes
+DID/address and requires explicit consumer rebinding or reissuance policy;
+see the migration guide for artifact/key and evidence limits.

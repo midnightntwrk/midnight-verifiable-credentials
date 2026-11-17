@@ -55,7 +55,10 @@ export default defineConfig({
               text: "Signer Authorization",
               link: "/spec/signer-authorization",
             },
-            { text: "Midnight DID Binding", link: "/spec/midnight-did-binding" },
+            {
+              text: "Midnight DID Binding",
+              link: "/spec/midnight-did-binding",
+            },
             { text: "Status", link: "/spec/status" },
             { text: "Security", link: "/spec/security-considerations" },
             { text: "Privacy", link: "/spec/privacy-considerations" },
@@ -117,6 +120,10 @@ export default defineConfig({
             {
               text: "npmjs Publication",
               link: "/development/npmjs-publication",
+            },
+            {
+              text: "Ledger9 Migration",
+              link: "/development/ledger9-migration",
             },
             { text: "Security", link: "/development/security" },
           ],

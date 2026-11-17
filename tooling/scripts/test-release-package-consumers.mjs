@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { supportedPackages } from "./workspace-catalog.mjs";
+import { assertBuildProfile, assertInstalledCohort } from "./compact-build-profile.mjs";
 import {
   createConsumerPnpmWorkspace,
   readRootPnpmSupplyPolicy,
@@ -495,9 +496,6 @@ for (const releasePackage of releasePackages) {
       }
     }
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
-      const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
-      const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
-      const expectedLedger = installedPackageJson.midnight.ledgerVersion;
       const buildManifest = JSON.parse(
         readFileSync(path.join(installedPackageRoot, "dist/compact-build.json"), "utf8"),
       );
@@ -507,18 +505,13 @@ for (const releasePackage of releasePackages) {
       const resolvedRuntime = JSON.parse(
         readFileSync(runtimePackagePath, "utf8"),
       ).version;
-      if (buildManifest.compiler !== expectedCompiler || buildManifest.runtime?.version !== expectedRuntime) {
-        fail(`${sourcePackageJson.name} generated metadata does not match pinned Compact tuple`);
-      }
-      if (
-        expectedLedger !== undefined &&
-        buildManifest.ledger !== expectedLedger
-      ) {
-        fail(`${sourcePackageJson.name} generated metadata does not match pinned Ledger version`);
-      }
-      if (resolvedRuntime !== expectedRuntime) {
-        fail(`${sourcePackageJson.name} resolved runtime ${resolvedRuntime} instead of ${expectedRuntime}`);
-      }
+      assertBuildProfile(installedPackageJson, buildManifest, resolvedRuntime);
+      const installedGraph = JSON.parse(execFileSync(
+        "pnpm", ["list", "--depth", "Infinity", "--json"],
+        { cwd: consumerRoot, env: environment, encoding: "utf8" },
+      ));
+      const cohort = assertInstalledCohort(installedPackageJson, installedGraph);
+      console.log(`[test-release-package-consumers] installed public cohort: ${JSON.stringify(cohort)}`);
     }
     if (
       expectedVersion !== undefined &&
@@ -675,11 +668,11 @@ for (const releasePackage of releasePackages) {
           ),
         );
         compileExternalSource(
-          "signer-authorization-ledger8-consumer",
+          "signer-authorization-ledger9-consumer",
           readFileSync(
             path.join(
               repoRoot,
-              "tooling/fixtures/signer-authorization-ledger8-consumer.compact",
+              "tooling/fixtures/signer-authorization-ledger9-consumer.compact",
             ),
             "utf8",
           ),
