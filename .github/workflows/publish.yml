@@ -36,6 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-release
     timeout-minutes: 120
+    outputs:
+      npm_tag: ${{ steps.version.outputs.npm_tag }}
+      version: ${{ steps.version.outputs.version }}
     permissions:
       contents: read
       id-token: write
@@ -143,14 +146,6 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: ./tooling/scripts/publish-npm-packages.sh
 
-      # Also publishes the same tarballs as @midnightntwrk/<name> during the npm
-      # scope move. It never blocks the release above.
-      - name: Publish tested tarballs as @midnightntwrk
-        continue-on-error: true
-        env:
-          NPM_TAG: ${{ steps.version.outputs.npm_tag }}
-        run: ./tooling/scripts/publish-midnightntwrk-scope.sh tooling/artifacts/npm "$NPM_TAG"
-
       - name: Wait for npmjs propagation
         env:
           VERSION: ${{ steps.version.outputs.version }}
@@ -201,3 +196,43 @@ jobs:
               node -e 'const fs = require("node:fs"); const p = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); console.log(`  - ${p.name}@${p.version}`);' "$workspace/package.json"
             done < <(node ./tooling/scripts/workspace-catalog.mjs --publishable-paths)
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Publishes the same tested tarballs as @midnightntwrk/<name> while packages
+  # move scope. It runs in its own npm-publish-stable environment, so the
+  # npm-release flow above is unchanged and nothing depends on this job. Delete
+  # it once @midnight-ntwrk is retired.
+  publish-midnightntwrk:
+    name: Publish as @midnightntwrk
+    needs: publish
+    runs-on: ubuntu-latest
+    environment: npm-publish-stable
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout publish script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .nvmrc
+            tooling/scripts/publish-midnightntwrk-scope.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Download tested tarballs
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vc-npm-release-${{ needs.publish.outputs.version }}
+          path: release-evidence
+
+      - name: Publish tested tarballs as @midnightntwrk
+        env:
+          NPM_TAG: ${{ needs.publish.outputs.npm_tag }}
+        run: ./tooling/scripts/publish-midnightntwrk-scope.sh release-evidence/npm "$NPM_TAG"
