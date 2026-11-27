@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   chmodSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -32,6 +33,59 @@ const writeSupportedTarballs = (directory, version = "0.3.0") => {
     writeFileSync(path.join(directory, `${packageName}-${version}.tgz`), "");
   }
 };
+
+test("new-scope publish preflights bootstrap before publishing", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "vc-new-scope-test-"));
+  const bin = path.join(root, "bin");
+  const tarballs = path.join(root, "tarballs");
+  mkdirSync(bin);
+  mkdirSync(tarballs);
+  const log = path.join(root, "npm.log");
+  const fakeNpm = path.join(bin, "npm");
+  writeFileSync(fakeNpm, `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1" == "--version" ]]; then echo 11.5.1; exit 0; fi
+echo "$*" >> "$FAKE_NPM_LOG"
+if [[ "$1" == "view" ]]; then
+  if [[ "$2" == *@0.3.0 || "$2" == "@midnightntwrk/credential-compact" ]]; then
+    echo 'npm error code E404' >&2
+    exit 1
+  fi
+  echo "$2"
+  exit 0
+fi
+exit 0
+`);
+  chmodSync(fakeNpm, 0o755);
+  try {
+    for (const name of ["credential-model", "credential-compact"]) {
+      const stage = path.join(root, name);
+      const packageDir = path.join(stage, "package");
+      mkdirSync(packageDir, { recursive: true });
+      writeFileSync(path.join(packageDir, "package.json"), JSON.stringify({
+        name: `@midnight-ntwrk/${name}`,
+        version: "0.3.0",
+      }));
+      const packed = spawnSync("tar", [
+        "-czf", path.join(tarballs, `${name}.tgz`), "-C", stage, "package",
+      ]);
+      assert.equal(packed.status, 0, packed.stderr?.toString());
+    }
+    const result = spawnSync("bash", [
+      path.join(repoRoot, "tooling/scripts/publish-midnightntwrk-scope.sh"),
+      tarballs,
+      "latest",
+    ], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, FAKE_NPM_LOG: log },
+    });
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(result.stdout, /not on npmjs yet: @midnightntwrk\/credential-compact/u);
+    assert.doesNotMatch(readFileSync(log, "utf8"), /^publish /mu);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 
 test("computes rc and stable release metadata", () => {
   assert.deepEqual(
